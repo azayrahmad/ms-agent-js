@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MSAgentJS - Windows 98 Demo</title>
+        <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    </head>
+    <body>
+        <div id="desktop">
+            <div id="app">
+                <div class="window control-panel">
+                    <div class="title-bar">
+                        <div class="title-bar-text">
+                            MSAgentJS Control Panel
+                        </div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Minimize"></button>
+                            <button aria-label="Maximize"></button>
+                            <button aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <div class="window-body">
+                        <div class="field-row">
+                            <label for="agent-select">Agent:</label>
+                            <select id="agent-select">
+                                <option value="Clippit">Clippit</option>
+                                <option value="DOT">Dot</option>
+                                <option value="F1">F1</option>
+                                <option value="GENIUS">Genius</option>
+                                <option value="LOGO">Logo</option>
+                                <option value="MNATURE">Mother Nature</option>
+                                <option value="Monkey King">Monkey King</option>
+                                <option value="OFFCAT">Links</option>
+                                <option value="ROCKY">Rocky</option>
+                            </select>
+                        </div>
+
+                        <fieldset>
+                            <legend>Actions</legend>
+                            <div class="field-row">
+                                <label for="scale-range">Scale:</label>
+                                <input
+                                    id="scale-range"
+                                    type="range"
+                                    min="1"
+                                    max="5"
+                                    step="0.1"
+                                    value="2"
+                                />
+                                <span id="scale-value">2.0x</span>
+                            </div>
+                            <div class="field-row">
+                                <label for="animation-select">Animation:</label>
+                                <select id="animation-select"></select>
+                            </div>
+                            <div
+                                class="field-row"
+                                style="
+                                    justify-content: flex-end;
+                                    gap: 4px;
+                                    margin-top: 4px;
+                                "
+                            >
+                                <button id="play-btn" disabled>Play</button>
+                                <button id="random-btn" disabled>Random</button>
+                            </div>
+                            <hr />
+                            <div class="field-row">
+                                <label for="state-select">State:</label>
+                                <select id="state-select"></select>
+                            </div>
+                            <div
+                                class="field-row"
+                                style="
+                                    justify-content: flex-end;
+                                    gap: 4px;
+                                    margin-top: 4px;
+                                "
+                            >
+                                <button id="visibility-btn" disabled>
+                                    Hide
+                                </button>
+                            </div>
+                            <hr />
+                            <div
+                                class="field-row"
+                                style="
+                                    flex-direction: column;
+                                    align-items: stretch;
+                                    gap: 4px;
+                                "
+                            >
+                                <label>Gestures:</label>
+                                <div
+                                    style="
+                                        display: grid;
+                                        grid-template-columns: 1fr 1fr;
+                                        gap: 4px;
+                                    "
+                                >
+                                    <button id="gesture-left-btn" disabled>
+                                        Left
+                                    </button>
+                                    <button id="gesture-right-btn" disabled>
+                                        Right
+                                    </button>
+                                    <button id="gesture-up-btn" disabled>
+                                        Up
+                                    </button>
+                                    <button id="gesture-down-btn" disabled>
+                                        Down
+                                    </button>
+                                </div>
+                                <button id="gesture-mouse-btn" disabled>
+                                    Gesture at Mouse (Click)
+                                </button>
+                            </div>
+                            <hr />
+                            <div class="field-row">
+                                <input
+                                    type="checkbox"
+                                    id="look-mouse-check"
+                                    disabled
+                                />
+                                <label for="look-mouse-check"
+                                    >Look at Mouse (Follow)</label
+                                >
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Debug Info</legend>
+                            <div id="debug-info">
+                                <div class="field-row">
+                                    <label>State:</label>
+                                    <span id="dash-state">-</span>
+                                </div>
+                                <div class="field-row">
+                                    <label>Animation:</label>
+                                    <span id="dash-anim">-</span>
+                                </div>
+                                <div class="field-row">
+                                    <label>Frame:</label>
+                                    <span id="dash-frame">-</span>
+                                </div>
+                                <div class="field-row">
+                                    <label>Idle Level:</label>
+                                    <span id="dash-level">-</span>
+                                </div>
+                                <div class="field-row">
+                                    <label>Next Tick:</label>
+                                    <span id="dash-next-tick">-</span>s
+                                </div>
+                                <div class="field-row">
+                                    <label>Queue:</label>
+                                    <span id="dash-queue">-</span>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Speech</legend>
+                            <div class="field-row">
+                                <input
+                                    type="text"
+                                    id="speak-text"
+                                    value="Hello! My name is Clippy."
+                                    style="width: 100%"
+                                />
+                            </div>
+                            <div class="field-row">
+                                <input type="checkbox" id="skip-typing-check" />
+                                <label for="skip-typing-check"
+                                    >Skip typing</label
+                                >
+                            </div>
+                            <div
+                                class="field-row"
+                                style="
+                                    justify-content: flex-end;
+                                    gap: 4px;
+                                    margin-top: 4px;
+                                "
+                            >
+                                <button id="speak-btn" disabled>Speak</button>
+                                <button id="ask-btn" disabled>Ask</button>
+                            </div>
+                        </fieldset>
+
+                        <p
+                            style="
+                                font-size: 10px;
+                                color: #666;
+                                margin-top: 10px;
+                            "
+                        >
+                            Tip: Click the agent for a surprise!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+</html>

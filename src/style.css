@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  background-color: #008080; /* Classic Windows 98 Teal */
+  height: 100vh;
+  width: 100vw;
+  font-family: "MS Sans Serif", "Arial", sans-serif;
+}
+
+#desktop {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23008080" /></svg>');
+}
+
+#app {
+  padding: 20px;
+}
+
+.window {
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #ffffff;
+}
+
+.control-panel {
+  width: 400px;
+  margin: 20px auto;
+}
+
+fieldset label {
+  width: 80px;
+  display: inline-block;
+}
+
+fieldset .field-row input[type="checkbox"] + label {
+    width: auto;
+}
+
+fieldset span {
+  font-family: monospace;
+}
+
+#debug-info .field-row {
+    margin-bottom: 4px;
+}
+
+select {
+  flex: 1;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid #ffffff;
+    margin: 8px 0;
+}

@@ -1,0 +1,40 @@
+{
+  "name": "ms-agent-js",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/ms-agent-js.umd.js",
+  "module": "./dist/ms-agent-js.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ms-agent-js.es.js",
+      "require": "./dist/ms-agent-js.umd.js"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.5",
+    "@types/uuid": "^11.0.0",
+    "@vitest/ui": "^4.0.18",
+    "canvas": "^3.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "^3.2.0",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5",
+    "uuid": "^13.0.0"
+  }
+}
