@@ -252,17 +252,13 @@ export class AnimationManager {
    * Completions occur either at the end of the frame sequence or when an exit branch loops back.
    */
   private checkAnimationCompletion(
-    currentFrame: FrameDefinition,
+    _currentFrame: FrameDefinition,
     nextFrameIndex: number,
     isBranch: boolean,
   ): boolean {
     if (this.isExiting) {
       // If we are exiting and reached the end (either by natural end or exit branch loop back to frame 0)
-      if (currentFrame.exitBranch === undefined && nextFrameIndex === 0) {
-        this.completeAnimation();
-        return true;
-      }
-      if (currentFrame.exitBranch !== undefined && nextFrameIndex === 0) {
+      if (nextFrameIndex === 0) {
         this.completeAnimation();
         return true;
       }

@@ -235,6 +235,12 @@ export class StateManager {
     useExitBranch: boolean = false,
     timeoutMs?: number
   ): Promise<boolean> {
+    const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
+    // If this is an idle animation (no stateName) and we have requests, skip it.
+    if (!stateName && hasRequests) {
+      return false;
+    }
+
     if (stateName) {
       this.currentState = stateName;
     }
@@ -295,8 +301,11 @@ export class StateManager {
    * Returns the agent to the base IdlingLevel1 state and resets all timers.
    */
   private async returnToIdle(): Promise<void> {
-    this.resetIdleProgression();
+    const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
+    if (hasRequests) return;
+
     await this.setIdleState(1);
+    this.resetIdleProgression();
   }
 
   /**
@@ -312,6 +321,9 @@ export class StateManager {
    * Picks a random animation from the current state's associated pool and plays it.
    */
   private async updateStateAnimation(): Promise<void> {
+    const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
+    if (hasRequests) return;
+
     const state = this.states[this.currentState];
     if (state && state.animations.length > 0) {
       const randomAnimation = state.animations[Math.floor(Math.random() * state.animations.length)];
@@ -326,9 +338,8 @@ export class StateManager {
    * Plays the intro/outro animation sequence and waits for it to complete.
    *
    * @param showing - True for intro/showing, False for outro/hiding.
-   * @param useExitBranch - (Optional) Whether to use the exit branch for the visibility animation.
    */
-  public async handleVisibilityChange(showing: boolean, useExitBranch: boolean = false): Promise<void> {
+  public async handleVisibilityChange(showing: boolean): Promise<void> {
     const visibilityState = showing ? 'Showing' : 'Hiding';
 
     if (this.states[visibilityState]) {
@@ -344,10 +355,12 @@ export class StateManager {
         this.currentState = visibilityState;
         // For intro animations (Showing), we want to play the full sequence, not start in exiting mode.
         // For outro animations (Hiding), we also want the full transition.
-        await this.animationManager.playAnimation(animName, useExitBranch);
+        await this.animationManager.playAnimation(animName, false);
 
         // Transition to Hidden or Idling after animation finishes
         if (showing) {
+            // Start idle progression but don't await the non-blocking return call
+            // to ensure the visibility request resolves promptly.
             void this.returnToIdle();
         } else {
             this.currentState = 'Hidden';

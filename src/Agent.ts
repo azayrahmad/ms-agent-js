@@ -423,7 +423,7 @@ export class Agent {
   /**
    * Internal initialization method. Starts the rendering loop and intro animation.
    */
-  public async init() {
+  private async init() {
     const initPromises: Promise<any>[] = [this.spriteManager.init()];
 
     if (this.options.useAudio && this.definition.audioAtlas) {
@@ -438,9 +438,11 @@ export class Agent {
     if (this.definition.states['Showing']) {
       this.show();
     } else {
-      void this.stateManager.setState('IdlingLevel1');
+      this.stateManager.setState('IdlingLevel1');
     }
   }
+
+  private isUpdating: boolean = false;
 
   /**
    * Starts the internal requestAnimationFrame loop.
@@ -454,7 +456,13 @@ export class Agent {
       this.lastTime = currentTime;
 
       this.animationManager.update(currentTime);
-      this.stateManager.update(deltaTime);
+
+      if (!this.isUpdating) {
+        this.isUpdating = true;
+        this.stateManager.update(deltaTime).finally(() => {
+          this.isUpdating = false;
+        });
+      }
 
       this.draw();
 
@@ -793,13 +801,12 @@ export class Agent {
   /**
    * Shows the agent by playing its 'Showing' animation sequence.
    *
-   * @param useExitBranch - (Optional) Whether to use the exit branch for the 'Showing' animation.
    * @returns A request object to track the operation's progress.
    */
-  public show(useExitBranch: boolean = false): AgentRequest {
+  public show(): AgentRequest {
     return this.enqueueRequest(async (request) => {
       this.container.style.display = "block";
-      await this.stateManager.handleVisibilityChange(true, useExitBranch);
+      await this.stateManager.handleVisibilityChange(true);
       if (!request.isCancelled) {
         this.emit("show");
       }
@@ -809,12 +816,11 @@ export class Agent {
   /**
    * Hides the agent by playing its 'Hiding' animation sequence.
    *
-   * @param useExitBranch - (Optional) Whether to use the exit branch for the 'Hiding' animation.
    * @returns A request object to track the operation's progress.
    */
-  public hide(useExitBranch: boolean = false): AgentRequest {
+  public hide(): AgentRequest {
     return this.enqueueRequest(async (request) => {
-      await this.stateManager.handleVisibilityChange(false, useExitBranch);
+      await this.stateManager.handleVisibilityChange(false);
       if (!request.isCancelled) {
         this.container.style.display = "none";
         this.emit("hide");
