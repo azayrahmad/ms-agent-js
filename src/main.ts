@@ -8,6 +8,8 @@ async function initDemo() {
   const animationSelect = document.getElementById('animation-select') as HTMLSelectElement;
   const stateSelect = document.getElementById('state-select') as HTMLSelectElement;
   const playBtn = document.getElementById('play-btn') as HTMLButtonElement;
+  const play5sBtn = document.getElementById('play-5s-btn') as HTMLButtonElement;
+  const playLoopedBtn = document.getElementById('play-looped-btn') as HTMLButtonElement;
   const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
   const visibilityBtn = document.getElementById('visibility-btn') as HTMLButtonElement;
   const speakBtn = document.getElementById('speak-btn') as HTMLButtonElement;
@@ -41,6 +43,9 @@ async function initDemo() {
     animationSelect.innerHTML = '';
     stateSelect.innerHTML = '';
     playBtn.disabled = true;
+    play5sBtn.disabled = true;
+    playLoopedBtn.disabled = true;
+    playLoopedBtn.textContent = 'Play looped';
     randomBtn.disabled = true;
     visibilityBtn.disabled = true;
     speakBtn.disabled = true;
@@ -90,6 +95,8 @@ async function initDemo() {
       visibilityBtn.textContent = 'Hide';
 
       playBtn.disabled = false;
+      play5sBtn.disabled = false;
+      playLoopedBtn.disabled = false;
       randomBtn.disabled = false;
       visibilityBtn.disabled = false;
       speakBtn.disabled = false;
@@ -124,7 +131,33 @@ async function initDemo() {
   });
 
   playBtn.addEventListener('click', () => {
+    currentAgent?.play(animationSelect.value);
+  });
+
+  play5sBtn.addEventListener('click', () => {
     currentAgent?.play(animationSelect.value, 5000);
+  });
+
+  playLoopedBtn.addEventListener('click', async () => {
+    if (!currentAgent) return;
+
+    if (playLoopedBtn.textContent === 'Stop') {
+      currentAgent.stop();
+      playLoopedBtn.textContent = 'Play looped';
+      return;
+    }
+
+    playLoopedBtn.textContent = 'Stop';
+    const req = currentAgent.play(animationSelect.value, undefined, false, true);
+
+    // Reset button text when animation ends
+    try {
+      await req;
+    } finally {
+      if (playLoopedBtn.textContent === 'Stop') {
+        playLoopedBtn.textContent = 'Play looped';
+      }
+    }
   });
 
   randomBtn.addEventListener('click', () => {

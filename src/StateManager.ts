@@ -232,13 +232,15 @@ export class StateManager {
    * @param stateName - (Optional) Temporary state name while playing.
    * @param useExitBranch - Whether to start in an exiting state.
    * @param timeoutMs - (Optional) Time limit for the animation.
+   * @param loop - (Optional) Whether the animation should loop indefinitely.
    * @returns A promise that resolves when the animation finishes.
    */
   public async playAnimation(
     animationName: string,
     stateName: string = '',
     useExitBranch: boolean = false,
-    timeoutMs?: number
+    timeoutMs?: number,
+    loop: boolean = false
   ): Promise<boolean> {
     const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
     // If this is an idle animation (no stateName) and we have requests, skip it.
@@ -267,7 +269,11 @@ export class StateManager {
     }
 
     try {
-      const result = await this.animationManager.interruptAndPlayAnimation(animationName, useExitBranch);
+      const result = await this.animationManager.interruptAndPlayAnimation(
+        animationName,
+        useExitBranch,
+        loop || !!timeoutMs
+      );
       return result;
     } finally {
       if (timeoutId) {
@@ -306,8 +312,10 @@ export class StateManager {
    * Returns the agent to the base IdlingLevel1 state and resets all timers.
    */
   private async returnToIdle(): Promise<void> {
-    const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
-    if (hasRequests) return;
+    // We only return to idle if there are no other pending requests in the queue.
+    // We check length > 0 instead of isEmpty because this might be called from within the last active request.
+    const hasOtherRequests = this.requestQueue && this.requestQueue.length > 0;
+    if (hasOtherRequests) return;
 
     await this.setIdleState(1);
     this.resetIdleProgression();
@@ -327,8 +335,8 @@ export class StateManager {
    * Picks a random animation from the current state's associated pool and plays it.
    */
   private async updateStateAnimation(): Promise<void> {
-    const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
-    if (hasRequests) return;
+    const hasOtherRequests = this.requestQueue && this.requestQueue.length > 0;
+    if (hasOtherRequests) return;
 
     const state = this.states[this.currentState];
     if (state && state.animations.length > 0) {
@@ -359,9 +367,8 @@ export class StateManager {
         // Start the animation and wait for its full completion
         await this.animationManager.preloadAnimation(animName);
         this.currentState = visibilityState;
-        // For intro animations (Showing), we want to play the full sequence, not start in exiting mode.
-        // For outro animations (Hiding), we also want the full transition.
-        await this.animationManager.playAnimation(animName, false);
+        // For intro/outro animations, we want them to play once to completion.
+        await this.animationManager.playAnimation(animName, true);
 
         // Transition to Hidden or Idling after animation finishes
         if (showing) {
