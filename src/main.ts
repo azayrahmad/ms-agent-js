@@ -206,19 +206,35 @@ async function initDemo() {
     }
   });
   
-  gestureLeftBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x - 100, currentAgent.options.y + 50));
-  gestureRightBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x + currentAgent.spriteManager.getSpriteWidth() * currentAgent.options.scale + 100, currentAgent.options.y + 50));
-  gestureUpBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x + 50, currentAgent.options.y - 100));
-  gestureDownBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x + 50, currentAgent.options.y + currentAgent.spriteManager.getSpriteHeight() * currentAgent.options.scale + 100));
+  gestureLeftBtn.addEventListener('click', () => {
+    if (!currentAgent) return;
+    currentAgent.gestureAt(currentAgent.options.x - 100, currentAgent.options.y + 50);
+  });
+  gestureRightBtn.addEventListener('click', () => {
+    if (!currentAgent) return;
+    currentAgent.gestureAt(currentAgent.options.x + currentAgent.spriteManager.getSpriteWidth() * currentAgent.options.scale + 100, currentAgent.options.y + 50);
+  });
+  gestureUpBtn.addEventListener('click', () => {
+    if (!currentAgent) return;
+    currentAgent.gestureAt(currentAgent.options.x + 50, currentAgent.options.y - 100);
+  });
+  gestureDownBtn.addEventListener('click', () => {
+    if (!currentAgent) return;
+    currentAgent.gestureAt(currentAgent.options.x + 50, currentAgent.options.y + currentAgent.spriteManager.getSpriteHeight() * currentAgent.options.scale + 100);
+  });
 
   moveToMouseBtn.addEventListener('click', () => {
-    if (!currentAgent) return;
+    if (!currentAgent) {
+        moveToMouseBtn.disabled = true;
+        return;
+    }
 
     moveToMouseBtn.disabled = true;
     const originalText = moveToMouseBtn.textContent;
     moveToMouseBtn.textContent = 'Click on page to move';
 
     const onMouseDown = (e: MouseEvent) => {
+        if (!currentAgent) return;
         const targetX = e.clientX - (currentAgent.definition.character.width * currentAgent.options.scale) / 2;
         const targetY = e.clientY - (currentAgent.definition.character.height * currentAgent.options.scale) / 2;
 
