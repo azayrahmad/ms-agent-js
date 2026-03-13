@@ -45,6 +45,9 @@ export class StateManager {
   /** Whether the state machine updates are currently paused. */
   private isPaused: boolean = true;
 
+  /** Track the last requested animation ID to prevent race conditions in the finally block. */
+  private lastAnimationId: number = 0;
+
   /**
    * @param states - Record of states indexed by name.
    * @param animationManager - Animation manager for sprite/frame control.
@@ -144,6 +147,7 @@ export class StateManager {
       this.currentState === 'Showing' ||
       this.currentState === 'Hiding' ||
       this.currentState === 'Moving' ||
+      this.currentState === 'Speaking' ||
       hasRequests
     ) {
       this.elapsedSinceLastTick = 0;
@@ -211,7 +215,12 @@ export class StateManager {
    * @throws Error if the state name is invalid.
    */
   public async setState(stateName: string): Promise<void> {
-    if (!this.states[stateName] && stateName !== 'Playing') {
+    if (
+      !this.states[stateName] &&
+      stateName !== 'Playing' &&
+      stateName !== 'Speaking' &&
+      stateName !== 'Moving'
+    ) {
       throw new Error(`Invalid state name: ${stateName}`);
     }
 
@@ -254,6 +263,8 @@ export class StateManager {
       return false;
     }
 
+    const currentAnimationId = ++this.lastAnimationId;
+
     if (stateName) {
       this.currentState = stateName;
     }
@@ -265,6 +276,11 @@ export class StateManager {
 
     // Ensure all assets are loaded before starting
     await this.animationManager.preloadAnimation(animationName);
+
+    // If a newer animation has been requested while we were preloading, abort this one.
+    if (this.lastAnimationId !== currentAnimationId) {
+      return false;
+    }
 
     let timeoutId: any;
     if (timeoutMs) {
@@ -285,9 +301,19 @@ export class StateManager {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      // If the action finishes and we haven't changed state, return to base idling
-      if (this.currentState === 'Playing' || !this.animationManager.isAnimating) {
-        await this.handleAnimationCompleted();
+
+      const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
+      // If the action finishes and we haven't changed state, return to base idling.
+      // We only do this if there are no other requests pending, and this was the last
+      // requested animation, to avoid interrupting subsequent actions.
+      if (!hasRequests && this.lastAnimationId === currentAnimationId) {
+        if (
+          this.currentState === 'Playing' ||
+          this.currentState === 'Speaking' ||
+          !this.animationManager.isAnimating
+        ) {
+          await this.handleAnimationCompleted();
+        }
       }
     }
   }
@@ -306,10 +332,14 @@ export class StateManager {
   }
 
   /**
-   * Fired when an explicit "Playing" or "Moving" animation completes.
+   * Fired when an explicit "Playing", "Moving" or "Speaking" animation completes.
    */
   public async handleAnimationCompleted(): Promise<void> {
-    if (this.currentState === 'Playing' || this.currentState === 'Moving') {
+    if (
+      this.currentState === 'Playing' ||
+      this.currentState === 'Moving' ||
+      this.currentState === 'Speaking'
+    ) {
       await this.returnToIdle();
     }
   }

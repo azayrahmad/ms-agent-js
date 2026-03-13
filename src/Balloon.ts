@@ -75,6 +75,9 @@ export class Balloon {
   private _ttsFallbackTimer: number | null = null;
   private _mobileTTSTimer: number | null = null;
 
+  /** Callback triggered when the balloon is hidden. */
+  public onHide: (() => void) | null = null;
+
   /** Time in milliseconds to wait between typing each character. */
   public CHAR_SPEAK_TIME = 50;
   /** Delay in milliseconds before automatically closing the balloon after speech. */
@@ -620,6 +623,7 @@ export class Balloon {
     if (fast) {
       this._balloonEl.style.display = "none";
       this._hidden = true;
+      this.onHide?.();
       return;
     }
     this._hidingTimeout = window.setTimeout(
@@ -633,6 +637,7 @@ export class Balloon {
     this._balloonEl.style.display = "none";
     this._hidden = true;
     this._hidingTimeout = null;
+    this.onHide?.();
   }
 
   /**

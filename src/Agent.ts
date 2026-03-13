@@ -660,6 +660,33 @@ export class Agent {
     this.balloon.reposition();
   }
 
+  private talkingAnimationName: string | null = null;
+
+  /**
+   * Internal helper to start a talking animation and set up its termination.
+   */
+  private startTalkingAnimation(animName: string = "Explain") {
+    if (this.talkingAnimationName === animName) return;
+
+    if (this.definition.animations[animName]) {
+      this.talkingAnimationName = animName;
+      this.stateManager
+        .playAnimation(animName, "Speaking", false, undefined, true)
+        .catch(console.error);
+    } else {
+      this.talkingAnimationName = animName;
+      this.stateManager.setState("Speaking").catch(console.error);
+    }
+    this.balloon.onHide = () => {
+      this.balloon.onHide = null;
+      this.talkingAnimationName = null;
+      if (this.stateManager.currentStateName === "Speaking") {
+        this.animationManager.isExitingFlag = true;
+        this.stateManager.handleAnimationCompleted();
+      }
+    };
+  }
+
   /**
    * Makes the agent speak the given text using the speech balloon.
    *
@@ -672,16 +699,15 @@ export class Agent {
     options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
   ): AgentRequest {
     const { hold = false, useTTS = true, skipTyping = false } = options;
-    return this.enqueueRequest(
-      (request) =>
-        new Promise((resolve) => {
-          if (request.isCancelled) {
-            resolve();
-            return;
-          }
-          this.balloon.speak(resolve, text, hold, useTTS, skipTyping);
-        }),
-    );
+    return this.enqueueRequest(async (request) => {
+      if (request.isCancelled) {
+        return;
+      }
+      this.startTalkingAnimation();
+      return new Promise((resolve) => {
+        this.balloon.speak(resolve, text, hold, useTTS, skipTyping);
+      });
+    });
   }
 
   /**
@@ -715,86 +741,140 @@ export class Agent {
     const cancelButtonText = options.cancelButtonText || "Cancel";
     const timeout = options.timeout || 60000;
 
-    return new Promise((resolve) => {
-      let inputBalloonTimeout: number | null = null;
+    let resolveAsk: (value: string | null) => void;
+    const askPromise = new Promise<string | null>((res) => {
+      resolveAsk = res;
+    });
 
-      const balloonContent = `
-        <div class="clippy-input">
-          <b>${title}</b>
-          <textarea rows="2" placeholder="${placeholder}"></textarea>
-          <div class="clippy-input-buttons">
-            <button class="ask-button default">${askButtonText}</button>
-            <button class="cancel-button">${cancelButtonText}</button>
-          </div>
-        </div>
-      `;
-
-      this.showHtml(balloonContent, true);
-
-      const balloonEl = this.balloon.balloonEl;
-      const input = balloonEl.querySelector("textarea") as HTMLTextAreaElement;
-      const askButton = balloonEl.querySelector(
-        ".ask-button",
-      ) as HTMLButtonElement;
-      const cancelButton = balloonEl.querySelector(
-        ".cancel-button",
-      ) as HTMLButtonElement;
-
-      const handleKeypress = (e: KeyboardEvent) => {
-        resetBalloonTimeout();
-        if (e.key === "Enter") {
-          e.preventDefault();
-          handleAsk();
-        }
-      };
-
-      const handleAsk = () => {
-        cleanup();
-        const value = input.value;
-        this.balloon.close();
-        resolve(value);
-      };
-
-      const handleCancel = () => {
-        cleanup();
-        this.balloon.close();
-        resolve(null);
-      };
-
-      const resetBalloonTimeout = () => {
-        clearBalloonTimeout();
-        inputBalloonTimeout = window.setTimeout(() => {
-          handleCancel();
-        }, timeout);
-      };
-
-      const clearBalloonTimeout = () => {
-        if (inputBalloonTimeout) {
-          clearTimeout(inputBalloonTimeout);
-          inputBalloonTimeout = null;
-        }
-      };
-
-      const cleanup = () => {
-        clearBalloonTimeout();
-        input?.removeEventListener("keypress", handleKeypress);
-        askButton.removeEventListener("click", handleAsk);
-        cancelButton.removeEventListener("click", handleCancel);
-      };
-
-      if (input) {
-        input.focus();
-        input.addEventListener("keypress", handleKeypress);
+    this.enqueueRequest(async (request) => {
+      if (request.isCancelled) {
+        resolveAsk(null);
+        return;
       }
 
-      askButton.addEventListener("click", handleAsk);
-      cancelButton.addEventListener("click", handleCancel);
+      let inputBalloonTimeout: number | null = null;
+      let resolved = false;
 
-      resetBalloonTimeout();
+      const balloonContent = `
+            <div class="clippy-input">
+              <b>${title}</b>
+              <textarea rows="2" placeholder="${placeholder}"></textarea>
+              <div class="clippy-input-buttons">
+                <button class="ask-button default">${askButtonText}</button>
+                <button class="cancel-button">${cancelButtonText}</button>
+              </div>
+            </div>
+          `;
 
-      // Force reposition after a short delay to account for layout rendering
-      setTimeout(() => this.balloon.reposition(), 0);
+      this.startTalkingAnimation();
+
+      return new Promise<void>((resolveQueue) => {
+        const finish = (value: string | null) => {
+          if (resolved) return;
+          resolved = true;
+          this.balloon.onHide = null;
+          this.talkingAnimationName = null;
+          if (this.stateManager.currentStateName === "Speaking") {
+            this.animationManager.isExitingFlag = true;
+            this.stateManager.handleAnimationCompleted();
+          }
+          cleanup();
+          resolveAsk(value);
+          resolveQueue();
+        };
+
+        this.balloon.onHide = () => {
+          if (this.stateManager.currentStateName === "Speaking") {
+            this.animationManager.isExitingFlag = true;
+            this.stateManager.handleAnimationCompleted();
+          }
+          finish(null);
+        };
+
+        this.showHtml(balloonContent, true);
+
+        const balloonEl = this.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const askButton = balloonEl.querySelector(
+          ".ask-button",
+        ) as HTMLButtonElement;
+        const cancelButton = balloonEl.querySelector(
+          ".cancel-button",
+        ) as HTMLButtonElement;
+
+        const handleKeypress = (e: KeyboardEvent) => {
+          resetBalloonTimeout();
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleAsk();
+          }
+        };
+
+        const handleAsk = () => {
+          const value = input.value;
+          finish(value);
+          this.balloon.close();
+        };
+
+        const handleCancel = () => {
+          finish(null);
+          this.balloon.close();
+        };
+
+        const handleFocus = () => {
+          this.startTalkingAnimation("Writing");
+        };
+
+        const handleBlur = () => {
+          this.startTalkingAnimation("Explain");
+          // Force reposition because blurring might happen when clicking away,
+          // and we want to ensure balloon is still correctly placed if it stays open.
+          this.balloon.reposition();
+        };
+
+        const resetBalloonTimeout = () => {
+          clearBalloonTimeout();
+          inputBalloonTimeout = window.setTimeout(() => {
+            handleCancel();
+          }, timeout);
+        };
+
+        const clearBalloonTimeout = () => {
+          if (inputBalloonTimeout) {
+            clearTimeout(inputBalloonTimeout);
+            inputBalloonTimeout = null;
+          }
+        };
+
+        const cleanup = () => {
+          clearBalloonTimeout();
+          input?.removeEventListener("keypress", handleKeypress);
+          input?.removeEventListener("focus", handleFocus);
+          input?.removeEventListener("blur", handleBlur);
+          askButton.removeEventListener("click", handleAsk);
+          cancelButton.removeEventListener("click", handleCancel);
+        };
+
+        if (input) {
+          input.focus();
+          input.addEventListener("keypress", handleKeypress);
+          input.addEventListener("focus", handleFocus);
+          input.addEventListener("blur", handleBlur);
+        }
+
+        askButton.addEventListener("click", handleAsk);
+        cancelButton.addEventListener("click", handleCancel);
+
+        resetBalloonTimeout();
+
+        // Force reposition after a short delay to account for layout rendering
+        setTimeout(() => this.balloon.reposition(), 0);
+      });
     });
+
+    return askPromise;
   }
 
   /**
