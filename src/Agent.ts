@@ -30,6 +30,8 @@ export interface AgentOptions {
   x?: number;
   /** Initial vertical position in pixels. */
   y?: number;
+  /** Optional initial animation to play instead of 'Showing'. */
+  initialAnimation?: string;
 }
 
 /** Valid event types emitted by the Agent. */
@@ -449,6 +451,7 @@ export class Agent {
       idleIntervalMs: options.idleIntervalMs ?? 5000,
       useAudio: options.useAudio ?? true,
       fixed: options.fixed ?? true,
+      initialAnimation: options.initialAnimation || "",
       x:
         options.x ??
         window.innerWidth -
@@ -481,10 +484,15 @@ export class Agent {
     this.startLoop();
     // Start showing the agent but don't await it, so the agent instance
     // is returned to the caller as soon as assets are ready.
-    if (this.definition.states['Showing']) {
+    if (
+      this.options.initialAnimation &&
+      this.hasAnimation(this.options.initialAnimation)
+    ) {
+      this.show(this.options.initialAnimation);
+    } else if (this.definition.states["Showing"]) {
       this.show();
     } else {
-      this.stateManager.setState('IdlingLevel1');
+      this.stateManager.setState("IdlingLevel1");
     }
   }
 
@@ -981,12 +989,13 @@ export class Agent {
   /**
    * Shows the agent by playing its 'Showing' animation sequence.
    *
+   * @param animationName - Optional custom animation to play while showing.
    * @returns A request object to track the operation's progress.
    */
-  public show(): AgentRequest {
+  public show(animationName?: string): AgentRequest {
     return this.enqueueRequest(async (request) => {
       this.container.style.display = "block";
-      await this.stateManager.handleVisibilityChange(true);
+      await this.stateManager.handleVisibilityChange(true, animationName);
       if (!request.isCancelled) {
         this.emit("show");
       }
@@ -996,11 +1005,12 @@ export class Agent {
   /**
    * Hides the agent by playing its 'Hiding' animation sequence.
    *
+   * @param animationName - Optional custom animation to play while hiding.
    * @returns A request object to track the operation's progress.
    */
-  public hide(): AgentRequest {
+  public hide(animationName?: string): AgentRequest {
     return this.enqueueRequest(async (request) => {
-      await this.stateManager.handleVisibilityChange(false);
+      await this.stateManager.handleVisibilityChange(false, animationName);
       if (!request.isCancelled) {
         this.container.style.display = "none";
         this.emit("hide");

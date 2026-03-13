@@ -44,6 +44,7 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | Bottom Right | Initial coordinates. |
 | `idleIntervalMs` | `number` | `5000` | Delay between idle animation checks. |
+| `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 
 ---
 
@@ -51,8 +52,8 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
 
 ### Positioning & Visibility
 
-- **`agent.show()`**: Plays the "Showing" animation and makes the agent visible.
-- **`agent.hide()`**: Plays the "Hiding" animation and hides the agent.
+- **`agent.show(animationName?)`**: Plays the "Showing" animation (or custom) and makes the agent visible.
+- **`agent.hide(animationName?)`**: Plays the "Hiding" animation (or custom) and hides the agent.
 - **`agent.moveTo(x, y, speed?)`**: Smoothly moves the agent to coordinates.
     - `x`, `y`: Target pixel coordinates.
     - `speed`: Pixels per second (default: 400).

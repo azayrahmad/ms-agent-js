@@ -392,35 +392,41 @@ export class StateManager {
    * Plays the intro/outro animation sequence and waits for it to complete.
    *
    * @param showing - True for intro/showing, False for outro/hiding.
+   * @param animationName - Optional custom animation to play instead of the default show/hide.
    */
-  public async handleVisibilityChange(showing: boolean): Promise<void> {
-    const visibilityState = showing ? 'Showing' : 'Hiding';
+  public async handleVisibilityChange(
+    showing: boolean,
+    animationName?: string
+  ): Promise<void> {
+    const visibilityState = showing ? "Showing" : "Hiding";
+    let animToPlay = "";
 
-    if (this.states[visibilityState]) {
-      const state = this.states[visibilityState];
-      if (state.animations.length > 0) {
-        const animName = state.animations[0];
+    if (animationName && (this.animationManager as any).animations[animationName]) {
+      animToPlay = animationName;
+    } else if (this.states[visibilityState] && this.states[visibilityState].animations.length > 0) {
+      animToPlay = this.states[visibilityState].animations[0];
+    }
 
-        // Ensure we are not paused while playing the intro/outro transition
-        this.isPaused = false;
+    if (animToPlay) {
+      // Ensure we are not paused while playing the intro/outro transition
+      this.isPaused = false;
 
-        // Start the animation and wait for its full completion
-        await this.animationManager.preloadAnimation(animName);
-        this.currentState = visibilityState;
-        // For intro/outro animations, we want them to play once to completion.
-        await this.animationManager.playAnimation(animName, true);
+      // Start the animation and wait for its full completion
+      await this.animationManager.preloadAnimation(animToPlay);
+      this.currentState = visibilityState;
+      // For intro/outro animations, we want them to play once to completion.
+      await this.animationManager.playAnimation(animToPlay, true);
 
-        // Transition to Hidden or Idling after animation finishes
-        if (showing) {
-            // Start idle progression but don't await the non-blocking return call
-            // to ensure the visibility request resolves promptly.
-            this.returnToIdle().catch(console.error);
-        } else {
-            this.currentState = 'Hidden';
-            this.isPaused = true;
-        }
-        return;
+      // Transition to Hidden or Idling after animation finishes
+      if (showing) {
+        // Start idle progression but don't await the non-blocking return call
+        // to ensure the visibility request resolves promptly.
+        this.returnToIdle().catch(console.error);
+      } else {
+        this.currentState = "Hidden";
+        this.isPaused = true;
       }
+      return;
     }
 
     // Fallback if no specific visibility state/animation exists
