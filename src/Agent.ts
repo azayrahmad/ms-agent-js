@@ -484,15 +484,22 @@ export class Agent {
    *
    * @param animationName - The name of the animation to play.
    * @param timeoutMs - Optional time limit for the animation playback.
+   * @param useExitBranch - Whether to take the exit branch immediately (default: true if no timeout).
    * @returns A request object to track the operation's progress.
    */
-  public play(animationName: string, timeoutMs?: number): AgentRequest {
+  public play(
+    animationName: string,
+    timeoutMs?: number,
+    useExitBranch?: boolean,
+  ): AgentRequest {
     return this.enqueueRequest(async (request) => {
       this.emit("animationStart", animationName);
+      // Default useExitBranch to true if no timeout is provided (play once to completion)
+      const shouldExit = useExitBranch ?? !timeoutMs;
       await this.stateManager.playAnimation(
         animationName,
         "Playing",
-        false,
+        shouldExit,
         timeoutMs,
       );
       if (!request.isCancelled) {

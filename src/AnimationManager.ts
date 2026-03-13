@@ -24,6 +24,8 @@ export class AnimationManager {
   private lastRenderedFrame: FrameDefinition | null = null;
   /** Whether the current animation is in the process of exiting via an exit branch. */
   private isExiting: boolean = false;
+  /** Whether the current animation should loop back to the beginning instead of finishing. */
+  private isLooping: boolean = false;
   /** Internal promise controls for the currently playing animation. */
   private animationPromise: { resolve: (val: boolean) => void; reject: (err: any) => void } | null = null;
   /** The promise for the active animation playback. */
@@ -48,6 +50,11 @@ export class AnimationManager {
   public set isExitingFlag(value: boolean) {
     const wasExiting = this.isExiting;
     this.isExiting = value;
+
+    // When we start exiting, we stop looping
+    if (value) {
+      this.isLooping = false;
+    }
 
     // If we just started exiting, and we are currently animating,
     // check if we can jump to an exit branch or break a loop immediately.
@@ -132,10 +139,12 @@ export class AnimationManager {
    *
    * @param animationName - The name of the animation to set.
    * @param useExitBranch - Whether to initialize the animation in an "exiting" state.
+   * @param loop - Whether the animation should loop back to frame 0 instead of completing.
    */
   public setAnimation(
     animationName: string,
     useExitBranch: boolean = false,
+    loop: boolean = false
   ): void {
     const animation = this.animations[animationName];
     if (animation) {
@@ -146,6 +155,7 @@ export class AnimationManager {
       this.lastFrameTime = performance.now();
       // Reset isExiting directly but call the setter to trigger immediate exit jumps if needed
       this.isExiting = false;
+      this.isLooping = loop;
 
       if (previousAnimation && previousAnimation !== animationName) {
         this.onAnimationCompleted?.(previousAnimation);
@@ -163,12 +173,17 @@ export class AnimationManager {
    *
    * @param animationName - The name of the animation to play.
    * @param useExitBranch - Whether to start in an "exiting" state.
+   * @param loop - Whether the animation should loop back to frame 0 instead of completing.
    * @returns A promise that resolves to true when the animation finishes.
    */
-  public async playAnimation(animationName: string, useExitBranch: boolean = false): Promise<boolean> {
+  public async playAnimation(
+    animationName: string,
+    useExitBranch: boolean = false,
+    loop: boolean = false
+  ): Promise<boolean> {
     this.activePromise = new Promise((resolve, reject) => {
       this.animationPromise = { resolve, reject };
-      this.setAnimation(animationName, useExitBranch);
+      this.setAnimation(animationName, useExitBranch, loop);
     });
     return this.activePromise;
   }
@@ -265,6 +280,10 @@ export class AnimationManager {
     } else {
       // Normal completion when we loop back to the first frame sequentially
       if (!isBranch && nextFrameIndex === 0 && this.animationPromise) {
+        if (this.isLooping) {
+          // Instead of completing, we just loop back (which nextFrameIndex 0 already does)
+          return false;
+        }
         this.completeAnimation();
         return true;
       }
@@ -328,14 +347,16 @@ export class AnimationManager {
    *
    * @param newAnimationName - The name of the animation to start.
    * @param useExitBranch - Whether the new animation should start in an exiting state.
+   * @param loop - Whether the new animation should loop.
    * @returns A promise that resolves when the *new* animation finishes.
    */
   public async interruptAndPlayAnimation(
     newAnimationName: string,
     useExitBranch: boolean = false,
+    loop: boolean = false
   ): Promise<boolean> {
     if (!this.isAnimating) {
-      return this.playAnimation(newAnimationName, useExitBranch);
+      return this.playAnimation(newAnimationName, useExitBranch, loop);
     }
 
     // If there is no promise to wait for (e.g. started via setAnimation/Idling),
@@ -355,7 +376,7 @@ export class AnimationManager {
     }
 
     // Play the new animation
-    return this.playAnimation(newAnimationName, useExitBranch);
+    return this.playAnimation(newAnimationName, useExitBranch, loop);
   }
 
   /**

@@ -8,6 +8,7 @@ async function initDemo() {
   const animationSelect = document.getElementById('animation-select') as HTMLSelectElement;
   const stateSelect = document.getElementById('state-select') as HTMLSelectElement;
   const playBtn = document.getElementById('play-btn') as HTMLButtonElement;
+  const play5sBtn = document.getElementById('play-5s-btn') as HTMLButtonElement;
   const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
   const visibilityBtn = document.getElementById('visibility-btn') as HTMLButtonElement;
   const speakBtn = document.getElementById('speak-btn') as HTMLButtonElement;
@@ -41,6 +42,7 @@ async function initDemo() {
     animationSelect.innerHTML = '';
     stateSelect.innerHTML = '';
     playBtn.disabled = true;
+    play5sBtn.disabled = true;
     randomBtn.disabled = true;
     visibilityBtn.disabled = true;
     speakBtn.disabled = true;
@@ -90,6 +92,7 @@ async function initDemo() {
       visibilityBtn.textContent = 'Hide';
 
       playBtn.disabled = false;
+      play5sBtn.disabled = false;
       randomBtn.disabled = false;
       visibilityBtn.disabled = false;
       speakBtn.disabled = false;
@@ -124,6 +127,10 @@ async function initDemo() {
   });
 
   playBtn.addEventListener('click', () => {
+    currentAgent?.play(animationSelect.value);
+  });
+
+  play5sBtn.addEventListener('click', () => {
     currentAgent?.play(animationSelect.value, 5000);
   });
 

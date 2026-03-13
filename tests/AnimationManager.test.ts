@@ -243,4 +243,39 @@ describe('AnimationManager', () => {
     animationManager.update(performance.now() + 400);
     expect(animationManager.isAnimating).toBe(false);
   });
+
+  it('should loop back to frame 0 if isLooping is true and no branching exists', async () => {
+    const anim: Animation = {
+      name: 'no-loop-branch',
+      transitionType: 0,
+      frames: [
+        { duration: 10, images: [] },
+        { duration: 10, images: [] },
+      ],
+    };
+    (animationManager as any).animations['no-loop-branch'] = anim;
+
+    const promise = animationManager.playAnimation('no-loop-branch', false, true);
+
+    // Advance through all frames
+    animationManager.update(performance.now() + 100);
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+
+    // This update would normally complete the animation, but isLooping is true
+    animationManager.update(performance.now() + 200);
+
+    // Should have looped back to frame 0
+    expect(animationManager.currentFrameIndexValue).toBe(0);
+    expect(animationManager.isAnimating).toBe(true);
+
+    // Now set exiting
+    animationManager.isExitingFlag = true;
+
+    // Advance to end
+    animationManager.update(performance.now() + 300);
+    animationManager.update(performance.now() + 400);
+
+    await expect(promise).resolves.toBe(true);
+    expect(animationManager.isAnimating).toBe(false);
+  });
 });

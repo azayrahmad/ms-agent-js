@@ -98,14 +98,20 @@ describe('Agent Integration', () => {
     });
 
     it('should allow waiting for a previous request', async () => {
+        // Mock playAnimation BEFORE loading the agent to catch any initial show/idle animations
+        let resolveAnim: any;
+        const animPromise = new Promise<boolean>(resolve => { resolveAnim = resolve; });
+        const playSpy = vi.spyOn(AnimationManager.prototype, 'playAnimation').mockReturnValue(animPromise as any);
+
         const agent = await Agent.load('Clippit');
 
-        // Mock animation completion
-        vi.spyOn(AnimationManager.prototype, 'playAnimation').mockResolvedValue(true);
+        // Clear any initial requests if they happened
+        agent.stop();
+        playSpy.mockClear();
 
         const req1 = agent.play('A');
-        // Ensure req1 task has started
-        await new Promise(resolve => setTimeout(resolve, 0));
+        // Ensure req1 task has started and is blocked on our animPromise
+        await new Promise(resolve => setTimeout(resolve, 50));
 
         const req2 = agent.wait(req1);
         const req3 = agent.play('B');
@@ -115,7 +121,7 @@ describe('Agent Integration', () => {
         expect(req3.status).toBe(RequestStatus.Pending);
 
         // Complete req1
-        (agent.animationManager as any).completeAnimation();
+        resolveAnim(true);
         await req1;
         // Wait for queue to process next
         await new Promise(resolve => setTimeout(resolve, 10));
