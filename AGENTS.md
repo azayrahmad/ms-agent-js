@@ -1,14 +1,12 @@
-# MSAgentJS Developer & AI Agent Guide
+# MSAgentJS AI Agent & Developer Guide
 
-Welcome, developer (or AI agent)! This document provides a technical deep-dive into the internal workings of **MSAgentJS**. Use this to understand the architecture, contribute to the project, or guide your development when extending the library.
+Welcome! This document provides a technical deep-dive into the internal workings of **MSAgentJS**. It is designed for human developers and AI agents who are modifying, forking, or extending the library.
 
 ---
 
 ## 🏗 System Architecture
 
-The library follows a modular manager-based architecture. The central `Agent` class acts as a coordinator for several specialized managers.
-
-### Component Overview
+The library follows a modular manager-based architecture. The central `Agent` class acts as a coordinator.
 
 ```mermaid
 graph TD
@@ -39,122 +37,58 @@ graph TD
 
 | Manager | Responsibility |
 | --- | --- |
-| **`Agent`** | Entry point, coordinates the `requestAnimationFrame` loop, and manages the Shadow DOM container. |
-| **`CharacterParser`** | Translates legacy `.acd` text files or optimized `agent.json` into a structured `AgentCharacterDefinition`. |
-| **`SpriteManager`** | Handles bitmap loading, transparency injection (for indexed BMPs), and texture atlas coordinate mapping. |
-| **`AnimationManager`** | Low-level frame-by-frame timing, probabilistic branching, and "exit branch" handling for interruptions. |
-| **`StateManager`** | High-level behavioral logic. Manages transitions between "Persistent" states (Idling) and "Transient" states (Showing, Playing). |
-| **`AudioManager`** | Audio spritesheet management and custom decoding for 4-bit MS ADPCM WAV files. |
-| **`Balloon`** | Procedural SVG speech bubble rendering, dynamic tip positioning, and character-by-character typing sync. |
-| **`RequestQueue`** | Asynchronous task management, ensuring API calls (speak, play, move) are executed sequentially. |
+| **`Agent`** | Entry point, coordinates the `requestAnimationFrame` loop, and manages the Shadow DOM. |
+| **`CharacterParser`** | Translates `.acd` or `agent.json` into a structured `AgentCharacterDefinition`. |
+| **`SpriteManager`** | Handles bitmap loading and texture atlas mapping. |
+| **`AnimationManager`** | Low-level frame timing and probabilistic branching logic. |
+| **`StateManager`** | High-level behavioral logic (e.g., Idle boredom progression). |
+| **`AudioManager`** | Audio spritesheet management and legacy MS ADPCM decoding. |
+| **`Balloon`** | Procedural SVG speech bubble rendering with dynamic tip positioning. |
+| **`RequestQueue`** | Asynchronous task management for sequential action execution. |
 
 ---
 
 ## 🔄 Core Logic Flows
 
 ### 1. The Rendering Loop
-The `Agent` maintains a `requestAnimationFrame` loop that drives the entire system.
+The `Agent` maintains a `requestAnimationFrame` loop.
+1. `AnimationManager.update()`: Calculates frame advancement and processes "null frames" (duration 0).
+2. `StateManager.update()`: Monitors the queue; if empty, progresses Idle logic.
+3. `Agent.draw()`: Clears canvas and delegates to `SpriteManager.drawFrame()`.
 
-1.  **`AnimationManager.update(currentTime)`**:
-    - Calculates if the current frame duration has elapsed.
-    - Processes "null frames" (duration 0) immediately in a loop (up to 100 per tick).
-    - Handles branching logic (picking next frame based on probability).
-2.  **`StateManager.update(deltaTime)`**:
-    - Monitors the `RequestQueue`. If empty, it progresses "Idle" logic.
-    - Increments "boredom" levels to trigger more complex idle animations.
-3.  **`Agent.draw()`**:
-    - Clears the canvas.
-    - Calls `AnimationManager.draw(ctx)`, which delegates to `SpriteManager.drawFrame()`.
-
-### 2. Request Processing & Interruption
-MSAgentJS uses a "Chore" system inspired by the original Microsoft Agent.
-
-```mermaid
-sequenceDiagram
-    participant U as User/API
-    participant Q as RequestQueue
-    participant S as StateManager
-    participant A as AnimationManager
-
-    U->>Q: agent.play('Animation')
-    Q->>Q: Add to Queue
-    Q->>S: Process Task
-    S->>A: playAnimation()
-    A->>A: Set isAnimating = true
-    Note over A: Loop frames...
-    U->>Q: agent.stop()
-    Q->>A: Set isExitingFlag = true
-    A->>A: Jump to ExitBranch
-    A->>S: Animation Finished
-    S->>Q: Task Complete
-    Q->>Q: Process Next
-```
+### 2. Request Processing
+Actions (speak, play, etc.) are wrapped in `AgentRequest` objects and processed by the `RequestQueue`.
 
 ---
 
-## 📊 Data Structures
+## 👨‍💻 AI Operational Recipes
 
-The primary data contract is the `AgentCharacterDefinition` (see `src/types.ts`).
+As an AI agent working on this codebase, follow these common patterns:
 
-- **Frames**: Units of 10ms. A duration of `0` is a logic frame used for branching.
-- **Exit Branch**: A specific frame index to jump to when an animation is interrupted. Parity requires that animations eventually return to "Frame 0" (neutral).
-- **States**: Groups of animations. `IdlingLevel1`, `IdlingLevel2`, and `IdlingLevel3` are standard for boredom progression.
+### Recipe: Adding a New Manager
+1. Define the manager class in `src/`.
+2. Initialize it in the `Agent` constructor.
+3. If it needs to be updated every frame, call its `update(deltaTime)` method inside `Agent._loop`.
 
----
+### Recipe: Debugging the Frame Loop
+- The `AnimationManager` handles frame durations in units of 10ms (matching the original MS Agent spec).
+- If animations are too fast/slow, check the `speed` multiplier in `Agent` or the `duration` values in the `AgentCharacterDefinition`.
 
-## 🎨 Rendering Techniques
-
-### Shadow DOM Encapsulation
-The agent and its balloon are hosted inside a `ShadowRoot`. This ensures:
-- Styles from the host page do not "leak" into the agent.
-- The library's CSS (positioning, balloon shapes) doesn't break the user's layout.
-
-### Procedural SVG Balloons
-Balloons are not static images. They are drawn using SVG paths:
-- **Dynamic Sizing**: The balloon measures text and adjusts its width/height.
-- **Sliding Tip**: The "tail" of the balloon slides along the edges to always point exactly at the center of the agent, regardless of where the balloon is positioned relative to the screen boundaries.
-
-### MS ADPCM Decoding
-Legacy `.wav` files in Microsoft Agent use a proprietary 4-bit compression. `src/MSADPCMDecoder.ts` implements the step-adaptation algorithm to convert these into standard Web Audio buffers.
-
----
-
-## 🛠 Development Environment
-
-### Setup
-```bash
-npm install
-npm run dev # Starts Vite preview
-```
-
-### Optimization Script
-The `scripts/optimize-agent.ts` is a critical tool for developers. It:
-1.  Reads an `.acd` and associated `.bmp` and `.wav` files.
-2.  Stitches images into a WebP texture atlas.
-3.  Combines audio into a WebM spritesheet.
-4.  Outputs a compact `agent.json`.
-
----
-
-## 📝 Development Guidelines
-
-### Documentation Maintenance
-For every commit, ensure that relevant documentation (especially `DOCS.md` and `AGENTS.md`) is re-evaluated and updated if internal logic or public APIs have changed.
-
-### TypeScript Best Practices
-- **Strict Typing**: Avoid `any` whenever possible. Use strict interfaces for character definitions and manager states.
-- **Managers**: New features should be encapsulated in managers to keep the `Agent` coordinator clean.
-- **Async/Await**: Use modern async patterns for asset loading and request processing.
-
-### Commits & Releases
-This project uses **Conventional Commits** (e.g., `feat:`, `fix:`, `docs:`) for `release-please` compatibility.
-- Use `feat:` for new user-facing features.
-- Use `fix:` for bug fixes.
-- Use `chore:`, `refactor:`, or `docs:` for internal or documentation changes.
+### Recipe: Modifying Balloon Styles
+- The Balloon uses **Shadow DOM**. Styles are defined in `src/Balloon.ts` using a `<style>` tag.
+- Visual changes to the bubble shape should be made in the SVG path generation logic in `Balloon._updatePath`.
 
 ---
 
 ## 💡 Tips for AI Agents
-- **Path Normalization**: Always use lowercase filenames and forward slashes when referring to assets; the `CharacterParser` and `Agent.load` normalize these for cross-platform compatibility.
+
+- **Path Normalization**: Files in `public/agents/` often have inconsistent casing. Always use `CharacterParser.normalizePath()` when resolving asset URLs.
 - **Awaiting Requests**: API methods return `AgentRequest` objects which are "thenable". You can `await agent.play(...)` directly.
-- **JSDoc**: The codebase is heavily documented with JSDoc. When in doubt, read the interface definitions in `src/types.ts`.
+- **JSDoc**: The codebase is heavily documented. Use the `read_file` tool on `src/types.ts` to understand the primary data structures.
+- **Testing**: We use Vitest. Run `npm test` after changes. For visual changes, manual verification via `npm run dev` is recommended.
+
+---
+
+## 🔍 Further Reading
+- For user-facing API details, see **[docs/api-reference.md](./docs/api-reference.md)**.
+- For contribution guidelines, see **[CONTRIBUTING.md](./CONTRIBUTING.md)**.
