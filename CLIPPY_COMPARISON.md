@@ -22,31 +22,23 @@ This document provides a detailed comparison of the animation management and bra
     - `isExitingFlag`: When a stop or interruption occurs, the `AnimationManager` is flagged to transition the current animation to its "neutral" state via `exitBranch`.
 - **Implementation**: Modern TypeScript with a clean separation between the queueing logic (`RequestQueue.ts`) and the agent's high-level API.
 
-## 2. State Machine Logic
+## 2. Idle State & Boredom
 
 ### clippy.js
-- **Idle Handling**: When the queue becomes empty (`_onQueueEmpty`), the agent picks a random animation that starts with the name "Idle" and plays it.
-- **State Transition**: It distinguishes between an "Idle" animation and a "Chore" (queued action). It doesn't have a formal state machine beyond "is it idling or is it busy?".
-- **Callbacks**: Uses an `_endCallback` in the `Animator` to notify the `Agent` when an animation reaches its last frame, passing states like `WAITING` or `EXITED`.
+- **Trigger**: Idle behavior is triggered via `_onQueueEmpty` when the sequential queue becomes empty.
+- **Selection**: It randomly picks an animation whose name starts with "Idle" from the character's pool.
+- **Persistence**: It only triggers **once** per empty queue. If an idle animation finishes, the agent stays on the last frame until a new command is sent. It relies entirely on internal branching (probabilistic loops back to frame 0) defined in the character data to stay "alive."
+- **Boredom**: No concept of boredom levels. All idle animations are treated with equal weight.
+- **Interruption**: If a new command arrives while an idle is playing, it checks if the idle `Deferred` is pending and resolves it. However, it does **not** wait for an exit sequence; it often just snaps to the next chore.
 
 ### ms-agent-js
-- **Idle Handling**: Implements a structured `StateManager` with 3 levels of "boredom" (`IdlingLevel1` through `IdlingLevel3`).
-- **State Progression**: Boredom increases based on "ticks" (intervals of 5-10 seconds). Each level has its own pool of animations.
-- **Persistent vs. Transient States**:
-    - **Transient**: States like `Showing`, `Hiding`, and `Playing` (one-shot).
-    - **Persistent**: States like `Idling`, `Looking`, and `Gesturing` (looping/refreshing).
-- **Interruption Alignment**: The `StateManager` ensures that high-priority requests (Chores) correctly suppress idle behavior and that the agent returns to the appropriate idle level when the queue is clear.
+- **Trigger**: The `StateManager` runs a continuous `update` loop.
+- **Selection**: Actively manages state transitions between `IdlingLevel1`, `IdlingLevel2`, and `IdlingLevel3`.
+- **Persistence**: Continuous. When an idle animation completes, the `StateManager` immediately picks a new one from the current boredom level's pool, ensuring the agent is always moving.
+- **Boredom**: Implements a "Boredom" counter. After a set number of idle animations (ticks), the agent automatically progresses to the next level (e.g., Level 1 -> Level 2), which typically contains more complex or distracting animations.
+- **Interruption**: When a new request arrives, the `StateManager` identifies that the agent is "busy" and flags the current idle animation to exit via its `exitBranch`. This ensures the agent returns to a neutral pose before starting the requested action.
 
 ## 3. Animation Branching & Frame Traversal
-
-### High-Level API Comparison
-
-| Feature | clippy.js | ms-agent-js |
-|---------|-----------|-------------|
-| **Play Animation** | `agent.play(name, timeout, cb)` | `agent.play(name, timeoutMs)` (returns `AgentRequest`) |
-| **Random Animation**| `agent.animate()` | `stateManager.playRandomAnimation()` |
-| **Speak** | `agent.speak(text, hold)` | `agent.speak(text, options)` |
-| **Move** | `agent.moveTo(x, y, duration)` | `agent.moveTo(x, y, speed)` |
 
 ### Low-Level Branching Logic
 
@@ -73,13 +65,9 @@ This document provides a detailed comparison of the animation management and bra
 - **Speech**:
     - `clippy.js` is purely visual text in a balloon.
     - `ms-agent-js` integrates with the **Web Speech API (TTS)** by default, allowing the agent to actually speak aloud while the text is being typed.
-- **Fluidity**: `ms-agent-js` generally feels more fluid due to the `requestAnimationFrame` loop and instant null-frame processing, whereas `clippy.js` can occasionally feel "staccato" due to the overhead of many `setTimeout` calls and DOM manipulations for every frame.
+- **Fluidity**: `ms-agent-js` generally feels more fluid due to the `requestAnimationFrame` loop and instant null-frame processing.
 - **Scaling**: `ms-agent-js` supports arbitrary scaling via Canvas rendering, while `clippy.js` is fixed to the original sprite sizes unless manual CSS transforms are applied.
 
 ## 5. Summary
 
-While `clippy.js` was a pioneering implementation that successfully brought Microsoft Agent to the web using jQuery, `ms-agent-js` evolves the logic by:
-1.  **Modernizing the Loop**: Moving from `setTimeout` to `requestAnimationFrame` for smoother visuals.
-2.  **Optimizing Branching**: Truly instant logic-frame processing allows for more complex animation trees without visual lag.
-3.  **Formalizing States**: The boredom/idle progression system more accurately mirrors the "personality" of the original Windows assistants.
-4.  **Improving Orchestration**: Replacing callbacks with a Promise-based request queue makes it much easier for developers to build complex interactive sequences.
+While `clippy.js` brought the visual experience of Microsoft Agent to the web, `ms-agent-js` focuses on **logical parity**. The most significant difference lies in the `StateManager` and `AnimationManager` coordination: `ms-agent-js` treats the agent as a living entity with evolving boredom levels and graceful transitions, whereas `clippy.js` treats it as a sequential command processor that occasionally plays a random "Idle" animation to fill the silence.
