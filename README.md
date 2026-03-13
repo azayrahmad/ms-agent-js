@@ -1,6 +1,8 @@
-# MSAgentJS
+# 📎 MSAgentJS
 
-A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy to the web.
+A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy back to the web.
+
+This project is inspired by the original [clippy.js](https://github.com/clippyjs/clippy.js) and aims to provide a high-fidelity, extensible engine for digital assistants. It currently focuses on the **Office Assistants** featured in Microsoft Office 2000, with planned support for newer agent generations and formats.
 
 ## Features
 
@@ -88,7 +90,16 @@ public/
 ```
 
 ### Adding New Agents
-Microsoft Agent characters are traditionally distributed in `.acs` files. To use them with MSAgentJS, you must first decompile them.
+Microsoft Agent characters are traditionally distributed in `.acs` files.
+
+#### Where to get characters?
+- **Legacy Installations**: You can find original `.acs` files in your Windows installation if you have old versions of Microsoft Office installed (usually in `C:\Windows\Msagent\Chars`).
+- **Community Repositories**: You can download a wide variety of classic and custom characters from:
+    - [The Microsoft Agent Fan Expansion (TMAFE) - Classic Agents](https://tmafe.com/classic-ms-agents/)
+    - [TMAFE Download Center](https://tmafe.com/download-center)
+
+#### How to use them?
+To use these characters with MSAgentJS, you must first decompile them.
 
 1.  **Decompile:** Use a tool like [MS Agent Decompiler](http://www.lebeausoftware.org/software/decompile.aspx) to extract the contents of an `.acs` file.
 2.  **Organization:** Create a new folder in your project's `public/agents/` directory (e.g., `public/agents/Merlin`).
@@ -122,31 +133,16 @@ const agent = await Agent.load('Clippit', {
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | bottom-right | Initial coordinates of the agent. |
 
-## API Reference
+## API Summary
 
-### `Agent.load(name, options)`
-Static factory method to create and initialize an agent. Asynchronously loads character data and pre-warms caches.
+- **`Agent.load(name, options)`**: Static factory to initialize an agent.
+- **`agent.show()` / `agent.hide()`**: Visibility transitions with animations.
+- **`agent.speak(text, options)`**: Display speech with optional TTS.
+- **`agent.play(animation, options)`**: Play a specific animation.
+- **`agent.moveTo(x, y, speed)`**: Move agent across the screen.
+- **`agent.ask(options)`**: Interactive prompt with text input.
 
-### `agent.show()` / `agent.hide()`
-Shows or hides the agent using the character's 'Showing' and 'Hiding' animation sequences. Returns a promise that resolves when the transition finishes.
-
-### `agent.play(animationName, timeoutMs?)`
-Plays a specific animation and returns a promise that resolves upon completion.
-
-### `agent.speak(text, options?)`
-Displays a message in the speech balloon. Supports `useTTS: true` (default) for system speech.
-
-### `agent.ask(options?)`
-Opens a balloon with a title and textarea. Returns a promise that resolves to the user's string input.
-
-### `agent.lookAt(x, y)` / `agent.gestureAt(x, y)`
-Automatically picks the correct 4-way or 8-way directional animation to point towards the specified screen coordinates.
-
-### `agent.moveTo(x, y)`
-Instantly repositions the agent container.
-
-### `agent.destroy()`
-Cancels all loops, stops speech, and removes the agent from the DOM.
+For full API documentation, see **[DOCS.md](./DOCS.md)**.
 
 ## Events
 
@@ -157,6 +153,19 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `stateChange`: Fired when the high-level behavior state changes.
 - `dragstart` / `drag` / `dragend`: Fired during movement interactions.
 
-## License
+## 🗺 Roadmap
 
-MIT
+Current goals for full parity with the original Microsoft Agent implementation and modern enhancements:
+
+- [ ] **Mirroring**: Support for flipping character sprites horizontally.
+- [ ] **Advanced TTS & Lip-Sync**: Support for SAPI-style tags (e.g., `\Pau=500\`) and improved mouth movement animations (visemes) for newer agents like **Genie**.
+
+## 🤝 Credits
+
+- Inspired by the original **Microsoft Agent** technology and [clippy.js](https://github.com/clippyjs/clippy.js).
+- Architectural concepts and logic based on **TripleAgent** by [Calavera42](https://github.com/calavera42/TripleAgent).
+- Character assets are property of Microsoft Corporation (used here for nostalgia and educational purposes).
+
+## ⚖️ License
+
+[MIT License](./LICENSE). Agent characters belong to Microsoft Corporation.
