@@ -223,6 +223,11 @@ export class AudioManager {
             source.connect(ctx.destination);
             source.start(0);
         } else {
+            // Avoid duplicate playback for sounds already being loaded
+            if (this.loadingPromises.has(soundNameRaw) || this.loadingPromises.has(`${soundNameRaw}.wav`)) {
+                return;
+            }
+
             // Load on demand if not cached
             this.loadSounds([soundNameRaw]).then(() => {
                 if (this.audioAtlas && this.spritesheetBuffer) {

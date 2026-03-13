@@ -136,6 +136,9 @@ export class AnimationManager {
 
       this.isExitingFlag = useExitBranch;
 
+      // Play sound for the first frame if it has one
+      this.checkAndPlaySound(this.currentAnimation.frames[0]);
+
       // Use update(now) to handle potential null frames at the start
       this.update(this.lastFrameTime);
     }
@@ -186,7 +189,7 @@ export class AnimationManager {
       if (currentFrame.duration === 0) {
         const { index: nextIndex, isBranch } =
           this.getNextFrameDetails(currentFrame);
-        this.checkAndPlaySound(currentFrame);
+
         if (this.checkAnimationCompletion(currentFrame, nextIndex, isBranch))
           return;
 
@@ -211,7 +214,6 @@ export class AnimationManager {
       if (currentTime - this.lastFrameTime >= currentFrame.duration * 10) {
         const { index: nextIndex, isBranch } =
           this.getNextFrameDetails(currentFrame);
-        this.checkAndPlaySound(currentFrame);
 
         if (this.checkAnimationCompletion(currentFrame, nextIndex, isBranch)) {
           return;
