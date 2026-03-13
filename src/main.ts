@@ -111,6 +111,12 @@ async function initDemo() {
           currentAgent?.stateManager.playRandomAnimation();
       });
 
+      // Context menu event
+      currentAgent.on('contextmenu', (data) => {
+        console.log('Context menu triggered at', data.x, data.y);
+        currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
+      });
+
     } catch (error) {
       console.error('Failed to load agent:', error);
       dashState.textContent = 'Error';
