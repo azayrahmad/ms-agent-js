@@ -31,8 +31,14 @@ async function initDemo() {
 
   let currentAgent: Agent | null = null;
   let isVisible = true;
+  let loadAbortController: AbortController | null = null;
 
   async function loadAgent(name: string) {
+    if (loadAbortController) {
+      loadAbortController.abort();
+    }
+    loadAbortController = new AbortController();
+
     if (currentAgent) {
       await currentAgent.hide();
       currentAgent.destroy();
@@ -62,13 +68,68 @@ async function initDemo() {
     dashNextTick.textContent = '-';
     dashQueue.textContent = '-';
 
+    // Show Progress Window
+    const progressWindow = document.createElement('div');
+    progressWindow.className = 'window loading-window';
+    progressWindow.style.position = 'fixed';
+    progressWindow.style.left = '50%';
+    progressWindow.style.top = '50%';
+    progressWindow.style.transform = 'translate(-50%, -50%)';
+    progressWindow.style.width = '300px';
+    progressWindow.style.zIndex = '10000';
+    progressWindow.innerHTML = `
+      <div class="title-bar">
+        <div class="title-bar-text">Loading ${name}...</div>
+      </div>
+      <div class="window-body">
+        <p id="loading-status">Starting download...</p>
+        <div class="progress-indicator">
+          <span id="loading-progress-bar" class="progress-indicator-bar" style="width: 0%"></span>
+        </div>
+        <div class="field-row" style="justify-content: flex-end; margin-top: 10px;">
+          <button id="cancel-load-btn">Cancel</button>
+        </div>
+      </div>
+    `;
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.1)';
+    overlay.style.zIndex = '9999';
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(progressWindow);
+
+    const loadingStatus = progressWindow.querySelector('#loading-status') as HTMLParagraphElement;
+    const loadingProgressBar = progressWindow.querySelector('#loading-progress-bar') as HTMLSpanElement;
+    const cancelBtn = progressWindow.querySelector('#cancel-load-btn') as HTMLButtonElement;
+
+    cancelBtn.onclick = () => {
+      loadAbortController?.abort();
+    };
+
     try {
       const scale = parseFloat(scaleRange.value);
       const baseUrl = import.meta.env.BASE_URL;
       currentAgent = await Agent.load(name, {
         baseUrl: `${baseUrl}agents/${name}`,
         scale: scale,
-        useAudio: true
+        useAudio: true,
+        signal: loadAbortController.signal,
+        onProgress: (progress) => {
+          loadingStatus.textContent = `Downloading ${progress.filename}...`;
+          if (progress.total > 0) {
+            const percent = Math.round((progress.loaded / progress.total) * 100);
+            loadingProgressBar.style.width = `${percent}%`;
+          } else {
+            // Indeterminate if total is unknown
+            loadingProgressBar.classList.add('segmented');
+            loadingProgressBar.style.width = '100%';
+          }
+        }
       });
 
       // Populate animations
@@ -117,10 +178,19 @@ async function initDemo() {
         currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
       });
 
-    } catch (error) {
-      console.error('Failed to load agent:', error);
-      dashState.textContent = 'Error';
-      alert('Failed to load agent. See console for details.');
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.log('Agent loading cancelled');
+        dashState.textContent = 'Cancelled';
+      } else {
+        console.error('Failed to load agent:', error);
+        dashState.textContent = 'Error';
+        alert('Failed to load agent. See console for details.');
+      }
+    } finally {
+      document.body.removeChild(progressWindow);
+      document.body.removeChild(overlay);
+      loadAbortController = null;
     }
   }
 

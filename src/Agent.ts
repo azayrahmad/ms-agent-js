@@ -1,5 +1,6 @@
 import { CharacterParser } from "./CharacterParser";
 import { SpriteManager } from "./SpriteManager";
+import { fetchWithProgress } from "./utils";
 import { AnimationManager } from "./AnimationManager";
 import { AudioManager } from "./AudioManager";
 import { StateManager } from "./StateManager";
@@ -30,6 +31,14 @@ export interface AgentOptions {
   x?: number;
   /** Initial vertical position in pixels. */
   y?: number;
+  /** Callback for loading progress. */
+  onProgress?: (progress: {
+    loaded: number;
+    total: number;
+    filename: string;
+  }) => void;
+  /** AbortSignal to cancel loading. */
+  signal?: AbortSignal;
 }
 
 /** Valid event types emitted by the Agent. */
@@ -187,8 +196,14 @@ export class Agent {
     this.ctx = this.canvas.getContext("2d")!;
 
     // Initialize Managers
-    this.spriteManager = new SpriteManager(options.baseUrl, definition);
-    this.audioManager = new AudioManager(options.baseUrl);
+    this.spriteManager = new SpriteManager(options.baseUrl, definition, {
+      signal: options.signal,
+      onProgress: options.onProgress,
+    });
+    this.audioManager = new AudioManager(options.baseUrl, {
+      signal: options.signal,
+      onProgress: options.onProgress,
+    });
     this.audioManager.setEnabled(options.useAudio);
     if (definition.audioAtlas) {
       this.audioManager.setAudioAtlas(definition.audioAtlas);
@@ -394,27 +409,38 @@ export class Agent {
 
     try {
       // Prioritize optimized agent.json (atlas-based)
-      const response = await fetch(`${baseUrl}/agent.json`);
+      const response = await fetchWithProgress(`${baseUrl}/agent.json`, {
+        signal: options.signal,
+        onProgress: options.onProgress,
+      });
       if (!response.ok) throw new Error("No agent.json");
       definition = await response.json();
     } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") throw e;
+
       // Fallback to legacy .acd format
       const acdPath = `${baseUrl}/${name.toUpperCase()}.acd`;
 
-      definition = await CharacterParser.load(acdPath).catch(async (err) => {
-        // Fallback to lowercase acd filename
-        try {
-          return await CharacterParser.load(
-            `${baseUrl}/${name.toLowerCase()}.acd`,
-          );
-        } catch (innerErr) {
-          console.error(
-            `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
-              `Please ensure the 'agents/' directory is correctly served and 'baseUrl' is correct.`,
-          );
-          throw err;
-        }
-      });
+      definition = await CharacterParser.load(acdPath, options.signal).catch(
+        async (err) => {
+          if (err instanceof Error && err.name === "AbortError") throw err;
+          // Fallback to lowercase acd filename
+          try {
+            return await CharacterParser.load(
+              `${baseUrl}/${name.toLowerCase()}.acd`,
+              options.signal,
+            );
+          } catch (innerErr) {
+            if (innerErr instanceof Error && innerErr.name === "AbortError")
+              throw innerErr;
+            console.error(
+              `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
+                `Please ensure the 'agents/' directory is correctly served and 'baseUrl' is correct.`,
+            );
+            throw err;
+          }
+        },
+      );
     }
 
     // Asset path normalization
@@ -449,6 +475,8 @@ export class Agent {
       idleIntervalMs: options.idleIntervalMs ?? 5000,
       useAudio: options.useAudio ?? true,
       fixed: options.fixed ?? true,
+      onProgress: options.onProgress || (() => {}),
+      signal: options.signal || new AbortController().signal,
       x:
         options.x ??
         window.innerWidth -

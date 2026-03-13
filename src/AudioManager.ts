@@ -1,5 +1,6 @@
 import { MSADPCMDecoder } from './MSADPCMDecoder';
 import type { AudioAtlasEntry } from './types';
+import { fetchWithProgress } from './utils';
 
 /**
  * AudioManager class for loading and playing agent sound effects.
@@ -25,13 +26,34 @@ export class AudioManager {
     private spritesheetBuffer: AudioBuffer | null = null;
     /** Promise tracking the spritesheet loading process. */
     private spritesheetLoadingPromise: Promise<void> | null = null;
+    /** Optional loading options. */
+    private options: {
+      signal?: AbortSignal;
+      onProgress?: (progress: {
+        loaded: number;
+        total: number;
+        filename: string;
+      }) => void;
+    };
 
     /**
      * @param baseUrl - The base URL where agent assets are located.
+     * @param options - Optional loading options.
      */
-    constructor(baseUrl: string) {
-        this.baseUrl = baseUrl.replace(/\/$/, '');
-        this.audioPath = `${this.baseUrl}/Audio`;
+    constructor(
+      baseUrl: string,
+      options: {
+        signal?: AbortSignal;
+        onProgress?: (progress: {
+          loaded: number;
+          total: number;
+          filename: string;
+        }) => void;
+      } = {},
+    ) {
+      this.baseUrl = baseUrl.replace(/\/$/, "");
+      this.audioPath = `${this.baseUrl}/Audio`;
+      this.options = options;
     }
 
     /**
@@ -104,7 +126,7 @@ export class AudioManager {
         const url = `${this.audioPath}/${normalizedFilename}`;
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, { signal: this.options.signal });
             if (!response.ok) {
                 console.warn(`Failed to load sound ${soundName}: ${response.statusText}`);
                 return;
@@ -147,7 +169,10 @@ export class AudioManager {
             const url = `${this.baseUrl}/agent.webm`;
 
             try {
-                const response = await fetch(url);
+                const response = await fetchWithProgress(url, {
+                  signal: this.options.signal,
+                  onProgress: this.options.onProgress,
+                });
                 if (!response.ok) {
                     console.warn(`Failed to load audio spritesheet: ${response.statusText}`);
                     return;
@@ -155,6 +180,7 @@ export class AudioManager {
                 const arrayBuffer = await response.arrayBuffer();
                 this.spritesheetBuffer = await ctx.decodeAudioData(arrayBuffer);
             } catch (error) {
+                if (error instanceof Error && error.name === 'AbortError') throw error;
                 console.error('Error loading audio spritesheet:', error);
             }
         })();
