@@ -12,6 +12,7 @@ async function initDemo() {
   const playLoopedBtn = document.getElementById('play-looped-btn') as HTMLButtonElement;
   const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
   const visibilityBtn = document.getElementById('visibility-btn') as HTMLButtonElement;
+  const exitBtn = document.getElementById('exit-btn') as HTMLButtonElement;
   const speakBtn = document.getElementById('speak-btn') as HTMLButtonElement;
   const askBtn = document.getElementById('ask-btn') as HTMLButtonElement;
   const speakTextInput = document.getElementById('speak-text') as HTMLInputElement;
@@ -34,8 +35,8 @@ async function initDemo() {
 
   async function loadAgent(name: string) {
     if (currentAgent) {
-      await currentAgent.hide();
       currentAgent.destroy();
+      currentAgent = null;
     }
 
     // Reset UI
@@ -47,6 +48,7 @@ async function initDemo() {
     playLoopedBtn.textContent = 'Play looped';
     randomBtn.disabled = true;
     visibilityBtn.disabled = true;
+    exitBtn.disabled = true;
     speakBtn.disabled = true;
     askBtn.disabled = true;
     gestureLeftBtn.disabled = true;
@@ -92,12 +94,14 @@ async function initDemo() {
 
       isVisible = true;
       visibilityBtn.textContent = 'Hide';
+      exitBtn.textContent = 'Exit';
 
       playBtn.disabled = false;
       play5sBtn.disabled = false;
       playLoopedBtn.disabled = false;
       randomBtn.disabled = false;
       visibilityBtn.disabled = false;
+      exitBtn.disabled = false;
       speakBtn.disabled = false;
       askBtn.disabled = false;
       gestureLeftBtn.disabled = false;
@@ -105,6 +109,13 @@ async function initDemo() {
       gestureUpBtn.disabled = false;
       gestureDownBtn.disabled = false;
       moveToMouseBtn.disabled = false;
+
+      // Greeting instead of show
+      if (currentAgent.hasAnimation('Greeting')) {
+        currentAgent.play('Greeting');
+      } else {
+        currentAgent.show();
+      }
 
       // Click to play random animation
       currentAgent.on('click', () => {
@@ -179,14 +190,49 @@ async function initDemo() {
     isVisible = !isVisible;
 
     if (isVisible) {
-        await currentAgent.show();
-        visibilityBtn.textContent = 'Hide';
+      await currentAgent.show();
+      visibilityBtn.textContent = 'Hide';
     } else {
-        await currentAgent.hide();
-        visibilityBtn.textContent = 'Show';
+      await currentAgent.hide();
+      visibilityBtn.textContent = 'Show';
     }
 
     visibilityBtn.disabled = false;
+  });
+
+  exitBtn.addEventListener('click', async () => {
+    if (exitBtn.textContent === 'Initialize') {
+      loadAgent(agentSelect.value);
+      return;
+    }
+
+    if (!currentAgent) return;
+
+    exitBtn.disabled = true;
+    playBtn.disabled = true;
+    play5sBtn.disabled = true;
+    playLoopedBtn.disabled = true;
+    randomBtn.disabled = true;
+    visibilityBtn.disabled = true;
+    speakBtn.disabled = true;
+    askBtn.disabled = true;
+    gestureLeftBtn.disabled = true;
+    gestureRightBtn.disabled = true;
+    gestureUpBtn.disabled = true;
+    gestureDownBtn.disabled = true;
+    moveToMouseBtn.disabled = true;
+
+    if (currentAgent.hasAnimation('GoodBye')) {
+      await currentAgent.play('GoodBye');
+    } else {
+      await currentAgent.hide();
+    }
+
+    currentAgent.destroy();
+    currentAgent = null;
+
+    exitBtn.textContent = 'Initialize';
+    exitBtn.disabled = false;
   });
 
   speakBtn.addEventListener('click', () => {
