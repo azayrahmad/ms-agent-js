@@ -161,21 +161,21 @@ describe('Agent Directional Animations', () => {
         vi.spyOn(agent.stateManager, 'setState').mockResolvedValue(undefined);
     });
 
-    it('should use GesturingRight when gesturing at a point to the screen-left', async () => {
+    it('should use GestureRight when gesturing at a point to the screen-left', async () => {
         // Agent is at (500, 500) with size 100x100 -> Center is (550, 550)
         // Target (100, 550) is to the screen-left
         await agent.gestureAt(100, 550);
 
         // Screen-left should trigger Agent-Right
-        expect(agent.stateManager.setState).toHaveBeenCalledWith('GesturingRight');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('GestureRight', 'Playing', true, undefined, false);
     });
 
-    it('should use GesturingLeft when gesturing at a point to the screen-right', async () => {
+    it('should use GestureLeft when gesturing at a point to the screen-right', async () => {
         // Target (900, 550) is to the screen-right
         await agent.gestureAt(900, 550);
 
         // Screen-right should trigger Agent-Left
-        expect(agent.stateManager.setState).toHaveBeenCalledWith('GesturingLeft');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('GestureLeft', 'Playing', true, undefined, false);
     });
 
     it('should use LookRight when looking at a point to the screen-left', async () => {

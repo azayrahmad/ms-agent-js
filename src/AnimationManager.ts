@@ -33,6 +33,9 @@ export class AnimationManager {
   /** Default scaling factor (usually overwritten by the Agent's options). */
   private scale: number = 2;
 
+  private isPaused: boolean = false;
+  private pauseTime: number = 0;
+
   /**
    * The name of the animation currently being played.
    */
@@ -165,6 +168,25 @@ export class AnimationManager {
   }
 
   /**
+   * Pauses the animation playback.
+   */
+  public pause(): void {
+    if (this.isPaused) return;
+    this.isPaused = true;
+    this.pauseTime = performance.now();
+  }
+
+  /**
+   * Resumes the animation playback.
+   */
+  public resume(): void {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    const now = performance.now();
+    this.lastFrameTime += now - this.pauseTime;
+  }
+
+  /**
    * Updates the animation frame based on elapsed time.
    * This is called on every animation frame (e.g., from the Agent's main loop).
    * It handles frame timing, sound triggers, and instant "null frame" (logic frame) fast-forwarding.
@@ -172,6 +194,7 @@ export class AnimationManager {
    * @param currentTime - The current performance timestamp.
    */
   public update(currentTime: number = performance.now()): void {
+    if (this.isPaused) return;
     if (!this.currentAnimation || this.currentAnimation.frames.length === 0)
       return;
 

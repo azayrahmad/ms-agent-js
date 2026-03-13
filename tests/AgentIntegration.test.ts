@@ -132,7 +132,7 @@ describe('Agent Integration', () => {
         expect(req3.status).not.toBe(RequestStatus.Pending);
     });
 
-    it('should perform animated moveTo', async () => {
+    it('should perform animated moveTo (speed)', async () => {
         const agent = await Agent.load('Clippit');
         const setPosSpy = vi.spyOn(agent as any, 'setInstantPosition');
 
@@ -151,27 +151,26 @@ describe('Agent Integration', () => {
         (agent as any).options.x = 0;
         (agent as any).options.y = 0;
 
-        const req = agent.moveTo(500, 500, 1000); // 1000 px/s
+        const req = agent.moveTo(500, 500, 100); // 100 px/s (Speed)
 
         // Trigger task execution
         await new Promise(resolve => setTimeout(resolve, 10));
 
         expect(moveStep).toBeDefined();
 
-        // Advance halfway (Distance is sqrt(500^2 + 500^2) ≈ 707)
-        // Duration = 707 / 1000 = 0.707s = 707ms
-        now += 350;
+        // Distance = sqrt(500^2 + 500^2) ≈ 707.1
+        // Duration = 707.1 / 100 = 7.071s = 7071ms
+        now += 3535; // halfway
         moveStep(now);
 
         expect(setPosSpy).toHaveBeenCalled();
         const lastPos = setPosSpy.mock.calls[setPosSpy.mock.calls.length - 1];
-        // progress = 350 / 707.1 ≈ 0.495
-        // expected x ≈ 0 + 500 * 0.495 ≈ 247.5
-        expect(lastPos[0]).toBeGreaterThan(200);
-        expect(lastPos[0]).toBeLessThan(300);
+        // expected x ≈ 250
+        expect(lastPos[0]).toBeGreaterThan(240);
+        expect(lastPos[0]).toBeLessThan(260);
 
         // Finish
-        now += 1000;
+        now += 10000;
         moveStep(now);
         await req;
         expect(agent.options.x).toBe(500);

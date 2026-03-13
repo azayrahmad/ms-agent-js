@@ -483,17 +483,32 @@ export class Agent {
    * Plays a specific animation.
    *
    * @param animationName - The name of the animation to play.
-   * @param timeoutMs - Optional time limit for the animation playback.
-   * @param useExitBranch - Whether to take the exit branch immediately (default: true if no timeout/loop).
+   * @param timeoutMsOrCallback - Optional time limit for the animation playback OR a callback for clippy.js parity.
+   * @param useExitBranchOrCallback - Whether to take the exit branch immediately (default: true if no timeout/loop). OR a callback for clippy.js parity.
    * @param loop - Whether to loop the animation indefinitely.
    * @returns A request object to track the operation's progress.
    */
   public play(
     animationName: string,
-    timeoutMs?: number,
-    useExitBranch?: boolean,
+    timeoutMsOrCallback?: number | ((name: string, state: string) => void),
+    useExitBranchOrCallback?: boolean | ((name: string, state: string) => void),
     loop: boolean = false,
   ): AgentRequest {
+    const timeoutMs =
+      typeof timeoutMsOrCallback === "number"
+        ? timeoutMsOrCallback
+        : undefined;
+    let useExitBranch =
+      typeof useExitBranchOrCallback === "boolean"
+        ? useExitBranchOrCallback
+        : undefined;
+    const callback =
+      typeof timeoutMsOrCallback === "function"
+        ? timeoutMsOrCallback
+        : typeof useExitBranchOrCallback === "function"
+          ? useExitBranchOrCallback
+          : undefined;
+
     return this.enqueueRequest(async (request) => {
       this.emit("animationStart", animationName);
       // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
@@ -507,6 +522,7 @@ export class Agent {
       );
       if (!request.isCancelled) {
         this.emit("animationEnd", animationName);
+        if (callback) callback(animationName, "EXITED");
       }
     });
   }
@@ -520,19 +536,11 @@ export class Agent {
    * @returns A request object to track the operation's progress.
    */
   public gestureAt(x: number, y: number): AgentRequest {
-    return this.enqueueRequest(async (_request) => {
-      const direction = this.toAgentPerspective(this.getDirection(x, y, 4));
-      const stateName = `Gesturing${direction}`;
-      if (this.definition.states[stateName]) {
-        await this.stateManager.setState(stateName);
-      } else {
-        // Fallback to direct animation if the high-level state is missing
-        const animName = `Gesture${direction}`;
-        if (this.definition.animations[animName]) {
-          await this.stateManager.playAnimation(animName, "Gesturing");
-        }
-      }
-    });
+    const direction = this.toAgentPerspective(this.getDirection(x, y, 4));
+    const gAnim = `Gesture${direction}`;
+    const lookAnim = `Look${direction}`;
+    const animation = this.hasAnimation(gAnim) ? gAnim : lookAnim;
+    return this.play(animation);
   }
 
   /**
@@ -581,10 +589,14 @@ export class Agent {
    *
    * @param x - New horizontal position.
    * @param y - New vertical position.
-   * @param speed - Pixels per second (default: 400).
+   * @param speedOrDuration - Pixels per second (default: 400) or duration in ms.
    * @returns A request object to track the movement.
    */
-  public moveTo(x: number, y: number, speed: number = 400): AgentRequest {
+  public moveTo(
+    x: number,
+    y: number,
+    speedOrDuration: number = 400,
+  ): AgentRequest {
     return this.enqueueRequest(async (request) => {
       const startX = this.options.x;
       const startY = this.options.y;
@@ -597,7 +609,18 @@ export class Agent {
         return;
       }
 
-      const duration = (distance / speed) * 1000;
+      // If speedOrDuration > 100, assume it's duration (clippy.js style), otherwise speed (px/s).
+      // Note: This heuristic means speeds > 100 px/s are treated as durations (very fast movements).
+      const duration =
+        speedOrDuration > 100
+          ? speedOrDuration
+          : (distance / speedOrDuration) * 1000;
+
+      if (duration === 0) {
+        this.setInstantPosition(x, y);
+        return;
+      }
+
       const startTime = performance.now();
 
       const direction4 = this.getDirection(x, y, 4);
@@ -691,21 +714,48 @@ export class Agent {
    * Makes the agent speak the given text using the speech balloon.
    *
    * @param text - The message to display.
-   * @param options - Speech options (hold balloon, use TTS, skip typing animation).
+   * @param optionsOrCallback - Speech options (hold balloon, use TTS, skip typing animation) or a callback or hold boolean for clippy.js parity.
+   * @param holdForCompat - Optional hold parameter for clippy.js parity.
    * @returns A request object to track the operation's progress.
    */
   public speak(
     text: string,
-    options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
+    optionsOrCallback:
+      | { hold?: boolean; useTTS?: boolean; skipTyping?: boolean }
+      | ((...args: any[]) => void)
+      | boolean = {},
+    holdForCompat?: boolean,
   ): AgentRequest {
-    const { hold = false, useTTS = true, skipTyping = false } = options;
+    const callback =
+      typeof optionsOrCallback === "function" ? optionsOrCallback : undefined;
+
+    let hold = false;
+    let useTTS = true;
+    let skipTyping = false;
+
+    if (typeof optionsOrCallback === "boolean") {
+      hold = optionsOrCallback;
+    } else if (typeof optionsOrCallback === "object") {
+      hold = optionsOrCallback.hold ?? false;
+      useTTS = optionsOrCallback.useTTS ?? true;
+      skipTyping = optionsOrCallback.skipTyping ?? false;
+    }
+
+    if (holdForCompat !== undefined) {
+      hold = holdForCompat;
+    }
+
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) {
         return;
       }
       this.startTalkingAnimation();
       return new Promise((resolve) => {
-        this.balloon.speak(resolve, text, hold, useTTS, skipTyping);
+        const wrapComplete = () => {
+          if (callback) callback();
+          resolve();
+        };
+        this.balloon.speak(wrapComplete, text, hold, useTTS, skipTyping);
       });
     });
   }
@@ -901,11 +951,17 @@ export class Agent {
   /**
    * Shows the agent by playing its 'Showing' animation sequence.
    *
+   * @param fast - If true, appears instantly without animation.
    * @returns A request object to track the operation's progress.
    */
-  public show(): AgentRequest {
+  public show(fast: boolean = false): AgentRequest {
     return this.enqueueRequest(async (request) => {
       this.container.style.display = "block";
+      if (fast) {
+        this.stateManager.resume();
+        this.emit("show");
+        return;
+      }
       await this.stateManager.handleVisibilityChange(true);
       if (!request.isCancelled) {
         this.emit("show");
@@ -916,13 +972,24 @@ export class Agent {
   /**
    * Hides the agent by playing its 'Hiding' animation sequence.
    *
+   * @param fast - If true, disappears instantly without animation.
+   * @param callback - Optional callback for clippy.js parity.
    * @returns A request object to track the operation's progress.
    */
-  public hide(): AgentRequest {
+  public hide(fast: boolean = false, callback?: () => void): AgentRequest {
     return this.enqueueRequest(async (request) => {
+      if (fast) {
+        this.stop();
+        this.pause();
+        this.container.style.display = "none";
+        if (callback) callback();
+        this.emit("hide");
+        return;
+      }
       await this.stateManager.handleVisibilityChange(false);
       if (!request.isCancelled) {
         this.container.style.display = "none";
+        if (callback) callback();
         this.emit("hide");
       }
     });
@@ -988,6 +1055,91 @@ export class Agent {
       }
       this.balloon.close();
     }
+  }
+
+  /**
+   * Skips the current animation/action in the queue.
+   */
+  public stopCurrent() {
+    const activeId = this.requestQueue.activeRequestId;
+    if (activeId !== null) {
+      this.requestQueue.stop(activeId);
+      if (this.animationManager.isAnimating) {
+        this.animationManager.isExitingFlag = true;
+      }
+      this.balloon.close();
+    }
+  }
+
+  /**
+   * Returns a list of all available animation names.
+   */
+  public animations(): string[] {
+    return Object.keys(this.definition.animations);
+  }
+
+  /**
+   * Returns true if the specified animation exists.
+   */
+  public hasAnimation(name: string): boolean {
+    return !!this.definition.animations[name];
+  }
+
+  /**
+   * Plays a random animation (excluding idle animations).
+   */
+  public animate(): AgentRequest {
+    const anims = this.animations().filter((name) => !name.startsWith("Idle"));
+    const randomAnim = anims[Math.floor(Math.random() * anims.length)];
+    return this.play(randomAnim);
+  }
+
+  /**
+   * Adds a delay to the action queue.
+   */
+  public delay(ms: number = 250): AgentRequest {
+    return this.enqueueRequest(
+      () => new Promise((resolve) => setTimeout(resolve, ms)),
+    );
+  }
+
+  /**
+   * Pauses all agent activity.
+   */
+  public pause() {
+    this.animationManager.pause();
+    this.balloon.pause();
+  }
+
+  /**
+   * Resumes all agent activity.
+   */
+  public resume() {
+    this.animationManager.resume();
+    this.balloon.resume();
+  }
+
+  /**
+   * Closes the speech balloon instantly.
+   */
+  public closeBalloon() {
+    this.balloon.close();
+  }
+
+  /**
+   * Forces the agent and balloon to reposition within the viewport.
+   */
+  public reposition() {
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+
+    let nx = this.options.x;
+    let ny = this.options.y;
+
+    nx = Math.max(0, Math.min(nx, window.innerWidth - width));
+    ny = Math.max(0, Math.min(ny, window.innerHeight - height));
+
+    this.setInstantPosition(nx, ny);
   }
 
   /**

@@ -345,6 +345,16 @@ export class StateManager {
   }
 
   /**
+   * Resumes the state machine.
+   */
+  public resume(): void {
+    if (this.currentState === "Hidden") {
+      this.returnToIdle();
+    }
+    this.isPaused = false;
+  }
+
+  /**
    * Returns the agent to the base IdlingLevel1 state and resets all timers.
    */
   private async returnToIdle(): Promise<void> {
