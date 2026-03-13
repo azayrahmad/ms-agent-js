@@ -122,31 +122,16 @@ const agent = await Agent.load('Clippit', {
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | bottom-right | Initial coordinates of the agent. |
 
-## API Reference
+## API Summary
 
-### `Agent.load(name, options)`
-Static factory method to create and initialize an agent. Asynchronously loads character data and pre-warms caches.
+- **`Agent.load(name, options)`**: Static factory to initialize an agent.
+- **`agent.show()` / `agent.hide()`**: Visibility transitions with animations.
+- **`agent.speak(text, options)`**: Display speech with optional TTS.
+- **`agent.play(animation, options)`**: Play a specific animation.
+- **`agent.moveTo(x, y, speed)`**: Move agent across the screen.
+- **`agent.ask(options)`**: Interactive prompt with text input.
 
-### `agent.show()` / `agent.hide()`
-Shows or hides the agent using the character's 'Showing' and 'Hiding' animation sequences. Returns a promise that resolves when the transition finishes.
-
-### `agent.play(animationName, timeoutMs?)`
-Plays a specific animation and returns a promise that resolves upon completion.
-
-### `agent.speak(text, options?)`
-Displays a message in the speech balloon. Supports `useTTS: true` (default) for system speech.
-
-### `agent.ask(options?)`
-Opens a balloon with a title and textarea. Returns a promise that resolves to the user's string input.
-
-### `agent.lookAt(x, y)` / `agent.gestureAt(x, y)`
-Automatically picks the correct 4-way or 8-way directional animation to point towards the specified screen coordinates.
-
-### `agent.moveTo(x, y)`
-Instantly repositions the agent container.
-
-### `agent.destroy()`
-Cancels all loops, stops speech, and removes the agent from the DOM.
+For full API documentation, see **[DOCS.md](./DOCS.md)**.
 
 ## Events
 
@@ -156,6 +141,23 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `animationStart` / `animationEnd`: Fired when a play request starts/finishes.
 - `stateChange`: Fired when the high-level behavior state changes.
 - `dragstart` / `drag` / `dragend`: Fired during movement interactions.
+
+## 🗺 Roadmap
+
+Current goals for full parity with the original Microsoft Agent implementation:
+
+- [ ] **Speech Recognition**: Voice command support via Web Speech API.
+- [ ] **Commands Window**: Dedicated UI for selecting manual or voice commands.
+- [ ] **Context Menus**: Right-click menus for agent interaction.
+- [ ] **Mirroring**: Support for flipping character sprites horizontally.
+- [ ] **Advanced TTS Tags**: Support for SAPI-style tags (e.g., `\Pau=500\`) in `speak()`.
+- [ ] **Move-Animations**: Better integration of movement with "Moving" state animations.
+
+## 🤝 Credits
+
+- Inspired by the original **Microsoft Agent** technology.
+- Architectural concepts and logic based on **TripleAgent** by [Calavera42](https://github.com/calavera42/TripleAgent).
+- Character assets are property of Microsoft Corporation (used here for nostalgia and educational purposes).
 
 ## License
 
