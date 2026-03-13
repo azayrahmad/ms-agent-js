@@ -88,7 +88,16 @@ public/
 ```
 
 ### Adding New Agents
-Microsoft Agent characters are traditionally distributed in `.acs` files. To use them with MSAgentJS, you must first decompile them.
+Microsoft Agent characters are traditionally distributed in `.acs` files.
+
+#### Where to get characters?
+- **Legacy Installations**: You can find original `.acs` files in your Windows installation if you have old versions of Microsoft Office installed (usually in `C:\Windows\Msagent\Chars`).
+- **Community Repositories**: You can download a wide variety of classic and custom characters from:
+    - [The Microsoft Agent Fan Expansion (TMAFE) - Classic Agents](https://tmafe.com/classic-ms-agents/)
+    - [TMAFE Download Center](https://tmafe.com/download-center)
+
+#### How to use them?
+To use these characters with MSAgentJS, you must first decompile them.
 
 1.  **Decompile:** Use a tool like [MS Agent Decompiler](http://www.lebeausoftware.org/software/decompile.aspx) to extract the contents of an `.acs` file.
 2.  **Organization:** Create a new folder in your project's `public/agents/` directory (e.g., `public/agents/Merlin`).

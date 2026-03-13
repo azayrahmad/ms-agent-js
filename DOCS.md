@@ -53,20 +53,33 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
 
 - **`agent.show()`**: Plays the "Showing" animation and makes the agent visible.
 - **`agent.hide()`**: Plays the "Hiding" animation and hides the agent.
-- **`agent.moveTo(x, y, speed?)`**: Smoothly moves the agent to coordinates. Plays "Moving" animations if available.
+- **`agent.moveTo(x, y, speed?)`**: Smoothly moves the agent to coordinates.
+    - `x`, `y`: Target pixel coordinates.
+    - `speed`: Pixels per second (default: 400).
 - **`agent.setScale(scale)`**: Dynamically changes the agent's size.
+    - `scale`: Numeric factor (1.0 = 100%).
 
 ### Animations & Behavior
 
 - **`agent.play(animationName, options?)`**: Plays a specific animation by name.
+    - `timeoutMs`: Max duration for the animation.
+    - `useExitBranch`: If true, plays the "return to neutral" sequence at the end (default: true).
+    - `loop`: If true, loops the animation until stopped.
 - **`agent.gestureAt(x, y)`**: Points at a specific screen coordinate.
 - **`agent.lookAt(x, y)`**: Turns to look at a specific screen coordinate.
 - **`agent.setState(stateName)`**: Manually sets the high-level state (e.g., "IdlingLevel3").
 
 ### Interaction & Speech
 
-- **`agent.speak(text, options?)`**: Displays text in a balloon. Supports TTS (Text-to-Speech).
-- **`agent.ask(options?)`**: Opens an interactive dialog with a text input. Returns a `Promise<string | null>`.
+- **`agent.speak(text, options?)`**: Displays text in a balloon.
+    - `hold`: If true, balloon stays open after speech (default: false).
+    - `useTTS`: Enable/disable system speech for this request (default: true).
+    - `skipTyping`: Show all text instantly (default: false).
+- **`agent.ask(options?)`**: Opens an interactive dialog with a text input.
+    - `title`: Header text for the dialog.
+    - `placeholder`: Hint text for the textarea.
+    - `askButtonText` / `cancelButtonText`: Button labels.
+    - `timeout`: Auto-cancel after milliseconds.
 - **`agent.stop(request?)`**: Stops the current action or a specific request.
 - **`agent.wait(request)`**: Queues a wait command until the specified request completes.
 - **`agent.interrupt(animationName)`**: Stops all current actions and immediately plays the new animation.
