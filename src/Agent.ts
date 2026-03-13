@@ -600,18 +600,28 @@ export class Agent {
       const duration = (distance / speed) * 1000;
       const startTime = performance.now();
 
-      const direction = this.getDirection(x, y, 4);
-      const moveAnim = `Moving${direction}`;
-      const hasMoveAnim = !!this.definition.animations[moveAnim];
+      const direction4 = this.getDirection(x, y, 4);
+      const moveAnim = `Moving${direction4}`;
+      let activeAnim = "";
 
-      if (hasMoveAnim) {
-        this.stateManager.playAnimation(moveAnim, "Moving");
+      if (this.definition.animations[moveAnim]) {
+        activeAnim = moveAnim;
+      } else {
+        const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
+        const lookAnim = `Look${direction8}`;
+        if (this.definition.animations[lookAnim]) {
+          activeAnim = lookAnim;
+        }
+      }
+
+      if (activeAnim) {
+        this.stateManager.playAnimation(activeAnim, "Moving");
       }
 
       return new Promise<void>((resolve) => {
         const moveStep = (currentTime: number) => {
           if (request.isCancelled) {
-            if (hasMoveAnim) {
+            if (activeAnim) {
               this.stateManager.handleAnimationCompleted();
             }
             resolve();
@@ -628,7 +638,7 @@ export class Agent {
           if (progress < 1) {
             requestAnimationFrame(moveStep);
           } else {
-            if (hasMoveAnim) {
+            if (activeAnim) {
               this.stateManager.handleAnimationCompleted();
             }
             resolve();
