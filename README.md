@@ -1,4 +1,4 @@
-# MSAgentJS
+# 📎 MSAgentJS
 
 A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy back to the web.
 
@@ -159,9 +159,6 @@ Current goals for full parity with the original Microsoft Agent implementation a
 
 - [ ] **Mirroring**: Support for flipping character sprites horizontally.
 - [ ] **Advanced TTS & Lip-Sync**: Support for SAPI-style tags (e.g., `\Pau=500\`) and improved mouth movement animations (visemes) for newer agents like **Genie**.
-- [ ] **Speech Recognition**: Voice command support via Web Speech API.
-- [ ] **Context Menus**: Right-click menus for agent interaction.
-- [ ] **Move-Animations**: Better integration of movement with "Moving" state animations.
 
 ## 🤝 Credits
 
@@ -169,6 +166,6 @@ Current goals for full parity with the original Microsoft Agent implementation a
 - Architectural concepts and logic based on **TripleAgent** by [Calavera42](https://github.com/calavera42/TripleAgent).
 - Character assets are property of Microsoft Corporation (used here for nostalgia and educational purposes).
 
-## License
+## ⚖️ License
 
-MIT
+[MIT License](./LICENSE). Agent characters belong to Microsoft Corporation.
