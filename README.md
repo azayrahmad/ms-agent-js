@@ -1,8 +1,8 @@
 # 📎 MSAgentJS
 
-A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy back to the web.
+A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web.
 
-This project is inspired by the original [clippy.js](https://github.com/clippyjs/clippy.js) and aims to provide a high-fidelity, extensible engine for digital assistants. It currently focuses on the **Office Assistants** featured in Microsoft Office 2000, with planned support for newer agent generations and formats.
+This project is inspired by the original [clippy.js](https://github.com/clippyjs/clippy.js) and aims to provide a high-fidelity, extensible engine for digital assistants. It currently focuses on the Office Assistants featured in Microsoft Office 2000, with planned support for newer agent generations and formats.
 
 ## Features
 
