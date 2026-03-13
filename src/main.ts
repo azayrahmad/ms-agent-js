@@ -22,6 +22,14 @@ async function initDemo() {
   const gestureDownBtn = document.getElementById('gesture-down-btn') as HTMLButtonElement;
   const moveToMouseBtn = document.getElementById('move-to-mouse-btn') as HTMLButtonElement;
 
+  const animateBtn = document.getElementById('animate-btn') as HTMLButtonElement;
+  const delayBtn = document.getElementById('delay-btn') as HTMLButtonElement;
+  const repositionBtn = document.getElementById('reposition-btn') as HTMLButtonElement;
+  const stopCurrentBtn = document.getElementById('stop-current-btn') as HTMLButtonElement;
+  const stopAllBtn = document.getElementById('stop-all-btn') as HTMLButtonElement;
+  const pauseBtn = document.getElementById('pause-btn') as HTMLButtonElement;
+  const resumeBtn = document.getElementById('resume-btn') as HTMLButtonElement;
+
   const dashState = document.getElementById('dash-state')!;
   const dashAnim = document.getElementById('dash-anim')!;
   const dashFrame = document.getElementById('dash-frame')!;
@@ -54,6 +62,14 @@ async function initDemo() {
     gestureUpBtn.disabled = true;
     gestureDownBtn.disabled = true;
     moveToMouseBtn.disabled = true;
+
+    animateBtn.disabled = true;
+    delayBtn.disabled = true;
+    repositionBtn.disabled = true;
+    stopCurrentBtn.disabled = true;
+    stopAllBtn.disabled = true;
+    pauseBtn.disabled = true;
+    resumeBtn.disabled = true;
 
     dashState.textContent = 'Loading...';
     dashAnim.textContent = '-';
@@ -105,6 +121,14 @@ async function initDemo() {
       gestureUpBtn.disabled = false;
       gestureDownBtn.disabled = false;
       moveToMouseBtn.disabled = false;
+
+      animateBtn.disabled = false;
+      delayBtn.disabled = false;
+      repositionBtn.disabled = false;
+      stopCurrentBtn.disabled = false;
+      stopAllBtn.disabled = false;
+      pauseBtn.disabled = false;
+      resumeBtn.disabled = false;
 
       // Click to play random animation
       currentAgent.on('click', () => {
@@ -248,6 +272,36 @@ async function initDemo() {
     setTimeout(() => {
         window.addEventListener('mousedown', onMouseDown);
     }, 0);
+  });
+
+  animateBtn.addEventListener('click', () => {
+    currentAgent?.animate();
+  });
+
+  delayBtn.addEventListener('click', () => {
+    currentAgent?.speak('Starting delay...');
+    currentAgent?.delay(1000);
+    currentAgent?.speak('Delay finished!');
+  });
+
+  repositionBtn.addEventListener('click', () => {
+    currentAgent?.reposition();
+  });
+
+  stopCurrentBtn.addEventListener('click', () => {
+    currentAgent?.stopCurrent();
+  });
+
+  stopAllBtn.addEventListener('click', () => {
+    currentAgent?.stop();
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    currentAgent?.pause();
+  });
+
+  resumeBtn.addEventListener('click', () => {
+    currentAgent?.resume();
   });
 
   // Update Loop for Debug Info

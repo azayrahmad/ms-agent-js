@@ -4,6 +4,7 @@ A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm
 
 ## Features
 
+- **Clippy.js Compatibility:** Drop-in replacement for `clippy.js` with full API parity and a global `clippy` object.
 - **Shadow DOM Encapsulation:** Zero CSS leakage to your page. The agent and its balloon are isolated.
 - **Modern API:** Simple, promise-based API for animations, state transitions, and speech.
 - **Internal Loop:** Manages its own `requestAnimationFrame` loop.
@@ -20,29 +21,40 @@ npm install ms-agent-js
 
 ## Usage
 
-### Simple Example
+### Simple Example (Modern Promise-based)
 
 ```javascript
 import { Agent } from 'ms-agent-js';
 
 async function init() {
-  // Load the agent 'Clippit' (searches in current directory /agents/Clippit by default)
+  // Load the agent 'Clippit'
   const agent = await Agent.load('Clippit');
 
-  // Show the agent (plays the entry 'Showing' animation)
+  // Show the agent
   await agent.show();
 
   // Make the agent speak
   await agent.speak('Hello! I am your web assistant.');
 
-  // Play a specific animation by name
+  // Play an animation
   await agent.play('Greeting');
 
-  // Move the agent to a specific position
-  agent.moveTo(100, 100);
+  // Move the agent
+  await agent.moveTo(100, 100);
 }
 
 init();
+```
+
+### Legacy Example (Clippy.js Compatibility)
+
+```javascript
+// Works just like the original clippy.js
+clippy.load('Clippit', function(agent) {
+  agent.show();
+  agent.speak('Hello! I am back.');
+  agent.play('Greeting');
+});
 ```
 
 ### Advanced Interactions
