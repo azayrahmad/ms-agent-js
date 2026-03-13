@@ -48,38 +48,11 @@ export class AnimationManager {
   }
 
   public set isExitingFlag(value: boolean) {
-    const wasExiting = this._isExiting;
     this._isExiting = value;
 
     // When we start exiting, we stop looping
     if (value) {
       this.isLooping = false;
-    }
-
-    // If we just started exiting, and we are currently animating,
-    // check if we can jump to an exit branch or break a loop immediately.
-    if (value && !wasExiting && this.currentAnimation) {
-      const currentFrame = this.currentAnimation.frames[this.currentFrameIndex];
-      if (currentFrame) {
-        const { index: nextIndex, isBranch } =
-          this.getNextFrameDetails(currentFrame);
-
-        if (nextIndex !== null) {
-          const oldFrame = currentFrame;
-          this.currentFrameIndex = nextIndex;
-          this.lastFrameTime = performance.now();
-          this.onFrameChanged?.();
-          this.checkAndPlaySound(
-            this.currentAnimation.frames[this.currentFrameIndex],
-          );
-
-          if (this.checkAnimationCompletion(oldFrame, nextIndex, isBranch))
-            return;
-
-          // Also call update to handle potential null (logic) frames at the new position
-          this.update(this.lastFrameTime);
-        }
-      }
     }
   }
 

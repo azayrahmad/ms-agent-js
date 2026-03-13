@@ -129,9 +129,10 @@ export class StateManager {
         this.isPaused = true;
         return;
       } else if (this.currentState !== 'Hidden') {
-        // For other persistent states (e.g. "IdlingLevel1", "GesturingLeft"),
+        // For other persistent states (e.g. "GesturingLeft"),
         // we loop or pick a new random animation immediately to ensure no visual gaps.
-        if (!hasRequests) {
+        // For Idling states, we let the onTick handler manage the frequency of animations.
+        if (!hasRequests && !this.isIdleState(this.currentState)) {
           this.updateStateAnimation().catch(console.error);
         }
       }
@@ -169,11 +170,14 @@ export class StateManager {
       if (this.idleTickCount >= this.ticksPerLevel && this.currentIdleLevel < this.maxIdleLevel) {
         this.currentIdleLevel++;
         this.idleTickCount = 0;
+        // When increasing boredom level, we interrupt the current idle to show the more bored state
         this.setIdleState(this.currentIdleLevel).catch(console.error);
-      } else {
+      } else if (!this.animationManager.isAnimating) {
+        // Only start a new idle animation if the previous one has finished
         this.updateStateAnimation().catch(console.error);
       }
-    } else {
+    } else if (!this.animationManager.isAnimating) {
+      // Pick a new animation for other persistent states if they finished
       this.updateStateAnimation().catch(console.error);
     }
   }
@@ -193,7 +197,9 @@ export class StateManager {
     if (this.states[newState]) {
       this.currentState = newState;
       this.isPaused = false;
-      await this.updateStateAnimation();
+      // When explicitly setting idle level, we force a new animation
+      // to immediately reflect the level change (e.g., more bored).
+      await this.updateStateAnimation(true);
     }
   }
 
@@ -333,10 +339,14 @@ export class StateManager {
 
   /**
    * Picks a random animation from the current state's associated pool and plays it.
+   *
+   * @param force - If true, interrupts any current animation.
    */
-  private async updateStateAnimation(): Promise<void> {
+  private async updateStateAnimation(force: boolean = false): Promise<void> {
     const hasOtherRequests = this.requestQueue && this.requestQueue.length > 0;
     if (hasOtherRequests) return;
+
+    if (!force && this.animationManager.isAnimating) return;
 
     const state = this.states[this.currentState];
     if (state && state.animations.length > 0) {
