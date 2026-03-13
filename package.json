@@ -2,7 +2,7 @@
   "name": "ms-agent-js",
   "description": "A modern, TypeScript-based implementation of Microsoft Agent",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "author": "Microsoft Agent JS Contributors",
   "license": "MIT",

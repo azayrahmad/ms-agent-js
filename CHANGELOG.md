@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.1.0...v0.2.0) (2026-03-13)
+
+
+### Features
+
+* enable touch dragging and right-click context menu event ([bc2f698](https://github.com/azayrahmad/ms-agent-js/commit/bc2f69896644aaea961c83804b64af69257571df))
+
 ## 0.1.0 (2026-03-13)
 
 
