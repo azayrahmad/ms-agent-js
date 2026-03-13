@@ -116,12 +116,12 @@ export class StateManager {
       if (this.currentState === 'Playing' || this.currentState === 'Moving') {
         // After an explicit action finishes, we return to the base idling state.
         if (!hasRequests) {
-          await this.handleAnimationCompleted();
+          this.handleAnimationCompleted().catch(console.error);
         }
       } else if (this.currentState === 'Showing') {
         // After the intro animation completes, we transition to idling.
         if (!hasRequests) {
-          await this.returnToIdle();
+          this.returnToIdle().catch(console.error);
         }
       } else if (this.currentState === 'Hiding') {
         // After the outro animation completes, the agent is hidden and paused.
@@ -132,7 +132,7 @@ export class StateManager {
         // For other persistent states (e.g. "IdlingLevel1", "GesturingLeft"),
         // we loop or pick a new random animation immediately to ensure no visual gaps.
         if (!hasRequests) {
-          await this.updateStateAnimation();
+          this.updateStateAnimation().catch(console.error);
         }
       }
     }
@@ -154,7 +154,7 @@ export class StateManager {
     // Check if it's time for the next idle behavioral check
     if (this.elapsedSinceLastTick >= this.idleIntervalMs) {
       this.elapsedSinceLastTick = 0;
-      await this.onTick();
+      this.onTick().catch(console.error);
     }
   }
 
@@ -169,12 +169,12 @@ export class StateManager {
       if (this.idleTickCount >= this.ticksPerLevel && this.currentIdleLevel < this.maxIdleLevel) {
         this.currentIdleLevel++;
         this.idleTickCount = 0;
-        await this.setIdleState(this.currentIdleLevel);
+        this.setIdleState(this.currentIdleLevel).catch(console.error);
       } else {
-        await this.updateStateAnimation();
+        this.updateStateAnimation().catch(console.error);
       }
     } else {
-      await this.updateStateAnimation();
+      this.updateStateAnimation().catch(console.error);
     }
   }
 
@@ -192,6 +192,7 @@ export class StateManager {
     const newState = `${this.idlePrefix}${level}`;
     if (this.states[newState]) {
       this.currentState = newState;
+      this.isPaused = false;
       await this.updateStateAnimation();
     }
   }
@@ -213,6 +214,10 @@ export class StateManager {
     }
 
     this.currentState = stateName;
+
+    if (stateName !== 'Hidden') {
+      this.isPaused = false;
+    }
 
     if (stateName !== 'Playing') {
       await this.updateStateAnimation();
@@ -315,6 +320,7 @@ export class StateManager {
     this.currentIdleLevel = 1;
     this.idleTickCount = 0;
     this.elapsedSinceLastTick = 0;
+    this.isPaused = false;
   }
 
   /**
@@ -329,7 +335,7 @@ export class StateManager {
       const randomAnimation = state.animations[Math.floor(Math.random() * state.animations.length)];
       // We play the animation but don't AWAIT it here for persistent states,
       // as they should be interrupted easily and managed by the main loop.
-      await this.playAnimation(randomAnimation);
+      this.playAnimation(randomAnimation).catch(console.error);
     }
   }
 
@@ -361,7 +367,7 @@ export class StateManager {
         if (showing) {
             // Start idle progression but don't await the non-blocking return call
             // to ensure the visibility request resolves promptly.
-            void this.returnToIdle();
+            this.returnToIdle().catch(console.error);
         } else {
             this.currentState = 'Hidden';
             this.isPaused = true;
