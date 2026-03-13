@@ -1,61 +1,58 @@
-# ms-agent-js vs TripleAgent: Logic Comparison
+# ms-agent-js vs TripleAgent: Logic & Behavior Comparison
 
-This document compares the architectural and logical implementations of `ms-agent-js` (this library) and [TripleAgent](https://github.com/calavera42/TripleAgent) (C++ implementation).
+This document compares the internal behavioral logic of `ms-agent-js` and [TripleAgent](https://github.com/calavera42/TripleAgent) (C++ implementation), with a focus on their parity with the original Microsoft Agent (ActiveX) specification.
 
-## 1. Request Handling & Concurrency
+## 1. Request Handling & Queuing
 
-### ms-agent-js
-- **Architecture**: Promise-based with explicit interruption.
-- **Concurrency**: High-priority requests (user actions like `play`, `speak`) signal the current animation to interrupt by setting an `isExiting` flag. The system waits for the current animation to finish its `exitBranch` before starting the next one.
-- **Queueing**: Does not maintain a formal sequential queue of requests for the user; instead, it relies on `async/await` and interruption logic.
+### ms-agent-js (Current Implementation)
+- **Architecture**: Sequential `RequestQueue` with Promise-based orchestration.
+- **Behavior**: API calls like `play`, `moveTo`, and `gestureAt` return a `AgentRequest` and are processed one after another.
+- **Interruption**: High-priority user actions (like calling `agent.stop()` or `agent.interrupt()`) signal the `AnimationManager` to enter an `isExiting` state. This causes the current animation to jump to its `exitBranch` to return to a neutral pose before the next request in the queue begins.
+- **Parity**: Highly compliant. The use of a formal queue ensures that "Chores" (requested actions) don't overlap, matching the original Agent's serial execution model.
 
-### TripleAgent (Intended Design)
-- **Architecture**: Sequential Request Queue (`std::queue<Chore>`).
-- **Concurrency**: Implements a "Chore" system where requests are processed one after another. It uses a state machine (`Running`, `Stopping`, `Waiting`) to manage transitions between chores.
-- **Stack-based logic**: Uses a stack of running requests to handle nested or interrupted logic.
+### TripleAgent
+- **Architecture**: Chore-based state machine using a `std::queue<Chore>`.
+- **Behavior**: Processes chores sequentially. It uses a state machine (`Running`, `Stopping`, `Waiting`) to manage the transition between animations.
+- **Stack-based logic**: TripleAgent's design includes a stack for running requests, which theoretically allows for more complex "nested" interruptions than a flat queue.
 
-## 2. Animation System
+## 2. Animation System & Branching
 
-### Null Frames (Duration 0)
-- **TripleAgent**: Explicitly fast-forwards through frames with a duration of zero. These are treated as "logic frames" that can trigger branching or state changes without being rendered.
-- **ms-agent-js**: Currently handles frame durations in the `update` tick. If a frame has duration 0, it might still take at least one tick (16ms @ 60fps) unless explicitly fast-forwarded in a loop.
+### Logic Frames (Duration 0)
+- **Original Agent Standard**: Frames with duration 0 are "logic frames" used for branching or triggering sounds. They must be processed instantly without being displayed.
+- **TripleAgent**: Explicitly fast-forwards through duration 0 frames.
+- **ms-agent-js**: Implements an instant `while` loop in the `AnimationManager.update` tick. It can process up to 100 sequential logic frames in a single 16ms tick, ensuring the agent jumps to the correct branch without visual "hiccups."
 
-### Exit Branches
-- **TripleAgent**: Uses an `ExitFrameIndex` to jump to a specific frame when an animation is interrupted or completing. It supports special values like `-1` (next frame) and `-2` (completion).
-- **ms-agent-js**: Uses an `exitBranch` property on frames. When `isExiting` is true, the `AnimationManager` jumps to the frame index specified in `exitBranch`.
+### Exit Branching & Interruption
+- **Original Agent Standard**: When an animation is interrupted, it shouldn't just "snap" to the next one. It should follow an "exit path" (a series of frames) that leads back to the neutral position (Frame 0).
+- **TripleAgent**: Supports complex exit paths and uses special indices (like `-1` or `-2`) to signify specific completion behaviors.
+- **ms-agent-js**: Uses the `exitBranch` property defined in the character data. When `isExiting` is active, it prioritizes these branches. It also intelligently follows "forward" probabilistic branches that lead toward the end of the sequence to ensure a smooth return to neutral.
 
-### Speaking Frames
-- **TripleAgent**: Recognizes a quirk where the "speaking" frame (mouth movement) is often the last frame. It handles "jumps" to null frames to terminate animations correctly while maintaining the speaking state.
-- **ms-agent-js**: Synchronizes balloon typing with `SpeechSynthesis`. Animation mouth movement is handled by specific "Speaking" states or animations, but the logic is less "frame-FSM" centric than TripleAgent's theory.
-
-### Frame Buffering (Visibility)
-- **TripleAgent**: Maintains a `_lastValidFrame` property. If an update results in no active frame (e.g., between chores or at animation end), it continues to render the `_lastValidFrame` to prevent visual flickering or the agent disappearing. It also ensures logic frames (duration 0) are never displayed.
-- **ms-agent-js**: Implements a `lastRenderedFrame` buffer in `AnimationManager`. This ensures that even when an animation concludes, the agent remains visible at its final frame until the next animation begins. The `currentFrame` getter explicitly skips frames with duration 0.
+### Frame Buffering
+- **Behavior**: If an animation ends or is between frames, the agent should not disappear or flicker.
+- **TripleAgent**: Maintains a `_lastValidFrame` and ensures logic frames are never rendered.
+- **ms-agent-js**: Uses a `lastRenderedFrame` buffer. If the current frame is a logic frame (duration 0), it continues to display the last valid visual frame, maintaining visual continuity during complex branching.
 
 ## 3. State Management & Idles
 
-### ms-agent-js
-- **Idle Progression**: Manages 3 levels of idles (`IdlingLevel1` through `IdlingLevel3`).
-- **Transitions**: Distinguishes between **Transient** (one-shot) and **Persistent** (looping) states.
-    - `Showing`/`Hiding`/`Playing` are transient; they play once and automatically transition (e.g., `Showing` -> `Idling`).
-    - API calls like `agent.show()` and `agent.hide()` are **Promise-based** and await the full completion of these transient animations, ensuring entry/exit sequences are seen in full.
-    - `Idling`/`Gesturing`/`Looking` are persistent; they immediately refresh their animation upon completion to avoid visual gaps.
+### Idle Progression (Boredom)
+- **Original Agent Standard**: Agents have multiple levels of idle behavior. The longer they are ignored, the more "bored" (active/distracted) their animations become.
+- **TripleAgent**: Aims for a "frame-level FSM" where state transitions can be triggered by any frame change.
+- **ms-agent-js**: Uses a `StateManager` with 3 distinct "Boredom" levels. It tracks "idle ticks" and automatically progresses from `IdlingLevel1` through `IdlingLevel3`.
+- **Interruption Priority**: In `ms-agent-js`, background idle states are immediately interrupted by any new incoming request in the queue, ensuring the agent feels responsive to user input.
 
-### TripleAgent
-- **FSM Theory**: Aims for a "frame-level FSM" where every frame change can trigger a state transition, moving away from tying the animation system too closely to the request system.
+## 4. Comparison Summary
 
-## 4. Platform & Rendering
+| Feature | ms-agent-js | TripleAgent | Original Agent Parity |
+|---------|-------------|-------------|-----------------------|
+| **Queuing** | Promise-based Queue | std::queue / Stack | 🟢 High |
+| **Logic Frames** | Instant (Tick-loop) | Instant (Fast-forward) | 🟢 High |
+| **Branching** | Probabilistic | Probabilistic | 🟢 High |
+| **Exit Paths** | Exit Branches | Exit Indices / Special | 🟡 Medium/High |
+| **Idles** | 3-Level Progression | Frame-FSM (Planned) | 🟢 High |
 
-| Feature | ms-agent-js | TripleAgent |
-|---------|-------------|-------------|
-| **Language** | TypeScript / JavaScript | C++ / C |
-| **Rendering** | HTML5 Canvas | GDI+ / Platform-specific windows |
-| **Asset Format** | BMP/PNG Sprite Sheets + JSON/ACD | .ACS (Binary Agent Character Specification) |
-| **Audio** | Web Audio API / .wav / .mp3 | .wav (Windows API) |
-| **Speech** | SpeechSynthesis API (TTS) | Planned TTS integration |
+## 5. Summary of Recent Improvements in ms-agent-js
 
-## 5. Summary of Alignment Goals
-
-To align `ms-agent-js` closer to the intended design and quality of TripleAgent, the following logic updates are planned:
-1. **Instant Null-Frame Processing**: Modify `AnimationManager.update` to loop through frames with duration 0 instantly within a single tick.
-2. **Priority-based Queuing**: While staying Promise-based, ensure that "interruption" strictly follows the "exit branch to neutral" pattern before starting new high-priority chores.
+Since the initial architectural design, `ms-agent-js` has been updated to close the gap with TripleAgent and the original specification:
+1.  **RequestQueue**: Transitioned from a simple interruption model to a formal sequential queue, allowing for stable `await` patterns and predictable behavior.
+2.  **Instant Update Loop**: Refined the `AnimationManager` to process multiple frames per tick if their duration is 0, eliminating the "laggy" branching seen in earlier web-based implementations.
+3.  **Visual Stability**: Enhanced the frame buffering logic to prevent the agent from disappearing during logic-heavy animation sequences.
