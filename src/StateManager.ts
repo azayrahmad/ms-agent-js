@@ -232,13 +232,15 @@ export class StateManager {
    * @param stateName - (Optional) Temporary state name while playing.
    * @param useExitBranch - Whether to start in an exiting state.
    * @param timeoutMs - (Optional) Time limit for the animation.
+   * @param loop - (Optional) Whether the animation should loop indefinitely.
    * @returns A promise that resolves when the animation finishes.
    */
   public async playAnimation(
     animationName: string,
     stateName: string = '',
     useExitBranch: boolean = false,
-    timeoutMs?: number
+    timeoutMs?: number,
+    loop: boolean = false
   ): Promise<boolean> {
     const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
     // If this is an idle animation (no stateName) and we have requests, skip it.
@@ -270,7 +272,7 @@ export class StateManager {
       const result = await this.animationManager.interruptAndPlayAnimation(
         animationName,
         useExitBranch,
-        !!timeoutMs
+        loop || !!timeoutMs
       );
       return result;
     } finally {
@@ -370,7 +372,9 @@ export class StateManager {
 
         // Transition to Hidden or Idling after animation finishes
         if (showing) {
-            await this.returnToIdle();
+            // Start idle progression but don't await the non-blocking return call
+            // to ensure the visibility request resolves promptly.
+            this.returnToIdle().catch(console.error);
         } else {
             this.currentState = 'Hidden';
             this.isPaused = true;

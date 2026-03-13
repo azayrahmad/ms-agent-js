@@ -23,7 +23,7 @@ export class AnimationManager {
   /** A reference to the last valid (non-null) frame rendered, used as a buffer during logic frames. */
   private lastRenderedFrame: FrameDefinition | null = null;
   /** Whether the current animation is in the process of exiting via an exit branch. */
-  private isExiting: boolean = false;
+  private _isExiting: boolean = false;
   /** Whether the current animation should loop back to the beginning instead of finishing. */
   private isLooping: boolean = false;
   /** Internal promise controls for the currently playing animation. */
@@ -44,12 +44,12 @@ export class AnimationManager {
    * Whether the manager is currently in the process of exiting an animation.
    */
   public get isExitingFlag(): boolean {
-    return this.isExiting;
+    return this._isExiting;
   }
 
   public set isExitingFlag(value: boolean) {
-    const wasExiting = this.isExiting;
-    this.isExiting = value;
+    const wasExiting = this._isExiting;
+    this._isExiting = value;
 
     // When we start exiting, we stop looping
     if (value) {
@@ -154,7 +154,7 @@ export class AnimationManager {
       this.currentFrameIndex = 0;
       this.lastFrameTime = performance.now();
       // Reset isExiting directly but call the setter to trigger immediate exit jumps if needed
-      this.isExiting = false;
+      this._isExiting = false;
       this.isLooping = loop;
 
       if (previousAnimation && previousAnimation !== animationName) {
@@ -200,7 +200,7 @@ export class AnimationManager {
       return;
 
     // If we've completed an exit animation, don't update further
-    if (this.isExiting && !this.animationPromise) return;
+    if (this._isExiting && !this.animationPromise) return;
 
     let safetyCounter = 0;
     const MAX_NULL_FRAMES = 100;
@@ -271,7 +271,7 @@ export class AnimationManager {
     nextFrameIndex: number,
     isBranch: boolean,
   ): boolean {
-    if (this.isExiting) {
+    if (this._isExiting) {
       // If we are exiting and reached the end (either by natural end or exit branch loop back to frame 0)
       if (nextFrameIndex === 0) {
         this.completeAnimation();
@@ -299,7 +299,7 @@ export class AnimationManager {
     isBranch: boolean;
   } {
     // If exiting, prioritize the exit branch if it exists
-    if (this.isExiting && currentFrame.exitBranch !== undefined) {
+    if (this._isExiting && currentFrame.exitBranch !== undefined) {
       return { index: currentFrame.exitBranch - 1, isBranch: true };
     }
 
@@ -307,21 +307,21 @@ export class AnimationManager {
     // (frame 0). If no forward branches exist, we ignore branching to break loops.
     const branching = currentFrame.branching || [];
     const useBranchingWhileExiting =
-      this.isExiting &&
+      this._isExiting &&
       branching.some(
         (b) => b.branchTo - 1 > this.currentFrameIndex || b.branchTo - 1 === 0,
       );
 
     if (
       branching.length > 0 &&
-      (!this.isExiting || useBranchingWhileExiting)
+      (!this._isExiting || useBranchingWhileExiting)
     ) {
       const randomValue = Math.floor(Math.random() * 100);
       let cumulative = 0;
 
       for (const branch of branching) {
         // If exiting, only consider forward-leading branches
-        if (this.isExiting) {
+        if (this._isExiting) {
           const isForward =
             branch.branchTo - 1 > this.currentFrameIndex ||
             (branch.branchTo - 1 === 0 && this.currentFrameIndex > 0);
