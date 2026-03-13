@@ -1,8 +1,25 @@
 {
   "name": "ms-agent-js",
-  "private": true,
+  "description": "A modern, TypeScript-based implementation of Microsoft Agent",
+  "private": false,
   "version": "0.0.0",
   "type": "module",
+  "author": "Microsoft Agent JS Contributors",
+  "license": "MIT",
+  "keywords": [
+    "msagent",
+    "clippy",
+    "typescript",
+    "web-assistant"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azayrahmad/ms-agent-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/azayrahmad/ms-agent-js/issues"
+  },
+  "homepage": "https://azayrahmad.github.io/ms-agent-js/",
   "main": "./dist/ms-agent-js.umd.js",
   "module": "./dist/ms-agent-js.es.js",
   "exports": {
@@ -17,7 +34,9 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run build:lib && npm run build:app",
+    "build:lib": "tsc && vite build",
+    "build:app": "tsc && vite build --mode app",
     "preview": "vite preview",
     "test": "vitest run"
   },
