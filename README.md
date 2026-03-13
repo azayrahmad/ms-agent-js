@@ -1,6 +1,8 @@
 # MSAgentJS
 
-A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy to the web.
+A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of 90s digital assistants like Clippy back to the web.
+
+This project is inspired by the original [clippy.js](https://github.com/clippyjs/clippy.js) and aims to provide a high-fidelity, extensible engine for digital assistants. It currently focuses on the **Office Assistants** featured in Microsoft Office 2000, with planned support for newer agent generations and formats.
 
 ## Features
 
@@ -153,18 +155,17 @@ Subscribe to events using `agent.on(eventName, callback)`:
 
 ## 🗺 Roadmap
 
-Current goals for full parity with the original Microsoft Agent implementation:
+Current goals for full parity with the original Microsoft Agent implementation and modern enhancements:
 
-- [ ] **Speech Recognition**: Voice command support via Web Speech API.
-- [ ] **Commands Window**: Dedicated UI for selecting manual or voice commands.
-- [ ] **Context Menus**: Right-click menus for agent interaction.
 - [ ] **Mirroring**: Support for flipping character sprites horizontally.
-- [ ] **Advanced TTS Tags**: Support for SAPI-style tags (e.g., `\Pau=500\`) in `speak()`.
+- [ ] **Advanced TTS & Lip-Sync**: Support for SAPI-style tags (e.g., `\Pau=500\`) and improved mouth movement animations (visemes) for newer agents like **Genie**.
+- [ ] **Speech Recognition**: Voice command support via Web Speech API.
+- [ ] **Context Menus**: Right-click menus for agent interaction.
 - [ ] **Move-Animations**: Better integration of movement with "Moving" state animations.
 
 ## 🤝 Credits
 
-- Inspired by the original **Microsoft Agent** technology.
+- Inspired by the original **Microsoft Agent** technology and [clippy.js](https://github.com/clippyjs/clippy.js).
 - Architectural concepts and logic based on **TripleAgent** by [Calavera42](https://github.com/calavera42/TripleAgent).
 - Character assets are property of Microsoft Corporation (used here for nostalgia and educational purposes).
 

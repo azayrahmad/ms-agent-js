@@ -136,6 +136,24 @@ The `scripts/optimize-agent.ts` is a critical tool for developers. It:
 
 ---
 
+## 📝 Development Guidelines
+
+### Documentation Maintenance
+For every commit, ensure that relevant documentation (especially `DOCS.md` and `AGENTS.md`) is re-evaluated and updated if internal logic or public APIs have changed.
+
+### TypeScript Best Practices
+- **Strict Typing**: Avoid `any` whenever possible. Use strict interfaces for character definitions and manager states.
+- **Managers**: New features should be encapsulated in managers to keep the `Agent` coordinator clean.
+- **Async/Await**: Use modern async patterns for asset loading and request processing.
+
+### Commits & Releases
+This project uses **Conventional Commits** (e.g., `feat:`, `fix:`, `docs:`) for `release-please` compatibility.
+- Use `feat:` for new user-facing features.
+- Use `fix:` for bug fixes.
+- Use `chore:`, `refactor:`, or `docs:` for internal or documentation changes.
+
+---
+
 ## 💡 Tips for AI Agents
 - **Path Normalization**: Always use lowercase filenames and forward slashes when referring to assets; the `CharacterParser` and `Agent.load` normalize these for cross-platform compatibility.
 - **Awaiting Requests**: API methods return `AgentRequest` objects which are "thenable". You can `await agent.play(...)` directly.
