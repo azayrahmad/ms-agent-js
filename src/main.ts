@@ -61,8 +61,9 @@ async function initDemo() {
 
     try {
       const scale = parseFloat(scaleRange.value);
+      const baseUrl = import.meta.env.BASE_URL;
       currentAgent = await Agent.load(name, {
-        baseUrl: `/agents/${name}`,
+        baseUrl: `${baseUrl}agents/${name}`,
         scale: scale,
         useAudio: true
       });
