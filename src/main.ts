@@ -72,7 +72,7 @@ async function initDemo() {
       });
 
       // Populate animations
-      const animNames = Object.keys(currentAgent.definition.animations).sort();
+      const animNames = currentAgent.animations().sort();
       animNames.forEach(animName => {
         const option = document.createElement('option');
         option.value = animName;
@@ -108,7 +108,7 @@ async function initDemo() {
 
       // Click to play random animation
       currentAgent.on('click', () => {
-          currentAgent?.stateManager.playRandomAnimation();
+          currentAgent?.animate();
       });
 
     } catch (error) {
@@ -159,7 +159,7 @@ async function initDemo() {
   });
 
   randomBtn.addEventListener('click', () => {
-    currentAgent?.stateManager.playRandomAnimation();
+    currentAgent?.animate();
   });
 
   stateSelect.addEventListener('change', () => {

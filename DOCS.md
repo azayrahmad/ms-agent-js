@@ -65,6 +65,9 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
     - `timeoutMs`: Max duration for the animation.
     - `useExitBranch`: If true, plays the "return to neutral" sequence at the end (default: true).
     - `loop`: If true, loops the animation until stopped.
+- **`agent.animate()`**: Plays a random animation (excluding idles).
+- **`agent.animations()`**: Returns an array of all available animation names.
+- **`agent.hasAnimation(name)`**: Returns true if the animation exists.
 - **`agent.gestureAt(x, y)`**: Points at a specific screen coordinate.
 - **`agent.lookAt(x, y)`**: Turns to look at a specific screen coordinate.
 - **`agent.setState(stateName)`**: Manually sets the high-level state (e.g., "IdlingLevel3").
@@ -81,7 +84,9 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
     - `askButtonText` / `cancelButtonText`: Button labels.
     - `timeout`: Auto-cancel after milliseconds.
 - **`agent.stop(request?)`**: Stops the current action or a specific request.
+- **`agent.stopCurrent()`**: Stops the currently active request and proceeds to the next in queue.
 - **`agent.wait(request)`**: Queues a wait command until the specified request completes.
+- **`agent.delay(ms)`**: Queues a pause in the request queue.
 - **`agent.interrupt(animationName)`**: Stops all current actions and immediately plays the new animation.
 
 ---

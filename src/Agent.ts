@@ -495,6 +495,10 @@ export class Agent {
     loop: boolean = false,
   ): AgentRequest {
     return this.enqueueRequest(async (request) => {
+      if (!this.hasAnimation(animationName)) {
+        console.warn(`MSAgentJS: Animation '${animationName}' not found.`);
+        return;
+      }
       this.emit("animationStart", animationName);
       // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
       const shouldExit = useExitBranch ?? (!timeoutMs && !loop);
@@ -509,6 +513,36 @@ export class Agent {
         this.emit("animationEnd", animationName);
       }
     });
+  }
+
+  /**
+   * Plays a random animation that is not an idle animation.
+   *
+   * @returns A request object for the random animation.
+   */
+  public animate(): AgentRequest {
+    const anims = this.animations().filter((name) => !name.startsWith("Idle"));
+    const randomAnim = anims[Math.floor(Math.random() * anims.length)];
+    return this.play(randomAnim);
+  }
+
+  /**
+   * Returns a list of all available animation names.
+   *
+   * @returns An array of animation name strings.
+   */
+  public animations(): string[] {
+    return Object.keys(this.definition.animations);
+  }
+
+  /**
+   * Checks if a specific animation exists.
+   *
+   * @param name - The name of the animation to check.
+   * @returns True if the animation exists, false otherwise.
+   */
+  public hasAnimation(name: string): boolean {
+    return !!this.definition.animations[name];
   }
 
   /**
@@ -972,6 +1006,18 @@ export class Agent {
   }
 
   /**
+   * Queues a delay in the agent's action queue.
+   *
+   * @param ms - The number of milliseconds to wait.
+   * @returns A request object for the delay.
+   */
+  public delay(ms: number): AgentRequest {
+    return this.enqueueRequest(
+      () => new Promise((resolve) => setTimeout(resolve, ms)),
+    );
+  }
+
+  /**
    * Stops the specified request or all requests in the queue.
    *
    * @param request - Optional request object to stop.
@@ -987,6 +1033,16 @@ export class Agent {
         this.animationManager.isExitingFlag = true;
       }
       this.balloon.close();
+    }
+  }
+
+  /**
+   * Stops the current action and moves to the next one in the queue.
+   */
+  public stopCurrent() {
+    const activeId = this.requestQueue.activeRequestId;
+    if (activeId !== null) {
+      this.stop({ id: activeId } as AgentRequest);
     }
   }
 

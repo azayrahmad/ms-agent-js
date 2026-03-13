@@ -139,6 +139,8 @@ const agent = await Agent.load('Clippit', {
 - **`agent.show()` / `agent.hide()`**: Visibility transitions with animations.
 - **`agent.speak(text, options)`**: Display speech with optional TTS.
 - **`agent.play(animation, options)`**: Play a specific animation.
+- **`agent.animate()`**: Play a random non-idle animation.
+- **`agent.animations()`**: Get a list of all animation names.
 - **`agent.moveTo(x, y, speed)`**: Move agent across the screen.
 - **`agent.ask(options)`**: Interactive prompt with text input.
 
