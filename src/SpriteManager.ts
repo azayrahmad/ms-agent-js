@@ -2,6 +2,7 @@ import {
   type FrameDefinition,
   type AgentCharacterDefinition,
 } from './types';
+import { fetchWithProgress } from './utils';
 
 /**
  * SpriteManager class for loading, caching, and rendering agent sprites.
@@ -18,14 +19,36 @@ export class SpriteManager {
   private definition: AgentCharacterDefinition;
   /** The loaded texture atlas image, if used. */
   private spriteSheet: HTMLImageElement | null = null;
+  /** Optional loading options. */
+  private options: {
+    signal?: AbortSignal;
+    onProgress?: (progress: {
+      loaded: number;
+      total: number;
+      filename: string;
+    }) => void;
+  };
 
   /**
    * @param agentRoot - The base URL where agent assets are located.
    * @param definition - The character definition containing frame and metadata info.
+   * @param options - Optional loading options.
    */
-  constructor(agentRoot: string, definition: AgentCharacterDefinition) {
+  constructor(
+    agentRoot: string,
+    definition: AgentCharacterDefinition,
+    options: {
+      signal?: AbortSignal;
+      onProgress?: (progress: {
+        loaded: number;
+        total: number;
+        filename: string;
+      }) => void;
+    } = {},
+  ) {
     this.agentRoot = agentRoot;
     this.definition = definition;
+    this.options = options;
   }
 
   /**
@@ -45,24 +68,39 @@ export class SpriteManager {
    * Attempts to load the texture atlas image in WebP or PNG format.
    */
   private async loadSpriteSheet(): Promise<void> {
-    const extensions = ['webp', 'png'];
+    const extensions = ["webp", "png"];
     for (const ext of extensions) {
       try {
+        const url = `${this.agentRoot}/agent.${ext}`;
+        const response = await fetchWithProgress(url, {
+          signal: this.options.signal,
+          onProgress: this.options.onProgress,
+        });
+
+        if (!response.ok) continue;
+
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
         await new Promise<void>((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             this.spriteSheet = img;
+            URL.revokeObjectURL(objectUrl);
             resolve();
           };
-          img.onerror = () => reject();
-          img.src = `${this.agentRoot}/agent.${ext}`;
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject();
+          };
+          img.src = objectUrl;
         });
         return;
       } catch (e) {
+        if (e instanceof Error && e.name === "AbortError") throw e;
         // Try next extension
       }
     }
-    throw new Error('Failed to load sprite sheet (tried webp, png)');
+    throw new Error("Failed to load sprite sheet (tried webp, png)");
   }
 
   /**
@@ -91,7 +129,7 @@ export class SpriteManager {
 
     for (const url of pathsToTry) {
         try {
-            const res = await fetch(url);
+            const res = await fetch(url, { signal: this.options.signal });
             if (res.ok) {
                 const contentType = res.headers.get('content-type');
                 if (contentType && contentType.includes('text/html')) {
@@ -168,7 +206,7 @@ export class SpriteManager {
     let response: Response | null = null;
     for (const url of pathsToTry) {
         try {
-            const res = await fetch(url);
+            const res = await fetch(url, { signal: this.options.signal });
             if (res.ok) {
                 const contentType = res.headers.get('content-type');
                 if (contentType && contentType.includes('text/html')) {

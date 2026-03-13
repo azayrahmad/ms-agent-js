@@ -38,7 +38,7 @@
     "build:lib": "tsc && vite build",
     "build:app": "tsc && vite build --mode app",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

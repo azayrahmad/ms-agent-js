@@ -65,11 +65,15 @@ export class CharacterParser {
    * Fetches an .acd file from a URL and parses it into a structured agent definition.
    *
    * @param url - The URL of the .acd file to load.
+   * @param signal - Optional AbortSignal to cancel the request.
    * @returns A promise that resolves to the parsed AgentCharacterDefinition.
    * @throws Error if the fetch fails.
    */
-  public static async load(url: string): Promise<AgentCharacterDefinition> {
-    const response = await fetch(url);
+  public static async load(
+    url: string,
+    signal?: AbortSignal,
+  ): Promise<AgentCharacterDefinition> {
+    const response = await fetch(url, { signal });
     if (!response.ok) {
       throw new Error(`Failed to load .acd file: ${response.statusText}`);
     }
