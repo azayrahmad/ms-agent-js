@@ -43,6 +43,7 @@ type AgentEvent =
   | "dragstart"
   | "drag"
   | "dragend"
+  | "contextmenu"
   | "requestStart"
   | "requestComplete";
 type AgentEventListener = (...args: any[]) => void;
@@ -125,6 +126,7 @@ export class Agent {
         image-rendering: pixelated;
         pointer-events: auto;
         cursor: pointer;
+        touch-action: none;
       }
       .clippy-balloon {
         position: absolute;
@@ -229,6 +231,8 @@ export class Agent {
    * Internal method to set up drag-and-drop behavior for the agent.
    */
   private setupDragging() {
+    let longPressTimer: number | null = null;
+
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return; // Only left click/primary contact
       this.isDragging = true;
@@ -243,6 +247,21 @@ export class Agent {
       window.addEventListener("pointercancel", onPointerUp);
 
       this.emit("dragstart");
+
+      // Long press logic for context menu
+      longPressTimer = window.setTimeout(() => {
+        if ((this.listeners.get("contextmenu")?.size || 0) > 0) {
+          this.emit("contextmenu", {
+            x: e.clientX,
+            y: e.clientY,
+            originalEvent: e,
+          });
+          // Stop dragging if long press is triggered
+          this.isDragging = false;
+          this.wasDragging = false;
+          cleanup();
+        }
+      }, 500);
     };
 
     const onPointerMove = (e: PointerEvent) => {
@@ -253,6 +272,11 @@ export class Agent {
 
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
         this.wasDragging = true;
+        // Cancel long press if moved significantly
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
       }
 
       let nx = this.initialAgentX + dx;
@@ -271,16 +295,38 @@ export class Agent {
       this.emit("drag", { x: nx, y: ny });
     };
 
-    const onPointerUp = () => {
-      if (!this.isDragging) return;
-      this.isDragging = false;
+    const cleanup = () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
+    };
+
+    const onPointerUp = () => {
+      if (!this.isDragging) {
+        cleanup();
+        return;
+      }
+      this.isDragging = false;
+      cleanup();
       this.emit("dragend");
     };
 
     this.canvas.addEventListener("pointerdown", onPointerDown);
+
+    this.canvas.addEventListener("contextmenu", (e: MouseEvent) => {
+      if ((this.listeners.get("contextmenu")?.size || 0) > 0) {
+        e.preventDefault();
+        this.emit("contextmenu", {
+          x: e.clientX,
+          y: e.clientY,
+          originalEvent: e,
+        });
+      }
+    });
   }
 
   /**
