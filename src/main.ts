@@ -20,8 +20,7 @@ async function initDemo() {
   const gestureRightBtn = document.getElementById('gesture-right-btn') as HTMLButtonElement;
   const gestureUpBtn = document.getElementById('gesture-up-btn') as HTMLButtonElement;
   const gestureDownBtn = document.getElementById('gesture-down-btn') as HTMLButtonElement;
-  const gestureMouseBtn = document.getElementById('gesture-mouse-btn') as HTMLButtonElement;
-  const lookMouseCheck = document.getElementById('look-mouse-check') as HTMLInputElement;
+  const moveToMouseBtn = document.getElementById('move-to-mouse-btn') as HTMLButtonElement;
 
   const dashState = document.getElementById('dash-state')!;
   const dashAnim = document.getElementById('dash-anim')!;
@@ -54,8 +53,7 @@ async function initDemo() {
     gestureRightBtn.disabled = true;
     gestureUpBtn.disabled = true;
     gestureDownBtn.disabled = true;
-    gestureMouseBtn.disabled = true;
-    lookMouseCheck.disabled = true;
+    moveToMouseBtn.disabled = true;
 
     dashState.textContent = 'Loading...';
     dashAnim.textContent = '-';
@@ -106,8 +104,7 @@ async function initDemo() {
       gestureRightBtn.disabled = false;
       gestureUpBtn.disabled = false;
       gestureDownBtn.disabled = false;
-      gestureMouseBtn.disabled = false;
-      lookMouseCheck.disabled = false;
+      moveToMouseBtn.disabled = false;
 
       // Click to play random animation
       currentAgent.on('click', () => {
@@ -214,19 +211,27 @@ async function initDemo() {
   gestureUpBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x + 50, currentAgent.options.y - 100));
   gestureDownBtn.addEventListener('click', () => currentAgent?.gestureAt(currentAgent.options.x + 50, currentAgent.options.y + currentAgent.spriteManager.getSpriteHeight() * currentAgent.options.scale + 100));
 
-  gestureMouseBtn.addEventListener('click', () => {
-    const onMouseDown = (e: MouseEvent) => {
-        currentAgent?.gestureAt(e.clientX, e.clientY);
-        window.removeEventListener('mousedown', onMouseDown);
-        gestureMouseBtn.classList.remove('active'); // hypothetical CSS or just visual cue
-    };
-    window.addEventListener('mousedown', onMouseDown);
-  });
+  moveToMouseBtn.addEventListener('click', () => {
+    if (!currentAgent) return;
 
-  window.addEventListener('mousemove', (e) => {
-    if (lookMouseCheck.checked && currentAgent) {
-        currentAgent.lookAt(e.clientX, e.clientY);
-    }
+    moveToMouseBtn.disabled = true;
+    const originalText = moveToMouseBtn.textContent;
+    moveToMouseBtn.textContent = 'Click on page to move';
+
+    const onMouseDown = (e: MouseEvent) => {
+        const targetX = e.clientX - (currentAgent.definition.character.width * currentAgent.options.scale) / 2;
+        const targetY = e.clientY - (currentAgent.definition.character.height * currentAgent.options.scale) / 2;
+
+        currentAgent.moveTo(targetX, targetY);
+
+        window.removeEventListener('mousedown', onMouseDown);
+        moveToMouseBtn.disabled = false;
+        moveToMouseBtn.textContent = originalText;
+    };
+    // Use setTimeout to avoid capturing the current click that triggered this button
+    setTimeout(() => {
+        window.addEventListener('mousedown', onMouseDown);
+    }, 0);
   });
 
   // Update Loop for Debug Info

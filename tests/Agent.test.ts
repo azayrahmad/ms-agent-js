@@ -194,6 +194,78 @@ describe('Agent Directional Animations', () => {
     });
 });
 
+describe('Agent.moveTo fallback', () => {
+    let agent: Agent;
+    const mockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
+        balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
+        animations: {
+            'LookLeft': { frames: [] },
+            'LookRight': { frames: [] },
+            'LookUp': { frames: [] },
+            'LookDown': { frames: [] },
+            'LookUpLeft': { frames: [] },
+            'LookUpRight': { frames: [] }
+        },
+        states: {
+            'IdlingLevel1': { name: 'IdlingLevel1', animations: [] }
+        }
+    };
+
+    beforeEach(async () => {
+        vi.clearAllMocks();
+        (CharacterParser.load as any).mockResolvedValue(mockDefinition);
+
+        // Prevent requestAnimationFrame loops
+        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
+
+        agent = await Agent.load('Clippit', { x: 500, y: 500, scale: 1 });
+        vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+        // Mock draw to avoid clearRect errors
+        vi.spyOn(agent as any, 'draw').mockImplementation(() => {});
+    });
+
+    it('should use Look animation if Moving animation is missing (with perspective swap)', async () => {
+        // Capture the moveStep function
+        let moveStep: any;
+        vi.stubGlobal('requestAnimationFrame', (fn: any) => {
+            moveStep = fn;
+            return 1;
+        });
+
+        // Agent at (500, 500), center (550, 550)
+        // Move to (100, 100) -> Screen direction is UpLeft
+        const req = agent.moveTo(100, 100);
+
+        // Screen UpLeft should trigger Agent UpRight (swapped)
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookUpRight', 'Moving');
+
+        // Finish movement
+        moveStep(performance.now() + 10000);
+        await req;
+    });
+
+    it('should use Moving animation if it exists', async () => {
+        // Capture the moveStep function
+        let moveStep: any;
+        vi.stubGlobal('requestAnimationFrame', (fn: any) => {
+            moveStep = fn;
+            return 1;
+        });
+
+        (agent.definition.animations as any)['MovingLeft'] = { frames: [] };
+
+        // Move to screen-left
+        const req = agent.moveTo(100, 500);
+
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('MovingLeft', 'Moving');
+
+        // Finish movement
+        moveStep(performance.now() + 10000);
+        await req;
+    });
+});
+
 describe('Agent Visibility', () => {
     let agent: Agent;
     const mockDefinition = {
