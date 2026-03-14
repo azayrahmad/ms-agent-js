@@ -50,6 +50,20 @@ graph TD
 
 ---
 
+## 📥 Loading & Progress
+
+The `Agent.load()` method and its managers (`SpriteManager`, `AudioManager`) support an `onProgress` callback and an `AbortSignal`.
+
+### Progress Tracking
+A `fetchWithProgress` utility (in `src/utils.ts`) uses `ReadableStream` to track the number of bytes downloaded.
+- **`onProgress`**: Receives an object `{ loaded: number, total: number, filename: string }`.
+- **`total`**: Can be `0` if the server doesn't provide a `Content-Length` header.
+
+### Cancellation
+Passing an `AbortSignal` to `Agent.load()` ensures that all pending network requests (for JSON, texture atlases, and audio spritesheets) are immediately terminated if the signal is aborted.
+
+---
+
 ## 🔄 Core Logic Flows
 
 ### 1. The Rendering Loop

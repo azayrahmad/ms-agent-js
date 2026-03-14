@@ -44,6 +44,8 @@ When calling `Agent.load(name, options)`, you can customize the agent's behavior
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | Bottom Right | Initial coordinates. |
 | `idleIntervalMs` | `number` | `5000` | Delay between idle animation checks. |
+| `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
+| `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
 
 ---
 
