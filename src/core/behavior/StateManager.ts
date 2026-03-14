@@ -1,4 +1,4 @@
-import { type State } from './types';
+import { type State } from '../base/types';
 import { AnimationManager } from './AnimationManager';
 import { RequestQueue } from './RequestQueue';
 

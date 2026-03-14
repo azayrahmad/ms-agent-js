@@ -1,15 +1,16 @@
 import {
   type FrameDefinition,
   type Animation,
-} from './types';
-import { SpriteManager } from './SpriteManager';
-import { AudioManager } from './AudioManager';
+} from '../base/types';
+import type { SpriteManager } from '../resources/SpriteManager';
+import type { AudioManager } from '../resources/AudioManager';
+import { EventEmitter } from '../base/EventEmitter';
 
 /**
  * AnimationManager class for handling low-level frame timing, branching, and sound synchronization.
  * It manages the progression through an animation's frame sequence and handles probabilistic branching.
  */
-export class AnimationManager {
+export class AnimationManager extends EventEmitter<any> {
   private spriteManager: SpriteManager;
   private audioManager: AudioManager;
   /** Dictionary of all available animations for this character. */
@@ -63,11 +64,6 @@ export class AnimationManager {
     return this.currentFrameIndex;
   }
 
-  /** Callback fired whenever the frame changes. */
-  public onFrameChanged: (() => void) | null = null;
-  /** Callback fired when an animation sequence finishes. */
-  public onAnimationCompleted: ((animationName: string) => void) | null = null;
-
   /**
    * @param spriteManager - Manager for character image rendering.
    * @param audioManager - Manager for character sound playback.
@@ -78,6 +74,7 @@ export class AnimationManager {
     audioManager: AudioManager,
     animations: Record<string, Animation>
   ) {
+    super();
     this.spriteManager = spriteManager;
     this.audioManager = audioManager;
     this.animations = animations;
@@ -131,7 +128,7 @@ export class AnimationManager {
       this.isLooping = loop;
 
       if (previousAnimation && previousAnimation !== animationName) {
-        this.onAnimationCompleted?.(previousAnimation);
+        this.emit('animationCompleted', previousAnimation);
       }
 
       this.isExitingFlag = useExitBranch;
@@ -195,7 +192,7 @@ export class AnimationManager {
 
         this.currentFrameIndex = nextIndex;
         this.lastFrameTime = currentTime;
-        this.onFrameChanged?.();
+        this.emit('frameChanged');
         this.checkAndPlaySound(
           this.currentAnimation.frames[this.currentFrameIndex],
         );
@@ -222,7 +219,7 @@ export class AnimationManager {
         this.currentFrameIndex = nextIndex;
         this.lastFrameTime = currentTime;
 
-        this.onFrameChanged?.();
+        this.emit('frameChanged');
         this.checkAndPlaySound(
           this.currentAnimation.frames[this.currentFrameIndex],
         );
@@ -365,7 +362,7 @@ export class AnimationManager {
       this.activePromise = null;
     }
     this.currentAnimation = null;
-    this.onAnimationCompleted?.(completedAnimation);
+    this.emit('animationCompleted', completedAnimation);
   }
 
   /**

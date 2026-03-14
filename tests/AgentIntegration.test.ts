@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
-import { CharacterParser } from '../src/CharacterParser';
-import { AnimationManager } from '../src/AnimationManager';
-import { RequestStatus } from '../src/types';
+import { CharacterParser } from '../src/core/resources/CharacterParser';
+import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { RequestStatus } from '../src/core/base/types';
 
 // Mock everything needed for Agent environment
-vi.mock('../src/CharacterParser', () => ({
+vi.mock('../src/core/resources/CharacterParser', () => ({
     CharacterParser: { load: vi.fn() }
 }));
 
-vi.mock('../src/SpriteManager', () => ({
+vi.mock('../src/core/resources/SpriteManager', () => ({
     SpriteManager: class {
         init = vi.fn().mockResolvedValue(undefined);
         getSpriteWidth = vi.fn().mockReturnValue(100);

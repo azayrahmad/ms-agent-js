@@ -35,16 +35,19 @@ graph TD
     end
 ```
 
-| Manager | Responsibility |
-| --- | --- |
-| **`Agent`** | Entry point, coordinates the `requestAnimationFrame` loop, and manages the Shadow DOM container. |
-| **`CharacterParser`** | Translates legacy `.acd` text files or optimized `agent.json` into a structured `AgentCharacterDefinition`. |
-| **`SpriteManager`** | Handles bitmap loading, transparency injection (for indexed BMPs), and texture atlas coordinate mapping. |
-| **`AnimationManager`** | Low-level frame-by-frame timing, probabilistic branching, and "exit branch" handling for interruptions. |
-| **`StateManager`** | High-level behavioral logic. Manages transitions between "Persistent" states (Idling) and "Transient" states (Showing, Playing). |
-| **`AudioManager`** | Audio spritesheet management and custom decoding for 4-bit MS ADPCM WAV files. |
-| **`Balloon`** | Procedural SVG speech bubble rendering, dynamic tip positioning, and character-by-character typing sync. |
-| **`RequestQueue`** | Asynchronous task management, ensuring API calls (speak, play, move) are executed sequentially. |
+| Manager | Responsibility | Folder |
+| --- | --- | --- |
+| **`Agent`** | Public API facade. Coordinates `AgentCore` and `AgentRenderer`. | `src/` |
+| **`AgentCore`** | Headless engine. Manages state, animations, and sound logic. | `src/core/` |
+| **`AgentRenderer`** | UI layer. Manages Shadow DOM, Canvas, and CSS. | `src/ui/` |
+| **`EventEmitter`** | Foundation for event-driven decoupled communication. | `src/core/base/` |
+| **`CharacterParser`** | Translates assets into `AgentCharacterDefinition`. | `src/core/resources/` |
+| **`SpriteManager`** | Handles bitmap loading and rendering logic. | `src/core/resources/` |
+| **`AnimationManager`** | Low-level frame-by-frame timing and branching. | `src/core/behavior/` |
+| **`StateManager`** | High-level behavioral state transitions. | `src/core/behavior/` |
+| **`AudioManager`** | Audio spritesheet and decoding management. | `src/core/resources/` |
+| **`Balloon`** | Procedural SVG speech bubble rendering. | `src/ui/` |
+| **`RequestQueue`** | Asynchronous character action queuing. | `src/core/behavior/` |
 
 ---
 

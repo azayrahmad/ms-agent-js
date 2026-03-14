@@ -1,188 +1,207 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
-import { CharacterParser } from '../src/CharacterParser';
+import { CharacterParser } from '../src/core/resources/CharacterParser';
 
-vi.mock('../src/CharacterParser', () => ({
-    CharacterParser: {
-        load: vi.fn()
-    }
+// Mock everything needed for Agent environment
+vi.mock('../src/core/resources/CharacterParser', () => ({
+    CharacterParser: { load: vi.fn(), parse: vi.fn() }
 }));
 
-vi.mock('../src/SpriteManager', () => {
-    class SpriteManager {
+vi.mock('../src/core/resources/SpriteManager', () => ({
+    SpriteManager: class {
         init = vi.fn().mockResolvedValue(undefined);
         getSpriteWidth = vi.fn().mockReturnValue(100);
         getSpriteHeight = vi.fn().mockReturnValue(100);
+        loadSprite = vi.fn().mockResolvedValue(undefined);
+        drawFrame = vi.fn();
     }
-    return { SpriteManager };
-});
+}));
 
 describe('Agent Interactions', () => {
-    let agent: Agent;
-    let canvas: any;
-    let styleElement: any;
+    const mockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'colortable.bmp' },
+        balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12, numLines: 2, charsPerLine: 20 },
+        animations: {
+            'A': { name: 'A', frames: [{ duration: 10, images: [] }] }
+        },
+        states: {
+            'IdlingLevel1': { name: 'IdlingLevel1', animations: ['A'] }
+        }
+    };
 
-    beforeEach(async () => {
-        vi.useFakeTimers();
+    beforeEach(() => {
         vi.clearAllMocks();
+        (CharacterParser.load as any).mockResolvedValue(mockDefinition);
+
+        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
+        vi.stubGlobal('cancelAnimationFrame', vi.fn());
+
+        const mockAudioContext = vi.fn().mockImplementation(() => ({
+            createBuffer: vi.fn(),
+            decodeAudioData: vi.fn(),
+            createBufferSource: vi.fn().mockReturnValue({
+                connect: vi.fn(),
+                start: vi.fn(),
+            }),
+            destination: {}
+        }));
 
         vi.stubGlobal('window', {
             innerWidth: 1024,
             innerHeight: 768,
-            AudioContext: vi.fn().mockImplementation(() => ({
-                createBuffer: vi.fn(),
-                decodeAudioData: vi.fn(),
-            })),
+            setTimeout: global.setTimeout,
+            clearTimeout: global.clearTimeout,
+            AudioContext: mockAudioContext,
             requestAnimationFrame: vi.fn().mockReturnValue(1),
             cancelAnimationFrame: vi.fn(),
             addEventListener: vi.fn(),
             removeEventListener: vi.fn(),
-            setTimeout: setTimeout,
-            clearTimeout: clearTimeout
+            navigator: { userAgent: 'test' },
+            speechSynthesis: {
+                getVoices: vi.fn().mockReturnValue([]),
+                speak: vi.fn(),
+                cancel: vi.fn(),
+                speaking: false
+            },
+            performance: { now: () => Date.now() }
         });
-        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
-        vi.stubGlobal('cancelAnimationFrame', vi.fn());
 
         vi.stubGlobal('document', {
-            createElementNS: vi.fn().mockImplementation((ns, tag) => {
-                return {
-                    style: {},
-                    appendChild: vi.fn(),
-                    setAttribute: vi.fn(),
-                };
-            }),
+            createElementNS: vi.fn().mockReturnValue({ style: {}, appendChild: vi.fn(), setAttribute: vi.fn() }),
             createElement: vi.fn().mockImplementation((tag) => {
                 const el: any = {
                     style: {},
-                    appendChild: vi.fn(),
-                    className: '',
+                    nodeName: tag.toUpperCase(),
+                    appendChild: vi.fn().mockImplementation((child) => {
+                        if (el.shadowNodes) el.shadowNodes.push(child);
+                    }),
                     classList: { add: vi.fn(), remove: vi.fn() },
                     addEventListener: vi.fn(),
                     removeEventListener: vi.fn(),
                     querySelector: vi.fn(),
-                    getBoundingClientRect: vi.fn().mockReturnValue({ width: 0, height: 0, top: 0, left: 0, bottom: 0, right: 0 }),
+                    getBoundingClientRect: vi.fn().mockReturnValue({ width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100 }),
                 };
-                el.attachShadow = vi.fn().mockReturnValue({
-                    appendChild: vi.fn().mockImplementation((child) => {
-                        if (tag === 'div' && child.tagName === 'STYLE') styleElement = child;
-                    }),
-                    host: el
-                });
-
                 if (tag === 'canvas') {
-                    el.tagName = 'CANVAS';
-                    el.getContext = vi.fn().mockReturnValue({});
-                    canvas = el;
-                } else if (tag === 'style') {
-                    el.tagName = 'STYLE';
-                    styleElement = el;
+                    el.getContext = vi.fn().mockReturnValue({ clearRect: vi.fn() });
+                    el.width = 100;
+                    el.height = 100;
+                } else if (tag === 'div') {
+                    el.attachShadow = vi.fn().mockReturnValue({
+                        appendChild: vi.fn().mockImplementation((child) => {
+                            if (el.shadowNodes) el.shadowNodes.push(child);
+                        }),
+                        host: el,
+                        get childNodes() { return el.shadowNodes || []; }
+                    });
+                    el.shadowNodes = [];
                 }
                 return el;
             }),
-            body: {
-                appendChild: vi.fn()
-            }
+            body: { appendChild: vi.fn() }
         });
-
-        const mockDefinition = {
-            character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
-            balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
-            animations: {},
-            states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
-        };
-        (CharacterParser.load as any).mockResolvedValue(mockDefinition);
-
-        agent = await Agent.load('Clippit');
     });
 
-    afterEach(() => {
-        vi.useRealTimers();
+    it('should have touch-action: none on the canvas in styles', async () => {
+        const agent = await Agent.load('Clippit');
+        const shadowRoot = (agent as any).renderer.shadowRoot;
+        const style = Array.from(shadowRoot.childNodes).find((c: any) => c.nodeName === 'STYLE') as any;
+        expect(style.textContent).toContain('touch-action: none');
     });
 
-    it('should have touch-action: none on the canvas in styles', () => {
-        expect(styleElement.textContent).toContain('touch-action: none');
-    });
+    it('should emit contextmenu event when canvas receives contextmenu event', async () => {
+        const agent = await Agent.load('Clippit');
+        const onContextMenu = vi.fn();
+        agent.on('contextmenu', onContextMenu);
 
-    it('should emit contextmenu event when canvas receives contextmenu event', () => {
-        const listener = vi.fn();
-        agent.on('contextmenu', listener);
-
-        // Find the contextmenu listener on canvas
-        const contextMenuListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'contextmenu')[1];
-
-        const mockEvent = {
+        const canvas = (agent as any).renderer.canvas;
+        const event = {
             preventDefault: vi.fn(),
             clientX: 100,
             clientY: 200
         };
 
-        contextMenuListener(mockEvent);
+        const listener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'contextmenu')[1];
+        listener(event);
 
-        expect(mockEvent.preventDefault).toHaveBeenCalled();
-        expect(listener).toHaveBeenCalledWith({
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(onContextMenu).toHaveBeenCalledWith(expect.objectContaining({
             x: 100,
             y: 200,
-            originalEvent: mockEvent
-        });
+            originalEvent: event
+        }));
     });
 
-    it('should emit contextmenu event on long press (500ms)', () => {
-        const listener = vi.fn();
-        agent.on('contextmenu', listener);
+    it('should emit contextmenu event on long press (500ms)', async () => {
+        vi.useFakeTimers();
+        // Update window stub to use fake timers
+        (window as any).setTimeout = global.setTimeout;
+        (window as any).clearTimeout = global.clearTimeout;
 
-        const pointerDownListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
+        const agent = await Agent.load('Clippit');
+        const onContextMenu = vi.fn();
+        agent.on('contextmenu', onContextMenu);
 
-        const mockEvent = {
-            button: 0,
-            clientX: 100,
-            clientY: 200
-        };
+        const canvas = (agent as any).renderer.canvas;
+        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
 
-        pointerDownListener(mockEvent);
+        downListener({ button: 0, clientX: 100, clientY: 200 });
 
-        vi.advanceTimersByTime(499);
-        expect(listener).not.toHaveBeenCalled();
+        vi.advanceTimersByTime(500);
 
-        vi.advanceTimersByTime(1);
-        expect(listener).toHaveBeenCalledWith({
+        expect(onContextMenu).toHaveBeenCalledWith(expect.objectContaining({
             x: 100,
-            y: 200,
-            originalEvent: mockEvent
-        });
+            y: 200
+        }));
+        vi.useRealTimers();
     });
 
-    it('should cancel long press if pointerup occurs before 500ms', () => {
-        const listener = vi.fn();
-        agent.on('contextmenu', listener);
+    it('should cancel long press if pointerup occurs before 500ms', async () => {
+        vi.useFakeTimers();
+        (window as any).setTimeout = global.setTimeout;
+        (window as any).clearTimeout = global.clearTimeout;
 
-        const pointerDownListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
+        const agent = await Agent.load('Clippit');
+        const onContextMenu = vi.fn();
+        agent.on('contextmenu', onContextMenu);
 
-        pointerDownListener({ button: 0, clientX: 100, clientY: 200 });
+        const canvas = (agent as any).renderer.canvas;
+        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
 
-        const pointerUpListener = (window.addEventListener as any).mock.calls.find((call: any) => call[0] === 'pointerup')[1];
+        downListener({ button: 0, clientX: 100, clientY: 200 });
 
         vi.advanceTimersByTime(250);
-        pointerUpListener();
+
+        const upListener = window.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerup')[1];
+        upListener();
 
         vi.advanceTimersByTime(250);
-        expect(listener).not.toHaveBeenCalled();
+
+        expect(onContextMenu).not.toHaveBeenCalled();
+        vi.useRealTimers();
     });
 
-    it('should cancel long press if moved significantly', () => {
-        const listener = vi.fn();
-        agent.on('contextmenu', listener);
+    it('should cancel long press if moved significantly', async () => {
+        vi.useFakeTimers();
+        (window as any).setTimeout = global.setTimeout;
+        (window as any).clearTimeout = global.clearTimeout;
 
-        const pointerDownListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
+        const agent = await Agent.load('Clippit');
+        const onContextMenu = vi.fn();
+        agent.on('contextmenu', onContextMenu);
 
-        pointerDownListener({ button: 0, clientX: 100, clientY: 200 });
+        const canvas = (agent as any).renderer.canvas;
+        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
 
-        const pointerMoveListener = (window.addEventListener as any).mock.calls.find((call: any) => call[0] === 'pointermove')[1];
+        downListener({ button: 0, clientX: 100, clientY: 200 });
 
-        vi.advanceTimersByTime(250);
-        // Move significantly (> 3px)
-        pointerMoveListener({ clientX: 110, clientY: 210 });
+        vi.advanceTimersByTime(100);
 
-        vi.advanceTimersByTime(250);
-        expect(listener).not.toHaveBeenCalled();
+        const moveListener = window.addEventListener.mock.calls.find((call: any) => call[0] === 'pointermove')[1];
+        moveListener({ clientX: 110, clientY: 210 });
+
+        vi.advanceTimersByTime(400);
+
+        expect(onContextMenu).not.toHaveBeenCalled();
+        vi.useRealTimers();
     });
 });

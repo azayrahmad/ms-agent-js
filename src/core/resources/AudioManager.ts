@@ -1,5 +1,5 @@
 import { MSADPCMDecoder } from './MSADPCMDecoder';
-import type { AudioAtlasEntry } from './types';
+import type { AudioAtlasEntry } from '../base/types';
 
 /**
  * AudioManager class for loading and playing agent sound effects.

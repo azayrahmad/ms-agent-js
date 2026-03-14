@@ -1,5 +1,5 @@
 import './style.css';
-import { Agent } from './Agent';
+import { Agent } from '../Agent';
 
 async function initDemo() {
   const agentSelect = document.getElementById('agent-select') as HTMLSelectElement;

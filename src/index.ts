@@ -6,11 +6,15 @@
  * @module
  */
 
-export { CharacterParser } from './CharacterParser';
-export { SpriteManager } from './SpriteManager';
-export { AnimationManager } from './AnimationManager';
-export { AudioManager } from './AudioManager';
-export { StateManager } from './StateManager';
-export { RequestQueue } from './RequestQueue';
+export { CharacterParser } from './core/resources/CharacterParser';
+export { SpriteManager } from './core/resources/SpriteManager';
+export { AnimationManager } from './core/behavior/AnimationManager';
+export { AudioManager } from './core/resources/AudioManager';
+export { StateManager } from './core/behavior/StateManager';
+export { RequestQueue } from './core/behavior/RequestQueue';
 export { Agent } from './Agent';
-export * from './types';
+export { AgentCore } from './core/Core';
+export { AgentRenderer } from './ui/Renderer';
+export { Balloon } from './ui/Balloon';
+export * from './core/base/types';
+export * from './core/base/events';

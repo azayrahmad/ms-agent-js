@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AnimationManager } from '../src/AnimationManager';
-import { type Animation, type FrameDefinition } from '../src/types';
+import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { type Animation, type FrameDefinition } from '../src/core/base/types';
 
 describe('AnimationManager', () => {
   let spriteManager: any;

@@ -9,7 +9,7 @@ import {
   type Info,
   CharacterStyle,
   type AgentCharacterDefinition,
-} from './types';
+} from '../base/types';
 import { validate as uuidValidate } from 'uuid';
 
 /**

@@ -167,6 +167,30 @@ export interface AudioAtlasEntry {
 /**
  * The complete, root definition of an agent character, usually parsed from an .acd file.
  */
+/**
+ * Configuration options for creating an Agent.
+ */
+export interface AgentOptions {
+  /** The parent element for the agent. If not provided, a div will be appended to document.body. */
+  container?: HTMLElement;
+  /** The base URL for the agent assets (.acd, images, audio). */
+  baseUrl?: string;
+  /** The scaling factor for the agent (default: 1). */
+  scale?: number;
+  /** Multiplier for animation speed (default: 1). */
+  speed?: number;
+  /** Milliseconds between idle behavior checks (default: 5000). */
+  idleIntervalMs?: number;
+  /** Whether to enable sound effects (default: true). */
+  useAudio?: boolean;
+  /** Whether to use CSS 'fixed' (true) or 'absolute' (false) positioning (default: true). */
+  fixed?: boolean;
+  /** Initial horizontal position in pixels. */
+  x?: number;
+  /** Initial vertical position in pixels. */
+  y?: number;
+}
+
 export interface AgentCharacterDefinition {
   /** General character properties. */
   character: Character;

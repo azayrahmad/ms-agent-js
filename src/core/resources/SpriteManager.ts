@@ -1,7 +1,7 @@
 import {
   type FrameDefinition,
   type AgentCharacterDefinition,
-} from './types';
+} from '../base/types';
 
 /**
  * SpriteManager class for loading, caching, and rendering agent sprites.
