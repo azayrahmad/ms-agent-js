@@ -14,7 +14,7 @@ Or use it via a CDN like unpkg:
 
 ```html
 <script type="module">
-  import { Agent } from 'https://unpkg.com/ms-agent-js/dist/ms-agent-js.es.js';
+  import { Agent } from 'https://unpkg.com/ms-agent-js@latest/dist/ms-agent-js.es.js';
   // ...
 </script>
 ```
