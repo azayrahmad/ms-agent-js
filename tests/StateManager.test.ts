@@ -18,10 +18,10 @@ describe('StateManager', () => {
     };
 
     mockStates = {
-      'idlinglevel1': { name: 'idlinglevel1', animations: ['idle1'] },
-      'idlinglevel2': { name: 'idlinglevel2', animations: ['idle2'] },
-      'showing': { name: 'showing', animations: ['show'] },
-      'hiding': { name: 'hiding', animations: ['hide'] }
+      'IdlingLevel1': { name: 'IdlingLevel1', animations: ['idle1'] },
+      'IdlingLevel2': { name: 'IdlingLevel2', animations: ['idle2'] },
+      'Showing': { name: 'Showing', animations: ['show'] },
+      'Hiding': { name: 'Hiding', animations: ['hide'] }
     };
 
     stateManager = new StateManager(mockStates, mockAnimationManager as any, {
@@ -33,7 +33,7 @@ describe('StateManager', () => {
   it('should progress idle tick even if update is called while an animation is starting (but not awaited)', async () => {
     // Show the agent to unpause it
     await stateManager.handleVisibilityChange(true);
-    await stateManager.setState('idlinglevel1');
+    await stateManager.setState('IdlingLevel1');
 
     // Initial state
     expect(stateManager.timeUntilNextTick).toBe(1000);
@@ -52,7 +52,7 @@ describe('StateManager', () => {
     await stateManager.handleVisibilityChange(true);
 
     // We want to see if multiple calls to update work as expected when animations are playing.
-    await stateManager.setState('idlinglevel1');
+    await stateManager.setState('IdlingLevel1');
 
     // Mock playAnimation to be a never-resolving promise (simulating being stuck/slow)
     mockAnimationManager.playAnimation = () => new Promise(() => {});
@@ -73,11 +73,11 @@ describe('StateManager', () => {
   });
 
   it('should start ticking immediately after initialization and setState', async () => {
-    // Initial state is hidden and Paused
-    expect(stateManager.currentStateName).toBe('hidden');
+    // Initial state is Hidden and Paused
+    expect(stateManager.currentStateName).toBe('Hidden');
 
-    await stateManager.setState('idlinglevel1');
-    expect(stateManager.currentStateName).toBe('idlinglevel1');
+    await stateManager.setState('IdlingLevel1');
+    expect(stateManager.currentStateName).toBe('IdlingLevel1');
 
     // Should not be paused anymore
     await stateManager.update(100);

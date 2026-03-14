@@ -114,27 +114,40 @@ describe('Case Insensitivity', () => {
         agent = await Agent.load('Clippit');
     });
 
-    it('should play animation with case-insensitive name', async () => {
+    it('should play animation with case-insensitive name and resolve to original casing', async () => {
         const spy = vi.spyOn(agent.stateManager, 'playAnimation');
         spy.mockResolvedValue(true);
 
         await agent.play('greet');
-        expect(spy).toHaveBeenCalledWith('greet', 'playing', true, undefined, false);
+        expect(spy).toHaveBeenCalledWith('Greet', 'Playing', true, undefined, false);
     });
 
     it('should check hasAnimation with case-insensitive name', () => {
         expect(agent.hasAnimation('GREET')).toBe(true);
     });
 
-    it('should set state with case-insensitive name', async () => {
+    it('should set state with case-insensitive name and resolve to original casing', async () => {
         await agent.setState('searching');
-        expect(agent.stateManager.currentStateName).toBe('searching');
+        expect(agent.stateManager.currentStateName).toBe('Searching');
     });
 
-    it('should normalize names in the definition during load', () => {
+    it('should preserve original casing in animations()', () => {
         const animations = agent.animations();
-        expect(animations).toContain('greet');
-        expect(animations).toContain('lookleft');
-        expect(animations).not.toContain('Greet');
+        expect(animations).toContain('Greet');
+        expect(animations).toContain('LookLeft');
+        expect(animations).not.toContain('greet');
+    });
+
+    it('should emit events with original casing', async () => {
+        const startSpy = vi.fn();
+        const endSpy = vi.fn();
+        agent.on('animationStart', startSpy);
+        agent.on('animationEnd', endSpy);
+
+        vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+        await agent.play('GREET');
+
+        expect(startSpy).toHaveBeenCalledWith('Greet');
+        expect(endSpy).toHaveBeenCalledWith('Greet');
     });
 });

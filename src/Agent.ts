@@ -77,6 +77,9 @@ export class Agent {
   /** Resolved options used to initialize the agent. */
   public readonly options: Required<AgentOptions>;
 
+  private animationNameMap: Map<string, string> = new Map();
+  private stateNameMap: Map<string, string> = new Map();
+
   private container: HTMLElement;
   private shadowRoot: ShadowRoot;
   private canvas: HTMLCanvasElement;
@@ -213,6 +216,14 @@ export class Agent {
     // Initialize Request Queue
     this.requestQueue = new RequestQueue();
     this.stateManager.setRequestQueue(this.requestQueue);
+
+    // Populate lookup maps
+    Object.keys(definition.animations).forEach((name) => {
+      this.animationNameMap.set(name.toLowerCase(), name);
+    });
+    Object.keys(definition.states).forEach((name) => {
+      this.stateNameMap.set(name.toLowerCase(), name);
+    });
 
     // Click event handling (differentiated from drag)
     this.canvas.addEventListener("click", () => {
@@ -428,12 +439,9 @@ export class Agent {
       );
     }
 
-    // Ensure all animation and state names, and their image/sound references,
-    // are lowercased for case-insensitive matching and cross-environment compatibility.
-    const normalizedAnimations: Record<string, any> = {};
+    // Ensure all image and sound references are lowercased for cross-environment compatibility.
+    // We also build lookup maps for case-insensitive animation and state matching.
     Object.entries(definition.animations).forEach(([name, animation]) => {
-      const lowerName = name.toLowerCase();
-      animation.name = lowerName;
       animation.frames.forEach((frame) => {
         frame.images.forEach((image) => {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
@@ -442,18 +450,7 @@ export class Agent {
           frame.soundEffect = frame.soundEffect.toLowerCase();
         }
       });
-      normalizedAnimations[lowerName] = animation;
     });
-    (definition as any).animations = normalizedAnimations;
-
-    const normalizedStates: Record<string, any> = {};
-    Object.entries(definition.states).forEach(([name, state]) => {
-      const lowerName = name.toLowerCase();
-      state.name = lowerName;
-      state.animations = state.animations.map((a) => a.toLowerCase());
-      normalizedStates[lowerName] = state;
-    });
-    (definition as any).states = normalizedStates;
 
     // Resolve final options with defaults
     const fullOptions: Required<AgentOptions> = {
@@ -496,11 +493,32 @@ export class Agent {
     this.startLoop();
     // Start showing the agent but don't await it, so the agent instance
     // is returned to the caller as soon as assets are ready.
-    if (this.definition.states['showing']) {
+    if (this.hasState("Showing")) {
       this.show();
     } else {
-      this.stateManager.setState('idlinglevel1');
+      this.setState("IdlingLevel1");
     }
+  }
+
+  /**
+   * Resolves an animation name to its original casing.
+   */
+  private resolveAnimationName(name: string): string | undefined {
+    return this.animationNameMap.get(name?.toLowerCase());
+  }
+
+  /**
+   * Resolves a state name to its original casing.
+   */
+  private resolveStateName(name: string): string | undefined {
+    return this.stateNameMap.get(name?.toLowerCase());
+  }
+
+  /**
+   * Checks if a specific state exists.
+   */
+  public hasState(name: string): boolean {
+    return this.stateNameMap.has(name?.toLowerCase());
   }
 
   private isUpdating: boolean = false;
@@ -555,24 +573,24 @@ export class Agent {
     useExitBranch?: boolean,
     loop: boolean = false,
   ): AgentRequest {
-    const lowerName = animationName?.toLowerCase();
+    const resolvedName = this.resolveAnimationName(animationName);
     return this.enqueueRequest(async (request) => {
-      if (!this.hasAnimation(lowerName)) {
+      if (!resolvedName) {
         console.warn(`MSAgentJS: Animation '${animationName}' not found.`);
         return;
       }
-      this.emit("animationStart", lowerName);
+      this.emit("animationStart", resolvedName);
       // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
       const shouldExit = useExitBranch ?? (!timeoutMs && !loop);
       await this.stateManager.playAnimation(
-        lowerName,
-        "playing",
+        resolvedName,
+        "Playing",
         shouldExit,
         timeoutMs,
         loop,
       );
       if (!request.isCancelled) {
-        this.emit("animationEnd", lowerName);
+        this.emit("animationEnd", resolvedName);
       }
     });
   }
@@ -604,8 +622,7 @@ export class Agent {
    * @returns True if the animation exists, false otherwise.
    */
   public hasAnimation(name: string): boolean {
-    if (!name) return false;
-    return !!this.definition.animations[name.toLowerCase()];
+    return this.animationNameMap.has(name?.toLowerCase());
   }
 
   /**
@@ -619,14 +636,16 @@ export class Agent {
   public gestureAt(x: number, y: number): AgentRequest {
     return this.enqueueRequest(async (_request) => {
       const direction = this.toAgentPerspective(this.getDirection(x, y, 4));
-      const stateName = `gesturing${direction.toLowerCase()}`;
-      if (this.definition.states[stateName]) {
-        await this.stateManager.setState(stateName);
+      const stateName = `Gesturing${direction}`;
+      const resolvedState = this.resolveStateName(stateName);
+      if (resolvedState) {
+        await this.stateManager.setState(resolvedState);
       } else {
         // Fallback to direct animation if the high-level state is missing
-        const animName = `gesture${direction.toLowerCase()}`;
-        if (this.definition.animations[animName]) {
-          await this.stateManager.playAnimation(animName, "gesturing");
+        const animName = `Gesture${direction}`;
+        const resolvedAnim = this.resolveAnimationName(animName);
+        if (resolvedAnim) {
+          await this.stateManager.playAnimation(resolvedAnim, "Gesturing");
         }
       }
     });
@@ -643,20 +662,21 @@ export class Agent {
   public lookAt(x: number, y: number): AgentRequest {
     return this.enqueueRequest(async (request) => {
       const direction = this.toAgentPerspective(this.getDirection(x, y, 8));
-      const animName = `look${direction.toLowerCase()}`;
+      const animName = `Look${direction}`;
+      const resolvedAnim = this.resolveAnimationName(animName);
 
-      if (
-        this.animationManager.currentAnimationName === animName &&
-        this.animationManager.isAnimating
-      ) {
-        return;
-      }
+      if (resolvedAnim) {
+        if (
+          this.animationManager.currentAnimationName === resolvedAnim &&
+          this.animationManager.isAnimating
+        ) {
+          return;
+        }
 
-      if (this.definition.animations[animName]) {
-        this.emit("animationStart", animName);
-        await this.stateManager.playAnimation(animName, "looking");
+        this.emit("animationStart", resolvedAnim);
+        await this.stateManager.playAnimation(resolvedAnim, "Looking");
         if (!request.isCancelled) {
-          this.emit("animationEnd", animName);
+          this.emit("animationEnd", resolvedAnim);
         }
       }
     });
@@ -668,10 +688,10 @@ export class Agent {
    * @param stateName - The name of the state (e.g., 'IdlingLevel2', 'Searching').
    */
   public async setState(stateName: string): Promise<void> {
-    const lowerName = stateName?.toLowerCase();
+    const resolvedName = this.resolveStateName(stateName) || stateName;
     const oldState = this.stateManager.currentStateName;
-    await this.stateManager.setState(lowerName);
-    this.emit("stateChange", lowerName, oldState);
+    await this.stateManager.setState(resolvedName);
+    this.emit("stateChange", resolvedName, oldState);
   }
 
   /**
@@ -699,21 +719,23 @@ export class Agent {
       const startTime = performance.now();
 
       const direction4 = this.getDirection(x, y, 4);
-      const moveAnim = `moving${direction4.toLowerCase()}`;
+      const moveAnim = `Moving${direction4}`;
+      const resolvedMoveAnim = this.resolveAnimationName(moveAnim);
       let activeAnim = "";
 
-      if (this.definition.animations[moveAnim]) {
-        activeAnim = moveAnim;
+      if (resolvedMoveAnim) {
+        activeAnim = resolvedMoveAnim;
       } else {
         const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
-        const lookAnim = `look${direction8.toLowerCase()}`;
-        if (this.definition.animations[lookAnim]) {
-          activeAnim = lookAnim;
+        const lookAnim = `Look${direction8}`;
+        const resolvedLookAnim = this.resolveAnimationName(lookAnim);
+        if (resolvedLookAnim) {
+          activeAnim = resolvedLookAnim;
         }
       }
 
       if (activeAnim) {
-        this.stateManager.playAnimation(activeAnim, "moving");
+        this.stateManager.playAnimation(activeAnim, "Moving");
       }
 
       return new Promise<void>((resolve) => {
@@ -763,23 +785,25 @@ export class Agent {
   /**
    * Internal helper to start a talking animation and set up its termination.
    */
-  private startTalkingAnimation(animName: string = "explain") {
-    const lowerName = animName.toLowerCase();
-    if (this.talkingAnimationName === lowerName) return;
+  private startTalkingAnimation(animName: string = "Explain") {
+    const resolvedAnim = this.resolveAnimationName(animName);
+    if (this.talkingAnimationName === resolvedAnim && resolvedAnim) return;
 
-    if (this.definition.animations[lowerName]) {
-      this.talkingAnimationName = lowerName;
+    if (resolvedAnim) {
+      this.talkingAnimationName = resolvedAnim;
       this.stateManager
-        .playAnimation(lowerName, "speaking", false, undefined, true)
+        .playAnimation(resolvedAnim, "Speaking", false, undefined, true)
         .catch(console.error);
     } else {
-      this.talkingAnimationName = lowerName;
-      this.stateManager.setState("speaking").catch(console.error);
+      this.talkingAnimationName = animName;
+      const resolvedState = this.resolveStateName("Speaking") || "Speaking";
+      this.stateManager.setState(resolvedState).catch(console.error);
     }
     this.balloon.onHide = () => {
       this.balloon.onHide = null;
       this.talkingAnimationName = null;
-      if (this.stateManager.currentStateName === "speaking") {
+      const speakingState = this.resolveStateName("Speaking") || "Speaking";
+      if (this.stateManager.currentStateName === speakingState) {
         this.animationManager.isExitingFlag = true;
         this.stateManager.handleAnimationCompleted();
       }
@@ -873,7 +897,8 @@ export class Agent {
           resolved = true;
           this.balloon.onHide = null;
           this.talkingAnimationName = null;
-          if (this.stateManager.currentStateName === "speaking") {
+          const speakingState = this.resolveStateName("Speaking") || "Speaking";
+          if (this.stateManager.currentStateName === speakingState) {
             this.animationManager.isExitingFlag = true;
             this.stateManager.handleAnimationCompleted();
           }
@@ -883,7 +908,8 @@ export class Agent {
         };
 
         this.balloon.onHide = () => {
-          if (this.stateManager.currentStateName === "speaking") {
+          const speakingState = this.resolveStateName("Speaking") || "Speaking";
+          if (this.stateManager.currentStateName === speakingState) {
             this.animationManager.isExitingFlag = true;
             this.stateManager.handleAnimationCompleted();
           }
@@ -923,11 +949,11 @@ export class Agent {
         };
 
         const handleFocus = () => {
-          this.startTalkingAnimation("writing");
+          this.startTalkingAnimation("Writing");
         };
 
         const handleBlur = () => {
-          this.startTalkingAnimation("explain");
+          this.startTalkingAnimation("Explain");
           // Force reposition because blurring might happen when clicking away,
           // and we want to ensure balloon is still correctly placed if it stays open.
           this.balloon.reposition();
@@ -1122,7 +1148,7 @@ export class Agent {
     // but in many implementations it's used to break current and start new.
     // Here we'll just clear the queue and play the new one.
     this.stop();
-    return this.play(animationName?.toLowerCase());
+    return this.play(animationName);
   }
 
   /**
