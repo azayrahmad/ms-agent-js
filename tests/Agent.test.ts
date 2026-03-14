@@ -253,7 +253,10 @@ describe('Agent.moveTo fallback', () => {
             return 1;
         });
 
-        (agent.definition.animations as any)['MovingLeft'] = { frames: [] };
+        const animName = 'MovingLeft';
+        (agent.definition.animations as any)[animName] = { frames: [] };
+        // We need to manually add it to the map because we're bypassing Agent.load
+        (agent as any).animationNameMap.set(animName.toLowerCase(), animName);
 
         // Move to screen-left
         const req = agent.moveTo(100, 500);
