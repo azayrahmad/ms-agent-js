@@ -27,8 +27,8 @@ export class StateManager {
   /** Reference to the request queue to suppress idles when busy. */
   private requestQueue?: RequestQueue;
 
-  /** The current behavioral state (e.g., "IdlingLevel1", "Showing", "Playing"). */
-  private currentState: string = 'Hidden';
+  /** The current behavioral state (e.g., "idlinglevel1", "showing", "playing"). */
+  private currentState: string = 'hidden';
   /** The current level of idle boredom (typically 1-3). */
   private currentIdleLevel: number = 1;
   /** Counter of idle intervals elapsed in the current level. */
@@ -40,7 +40,7 @@ export class StateManager {
   private idleIntervalMs: number = 10000;
   private ticksPerLevel: number = 12;
   private maxIdleLevel: number = 3;
-  private idlePrefix: string = 'IdlingLevel';
+  private idlePrefix: string = 'idlinglevel';
 
   /** Whether the state machine updates are currently paused. */
   private isPaused: boolean = true;
@@ -116,22 +116,22 @@ export class StateManager {
 
     // Check if the current animation sequence has finished
     if (!this.animationManager.isAnimating) {
-      if (this.currentState === 'Playing' || this.currentState === 'Moving') {
+      if (this.currentState === 'playing' || this.currentState === 'moving') {
         // After an explicit action finishes, we return to the base idling state.
         if (!hasRequests) {
           this.handleAnimationCompleted().catch(console.error);
         }
-      } else if (this.currentState === 'Showing') {
+      } else if (this.currentState === 'showing') {
         // After the intro animation completes, we transition to idling.
         if (!hasRequests) {
           this.returnToIdle().catch(console.error);
         }
-      } else if (this.currentState === 'Hiding') {
+      } else if (this.currentState === 'hiding') {
         // After the outro animation completes, the agent is hidden and paused.
-        this.currentState = 'Hidden';
+        this.currentState = 'hidden';
         this.isPaused = true;
         return;
-      } else if (this.currentState !== 'Hidden') {
+      } else if (this.currentState !== 'hidden') {
         // For other persistent states (e.g. "GesturingLeft"),
         // we loop or pick a new random animation immediately to ensure no visual gaps.
         // For Idling states, we let the onTick handler manage the frequency of animations.
@@ -143,11 +143,11 @@ export class StateManager {
 
     // Skip idle progression for transient/busy states or if requests are pending
     if (
-      this.currentState === 'Playing' ||
-      this.currentState === 'Showing' ||
-      this.currentState === 'Hiding' ||
-      this.currentState === 'Moving' ||
-      this.currentState === 'Speaking' ||
+      this.currentState === 'playing' ||
+      this.currentState === 'showing' ||
+      this.currentState === 'hiding' ||
+      this.currentState === 'moving' ||
+      this.currentState === 'speaking' ||
       hasRequests
     ) {
       this.elapsedSinceLastTick = 0;
@@ -190,7 +190,7 @@ export class StateManager {
    * Whether a specific state name represents an idle behavioral state.
    */
   private isIdleState(state: string): boolean {
-    return state.toLowerCase().startsWith(this.idlePrefix.toLowerCase());
+    return state.toLowerCase().startsWith(this.idlePrefix);
   }
 
   /**
@@ -215,26 +215,27 @@ export class StateManager {
    * @throws Error if the state name is invalid.
    */
   public async setState(stateName: string): Promise<void> {
+    const lowerName = stateName.toLowerCase();
     if (
-      !this.states[stateName] &&
-      stateName !== 'Playing' &&
-      stateName !== 'Speaking' &&
-      stateName !== 'Moving'
+      !this.states[lowerName] &&
+      lowerName !== 'playing' &&
+      lowerName !== 'speaking' &&
+      lowerName !== 'moving'
     ) {
       throw new Error(`Invalid state name: ${stateName}`);
     }
 
-    if (!this.isIdleState(stateName)) {
+    if (!this.isIdleState(lowerName)) {
       this.resetIdleProgression();
     }
 
-    this.currentState = stateName;
+    this.currentState = lowerName;
 
-    if (stateName !== 'Hidden') {
+    if (lowerName !== 'hidden') {
       this.isPaused = false;
     }
 
-    if (stateName !== 'Playing') {
+    if (lowerName !== 'playing') {
       await this.updateStateAnimation();
     }
   }
@@ -270,7 +271,7 @@ export class StateManager {
     }
 
     // Reset idle timers if we are no longer idling
-    if (this.currentState !== 'Playing' && !this.isIdleState(this.currentState)) {
+    if (this.currentState !== 'playing' && !this.isIdleState(this.currentState)) {
       this.resetIdleProgression();
     }
 
@@ -308,8 +309,8 @@ export class StateManager {
       // requested animation, to avoid interrupting subsequent actions.
       if (!hasRequests && this.lastAnimationId === currentAnimationId) {
         if (
-          this.currentState === 'Playing' ||
-          this.currentState === 'Speaking' ||
+          this.currentState === 'playing' ||
+          this.currentState === 'speaking' ||
           !this.animationManager.isAnimating
         ) {
           await this.handleAnimationCompleted();
@@ -327,7 +328,7 @@ export class StateManager {
 
     if (selectableAnimations.length > 0) {
       const randomAnimation = selectableAnimations[Math.floor(Math.random() * selectableAnimations.length)];
-      await this.playAnimation(randomAnimation, 'Playing', false, timeoutMs);
+      await this.playAnimation(randomAnimation, 'playing', false, timeoutMs);
     }
   }
 
@@ -336,9 +337,9 @@ export class StateManager {
    */
   public async handleAnimationCompleted(): Promise<void> {
     if (
-      this.currentState === 'Playing' ||
-      this.currentState === 'Moving' ||
-      this.currentState === 'Speaking'
+      this.currentState === 'playing' ||
+      this.currentState === 'moving' ||
+      this.currentState === 'speaking'
     ) {
       await this.returnToIdle();
     }
@@ -394,7 +395,7 @@ export class StateManager {
    * @param showing - True for intro/showing, False for outro/hiding.
    */
   public async handleVisibilityChange(showing: boolean): Promise<void> {
-    const visibilityState = showing ? 'Showing' : 'Hiding';
+    const visibilityState = showing ? 'showing' : 'hiding';
 
     if (this.states[visibilityState]) {
       const state = this.states[visibilityState];
@@ -410,13 +411,13 @@ export class StateManager {
         // For intro/outro animations, we want them to play once to completion.
         await this.animationManager.playAnimation(animName, true);
 
-        // Transition to Hidden or Idling after animation finishes
+        // Transition to hidden or idling after animation finishes
         if (showing) {
             // Start idle progression but don't await the non-blocking return call
             // to ensure the visibility request resolves promptly.
             this.returnToIdle().catch(console.error);
         } else {
-            this.currentState = 'Hidden';
+            this.currentState = 'hidden';
             this.isPaused = true;
         }
         return;
@@ -430,7 +431,7 @@ export class StateManager {
     } else {
       this.isPaused = true;
       this.animationManager.setAnimation('', false);
-      this.currentState = 'Hidden';
+      this.currentState = 'hidden';
     }
   }
 }

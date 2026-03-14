@@ -428,8 +428,12 @@ export class Agent {
       );
     }
 
-    // Ensure all image and sound references are lowercased for cross-environment compatibility
-    Object.values(definition.animations).forEach((animation) => {
+    // Ensure all animation and state names, and their image/sound references,
+    // are lowercased for case-insensitive matching and cross-environment compatibility.
+    const normalizedAnimations: Record<string, any> = {};
+    Object.entries(definition.animations).forEach(([name, animation]) => {
+      const lowerName = name.toLowerCase();
+      animation.name = lowerName;
       animation.frames.forEach((frame) => {
         frame.images.forEach((image) => {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
@@ -438,7 +442,18 @@ export class Agent {
           frame.soundEffect = frame.soundEffect.toLowerCase();
         }
       });
+      normalizedAnimations[lowerName] = animation;
     });
+    (definition as any).animations = normalizedAnimations;
+
+    const normalizedStates: Record<string, any> = {};
+    Object.entries(definition.states).forEach(([name, state]) => {
+      const lowerName = name.toLowerCase();
+      state.name = lowerName;
+      state.animations = state.animations.map((a) => a.toLowerCase());
+      normalizedStates[lowerName] = state;
+    });
+    (definition as any).states = normalizedStates;
 
     // Resolve final options with defaults
     const fullOptions: Required<AgentOptions> = {
@@ -481,10 +496,10 @@ export class Agent {
     this.startLoop();
     // Start showing the agent but don't await it, so the agent instance
     // is returned to the caller as soon as assets are ready.
-    if (this.definition.states['Showing']) {
+    if (this.definition.states['showing']) {
       this.show();
     } else {
-      this.stateManager.setState('IdlingLevel1');
+      this.stateManager.setState('idlinglevel1');
     }
   }
 
@@ -540,23 +555,24 @@ export class Agent {
     useExitBranch?: boolean,
     loop: boolean = false,
   ): AgentRequest {
+    const lowerName = animationName?.toLowerCase();
     return this.enqueueRequest(async (request) => {
-      if (!this.hasAnimation(animationName)) {
+      if (!this.hasAnimation(lowerName)) {
         console.warn(`MSAgentJS: Animation '${animationName}' not found.`);
         return;
       }
-      this.emit("animationStart", animationName);
+      this.emit("animationStart", lowerName);
       // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
       const shouldExit = useExitBranch ?? (!timeoutMs && !loop);
       await this.stateManager.playAnimation(
-        animationName,
-        "Playing",
+        lowerName,
+        "playing",
         shouldExit,
         timeoutMs,
         loop,
       );
       if (!request.isCancelled) {
-        this.emit("animationEnd", animationName);
+        this.emit("animationEnd", lowerName);
       }
     });
   }
@@ -588,7 +604,8 @@ export class Agent {
    * @returns True if the animation exists, false otherwise.
    */
   public hasAnimation(name: string): boolean {
-    return !!this.definition.animations[name];
+    if (!name) return false;
+    return !!this.definition.animations[name.toLowerCase()];
   }
 
   /**
@@ -602,14 +619,14 @@ export class Agent {
   public gestureAt(x: number, y: number): AgentRequest {
     return this.enqueueRequest(async (_request) => {
       const direction = this.toAgentPerspective(this.getDirection(x, y, 4));
-      const stateName = `Gesturing${direction}`;
+      const stateName = `gesturing${direction.toLowerCase()}`;
       if (this.definition.states[stateName]) {
         await this.stateManager.setState(stateName);
       } else {
         // Fallback to direct animation if the high-level state is missing
-        const animName = `Gesture${direction}`;
+        const animName = `gesture${direction.toLowerCase()}`;
         if (this.definition.animations[animName]) {
-          await this.stateManager.playAnimation(animName, "Gesturing");
+          await this.stateManager.playAnimation(animName, "gesturing");
         }
       }
     });
@@ -626,7 +643,7 @@ export class Agent {
   public lookAt(x: number, y: number): AgentRequest {
     return this.enqueueRequest(async (request) => {
       const direction = this.toAgentPerspective(this.getDirection(x, y, 8));
-      const animName = `Look${direction}`;
+      const animName = `look${direction.toLowerCase()}`;
 
       if (
         this.animationManager.currentAnimationName === animName &&
@@ -637,7 +654,7 @@ export class Agent {
 
       if (this.definition.animations[animName]) {
         this.emit("animationStart", animName);
-        await this.stateManager.playAnimation(animName, "Looking");
+        await this.stateManager.playAnimation(animName, "looking");
         if (!request.isCancelled) {
           this.emit("animationEnd", animName);
         }
@@ -651,9 +668,10 @@ export class Agent {
    * @param stateName - The name of the state (e.g., 'IdlingLevel2', 'Searching').
    */
   public async setState(stateName: string): Promise<void> {
+    const lowerName = stateName?.toLowerCase();
     const oldState = this.stateManager.currentStateName;
-    await this.stateManager.setState(stateName);
-    this.emit("stateChange", stateName, oldState);
+    await this.stateManager.setState(lowerName);
+    this.emit("stateChange", lowerName, oldState);
   }
 
   /**
@@ -681,21 +699,21 @@ export class Agent {
       const startTime = performance.now();
 
       const direction4 = this.getDirection(x, y, 4);
-      const moveAnim = `Moving${direction4}`;
+      const moveAnim = `moving${direction4.toLowerCase()}`;
       let activeAnim = "";
 
       if (this.definition.animations[moveAnim]) {
         activeAnim = moveAnim;
       } else {
         const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
-        const lookAnim = `Look${direction8}`;
+        const lookAnim = `look${direction8.toLowerCase()}`;
         if (this.definition.animations[lookAnim]) {
           activeAnim = lookAnim;
         }
       }
 
       if (activeAnim) {
-        this.stateManager.playAnimation(activeAnim, "Moving");
+        this.stateManager.playAnimation(activeAnim, "moving");
       }
 
       return new Promise<void>((resolve) => {
@@ -745,22 +763,23 @@ export class Agent {
   /**
    * Internal helper to start a talking animation and set up its termination.
    */
-  private startTalkingAnimation(animName: string = "Explain") {
-    if (this.talkingAnimationName === animName) return;
+  private startTalkingAnimation(animName: string = "explain") {
+    const lowerName = animName.toLowerCase();
+    if (this.talkingAnimationName === lowerName) return;
 
-    if (this.definition.animations[animName]) {
-      this.talkingAnimationName = animName;
+    if (this.definition.animations[lowerName]) {
+      this.talkingAnimationName = lowerName;
       this.stateManager
-        .playAnimation(animName, "Speaking", false, undefined, true)
+        .playAnimation(lowerName, "speaking", false, undefined, true)
         .catch(console.error);
     } else {
-      this.talkingAnimationName = animName;
-      this.stateManager.setState("Speaking").catch(console.error);
+      this.talkingAnimationName = lowerName;
+      this.stateManager.setState("speaking").catch(console.error);
     }
     this.balloon.onHide = () => {
       this.balloon.onHide = null;
       this.talkingAnimationName = null;
-      if (this.stateManager.currentStateName === "Speaking") {
+      if (this.stateManager.currentStateName === "speaking") {
         this.animationManager.isExitingFlag = true;
         this.stateManager.handleAnimationCompleted();
       }
@@ -854,7 +873,7 @@ export class Agent {
           resolved = true;
           this.balloon.onHide = null;
           this.talkingAnimationName = null;
-          if (this.stateManager.currentStateName === "Speaking") {
+          if (this.stateManager.currentStateName === "speaking") {
             this.animationManager.isExitingFlag = true;
             this.stateManager.handleAnimationCompleted();
           }
@@ -864,7 +883,7 @@ export class Agent {
         };
 
         this.balloon.onHide = () => {
-          if (this.stateManager.currentStateName === "Speaking") {
+          if (this.stateManager.currentStateName === "speaking") {
             this.animationManager.isExitingFlag = true;
             this.stateManager.handleAnimationCompleted();
           }
@@ -904,11 +923,11 @@ export class Agent {
         };
 
         const handleFocus = () => {
-          this.startTalkingAnimation("Writing");
+          this.startTalkingAnimation("writing");
         };
 
         const handleBlur = () => {
-          this.startTalkingAnimation("Explain");
+          this.startTalkingAnimation("explain");
           // Force reposition because blurring might happen when clicking away,
           // and we want to ensure balloon is still correctly placed if it stays open.
           this.balloon.reposition();
@@ -1103,7 +1122,7 @@ export class Agent {
     // but in many implementations it's used to break current and start new.
     // Here we'll just clear the queue and play the new one.
     this.stop();
-    return this.play(animationName);
+    return this.play(animationName?.toLowerCase());
   }
 
   /**

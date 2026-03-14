@@ -161,36 +161,36 @@ describe('Agent Directional Animations', () => {
         vi.spyOn(agent.stateManager, 'setState').mockResolvedValue(undefined);
     });
 
-    it('should use GesturingRight when gesturing at a point to the screen-left', async () => {
+    it('should use gesturingright when gesturing at a point to the screen-left', async () => {
         // Agent is at (500, 500) with size 100x100 -> Center is (550, 550)
         // Target (100, 550) is to the screen-left
         await agent.gestureAt(100, 550);
 
         // Screen-left should trigger Agent-Right
-        expect(agent.stateManager.setState).toHaveBeenCalledWith('GesturingRight');
+        expect(agent.stateManager.setState).toHaveBeenCalledWith('gesturingright');
     });
 
-    it('should use GesturingLeft when gesturing at a point to the screen-right', async () => {
+    it('should use gesturingleft when gesturing at a point to the screen-right', async () => {
         // Target (900, 550) is to the screen-right
         await agent.gestureAt(900, 550);
 
         // Screen-right should trigger Agent-Left
-        expect(agent.stateManager.setState).toHaveBeenCalledWith('GesturingLeft');
+        expect(agent.stateManager.setState).toHaveBeenCalledWith('gesturingleft');
     });
 
-    it('should use LookRight when looking at a point to the screen-left', async () => {
+    it('should use lookright when looking at a point to the screen-left', async () => {
         await agent.lookAt(100, 550);
 
         // Screen-left should trigger Agent-Right
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookRight', 'Looking');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('lookright', 'looking');
     });
 
-    it('should use LookDownRight when looking at a point to the screen-down-left', async () => {
+    it('should use lookdownright when looking at a point to the screen-down-left', async () => {
         // Target (100, 900) is screen-down and screen-left from (550, 550)
         await agent.lookAt(100, 900);
 
         // Screen-DownLeft should trigger Agent-DownRight
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookDownRight', 'Looking');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('lookdownright', 'looking');
     });
 });
 
@@ -225,7 +225,7 @@ describe('Agent.moveTo fallback', () => {
         vi.spyOn(agent as any, 'draw').mockImplementation(() => {});
     });
 
-    it('should use Look animation if Moving animation is missing (with perspective swap)', async () => {
+    it('should use look animation if moving animation is missing (with perspective swap)', async () => {
         // Capture the moveStep function
         let moveStep: any;
         vi.stubGlobal('requestAnimationFrame', (fn: any) => {
@@ -238,14 +238,14 @@ describe('Agent.moveTo fallback', () => {
         const req = agent.moveTo(100, 100);
 
         // Screen UpLeft should trigger Agent UpRight (swapped)
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookUpRight', 'Moving');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('lookupright', 'moving');
 
         // Finish movement
         moveStep(performance.now() + 10000);
         await req;
     });
 
-    it('should use Moving animation if it exists', async () => {
+    it('should use moving animation if it exists', async () => {
         // Capture the moveStep function
         let moveStep: any;
         vi.stubGlobal('requestAnimationFrame', (fn: any) => {
@@ -253,12 +253,12 @@ describe('Agent.moveTo fallback', () => {
             return 1;
         });
 
-        (agent.definition.animations as any)['MovingLeft'] = { frames: [] };
+        (agent.definition.animations as any)['movingleft'] = { frames: [] };
 
         // Move to screen-left
         const req = agent.moveTo(100, 500);
 
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('MovingLeft', 'Moving');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('movingleft', 'moving');
 
         // Finish movement
         moveStep(performance.now() + 10000);
@@ -293,25 +293,25 @@ describe('Agent Visibility', () => {
         agent = await Agent.load('Clippit');
     });
 
-    it('should await the full Showing animation', async () => {
+    it('should await the full showing animation', async () => {
         const playSpy = agent.animationManager.playAnimation;
 
         await agent.show();
 
         // Showing animation should be called with useExitBranch=true to play once to completion
-        expect(playSpy).toHaveBeenCalledWith('Showing', true);
-        // Note: With the non-blocking returnToIdle, the state name might still be 'Showing'
+        expect(playSpy).toHaveBeenCalledWith('showing', true);
+        // Note: With the non-blocking returnToIdle, the state name might still be 'showing'
         // immediately after show() resolves if we don't wait for the idle transition.
     });
 
-    it('should await the full Hiding animation and then set display none', async () => {
+    it('should await the full hiding animation and then set display none', async () => {
         const playSpy = agent.animationManager.playAnimation;
 
         await agent.hide();
 
         // Hiding animation should be called with useExitBranch=true to play once to completion
-        expect(playSpy).toHaveBeenCalledWith('Hiding', true);
-        expect(agent.stateManager.currentStateName).toBe('Hidden');
+        expect(playSpy).toHaveBeenCalledWith('hiding', true);
+        expect(agent.stateManager.currentStateName).toBe('hidden');
         // Container should be hidden after await
         expect((agent as any).container.style.display).toBe('none');
     });
