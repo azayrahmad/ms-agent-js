@@ -77,4 +77,4 @@ See **[docs/assets.md](./docs/assets.md)** for more details on how this works.
 
 ## 🔍 Internal Architecture
 
-For a deep dive into how the engine works (rendering loops, request queues, etc.), please see **[AGENTS.md](./AGENTS.md)**.
+For a deep dive into how the engine works (rendering loops, request queues, etc.), please see **[docs/internals.md](./docs/internals.md)**.

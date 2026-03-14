@@ -43,7 +43,8 @@ init();
 - **[Request System](./docs/request-system.md)**: Understanding the asynchronous action queue.
 - **[Asset Management](./docs/assets.md)**: How to add and optimize new agents.
 - **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
-- **[Internal Architecture](./AGENTS.md)**: Deep dive for developers and AI agents.
+- **[Internal Architecture](./docs/internals.md)**: Deep dive into the engine's core logic.
+- **[AI Onboarding](./AGENTS.md)**: Specific recipes and tips for AI agents.
 
 ## 🤝 Credits
 
