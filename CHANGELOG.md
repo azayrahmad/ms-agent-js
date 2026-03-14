@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.2.0...v0.3.0) (2026-03-14)
+
+
+### Features
+
+* add custom show/hide animations ([e110c1c](https://github.com/azayrahmad/ms-agent-js/commit/e110c1cc270fbfd8366ed0a77b95f7711f9b55c6))
+* enable cancellable agent load progress bar ([df2f853](https://github.com/azayrahmad/ms-agent-js/commit/df2f853cdf97b588281b03ade0deb1ce86ea633a))
+
 ## [0.2.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.1.0...v0.2.0) (2026-03-13)
 
 
