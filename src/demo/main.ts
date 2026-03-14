@@ -109,7 +109,7 @@ async function initDemo() {
           </div>
           <div class="window-body">
             <p id="loading-status">Starting download...</p>
-            <div class="progress-indicator">
+            <div id="loading-progress-container" class="progress-indicator">
               <span id="loading-progress-bar" class="progress-indicator-bar" style="width: 0%"></span>
             </div>
             <div class="field-row" style="justify-content: flex-end; margin-top: 10px;">
@@ -132,6 +132,9 @@ async function initDemo() {
     const loadingStatus = progressWindow.querySelector(
       "#loading-status",
     ) as HTMLParagraphElement;
+    const loadingProgressContainer = progressWindow.querySelector(
+      "#loading-progress-container",
+    ) as HTMLDivElement;
     const loadingProgressBar = progressWindow.querySelector(
       "#loading-progress-bar",
     ) as HTMLSpanElement;
@@ -154,13 +157,15 @@ async function initDemo() {
         onProgress: (progress) => {
           loadingStatus.textContent = `Downloading ${progress.filename}...`;
           if (progress.total > 0) {
-            const percent = Math.round(
-              (progress.loaded / progress.total) * 100,
+            loadingProgressContainer.classList.remove("segmented");
+            const percent = Math.min(
+              100,
+              Math.round((progress.loaded / progress.total) * 100),
             );
             loadingProgressBar.style.width = `${percent}%`;
           } else {
             // Indeterminate if total is unknown
-            loadingProgressBar.classList.add("segmented");
+            loadingProgressContainer.classList.add("segmented");
             loadingProgressBar.style.width = "100%";
           }
         },
