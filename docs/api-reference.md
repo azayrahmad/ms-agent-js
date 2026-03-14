@@ -77,6 +77,10 @@ Displays text in a speech balloon.
 - **`useTTS`**: Enable/disable system speech for this request (default: true).
 - **`skipTyping`**: Show all text instantly (default: false).
 
+### `agent.showHtml(html, hold?)`
+Displays raw HTML inside the speech balloon.
+- **`hold`**: If true, the balloon stays open until manually closed.
+
 ### `agent.ask(options?)`
 Opens an interactive dialog with a text input.
 - **`title`**: Header text for the dialog.
@@ -89,6 +93,12 @@ Stops the current action or a specific request.
 
 ### `agent.stopCurrent()`
 Stops the currently active request and proceeds to the next in the queue.
+
+### `agent.wait(request)`
+Causes the character's request queue to wait until the specified `AgentRequest` completes.
+
+### `agent.delay(ms)`
+Queues a silent delay for the specified number of milliseconds.
 
 ### `agent.interrupt(animationName)`
 Stops all current actions and immediately plays the new animation.
@@ -105,6 +115,11 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions.
 
+Subscribe using `agent.on(eventName, callback)` and unsubscribe using `agent.off(eventName, callback)`.
+
+### `agent.destroy()`
+Performs full cleanup: cancels animations, stops speech, and removes the agent from the DOM.
+
 ---
 
 ## Text-to-Speech (TTS)
@@ -119,6 +134,15 @@ agent.setTTSOptions({
   voice: agent.getTTSVoices().find(v => v.name === 'Alex')
 });
 ```
+
+### `agent.setTTSOptions(options)`
+Configures global Text-to-Speech settings (rate, pitch, volume, voice).
+
+### `agent.getTTSVoices()`
+Returns an array of available system voices.
+
+### `agent.stopTTS()`
+Instantly stops any ongoing system speech.
 
 ---
 

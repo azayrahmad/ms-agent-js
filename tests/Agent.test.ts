@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
 import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { setupGlobals } from './setup';
 
 // Mock CharacterParser.load to avoid actual network requests
 vi.mock('../src/core/resources/CharacterParser', () => {
@@ -18,91 +19,26 @@ vi.mock('../src/core/resources/SpriteManager', () => {
         init = vi.fn().mockResolvedValue(undefined);
         getSpriteWidth = vi.fn().mockReturnValue(100);
         getSpriteHeight = vi.fn().mockReturnValue(100);
+        loadSprite = vi.fn().mockResolvedValue(undefined);
     }
     return { SpriteManager };
 });
 
 describe('Agent.load', () => {
+    const mockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
+        balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
+        animations: {},
+        states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
+    };
+
     beforeEach(() => {
         vi.clearAllMocks();
-
-        // Mock window.innerWidth and window.innerHeight
-        vi.stubGlobal('window', {
-            innerWidth: 1024,
-            innerHeight: 768,
-            AudioContext: vi.fn().mockImplementation(() => ({
-                createBuffer: vi.fn(),
-                decodeAudioData: vi.fn(),
-            })),
-            requestAnimationFrame: vi.fn().mockReturnValue(1),
-            cancelAnimationFrame: vi.fn(),
-            navigator: { userAgent: 'test' },
-            speechSynthesis: {
-                getVoices: vi.fn().mockReturnValue([]),
-                speak: vi.fn(),
-                cancel: vi.fn(),
-                speaking: false
-            }
-        });
-        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
-        vi.stubGlobal('cancelAnimationFrame', vi.fn());
-
-        // Mock document.createElement for canvas and style
-        vi.stubGlobal('document', {
-            createElementNS: vi.fn().mockImplementation((ns, tag) => {
-                const el: any = {
-                    style: {},
-                    appendChild: vi.fn(),
-                    setAttribute: vi.fn(),
-                    className: '',
-                    querySelector: vi.fn(),
-                };
-                return el;
-            }),
-            createElement: vi.fn().mockImplementation((tag) => {
-                const el: any = {
-                    style: {},
-                    appendChild: vi.fn(),
-                    className: '',
-                    classList: {
-                        add: vi.fn(),
-                        remove: vi.fn()
-                    },
-                    addEventListener: vi.fn(),
-                    querySelector: vi.fn(),
-                    getBoundingClientRect: vi.fn().mockReturnValue({ width: 0, height: 0, top: 0, left: 0, bottom: 0, right: 0 }),
-                    offsetWidth: 0,
-                    offsetHeight: 0
-                };
-
-                if (tag === 'canvas') {
-                    el.getContext = vi.fn().mockReturnValue({});
-                    el.width = 0;
-                    el.height = 0;
-                    el.getBoundingClientRect = vi.fn().mockReturnValue({ width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100 });
-                } else if (tag === 'style') {
-                    el.textContent = '';
-                } else if (tag === 'div') {
-                    el.attachShadow = vi.fn().mockReturnValue({
-                        appendChild: vi.fn(),
-                        host: el
-                    });
-                }
-                return el;
-            }),
-            body: {
-                appendChild: vi.fn()
-            }
-        });
+        setupGlobals(mockDefinition);
     });
 
     it('should use unpkg CDN as default baseUrl when none is provided', async () => {
-        const mockDefinition = {
-            character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
-            balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
-            animations: {},
-            states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
-        };
+        (window as any).__mockFetchFailAgentJson = true;
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
 
         const agentName = 'Clippit';
@@ -111,16 +47,11 @@ describe('Agent.load', () => {
         const expectedBaseUrl = `https://unpkg.com/ms-agent-js@latest/dist/agents/${agentName}`;
         const expectedAcdPath = `${expectedBaseUrl}/${agentName.toUpperCase()}.acd`;
 
-        expect(CharacterParser.load).toHaveBeenCalledWith(expectedAcdPath);
+        expect(CharacterParser.load).toHaveBeenCalledWith(expectedAcdPath, undefined);
     });
 
     it('should use provided baseUrl when one is given', async () => {
-        const mockDefinition = {
-            character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
-            balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
-            animations: {},
-            states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
-        };
+        (window as any).__mockFetchFailAgentJson = true;
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
 
         const agentName = 'Clippit';
@@ -129,7 +60,7 @@ describe('Agent.load', () => {
 
         const expectedAcdPath = `${customBaseUrl}/${agentName.toUpperCase()}.acd`;
 
-        expect(CharacterParser.load).toHaveBeenCalledWith(expectedAcdPath);
+        expect(CharacterParser.load).toHaveBeenCalledWith(expectedAcdPath, undefined);
     });
 });
 
@@ -155,6 +86,7 @@ describe('Agent Directional Animations', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
         agent = await Agent.load('Clippit', { x: 500, y: 500, scale: 1 });
         vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
@@ -214,6 +146,7 @@ describe('Agent.moveTo fallback', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
 
         // Prevent requestAnimationFrame loops
@@ -284,6 +217,7 @@ describe('Agent Visibility', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
 
         // Mock playAnimation on the prototype to avoid deadlocks during Agent.load()

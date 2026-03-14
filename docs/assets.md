@@ -38,6 +38,7 @@ To convert legacy files into the optimized format, use the included CLI tool:
 
 ```bash
 # Point the script to your agent's folder
+npm install # Ensure dependencies like sharp are installed
 npx tsx scripts/optimize-agent.ts public/agents/Merlin
 ```
 
