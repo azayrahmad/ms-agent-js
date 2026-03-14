@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
-import { CharacterParser } from '../src/CharacterParser';
-import { AnimationManager } from '../src/AnimationManager';
+import { CharacterParser } from '../src/core/resources/CharacterParser';
+import { AnimationManager } from '../src/core/behavior/AnimationManager';
 
 // Mock CharacterParser.load to avoid actual network requests
-vi.mock('../src/CharacterParser', () => {
+vi.mock('../src/core/resources/CharacterParser', () => {
     return {
         CharacterParser: {
             load: vi.fn()
@@ -13,7 +13,7 @@ vi.mock('../src/CharacterParser', () => {
 });
 
 // Mock SpriteManager to avoid canvas/BMP logic in Node environment
-vi.mock('../src/SpriteManager', () => {
+vi.mock('../src/core/resources/SpriteManager', () => {
     class SpriteManager {
         init = vi.fn().mockResolvedValue(undefined);
         getSpriteWidth = vi.fn().mockReturnValue(100);
@@ -222,7 +222,7 @@ describe('Agent.moveTo fallback', () => {
         agent = await Agent.load('Clippit', { x: 500, y: 500, scale: 1 });
         vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
         // Mock draw to avoid clearRect errors
-        vi.spyOn(agent as any, 'draw').mockImplementation(() => {});
+        vi.spyOn((agent as any).renderer, 'draw').mockImplementation(() => {});
     });
 
     it('should use Look animation if Moving animation is missing (with perspective swap)', async () => {

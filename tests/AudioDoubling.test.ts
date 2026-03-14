@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AnimationManager } from '../src/AnimationManager';
-import { type Animation } from '../src/types';
+import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { type Animation } from '../src/core/base/types';
 
 describe('Audio Doubling Reproduction', () => {
   let spriteManager: any;
@@ -83,7 +83,7 @@ describe('Audio Doubling Reproduction', () => {
   });
 
   it('should not play the same sound multiple times if requested while loading', async () => {
-    const { AudioManager } = await import('../src/AudioManager');
+    const { AudioManager } = await import('../src/core/resources/AudioManager');
     const audioManager = new AudioManager('base');
 
     // Mock fetch to delay

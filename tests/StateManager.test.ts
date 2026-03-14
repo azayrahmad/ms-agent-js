@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { StateManager } from '../src/StateManager';
-import { AnimationManager } from '../src/AnimationManager';
+import { StateManager } from '../src/core/behavior/StateManager';
+import { AnimationManager } from '../src/core/behavior/AnimationManager';
 
 describe('StateManager', () => {
   let stateManager: StateManager;

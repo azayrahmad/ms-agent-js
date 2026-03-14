@@ -1,4 +1,4 @@
-import { type AgentCharacterDefinition, CharacterStyle } from "./types";
+import { type AgentCharacterDefinition, CharacterStyle } from "../core/base/types";
 
 /**
  * Options for Text-to-Speech (TTS) output.
@@ -77,6 +77,8 @@ export class Balloon {
 
   /** Callback triggered when the balloon is hidden. */
   public onHide: (() => void) | null = null;
+  /** Callback triggered when a word or character boundary is reached during speech. */
+  public onSpeak: ((text: string, charIndex: number) => void) | null = null;
 
   /** Time in milliseconds to wait between typing each character. */
   public CHAR_SPEAK_TIME = 50;
@@ -568,6 +570,7 @@ export class Balloon {
         if (onBoundary) {
             onBoundary(event.charIndex);
         }
+        this.onSpeak?.(text, event.charIndex);
     };
     utterance.onend = () => onEnd();
     utterance.onerror = () => onEnd();

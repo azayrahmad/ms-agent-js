@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { RequestQueue } from '../src/RequestQueue';
-import { RequestStatus } from '../src/types';
+import { RequestQueue } from '../src/core/behavior/RequestQueue';
+import { RequestStatus } from '../src/core/base/types';
 
 describe('RequestQueue', () => {
   it('should execute tasks sequentially', async () => {

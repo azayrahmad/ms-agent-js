@@ -1,7 +1,8 @@
 import {
   type FrameDefinition,
   type AgentCharacterDefinition,
-} from './types';
+} from "../base/types";
+import { fetchWithProgress } from "../../utils";
 
 /**
  * SpriteManager class for loading, caching, and rendering agent sprites.
@@ -9,7 +10,8 @@ import {
  */
 export class SpriteManager {
   /** Cache for individual loaded sprites (canvases or images). */
-  private sprites: Map<string, HTMLCanvasElement | HTMLImageElement> = new Map();
+  private sprites: Map<string, HTMLCanvasElement | HTMLImageElement> =
+    new Map();
   /** The RGB color to be treated as transparent during BMP processing. */
   private transparencyColor: { r: number; g: number; b: number } | null = null;
   /** Base URL for agent assets. */
@@ -18,14 +20,36 @@ export class SpriteManager {
   private definition: AgentCharacterDefinition;
   /** The loaded texture atlas image, if used. */
   private spriteSheet: HTMLImageElement | null = null;
+  /** Optional loading options. */
+  private options: {
+    signal?: AbortSignal;
+    onProgress?: (progress: {
+      loaded: number;
+      total: number;
+      filename: string;
+    }) => void;
+  };
 
   /**
    * @param agentRoot - The base URL where agent assets are located.
    * @param definition - The character definition containing frame and metadata info.
+   * @param options - Optional loading options.
    */
-  constructor(agentRoot: string, definition: AgentCharacterDefinition) {
+  constructor(
+    agentRoot: string,
+    definition: AgentCharacterDefinition,
+    options: {
+      signal?: AbortSignal;
+      onProgress?: (progress: {
+        loaded: number;
+        total: number;
+        filename: string;
+      }) => void;
+    } = {},
+  ) {
     this.agentRoot = agentRoot;
     this.definition = definition;
+    this.options = options;
   }
 
   /**
@@ -35,9 +59,9 @@ export class SpriteManager {
    */
   public async init(): Promise<void> {
     if (this.definition.atlas) {
-        await this.loadSpriteSheet();
+      await this.loadSpriteSheet();
     } else {
-        await this.loadTransparencyColor();
+      await this.loadTransparencyColor();
     }
   }
 
@@ -45,24 +69,39 @@ export class SpriteManager {
    * Attempts to load the texture atlas image in WebP or PNG format.
    */
   private async loadSpriteSheet(): Promise<void> {
-    const extensions = ['webp', 'png'];
+    const extensions = ["webp", "png"];
     for (const ext of extensions) {
       try {
+        const url = `${this.agentRoot}/agent.${ext}`;
+        const response = await fetchWithProgress(url, {
+          signal: this.options.signal,
+          onProgress: this.options.onProgress,
+        });
+
+        if (!response.ok) continue;
+
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
         await new Promise<void>((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             this.spriteSheet = img;
+            URL.revokeObjectURL(objectUrl);
             resolve();
           };
-          img.onerror = () => reject();
-          img.src = `${this.agentRoot}/agent.${ext}`;
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject();
+          };
+          img.src = objectUrl;
         });
         return;
       } catch (e) {
+        if (e instanceof Error && e.name === "AbortError") throw e;
         // Try next extension
       }
     }
-    throw new Error('Failed to load sprite sheet (tried webp, png)');
+    throw new Error("Failed to load sprite sheet (tried webp, png)");
   }
 
   /**
@@ -73,14 +112,14 @@ export class SpriteManager {
     const colorTablePath = this.definition.character.colorTable;
     const pathsToTry: string[] = [];
 
-    if (colorTablePath.startsWith('http')) {
+    if (colorTablePath.startsWith("http")) {
       pathsToTry.push(colorTablePath);
     } else {
-      const normalizedPath = colorTablePath.replace(/\\/g, '/');
+      const normalizedPath = colorTablePath.replace(/\\/g, "/");
       pathsToTry.push(`${this.agentRoot}/${normalizedPath}`);
       pathsToTry.push(`${this.agentRoot}/${normalizedPath.toLowerCase()}`);
 
-      const fileName = normalizedPath.split('/').pop() || 'ColorTable.bmp';
+      const fileName = normalizedPath.split("/").pop() || "ColorTable.bmp";
       pathsToTry.push(`${this.agentRoot}/${fileName}`);
       pathsToTry.push(`${this.agentRoot}/${fileName.toLowerCase()}`);
       pathsToTry.push(`${this.agentRoot}/Images/${fileName}`);
@@ -90,33 +129,41 @@ export class SpriteManager {
     let response: Response | null = null;
 
     for (const url of pathsToTry) {
-        try {
-            const res = await fetch(url);
-            if (res.ok) {
-                const contentType = res.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    // Likely a 404 redirected to index.html
-                    continue;
-                }
-                response = res;
-                break;
-            }
-        } catch (e) {
-            // Continue
+      try {
+        const res = await fetch(url, { signal: this.options.signal });
+        if (res.ok) {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("text/html")) {
+            // Likely a 404 redirected to index.html
+            continue;
+          }
+          response = res;
+          break;
         }
+      } catch (e) {
+        // Continue
+      }
     }
 
     if (!response || !response.ok) {
-      throw new Error(`Failed to load color table. Tried: ${pathsToTry.join(', ')}`);
+      throw new Error(
+        `Failed to load color table. Tried: ${pathsToTry.join(", ")}`,
+      );
     }
     const buffer = await response.arrayBuffer();
-    this.transparencyColor = this.getPaletteColor(buffer, this.definition.character.transparency);
+    this.transparencyColor = this.getPaletteColor(
+      buffer,
+      this.definition.character.transparency,
+    );
   }
 
   /**
    * Extracts an RGB color from a BMP's palette at a specific index.
    */
-  private getPaletteColor(buffer: ArrayBuffer, index: number): { r: number; g: number; b: number } {
+  private getPaletteColor(
+    buffer: ArrayBuffer,
+    index: number,
+  ): { r: number; g: number; b: number } {
     const view = new DataView(buffer);
     // BMP Header check: 'BM'
     const magic = view.getUint16(0, true);
@@ -131,7 +178,7 @@ export class SpriteManager {
     const paletteIndex = offsetToPalette + index * 4;
 
     if (paletteIndex + 3 > buffer.byteLength) {
-      throw new Error('Palette index out of range');
+      throw new Error("Palette index out of range");
     }
 
     return {
@@ -151,39 +198,41 @@ export class SpriteManager {
     if (this.sprites.has(filename) || this.spriteSheet) return;
 
     const pathsToTry: string[] = [];
-    if (filename.startsWith('http')) {
-        pathsToTry.push(filename);
+    if (filename.startsWith("http")) {
+      pathsToTry.push(filename);
     } else {
-        const normalizedPath = filename.replace(/\\/g, '/');
-        const baseName = normalizedPath.split('/').pop() || '';
+      const normalizedPath = filename.replace(/\\/g, "/");
+      const baseName = normalizedPath.split("/").pop() || "";
 
-        pathsToTry.push(`${this.agentRoot}/${normalizedPath}`);
-        pathsToTry.push(`${this.agentRoot}/${normalizedPath.toLowerCase()}`);
-        pathsToTry.push(`${this.agentRoot}/Images/${baseName}`);
-        pathsToTry.push(`${this.agentRoot}/images/${baseName.toLowerCase()}`);
-        pathsToTry.push(`${this.agentRoot}/${baseName}`);
-        pathsToTry.push(`${this.agentRoot}/${baseName.toLowerCase()}`);
+      pathsToTry.push(`${this.agentRoot}/${normalizedPath}`);
+      pathsToTry.push(`${this.agentRoot}/${normalizedPath.toLowerCase()}`);
+      pathsToTry.push(`${this.agentRoot}/Images/${baseName}`);
+      pathsToTry.push(`${this.agentRoot}/images/${baseName.toLowerCase()}`);
+      pathsToTry.push(`${this.agentRoot}/${baseName}`);
+      pathsToTry.push(`${this.agentRoot}/${baseName.toLowerCase()}`);
     }
 
     let response: Response | null = null;
     for (const url of pathsToTry) {
-        try {
-            const res = await fetch(url);
-            if (res.ok) {
-                const contentType = res.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    continue;
-                }
-                response = res;
-                break;
-            }
-        } catch (e) {
-            // Continue
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("text/html")) {
+            continue;
+          }
+          response = res;
+          break;
         }
+      } catch (e) {
+        // Continue
+      }
     }
 
     if (!response || !response.ok) {
-      throw new Error(`Failed to load sprite ${filename}. Tried: ${pathsToTry.join(', ')}`);
+      throw new Error(
+        `Failed to load sprite ${filename}. Tried: ${pathsToTry.join(", ")}`,
+      );
     }
     const buffer = await response.arrayBuffer();
     const canvas = this.bmpToCanvas(buffer);
@@ -207,16 +256,18 @@ export class SpriteManager {
     const bitCount = view.getUint16(28, true);
 
     if (bitCount !== 8 && bitCount !== 24 && bitCount !== 32) {
-      throw new Error(`Unsupported BMP bit count: ${bitCount}-bit. Supported: 8, 24, 32.`);
+      throw new Error(
+        `Unsupported BMP bit count: ${bitCount}-bit. Supported: 8, 24, 32.`,
+      );
     }
 
     const offsetToPixels = view.getUint32(10, true);
     const infoHeaderSize = view.getUint32(14, true);
 
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext("2d")!;
     const imageData = ctx.createImageData(width, height);
 
     if (bitCount === 8) {
@@ -278,7 +329,13 @@ export class SpriteManager {
   /**
    * Sets a pixel's color in ImageData, applying transparency if it matches the transparency color.
    */
-  private setPixel(imageData: ImageData, index: number, r: number, g: number, b: number): void {
+  private setPixel(
+    imageData: ImageData,
+    index: number,
+    r: number,
+    g: number,
+    b: number,
+  ): void {
     imageData.data[index] = r;
     imageData.data[index + 1] = g;
     imageData.data[index + 2] = b;
@@ -310,7 +367,7 @@ export class SpriteManager {
     frame: FrameDefinition,
     x: number,
     y: number,
-    scale: number = 1
+    scale: number = 1,
   ): void {
     if (!frame.images) return;
 
@@ -332,7 +389,7 @@ export class SpriteManager {
             x + (imgDef.offsetX + trimX) * scale,
             y + (imgDef.offsetY + trimY) * scale,
             atlasEntry.w * scale,
-            atlasEntry.h * scale
+            atlasEntry.h * scale,
           );
           continue;
         }
@@ -345,7 +402,7 @@ export class SpriteManager {
           x + imgDef.offsetX * scale,
           y + imgDef.offsetY * scale,
           sprite.width * scale,
-          sprite.height * scale
+          sprite.height * scale,
         );
       }
     }

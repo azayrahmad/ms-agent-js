@@ -1,4 +1,4 @@
-import { type AgentRequest, RequestStatus } from "./types";
+import { type AgentRequest, RequestStatus } from "../base/types";
 
 type RequestTask = (request: AgentRequest) => Promise<void>;
 
