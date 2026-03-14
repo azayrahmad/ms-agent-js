@@ -36,6 +36,36 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
+      {
+        name: 'minify-agent-json',
+        apply: 'build',
+        enforce: 'post',
+        closeBundle: async () => {
+          const { promises: fs } = await import('fs');
+          const outDirs = ['dist', 'dist-app'];
+
+          for (const outDir of outDirs) {
+            const agentsDir = resolve(__dirname, outDir, 'agents');
+            try {
+              const entries = await fs.readdir(agentsDir, { withFileTypes: true });
+              for (const entry of entries) {
+                if (entry.isDirectory()) {
+                  const agentJsonPath = resolve(agentsDir, entry.name, 'agent.json');
+                  try {
+                    const content = await fs.readFile(agentJsonPath, 'utf-8');
+                    const minified = JSON.stringify(JSON.parse(content));
+                    await fs.writeFile(agentJsonPath, minified);
+                  } catch (e) {
+                    // Ignore if agent.json doesn't exist in a subfolder
+                  }
+                }
+              }
+            } catch (e) {
+              // Ignore if outDir or agentsDir doesn't exist
+            }
+          }
+        },
+      },
     ],
   };
 });
