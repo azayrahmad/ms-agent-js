@@ -16,16 +16,17 @@ When calling `Agent.load(name, options)`, you can pass a configuration object:
 | `useAudio` | `boolean` | `true` | Whether to enable sound effects. |
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | Bottom Right | Initial coordinates of the agent. |
+| `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 
 ---
 
 ## Positioning & Visibility
 
-### `agent.show()`
-Plays the "Showing" animation and makes the agent visible. Returns a promise that resolves when the animation finishes.
+### `agent.show(animationName?)`
+Plays the "Showing" animation (or custom) and makes the agent visible. Returns a promise that resolves when the animation finishes.
 
-### `agent.hide()`
-Plays the "Hiding" animation and hides the agent. Returns a promise that resolves when the animation finishes.
+### `agent.hide(animationName?)`
+Plays the "Hiding" animation (or custom) and hides the agent. Returns a promise that resolves when the animation finishes.
 
 ### `agent.moveTo(x, y, speed?)`
 Smoothly moves the agent to the specified coordinates.

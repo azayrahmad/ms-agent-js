@@ -189,6 +189,8 @@ export interface AgentOptions {
   x?: number;
   /** Initial vertical position in pixels. */
   y?: number;
+  /** Optional initial animation to play instead of 'Showing'. */
+  initialAnimation?: string;
 }
 
 export interface AgentCharacterDefinition {

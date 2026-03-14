@@ -2,7 +2,11 @@ import { CharacterParser } from "./core/resources/CharacterParser";
 import { AgentCore } from "./core/Core";
 import { AgentRenderer } from "./ui/Renderer";
 import type { TTSOptions } from "./ui/Balloon";
-import type { AgentCharacterDefinition, AgentRequest, AgentOptions } from "./core/base/types";
+import type {
+  AgentCharacterDefinition,
+  AgentRequest,
+  AgentOptions,
+} from "./core/base/types";
 
 /** Generic listener type for agent events. */
 type AgentEventListener = (...args: any[]) => void;
@@ -36,23 +40,43 @@ export class Agent {
   private initialAgentY: number = 0;
 
   /** The full parsed character definition for this agent. */
-  public get definition(): AgentCharacterDefinition { return this.core.definition; }
+  public get definition(): AgentCharacterDefinition {
+    return this.core.definition;
+  }
   /** Manager responsible for loading and rendering sprites. */
-  public get spriteManager() { return this.core.spriteManager; }
+  public get spriteManager() {
+    return this.core.spriteManager;
+  }
   /** Manager responsible for playing sound effects. */
-  public get audioManager() { return this.core.audioManager; }
+  public get audioManager() {
+    return this.core.audioManager;
+  }
   /** Manager responsible for low-level animation sequences. */
-  public get animationManager() { return this.core.animationManager; }
+  public get animationManager() {
+    return this.core.animationManager;
+  }
   /** Manager responsible for high-level behavioral states and idles. */
-  public get stateManager() { return this.core.stateManager; }
+  public get stateManager() {
+    return this.core.stateManager;
+  }
   /** Manager responsible for the speech balloon UI. */
-  public get balloon() { return this.renderer.balloon; }
+  public get balloon() {
+    return this.renderer.balloon;
+  }
   /** Manager responsible for queuing character actions. */
-  public get requestQueue() { return this.core.requestQueue; }
+  public get requestQueue() {
+    return this.core.requestQueue;
+  }
   /** Resolved options used to initialize the agent. */
-  public get options() { return this.core.options; }
+  public get options() {
+    return this.core.options;
+  }
 
-  private constructor(core: AgentCore, renderer: AgentRenderer, container: HTMLElement) {
+  private constructor(
+    core: AgentCore,
+    renderer: AgentRenderer,
+    container: HTMLElement,
+  ) {
     this.core = core;
     this.renderer = renderer;
     this.container = container;
@@ -73,7 +97,10 @@ export class Agent {
    * @param options - Custom configuration for the agent.
    * @returns A promise resolving to the initialized Agent instance.
    */
-  public static async load(name: string, options: AgentOptions = {}): Promise<Agent> {
+  public static async load(
+    name: string,
+    options: AgentOptions = {},
+  ): Promise<Agent> {
     const defaultBaseUrl = `https://unpkg.com/ms-agent-js@latest/dist/agents/${name}`;
     const baseUrl = (options.baseUrl || defaultBaseUrl).replace(/\/$/, "");
 
@@ -90,7 +117,9 @@ export class Agent {
       definition = await CharacterParser.load(acdPath).catch(async (err) => {
         // Fallback to lowercase acd filename
         try {
-          return await CharacterParser.load(`${baseUrl}/${name.toLowerCase()}.acd`);
+          return await CharacterParser.load(
+            `${baseUrl}/${name.toLowerCase()}.acd`,
+          );
         } catch (innerErr) {
           console.error(
             `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
@@ -112,8 +141,17 @@ export class Agent {
       idleIntervalMs: options.idleIntervalMs ?? 5000,
       useAudio: options.useAudio ?? true,
       fixed: options.fixed ?? true,
-      x: options.x ?? window.innerWidth - definition.character.width * (options.scale ?? 1) - 50,
-      y: options.y ?? window.innerHeight - definition.character.height * (options.scale ?? 1) - 50,
+      initialAnimation: options.initialAnimation || "",
+      x:
+        options.x ??
+        window.innerWidth -
+          definition.character.width * (options.scale ?? 1) -
+          50,
+      y:
+        options.y ??
+        window.innerHeight -
+          definition.character.height * (options.scale ?? 1) -
+          50,
     };
 
     const container = fullOptions.container || document.createElement("div");
@@ -134,10 +172,15 @@ export class Agent {
     agent.startLoop();
 
     // Start showing the agent or transition to idling
-    if (definition.states['Showing']) {
+    if (
+      agent.options.initialAnimation &&
+      agent.hasAnimation(agent.options.initialAnimation)
+    ) {
+      agent.show(agent.options.initialAnimation);
+    } else if (agent.definition.states["Showing"]) {
       agent.show();
     } else {
-      core.stateManager.setState('IdlingLevel1');
+      core.stateManager.setState("IdlingLevel1");
     }
 
     return agent;
@@ -147,8 +190,14 @@ export class Agent {
    * Internal normalization logic for character definitions.
    */
   private static normalizeDefinition(definition: AgentCharacterDefinition) {
-    if (definition.character.colorTable && !definition.character.colorTable.startsWith("http")) {
-      definition.character.colorTable = definition.character.colorTable.replace(/\\/g, "/");
+    if (
+      definition.character.colorTable &&
+      !definition.character.colorTable.startsWith("http")
+    ) {
+      definition.character.colorTable = definition.character.colorTable.replace(
+        /\\/g,
+        "/",
+      );
     }
     Object.values(definition.animations).forEach((animation) => {
       animation.frames.forEach((frame) => {
@@ -202,7 +251,11 @@ export class Agent {
 
       // Long press logic for context menu
       longPressTimer = window.setTimeout(() => {
-        this.emit("contextmenu", { x: e.clientX, y: e.clientY, originalEvent: e });
+        this.emit("contextmenu", {
+          x: e.clientX,
+          y: e.clientY,
+          originalEvent: e,
+        });
         this.isDragging = false;
         this.wasDragging = false;
         cleanup();
@@ -259,7 +312,11 @@ export class Agent {
     canvas.addEventListener("pointerdown", onPointerDown);
     canvas.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
-      this.emit("contextmenu", { x: e.clientX, y: e.clientY, originalEvent: e });
+      this.emit("contextmenu", {
+        x: e.clientX,
+        y: e.clientY,
+        originalEvent: e,
+      });
     });
   }
 
@@ -316,7 +373,12 @@ export class Agent {
    * @param loop - Whether to loop the animation indefinitely.
    * @returns A request object to track the operation's progress.
    */
-  public play(animationName: string, timeoutMs?: number, useExitBranch?: boolean, loop: boolean = false): AgentRequest {
+  public play(
+    animationName: string,
+    timeoutMs?: number,
+    useExitBranch?: boolean,
+    loop: boolean = false,
+  ): AgentRequest {
     return this.enqueueRequest(async (request) => {
       if (!this.hasAnimation(animationName)) {
         console.warn(`MSAgentJS: Animation '${animationName}' not found.`);
@@ -325,7 +387,13 @@ export class Agent {
       this.emit("animationStart", animationName);
       // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
       const shouldExit = useExitBranch ?? (!timeoutMs && !loop);
-      await this.core.stateManager.playAnimation(animationName, "Playing", shouldExit, timeoutMs, loop);
+      await this.core.stateManager.playAnimation(
+        animationName,
+        "Playing",
+        shouldExit,
+        timeoutMs,
+        loop,
+      );
       if (!request.isCancelled) {
         this.emit("animationEnd", animationName);
       }
@@ -348,7 +416,9 @@ export class Agent {
    *
    * @returns An array of animation name strings.
    */
-  public animations(): string[] { return Object.keys(this.core.definition.animations); }
+  public animations(): string[] {
+    return Object.keys(this.core.definition.animations);
+  }
 
   /**
    * Checks if a specific animation exists.
@@ -356,7 +426,9 @@ export class Agent {
    * @param name - The name of the animation to check.
    * @returns True if the animation exists, false otherwise.
    */
-  public hasAnimation(name: string): boolean { return !!this.core.definition.animations[name]; }
+  public hasAnimation(name: string): boolean {
+    return !!this.core.definition.animations[name];
+  }
 
   /**
    * Makes the agent gesture at a specific screen position.
@@ -394,7 +466,10 @@ export class Agent {
     return this.enqueueRequest(async (request) => {
       const direction = this.toAgentPerspective(this.getDirection(x, y, 8));
       const animName = `Look${direction}`;
-      if (this.core.animationManager.currentAnimationName === animName && this.core.animationManager.isAnimating) {
+      if (
+        this.core.animationManager.currentAnimationName === animName &&
+        this.core.animationManager.isAnimating
+      ) {
         return;
       }
       if (this.core.definition.animations[animName]) {
@@ -492,7 +567,9 @@ export class Agent {
     if (this.talkingAnimationName === animName) return;
     if (this.core.definition.animations[animName]) {
       this.talkingAnimationName = animName;
-      this.core.stateManager.playAnimation(animName, "Speaking", false, undefined, true).catch(console.error);
+      this.core.stateManager
+        .playAnimation(animName, "Speaking", false, undefined, true)
+        .catch(console.error);
     } else {
       this.talkingAnimationName = animName;
       this.core.stateManager.setState("Speaking").catch(console.error);
@@ -514,7 +591,10 @@ export class Agent {
    * @param options - Speech options (hold balloon, use TTS, skip typing animation).
    * @returns A request object to track the operation's progress.
    */
-  public speak(text: string, options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {}): AgentRequest {
+  public speak(
+    text: string,
+    options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
+  ): AgentRequest {
     const { hold = false, useTTS = true, skipTyping = false } = options;
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
@@ -531,7 +611,9 @@ export class Agent {
    * @param html - The HTML string to render.
    * @param hold - If true, the balloon won't auto-close.
    */
-  public showHtml(html: string, hold: boolean = false) { this.renderer.balloon.showHtml(html, hold); }
+  public showHtml(html: string, hold: boolean = false) {
+    this.renderer.balloon.showHtml(html, hold);
+  }
 
   /**
    * Asks the user a question with a text input field in the balloon.
@@ -539,7 +621,15 @@ export class Agent {
    * @param options - Configuration for the input dialog (labels, placeholder, timeout).
    * @returns A promise resolving to the user's input string, or null if cancelled.
    */
-  public ask(options: { title?: string; placeholder?: string; askButtonText?: string; cancelButtonText?: string; timeout?: number } = {}): Promise<string | null> {
+  public ask(
+    options: {
+      title?: string;
+      placeholder?: string;
+      askButtonText?: string;
+      cancelButtonText?: string;
+      timeout?: number;
+    } = {},
+  ): Promise<string | null> {
     const title = options.title || "What would you like to do?";
     const placeholder = options.placeholder || "Ask me anything...";
     const askButtonText = options.askButtonText || "Ask";
@@ -547,7 +637,9 @@ export class Agent {
     const timeout = options.timeout || 60000;
 
     let resolveAsk: (value: string | null) => void;
-    const askPromise = new Promise<string | null>((res) => { resolveAsk = res; });
+    const askPromise = new Promise<string | null>((res) => {
+      resolveAsk = res;
+    });
 
     this.enqueueRequest(async (request) => {
       if (request.isCancelled) {
@@ -597,9 +689,15 @@ export class Agent {
         this.showHtml(balloonContent, true);
 
         const balloonEl = this.renderer.balloon.balloonEl;
-        const input = balloonEl.querySelector("textarea") as HTMLTextAreaElement;
-        const askButton = balloonEl.querySelector(".ask-button") as HTMLButtonElement;
-        const cancelButton = balloonEl.querySelector(".cancel-button") as HTMLButtonElement;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const askButton = balloonEl.querySelector(
+          ".ask-button",
+        ) as HTMLButtonElement;
+        const cancelButton = balloonEl.querySelector(
+          ".cancel-button",
+        ) as HTMLButtonElement;
 
         const handleKeypress = (e: KeyboardEvent) => {
           resetBalloonTimeout();
@@ -620,7 +718,9 @@ export class Agent {
           this.renderer.balloon.close();
         };
 
-        const handleFocus = () => { this.startTalkingAnimation("Writing"); };
+        const handleFocus = () => {
+          this.startTalkingAnimation("Writing");
+        };
         const handleBlur = () => {
           this.startTalkingAnimation("Explain");
           this.renderer.balloon.reposition();
@@ -628,7 +728,9 @@ export class Agent {
 
         const resetBalloonTimeout = () => {
           clearBalloonTimeout();
-          inputBalloonTimeout = window.setTimeout(() => { handleCancel(); }, timeout);
+          inputBalloonTimeout = window.setTimeout(() => {
+            handleCancel();
+          }, timeout);
         };
 
         const clearBalloonTimeout = () => {
@@ -666,21 +768,28 @@ export class Agent {
   }
 
   /** Configures global system Text-to-Speech options. */
-  public setTTSOptions(options: TTSOptions) { this.renderer.balloon.setTTSOptions(options); }
+  public setTTSOptions(options: TTSOptions) {
+    this.renderer.balloon.setTTSOptions(options);
+  }
   /** Returns a list of available system TTS voices. */
-  public getTTSVoices(): SpeechSynthesisVoice[] { return this.renderer.balloon.getTTSVoices(); }
+  public getTTSVoices(): SpeechSynthesisVoice[] {
+    return this.renderer.balloon.getTTSVoices();
+  }
   /** Instantly stops any ongoing system speech. */
-  public stopTTS() { this.renderer.balloon.stopTTS(); }
+  public stopTTS() {
+    this.renderer.balloon.stopTTS();
+  }
 
   /**
    * Shows the agent by playing its 'Showing' animation sequence.
    *
+   * @param animationName - Optional custom animation to play while showing.
    * @returns A request object to track the operation's progress.
    */
-  public show(): AgentRequest {
+  public show(animationName?: string): AgentRequest {
     return this.enqueueRequest(async (request) => {
       this.container.style.display = "block";
-      await this.core.stateManager.handleVisibilityChange(true);
+      await this.core.stateManager.handleVisibilityChange(true, animationName);
       if (!request.isCancelled) this.emit("show");
     });
   }
@@ -688,11 +797,12 @@ export class Agent {
   /**
    * Hides the agent by playing its 'Hiding' animation sequence.
    *
+   * @param animationName - Optional custom animation to play while hiding.
    * @returns A request object to track the operation's progress.
    */
-  public hide(): AgentRequest {
+  public hide(animationName?: string): AgentRequest {
     return this.enqueueRequest(async (request) => {
-      await this.core.stateManager.handleVisibilityChange(false);
+      await this.core.stateManager.handleVisibilityChange(false, animationName);
       if (!request.isCancelled) {
         this.container.style.display = "none";
         this.emit("hide");
@@ -701,14 +811,20 @@ export class Agent {
   }
 
   /** Subscribes to an agent event. */
-  public on(event: string, listener: AgentEventListener) { this.core.on(event as any, listener); }
+  public on(event: string, listener: AgentEventListener) {
+    this.core.on(event as any, listener);
+  }
   /** Unsubscribes from an agent event. */
-  public off(event: string, listener: AgentEventListener) { this.core.off(event as any, listener); }
+  public off(event: string, listener: AgentEventListener) {
+    this.core.off(event as any, listener);
+  }
 
   /**
    * Internal method to enqueue a task and emit events.
    */
-  private enqueueRequest(task: (request: AgentRequest) => Promise<void>): AgentRequest {
+  private enqueueRequest(
+    task: (request: AgentRequest) => Promise<void>,
+  ): AgentRequest {
     return this.core.requestQueue.add(async (request) => {
       this.emit("requestStart", request);
       await task(request);
@@ -722,14 +838,20 @@ export class Agent {
    * @param request - The request to wait for.
    * @returns A request object to track the wait operation.
    */
-  public wait(request: AgentRequest): AgentRequest { return this.enqueueRequest(() => request.promise); }
+  public wait(request: AgentRequest): AgentRequest {
+    return this.enqueueRequest(() => request.promise);
+  }
   /**
    * Queues a delay in the agent's action queue.
    *
    * @param ms - The number of milliseconds to wait.
    * @returns A request object for the delay.
    */
-  public delay(ms: number): AgentRequest { return this.enqueueRequest(() => new Promise((resolve) => setTimeout(resolve, ms))); }
+  public delay(ms: number): AgentRequest {
+    return this.enqueueRequest(
+      () => new Promise((resolve) => setTimeout(resolve, ms)),
+    );
+  }
 
   /**
    * Stops the specified request or all requests in the queue.
@@ -767,17 +889,30 @@ export class Agent {
   }
 
   /** Internal event emitter. */
-  private emit(event: string, ...args: any[]) { this.core.emit(event as any, ...args); }
+  private emit(event: string, ...args: any[]) {
+    this.core.emit(event as any, ...args);
+  }
 
   /** Translates a world direction to the agent's POV (swaps Left/Right). */
   private toAgentPerspective(direction: string): string {
-    return direction.replace("Left", "TEMP").replace("Right", "Left").replace("TEMP", "Right");
+    return direction
+      .replace("Left", "TEMP")
+      .replace("Right", "Left")
+      .replace("TEMP", "Right");
   }
 
   /** Calculates the direction from the agent to a target point. */
-  private getDirection(targetX: number, targetY: number, numDirections: 4 | 8): string {
-    const centerX = this.core.options.x + (this.core.definition.character.width * this.core.options.scale) / 2;
-    const centerY = this.core.options.y + (this.core.definition.character.height * this.core.options.scale) / 2;
+  private getDirection(
+    targetX: number,
+    targetY: number,
+    numDirections: 4 | 8,
+  ): string {
+    const centerX =
+      this.core.options.x +
+      (this.core.definition.character.width * this.core.options.scale) / 2;
+    const centerY =
+      this.core.options.y +
+      (this.core.definition.character.height * this.core.options.scale) / 2;
     const dx = targetX - centerX;
     const dy = targetY - centerY;
     const angle = Math.atan2(dy, dx);
@@ -807,7 +942,8 @@ export class Agent {
   public destroy() {
     this.isDestroyed = true;
     cancelAnimationFrame(this.rafId);
-    if (this.container.parentNode) this.container.parentNode.removeChild(this.container);
+    if (this.container.parentNode)
+      this.container.parentNode.removeChild(this.container);
     this.core.clear();
   }
 }
