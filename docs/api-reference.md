@@ -17,6 +17,8 @@ When calling `Agent.load(name, options)`, you can pass a configuration object:
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
 | `x`, `y` | `number` | Bottom Right | Initial coordinates of the agent. |
 | `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
+| `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
+| `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
 
 ---
 
@@ -117,3 +119,19 @@ agent.setTTSOptions({
   voice: agent.getTTSVoices().find(v => v.name === 'Alex')
 });
 ```
+
+---
+
+## 📥 Loading & Progress
+
+The `Agent.load()` method and its managers (`SpriteManager`, `AudioManager`) support an `onProgress` callback and an `AbortSignal`.
+
+### Progress Tracking
+A `fetchWithProgress` utility (in `src/utils.ts`) uses `ReadableStream` to track the number of bytes downloaded.
+- **`onProgress`**: Receives an object `{ loaded: number, total: number, filename: string }`.
+- **`total`**: Can be `0` if the server doesn't provide a `Content-Length` header.
+
+### Cancellation
+Passing an `AbortSignal` to `Agent.load()` ensures that all pending network requests (for JSON, texture atlases, and audio spritesheets) are immediately terminated if the signal is aborted.
+
+---

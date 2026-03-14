@@ -9,26 +9,26 @@ import {
   type Info,
   CharacterStyle,
   type AgentCharacterDefinition,
-} from '../base/types';
-import { validate as uuidValidate } from 'uuid';
+} from "../base/types";
+import { validate as uuidValidate } from "uuid";
 
 /**
  * Mapping from Windows LCID (Language Code Identifier) to BCP 47 language tags.
  * Used to translate legacy agent language codes to modern locale strings.
  */
 const LCID_MAP: Record<string, string> = {
-  '0x0409': 'en-US', // English - United States
-  '0x0809': 'en-GB', // English - United Kingdom
-  '0x040c': 'fr-FR', // French - France
-  '0x0407': 'de-DE', // German - Germany
-  '0x0410': 'it-IT', // Italian - Italy
-  '0x040a': 'es-ES', // Spanish - Spain
-  '0x0411': 'ja-JP', // Japanese - Japan
-  '0x0412': 'ko-KR', // Korean - Korea
-  '0x0404': 'zh-TW', // Chinese - Taiwan
-  '0x0804': 'zh-CN', // Chinese - China
-  '0x0416': 'pt-BR', // Portuguese - Brazil
-  '0x0419': 'ru-RU', // Russian - Russia
+  "0x0409": "en-US", // English - United States
+  "0x0809": "en-GB", // English - United Kingdom
+  "0x040c": "fr-FR", // French - France
+  "0x0407": "de-DE", // German - Germany
+  "0x0410": "it-IT", // Italian - Italy
+  "0x040a": "es-ES", // Spanish - Spain
+  "0x0411": "ja-JP", // Japanese - Japan
+  "0x0412": "ko-KR", // Korean - Korea
+  "0x0404": "zh-TW", // Chinese - Taiwan
+  "0x0804": "zh-CN", // Chinese - China
+  "0x0416": "pt-BR", // Portuguese - Brazil
+  "0x0419": "ru-RU", // Russian - Russia
 };
 
 /**
@@ -43,11 +43,11 @@ export class CharacterParser {
     balloon: {
       numLines: 0,
       charsPerLine: 0,
-      fontName: 'Arial',
+      fontName: "Arial",
       fontHeight: 12,
-      foreColor: '000000',
-      backColor: 'ffffff',
-      borderColor: '000000',
+      foreColor: "000000",
+      backColor: "ffffff",
+      borderColor: "000000",
     },
   };
   /** Temporary reference to the character section being parsed. */
@@ -65,11 +65,15 @@ export class CharacterParser {
    * Fetches an .acd file from a URL and parses it into a structured agent definition.
    *
    * @param url - The URL of the .acd file to load.
+   * @param signal - Optional AbortSignal to cancel the request.
    * @returns A promise that resolves to the parsed AgentCharacterDefinition.
    * @throws Error if the fetch fails.
    */
-  public static async load(url: string): Promise<AgentCharacterDefinition> {
-    const response = await fetch(url);
+  public static async load(
+    url: string,
+    signal?: AbortSignal,
+  ): Promise<AgentCharacterDefinition> {
+    const response = await fetch(url, { signal });
     if (!response.ok) {
       throw new Error(`Failed to load .acd file: ${response.statusText}`);
     }
@@ -90,28 +94,28 @@ export class CharacterParser {
       const line = lines[i].trim();
 
       // Skip empty lines and comments
-      if (!line || line.startsWith('//')) {
+      if (!line || line.startsWith("//")) {
         continue;
       }
 
-      if (line.startsWith('DefineCharacter')) {
+      if (line.startsWith("DefineCharacter")) {
         i = this.parseCharacterSection(lines, i);
         continue;
       }
-      if (line.startsWith('DefineBalloon')) {
+      if (line.startsWith("DefineBalloon")) {
         i = this.parseBalloonSection(lines, i);
         continue;
       }
-      if (line.startsWith('DefineAnimation')) {
+      if (line.startsWith("DefineAnimation")) {
         i = this.parseAnimationSection(lines, i);
         continue;
       }
-      if (line.startsWith('DefineState')) {
+      if (line.startsWith("DefineState")) {
         i = this.parseStateSection(lines, i);
         continue;
       }
 
-      if (line === 'EndCharacter') {
+      if (line === "EndCharacter") {
         break;
       }
     }
@@ -125,23 +129,23 @@ export class CharacterParser {
   private parseCharacterSection(lines: string[], i: number): number {
     this.currentCharacter = {
       infos: [],
-      guid: '',
+      guid: "",
       width: 0,
       height: 0,
       transparency: 0,
       defaultFrameDuration: 0,
       style: CharacterStyle.None,
-      colorTable: '',
+      colorTable: "",
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== 'EndCharacter') {
+    while (i < lines.length && lines[i].trim() !== "EndCharacter") {
       const line = lines[i].trim();
-      if (line.startsWith('DefineInfo')) {
+      if (line.startsWith("DefineInfo")) {
         i = this.parseCharacterInfo(lines, i);
       }
 
-      if (line === 'EndInfo') {
+      if (line === "EndInfo") {
         if (this.currentLanguageInfo) {
           this.currentCharacter.infos.push(this.currentLanguageInfo);
           this.currentLanguageInfo = null;
@@ -149,37 +153,39 @@ export class CharacterParser {
       }
 
       // Parse key-value pairs
-      const parts = line.split('=');
+      const parts = line.split("=");
       if (parts.length >= 2) {
         const key = parts[0].trim();
-        const value = parts.slice(1).join('=').trim().replace(/"/g, '');
+        const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
-          case 'GUID': {
-            const normalizedGuid = value.replace(/{|}/g, '');
+          case "GUID": {
+            const normalizedGuid = value.replace(/{|}/g, "");
             if (!uuidValidate(normalizedGuid)) {
-              console.warn(`Invalid GUID found in .acd file: ${value}. Using raw string as fallback.`);
+              console.warn(
+                `Invalid GUID found in .acd file: ${value}. Using raw string as fallback.`,
+              );
             }
             this.currentCharacter.guid = normalizedGuid;
             break;
           }
-          case 'Width':
+          case "Width":
             this.currentCharacter.width = parseInt(value, 10);
             break;
-          case 'Height':
+          case "Height":
             this.currentCharacter.height = parseInt(value, 10);
             break;
-          case 'Transparency':
+          case "Transparency":
             this.currentCharacter.transparency = parseInt(value, 10);
             break;
-          case 'DefaultFrameDuration':
+          case "DefaultFrameDuration":
             this.currentCharacter.defaultFrameDuration = parseInt(value, 10);
             break;
-          case 'Style':
+          case "Style":
             this.currentCharacter.style = this.parseStyle(value);
             break;
-          case 'ColorTable':
-            this.currentCharacter.colorTable = value.replace(/\\/g, '/');
+          case "ColorTable":
+            this.currentCharacter.colorTable = value.replace(/\\/g, "/");
             break;
         }
       }
@@ -198,33 +204,33 @@ export class CharacterParser {
     if (!match) return i;
 
     const lcid = `0x${match[1].toLowerCase()}`;
-    const localeTag = LCID_MAP[lcid] || 'en-US'; // Default to en-US if unknown
+    const localeTag = LCID_MAP[lcid] || "en-US"; // Default to en-US if unknown
 
     this.currentLanguageInfo = {
       languageCode: lcid,
       locale: new Intl.Locale(localeTag),
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       greetings: [],
       reminders: [],
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== 'EndInfo') {
+    while (i < lines.length && lines[i].trim() !== "EndInfo") {
       const currentLine = lines[i].trim();
-      const parts = currentLine.split('=');
+      const parts = currentLine.split("=");
       if (parts.length >= 2) {
         const key = parts[0].trim();
-        const value = parts.slice(1).join('=').trim().replace(/"/g, '');
+        const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
-          case 'Name':
+          case "Name":
             this.currentLanguageInfo.name = value;
             break;
-          case 'Description':
+          case "Description":
             this.currentLanguageInfo.description = value;
             break;
-          case 'ExtraData':
+          case "ExtraData":
             this.parseExtraData(value, this.currentLanguageInfo);
             break;
         }
@@ -244,19 +250,19 @@ export class CharacterParser {
    * Uses legacy delimiters (^^ and ~~).
    */
   private parseExtraData(extraData: string, languageInfo: Info): void {
-    const parts = extraData.split('^^');
+    const parts = extraData.split("^^");
     // Parse greetings (before ^^)
     languageInfo.greetings = parts[0]
-      .split('~~')
+      .split("~~")
       .map((s) => s.trim())
-      .filter((s) => s !== '');
+      .filter((s) => s !== "");
 
     // Parse reminders (after ^^)
     if (parts.length > 1) {
       languageInfo.reminders = parts[1]
-        .split('~~')
+        .split("~~")
         .map((s) => s.trim())
-        .filter((s) => s !== '');
+        .filter((s) => s !== "");
     } else {
       languageInfo.reminders = [];
     }
@@ -267,18 +273,18 @@ export class CharacterParser {
    */
   private parseStyle(value: string): number {
     let style = CharacterStyle.None;
-    const styleParts = value.split('|');
+    const styleParts = value.split("|");
 
     for (const part of styleParts) {
       const trimmedPart = part.trim();
-      if (trimmedPart === 'AXS_VOICE_NONE') style |= CharacterStyle.VoiceNone;
-      else if (trimmedPart === 'AXS_BALLOON_ROUNDRECT')
+      if (trimmedPart === "AXS_VOICE_NONE") style |= CharacterStyle.VoiceNone;
+      else if (trimmedPart === "AXS_BALLOON_ROUNDRECT")
         style |= CharacterStyle.BalloonRoundRect;
-      else if (trimmedPart === 'AXS_BALLOON_SIZE_TO_TEXT')
+      else if (trimmedPart === "AXS_BALLOON_SIZE_TO_TEXT")
         style |= CharacterStyle.BalloonSizeToText;
-      else if (trimmedPart === 'AXS_BALLOON_AUTO_HIDE')
+      else if (trimmedPart === "AXS_BALLOON_AUTO_HIDE")
         style |= CharacterStyle.BalloonAutoHide;
-      else if (trimmedPart === 'AXS_BALLOON_AUTO_PACE')
+      else if (trimmedPart === "AXS_BALLOON_AUTO_PACE")
         style |= CharacterStyle.BalloonAutoPace;
     }
 
@@ -292,41 +298,41 @@ export class CharacterParser {
     const balloon: Balloon = {
       numLines: 0,
       charsPerLine: 0,
-      fontName: '',
+      fontName: "",
       fontHeight: 0,
-      foreColor: '00000000',
-      backColor: '00000000',
-      borderColor: '00000000',
+      foreColor: "00000000",
+      backColor: "00000000",
+      borderColor: "00000000",
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== 'EndBalloon') {
+    while (i < lines.length && lines[i].trim() !== "EndBalloon") {
       const line = lines[i].trim();
-      const parts = line.split('=');
+      const parts = line.split("=");
       if (parts.length >= 2) {
         const key = parts[0].trim();
-        const value = parts.slice(1).join('=').trim();
+        const value = parts.slice(1).join("=").trim();
 
         switch (key) {
-          case 'NumLines':
+          case "NumLines":
             balloon.numLines = parseInt(value, 10);
             break;
-          case 'CharsPerLine':
+          case "CharsPerLine":
             balloon.charsPerLine = parseInt(value, 10);
             break;
-          case 'FontName':
-            balloon.fontName = value.replace(/"/g, '');
+          case "FontName":
+            balloon.fontName = value.replace(/"/g, "");
             break;
-          case 'FontHeight':
+          case "FontHeight":
             balloon.fontHeight = parseInt(value, 10);
             break;
-          case 'ForeColor':
+          case "ForeColor":
             balloon.foreColor = value;
             break;
-          case 'BackColor':
+          case "BackColor":
             balloon.backColor = value;
             break;
-          case 'BorderColor':
+          case "BorderColor":
             balloon.borderColor = value;
             break;
         }
@@ -353,13 +359,13 @@ export class CharacterParser {
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== 'EndAnimation') {
+    while (i < lines.length && lines[i].trim() !== "EndAnimation") {
       const currentLine = lines[i].trim();
 
-      if (currentLine.startsWith('TransitionType')) {
-        const value = currentLine.split('=')[1].trim();
+      if (currentLine.startsWith("TransitionType")) {
+        const value = currentLine.split("=")[1].trim();
         this.currentAnimation.transitionType = parseInt(value, 10);
-      } else if (currentLine.startsWith('DefineFrame')) {
+      } else if (currentLine.startsWith("DefineFrame")) {
         i = this.parseFrameSection(lines, i);
       }
 
@@ -383,21 +389,21 @@ export class CharacterParser {
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== 'EndFrame') {
+    while (i < lines.length && lines[i].trim() !== "EndFrame") {
       const line = lines[i].trim();
 
-      if (line.startsWith('Duration')) {
-        const value = line.split('=')[1].trim();
+      if (line.startsWith("Duration")) {
+        const value = line.split("=")[1].trim();
         this.currentFrame.duration = parseInt(value, 10);
-      } else if (line.startsWith('ExitBranch')) {
-        const value = line.split('=')[1].trim();
+      } else if (line.startsWith("ExitBranch")) {
+        const value = line.split("=")[1].trim();
         this.currentFrame.exitBranch = parseInt(value, 10);
-      } else if (line.startsWith('SoundEffect')) {
-        const value = line.split('=')[1].trim().replace(/"/g, '');
+      } else if (line.startsWith("SoundEffect")) {
+        const value = line.split("=")[1].trim().replace(/"/g, "");
         this.currentFrame.soundEffect = value;
-      } else if (line.startsWith('DefineImage')) {
+      } else if (line.startsWith("DefineImage")) {
         i = this.parseImageSection(lines, i);
-      } else if (line.startsWith('DefineBranching')) {
+      } else if (line.startsWith("DefineBranching")) {
         i = this.parseBranchingSection(lines, i);
       }
 
@@ -415,27 +421,27 @@ export class CharacterParser {
    */
   private parseImageSection(lines: string[], i: number): number {
     const image: ImageDefinition = {
-      filename: '',
+      filename: "",
       offsetX: 0,
       offsetY: 0,
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== 'EndImage') {
+    while (i < lines.length && lines[i].trim() !== "EndImage") {
       const line = lines[i].trim();
-      const parts = line.split('=');
+      const parts = line.split("=");
       if (parts.length >= 2) {
         const key = parts[0].trim();
-        const value = parts.slice(1).join('=').trim().replace(/"/g, '');
+        const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
-          case 'Filename':
-            image.filename = value.replace(/\\/g, '/');
+          case "Filename":
+            image.filename = value.replace(/\\/g, "/");
             break;
-          case 'OffsetX':
+          case "OffsetX":
             image.offsetX = parseInt(value, 10);
             break;
-          case 'OffsetY':
+          case "OffsetY":
             image.offsetY = parseInt(value, 10);
             break;
         }
@@ -457,23 +463,26 @@ export class CharacterParser {
     let branching: Partial<BranchingDefinition> = {};
     i++;
 
-    while (i < lines.length && lines[i].trim() !== 'EndBranching') {
+    while (i < lines.length && lines[i].trim() !== "EndBranching") {
       const line = lines[i].trim();
-      const parts = line.split('=');
+      const parts = line.split("=");
       if (parts.length >= 2) {
         const key = parts[0].trim();
-        const value = parseInt(parts.slice(1).join('=').trim(), 10);
+        const value = parseInt(parts.slice(1).join("=").trim(), 10);
 
         switch (key) {
-          case 'BranchTo':
+          case "BranchTo":
             branching.branchTo = value;
             break;
-          case 'Probability':
+          case "Probability":
             branching.probability = value;
             break;
         }
       }
-      if (branching.branchTo !== undefined && branching.probability !== undefined) {
+      if (
+        branching.branchTo !== undefined &&
+        branching.probability !== undefined
+      ) {
         branchingList.push(branching as BranchingDefinition);
         branching = {};
       }
@@ -500,11 +509,13 @@ export class CharacterParser {
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== 'EndState') {
+    while (i < lines.length && lines[i].trim() !== "EndState") {
       const currentLine = lines[i].trim();
-      const parts = currentLine.split('=');
-      if (parts.length >= 2 && parts[0].trim() === 'Animation') {
-        this.currentState.animations.push(parts.slice(1).join('=').trim().replace(/"/g, ''));
+      const parts = currentLine.split("=");
+      if (parts.length >= 2 && parts[0].trim() === "Animation") {
+        this.currentState.animations.push(
+          parts.slice(1).join("=").trim().replace(/"/g, ""),
+        );
       }
       i++;
     }

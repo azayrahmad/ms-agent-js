@@ -42,8 +42,14 @@ export class AgentCore extends EventEmitter<AgentEvents> {
     this.definition = definition;
     this.options = options;
 
-    this.spriteManager = new SpriteManager(options.baseUrl, definition);
-    this.audioManager = new AudioManager(options.baseUrl);
+    this.spriteManager = new SpriteManager(options.baseUrl, definition, {
+      signal: options.signal,
+      onProgress: options.onProgress,
+    });
+    this.audioManager = new AudioManager(options.baseUrl, {
+      signal: options.signal,
+      onProgress: options.onProgress,
+    });
     this.audioManager.setEnabled(options.useAudio);
     if (definition.audioAtlas) {
       this.audioManager.setAudioAtlas(definition.audioAtlas);

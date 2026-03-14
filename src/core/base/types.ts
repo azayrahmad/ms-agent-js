@@ -191,6 +191,14 @@ export interface AgentOptions {
   y?: number;
   /** Optional initial animation to play instead of 'Showing'. */
   initialAnimation?: string;
+  /** Callback for loading progress. */
+  onProgress?: (progress: {
+    loaded: number;
+    total: number;
+    filename: string;
+  }) => void;
+  /** AbortSignal to cancel loading. */
+  signal?: AbortSignal;
 }
 
 export interface AgentCharacterDefinition {
