@@ -44,14 +44,26 @@ XState is a library for creating, interpreting, and executing finite state machi
 
 ## Comparison Summary
 
-| Feature | Current `StateManager` | XState v5 |
-| --- | --- | --- |
-| **Size** | ~0kB (included in core) | ~11.5kB (gzipped) |
-| **Logic Type** | Imperative / Manual | Declarative / Statechart |
-| **Observability** | Limited (Events) | Full (Subscription/Actor) |
-| **Visualization** | None | Excellent (Stately) |
-| **Learning Curve** | Low | Medium |
-| **Race Conditions** | Manual handling | Built-in protection |
+| Feature | Current `StateManager` | XState v5 | Robot (robot3) | FicusJS FSM |
+| --- | --- | --- | --- | --- |
+| **Size (gzipped)** | ~0kB | ~11.5kB | **~1.1kB** | ~2.5kB |
+| **Logic Type** | Imperative | Statechart | Functional FSM | FSM / Statechart |
+| **Observability** | Limited | High | Medium | Medium |
+| **Visualization** | None | Excellent | Limited (3rd party) | None |
+| **Hierarchical States**| No | Yes | No | Yes |
+| **Timers/Delays** | Manual | Built-in | Manual | Built-in |
+| **Learning Curve** | Low | Medium | Medium | Low |
+
+## Lightweight Alternatives
+
+If the ~11.5kB overhead of XState v5 is a concern, consider these alternatives:
+
+1. **Robot (robot3)**:
+   - **Pros**: Extremely tiny (~1kB), functional API, very fast.
+   - **Cons**: No built-in timer/delay support (would still need manual `setTimeout` management), lacks built-in hierarchical states (useful for our `busy` vs `idling` logic).
+2. **@ficusjs/finite-state-machine**:
+   - **Pros**: Lightweight (~2.5kB), supports hierarchical states, built-in delays/timers, and async guards.
+   - **Cons**: Less community support/documentation compared to XState or Robot; no visualization tools.
 
 ## Recommendation
 **Adopt XState v5 via a gradual migration.**
