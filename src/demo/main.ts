@@ -6,64 +6,93 @@ const AGENTS = [
     name: "Clippit",
     label: "Clippit",
     description:
-      "Although he looks like nothing more than a thin metal wire, Clippit will help you find what you're looking for and keep everything under control.",
-    quote: "It looks like you're writing a letter. Would you like help?",
+      "Though nothing more than a thin metal wire, Clippit will help find what you need and keep it all together.",
+    greetings: [
+      "Hey, there. What's the word?",
+      "How's life? All work and no play?",
+      "Hey, there. Want quick answers to your questions about Office? Just click me.",
+    ],
   },
   {
     name: "DOT",
-    label: "Dot",
+    label: "The Dot",
     description:
-      "The shape-shifting smiley face who's always ready to help you out with a grin.",
-    quote: "I'm always happy to see a friendly face!",
+      "Need a guide on the electronic frontier? Able to transform into any shape, the Dot will always point you in the right direction. ",
+    greetings: [
+      "When you need help of any kind, just give me a click.",
+      "I’m here to help, so give me a click if you need anything.",
+    ],
   },
   {
     name: "F1",
     label: "F1",
     description:
-      "The first-rate robot who's programmed to provide you with all the assistance you need.",
-    quote: "Scanning for productivity... All systems nominal.",
+      "F1 is the first of the 300/M series, built to serve. This robot is fully optimized for Office use.",
+    greetings: [
+      "GREETINGS! STATUS= READY FOR INSTRUCTION",
+      "PROGRAMMED TO SERVE...  USER_COMMAND= ?",
+      "STATUS= VERY_HELPFUL  USER_COMMAND= ?",
+      "QUERY> HOW ARE YOU?  STATUS= READY FOR INSTRUCTION",
+    ],
   },
   {
     name: "GENIUS",
-    label: "Genius",
+    label: "The Genius",
     description:
-      "The enlightened professor who can shed light on even the most complex topics.",
-    quote: "Knowledge is the only wealth that grows when shared.",
+      "The mind of the Genius works at the speed of light. Harness his power of thought to save yourself time and energy.",
+    greetings: [
+      "Hello. Can I assist you with your work in electronic space?",
+      "Hello. Getting help in Office is relatively simple. Just give me a click.",
+    ],
   },
   {
     name: "LOGO",
-    label: "Logo",
+    label: "Office Logo",
     description:
-      "A simple, clean representation of the Office brand, here to guide you.",
-    quote: "Direct, efficient, and always at your service.",
+      "The Office Logo gives you help accompanied by a simple spin of its colored pieces.",
+    greetings: ["Click the Office Logo whenever you need help."],
   },
   {
     name: "MNATURE",
     label: "Mother Nature",
     description:
-      "The wise and gentle spirit of the natural world, ready to nurture your productivity.",
-    quote: "Let's grow your ideas into something beautiful.",
+      "Transforming into images from nature, such as the dove, the volcano, and the flower, Mother Nature provides gentle help and guidance.",
+    greetings: [
+      "Welcome. If you desire help on any aspect of this program, simply click me.",
+    ],
   },
   {
     name: "Monkey King",
     label: "Monkey King",
     description:
-      "The legendary hero who's come to help you master the art of Office.",
-    quote: "With great power comes great spreadsheets!",
+      "If you need help in Office, call Monkey King, he is an office expert.",
+    greetings: [
+      "Any questions? Let me tell you the answer.",
+      "Problem? Relax, just leave it to me.",
+      "Don't worry,it's a piece of cake.",
+    ],
   },
   {
     name: "OFFCAT",
     label: "Links",
     description:
-      "The curious cat who loves to hunt for information and keep you company.",
-    quote: "Meow! I've found something interesting for you.",
+      "If you're on the prowl for answers in Office, Links can chase them down for you.",
+    greetings: [
+      "Did I hear a mouse click?",
+      "Did I see a mouse move?",
+      "Time to play cat and mouse?",
+    ],
   },
   {
     name: "ROCKY",
     label: "Rocky",
     description:
-      "The loyal canine companion who's always eager to fetch the help you need.",
-    quote: "Woof! Need me to track down a missing file?",
+      "If you fall into a ravine, call Lassie. If you need help in Office, call Rocky.",
+    greetings: [
+      "Got a question? Put me to work.",
+      "Problem? Relax, I'm on it.",
+      "Don't worry, I'm fully Office-trained.",
+    ],
   },
 ];
 
@@ -159,7 +188,12 @@ async function initDemo() {
     const agentInfo = AGENTS[index];
     galleryAgentName.textContent = agentInfo.label;
     galleryAgentDescription.textContent = agentInfo.description;
-    galleryAgentQuote.textContent = `"${agentInfo.quote}"`;
+
+    const randomGreeting =
+      agentInfo.greetings[
+        Math.floor(Math.random() * agentInfo.greetings.length)
+      ];
+    galleryAgentQuote.textContent = `"${randomGreeting}"`;
 
     const wrapper = document.createElement("div");
     previewContainer.appendChild(wrapper);
