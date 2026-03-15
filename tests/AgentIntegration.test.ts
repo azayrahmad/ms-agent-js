@@ -3,6 +3,7 @@ import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
 import { AnimationManager } from '../src/core/behavior/AnimationManager';
 import { RequestStatus } from '../src/core/base/types';
+import { setupGlobals } from './setup';
 
 // Mock everything needed for Agent environment
 vi.mock('../src/core/resources/CharacterParser', () => ({
@@ -15,6 +16,7 @@ vi.mock('../src/core/resources/SpriteManager', () => ({
         getSpriteWidth = vi.fn().mockReturnValue(100);
         getSpriteHeight = vi.fn().mockReturnValue(100);
         loadSprite = vi.fn().mockResolvedValue(undefined);
+        drawFrame = vi.fn();
     }
 }));
 
@@ -34,52 +36,8 @@ describe('Agent Integration', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
-
-        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
-        vi.stubGlobal('cancelAnimationFrame', vi.fn());
-
-        vi.stubGlobal('window', {
-            innerWidth: 1024,
-            innerHeight: 768,
-            AudioContext: vi.fn().mockImplementation(() => ({
-                createBuffer: vi.fn(),
-                decodeAudioData: vi.fn(),
-            })),
-            requestAnimationFrame: vi.fn().mockReturnValue(1),
-            cancelAnimationFrame: vi.fn(),
-            navigator: { userAgent: 'test' },
-            speechSynthesis: {
-                getVoices: vi.fn().mockReturnValue([]),
-                speak: vi.fn(),
-                cancel: vi.fn(),
-                speaking: false
-            },
-            performance: { now: () => Date.now() }
-        });
-
-        vi.stubGlobal('document', {
-            createElementNS: vi.fn().mockReturnValue({ style: {}, appendChild: vi.fn(), setAttribute: vi.fn() }),
-            createElement: vi.fn().mockImplementation((tag) => {
-                const el: any = {
-                    style: {},
-                    appendChild: vi.fn(),
-                    classList: { add: vi.fn(), remove: vi.fn() },
-                    addEventListener: vi.fn(),
-                    querySelector: vi.fn(),
-                    getBoundingClientRect: vi.fn().mockReturnValue({ width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100 }),
-                };
-                if (tag === 'canvas') {
-                    el.getContext = vi.fn().mockReturnValue({});
-                    el.width = 100;
-                    el.height = 100;
-                } else if (tag === 'div') {
-                    el.attachShadow = vi.fn().mockReturnValue({ appendChild: vi.fn(), host: el });
-                }
-                return el;
-            }),
-            body: { appendChild: vi.fn() }
-        });
     });
 
     it('should suppress idles when actions are queued', async () => {
@@ -136,16 +94,15 @@ describe('Agent Integration', () => {
         const agent = await Agent.load('Clippit');
         const setPosSpy = vi.spyOn(agent as any, 'setInstantPosition');
 
-        // Mock current time
-        let now = 1000;
-        vi.stubGlobal('performance', { now: () => now });
-
         // We need to capture the moveStep function passed to requestAnimationFrame
         let moveStep: any;
         vi.stubGlobal('requestAnimationFrame', (fn: any) => {
             moveStep = fn;
             return 1;
         });
+        // Mock current time
+        let now = 1000;
+        vi.stubGlobal('performance', { now: () => now });
 
         // Set initial pos
         (agent as any).options.x = 0;
@@ -153,15 +110,16 @@ describe('Agent Integration', () => {
 
         const req = agent.moveTo(500, 500, 1000); // 1000 px/s
 
-        // Trigger task execution
-        await new Promise(resolve => setTimeout(resolve, 10));
+        // Drive the microtasks
+        await Promise.resolve();
+        await Promise.resolve();
 
         expect(moveStep).toBeDefined();
 
         // Advance halfway (Distance is sqrt(500^2 + 500^2) ≈ 707)
         // Duration = 707 / 1000 = 0.707s = 707ms
         now += 350;
-        moveStep(now);
+        if (moveStep) moveStep(now);
 
         expect(setPosSpy).toHaveBeenCalled();
         const lastPos = setPosSpy.mock.calls[setPosSpy.mock.calls.length - 1];
@@ -172,7 +130,7 @@ describe('Agent Integration', () => {
 
         // Finish
         now += 1000;
-        moveStep(now);
+        if (moveStep) moveStep(now);
         await req;
         expect(agent.options.x).toBe(500);
         expect(agent.options.y).toBe(500);

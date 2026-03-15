@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
+import { setupGlobals } from './setup';
 
 // Mock everything needed for Agent environment
 vi.mock('../src/core/resources/CharacterParser', () => ({
@@ -31,74 +32,8 @@ describe('Agent Interactions', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
-
-        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
-        vi.stubGlobal('cancelAnimationFrame', vi.fn());
-
-        const mockAudioContext = vi.fn().mockImplementation(() => ({
-            createBuffer: vi.fn(),
-            decodeAudioData: vi.fn(),
-            createBufferSource: vi.fn().mockReturnValue({
-                connect: vi.fn(),
-                start: vi.fn(),
-            }),
-            destination: {}
-        }));
-
-        vi.stubGlobal('window', {
-            innerWidth: 1024,
-            innerHeight: 768,
-            setTimeout: global.setTimeout,
-            clearTimeout: global.clearTimeout,
-            AudioContext: mockAudioContext,
-            requestAnimationFrame: vi.fn().mockReturnValue(1),
-            cancelAnimationFrame: vi.fn(),
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-            navigator: { userAgent: 'test' },
-            speechSynthesis: {
-                getVoices: vi.fn().mockReturnValue([]),
-                speak: vi.fn(),
-                cancel: vi.fn(),
-                speaking: false
-            },
-            performance: { now: () => Date.now() }
-        });
-
-        vi.stubGlobal('document', {
-            createElementNS: vi.fn().mockReturnValue({ style: {}, appendChild: vi.fn(), setAttribute: vi.fn() }),
-            createElement: vi.fn().mockImplementation((tag) => {
-                const el: any = {
-                    style: {},
-                    nodeName: tag.toUpperCase(),
-                    appendChild: vi.fn().mockImplementation((child) => {
-                        if (el.shadowNodes) el.shadowNodes.push(child);
-                    }),
-                    classList: { add: vi.fn(), remove: vi.fn() },
-                    addEventListener: vi.fn(),
-                    removeEventListener: vi.fn(),
-                    querySelector: vi.fn(),
-                    getBoundingClientRect: vi.fn().mockReturnValue({ width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100 }),
-                };
-                if (tag === 'canvas') {
-                    el.getContext = vi.fn().mockReturnValue({ clearRect: vi.fn() });
-                    el.width = 100;
-                    el.height = 100;
-                } else if (tag === 'div') {
-                    el.attachShadow = vi.fn().mockReturnValue({
-                        appendChild: vi.fn().mockImplementation((child) => {
-                            if (el.shadowNodes) el.shadowNodes.push(child);
-                        }),
-                        host: el,
-                        get childNodes() { return el.shadowNodes || []; }
-                    });
-                    el.shadowNodes = [];
-                }
-                return el;
-            }),
-            body: { appendChild: vi.fn() }
-        });
     });
 
     it('should have touch-action: none on the canvas in styles', async () => {
