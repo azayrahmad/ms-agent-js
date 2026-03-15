@@ -1,10 +1,93 @@
 import "./style.css";
 import { Agent } from "../Agent";
 
+const AGENTS = [
+  {
+    name: "Clippit",
+    label: "Clippit",
+    description:
+      "Although he looks like nothing more than a thin metal wire, Clippit will help you find what you're looking for and keep everything under control.",
+    quote: "It looks like you're writing a letter. Would you like help?",
+  },
+  {
+    name: "DOT",
+    label: "Dot",
+    description:
+      "The shape-shifting smiley face who's always ready to help you out with a grin.",
+    quote: "I'm always happy to see a friendly face!",
+  },
+  {
+    name: "F1",
+    label: "F1",
+    description:
+      "The first-rate robot who's programmed to provide you with all the assistance you need.",
+    quote: "Scanning for productivity... All systems nominal.",
+  },
+  {
+    name: "GENIUS",
+    label: "Genius",
+    description:
+      "The enlightened professor who can shed light on even the most complex topics.",
+    quote: "Knowledge is the only wealth that grows when shared.",
+  },
+  {
+    name: "LOGO",
+    label: "Logo",
+    description:
+      "A simple, clean representation of the Office brand, here to guide you.",
+    quote: "Direct, efficient, and always at your service.",
+  },
+  {
+    name: "MNATURE",
+    label: "Mother Nature",
+    description:
+      "The wise and gentle spirit of the natural world, ready to nurture your productivity.",
+    quote: "Let's grow your ideas into something beautiful.",
+  },
+  {
+    name: "Monkey King",
+    label: "Monkey King",
+    description:
+      "The legendary hero who's come to help you master the art of Office.",
+    quote: "With great power comes great spreadsheets!",
+  },
+  {
+    name: "OFFCAT",
+    label: "Links",
+    description:
+      "The curious cat who loves to hunt for information and keep you company.",
+    quote: "Meow! I've found something interesting for you.",
+  },
+  {
+    name: "ROCKY",
+    label: "Rocky",
+    description:
+      "The loyal canine companion who's always eager to fetch the help you need.",
+    quote: "Woof! Need me to track down a missing file?",
+  },
+];
+
 async function initDemo() {
-  const agentSelect = document.getElementById(
-    "agent-select",
-  ) as HTMLSelectElement;
+  // DOM Elements
+  const previewContainer = document.getElementById(
+    "gallery-preview-container",
+  ) as HTMLDivElement;
+  const galleryAgentName = document.getElementById(
+    "gallery-agent-name",
+  ) as HTMLHeadingElement;
+  const galleryAgentDescription = document.getElementById(
+    "gallery-agent-description",
+  ) as HTMLParagraphElement;
+  const galleryAgentQuote = document.getElementById(
+    "gallery-agent-quote",
+  ) as HTMLDivElement;
+  const prevBtn = document.getElementById(
+    "prev-agent-btn",
+  ) as HTMLButtonElement;
+  const nextBtn = document.getElementById(
+    "next-agent-btn",
+  ) as HTMLButtonElement;
+
   const scaleRange = document.getElementById("scale-range") as HTMLInputElement;
   const scaleValue = document.getElementById("scale-value") as HTMLSpanElement;
   const animationSelect = document.getElementById(
@@ -55,8 +138,54 @@ async function initDemo() {
   const dashQueue = document.getElementById("dash-queue")!;
 
   let currentAgent: Agent | null = null;
+  let previewAgent: Agent | null = null;
   let isVisible = true;
   let loadAbortController: AbortController | null = null;
+  let previewAbortController: AbortController | null = null;
+  let currentGalleryIndex = 0;
+
+  async function loadPreviewAgent(index: number) {
+    if (previewAbortController) {
+      previewAbortController.abort();
+    }
+    previewAbortController = new AbortController();
+
+    if (previewAgent) {
+      previewAgent.destroy();
+      previewAgent = null;
+    }
+    previewContainer.innerHTML = "";
+
+    const agentInfo = AGENTS[index];
+    galleryAgentName.textContent = agentInfo.label;
+    galleryAgentDescription.textContent = agentInfo.description;
+    galleryAgentQuote.textContent = `"${agentInfo.quote}"`;
+
+    const wrapper = document.createElement("div");
+    previewContainer.appendChild(wrapper);
+
+    try {
+      const baseUrl = import.meta.env.BASE_URL;
+      previewAgent = await Agent.load(agentInfo.name, {
+        baseUrl: `${baseUrl}agents/${agentInfo.name}`,
+        scale: 1,
+        container: wrapper,
+        fixed: false,
+        useAudio: false,
+        x: 0,
+        y: 0,
+        signal: previewAbortController.signal,
+      });
+
+      if (previewAgent.hasAnimation("Wave")) {
+        previewAgent.play("Wave", undefined, false, true);
+      }
+    } catch (error: any) {
+      if (error.name !== "AbortError") {
+        console.error("Failed to load preview agent:", error);
+      }
+    }
+  }
 
   async function loadAgent(name: string) {
     if (loadAbortController) {
@@ -78,7 +207,6 @@ async function initDemo() {
     playLoopedBtn.textContent = "Play looped";
     randomBtn.disabled = true;
     visibilityBtn.disabled = true;
-    exitBtn.disabled = true;
     speakBtn.disabled = true;
     askBtn.disabled = true;
     gestureLeftBtn.disabled = true;
@@ -200,7 +328,6 @@ async function initDemo() {
       playLoopedBtn.disabled = false;
       randomBtn.disabled = false;
       visibilityBtn.disabled = false;
-      exitBtn.disabled = false;
       speakBtn.disabled = false;
       askBtn.disabled = false;
       gestureLeftBtn.disabled = false;
@@ -237,8 +364,16 @@ async function initDemo() {
     }
   }
 
-  agentSelect.addEventListener("change", () => {
-    loadAgent(agentSelect.value);
+  // Gallery Navigation
+  prevBtn.addEventListener("click", () => {
+    currentGalleryIndex =
+      (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
+    loadPreviewAgent(currentGalleryIndex);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentGalleryIndex = (currentGalleryIndex + 1) % AGENTS.length;
+    loadPreviewAgent(currentGalleryIndex);
   });
 
   scaleRange.addEventListener("input", () => {
@@ -309,7 +444,7 @@ async function initDemo() {
 
   exitBtn.addEventListener("click", async () => {
     if (exitBtn.textContent === "Initialize") {
-      loadAgent(agentSelect.value);
+      await loadAgent(AGENTS[currentGalleryIndex].name);
       return;
     }
 
@@ -484,7 +619,8 @@ async function initDemo() {
 
   // Start
   updateDebug();
-  await loadAgent("Clippit");
+  loadPreviewAgent(currentGalleryIndex);
+  await loadAgent(AGENTS[currentGalleryIndex].name);
   (window as any).agent = currentAgent;
 }
 
