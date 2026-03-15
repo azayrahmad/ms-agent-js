@@ -28,6 +28,13 @@ body {
   margin: 20px auto;
 }
 
+.debug-window {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 250px;
+}
+
 fieldset label {
   width: 80px;
   display: inline-block;
@@ -45,6 +52,10 @@ fieldset span {
     margin-bottom: 4px;
 }
 
+#debug-info label {
+    width: 80px;
+}
+
 select {
   flex: 1;
 }
@@ -54,4 +65,12 @@ hr {
     border-top: 1px solid #808080;
     border-bottom: 1px solid #ffffff;
     margin: 8px 0;
+}
+
+[role="tabpanel"][hidden] {
+    display: none;
+}
+
+[role="tabpanel"] {
+    margin-top: -2px;
 }

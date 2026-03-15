@@ -455,6 +455,28 @@ async function initDemo() {
     requestAnimationFrame(updateDebug);
   }
 
+  // Tab Switching Logic
+  const tabs = document.querySelectorAll('li[role="tab"]');
+  const panels = document.querySelectorAll('div[role="tabpanel"]');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Deactivate all tabs and panels
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      panels.forEach((p) => p.setAttribute("hidden", ""));
+
+      // Activate selected tab and panel
+      tab.setAttribute("aria-selected", "true");
+      const panelId = `panel-${tab.id.replace("tab-", "")}`;
+      const panel = document.getElementById(panelId);
+      if (panel) {
+        panel.removeAttribute("hidden");
+      }
+    });
+  });
+
   // Start
   updateDebug();
   await loadAgent("Clippit");
