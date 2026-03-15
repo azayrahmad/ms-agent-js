@@ -26,6 +26,9 @@
                             <li role="tab" aria-selected="true" id="tab-assistant">
                                 <a href="#assistant">Assistant</a>
                             </li>
+                            <li role="tab" id="tab-behavior">
+                                <a href="#behavior">Behavior</a>
+                            </li>
                             <li role="tab" id="tab-speech">
                                 <a href="#speech">Speech</a>
                             </li>
@@ -36,25 +39,46 @@
 
                         <div class="window" role="tabpanel" id="panel-assistant">
                             <div class="window-body">
-                                <div class="field-row">
-                                    <label for="agent-select">Agent:</label>
-                                    <select id="agent-select">
-                                        <option value="Clippit">Clippit</option>
-                                        <option value="DOT">Dot</option>
-                                        <option value="F1">F1</option>
-                                        <option value="GENIUS">Genius</option>
-                                        <option value="LOGO">Logo</option>
-                                        <option value="MNATURE"
-                                            >Mother Nature</option
-                                        >
-                                        <option value="Monkey King"
-                                            >Monkey King</option
-                                        >
-                                        <option value="OFFCAT">Links</option>
-                                        <option value="ROCKY">Rocky</option>
-                                    </select>
+                                <div class="gallery">
+                                    <div class="gallery-preview" id="gallery-preview-container">
+                                        <!-- Preview agent will be loaded here -->
+                                    </div>
+                                    <div class="gallery-info">
+                                        <div class="static-balloon">
+                                            <div class="static-balloon-content" id="gallery-agent-quote">
+                                                "It looks like you're writing a letter. Would you like help?"
+                                            </div>
+                                        </div>
+                                        <h4 id="gallery-agent-name">Agent Name</h4>
+                                        <p id="gallery-agent-description">Agent description goes here...</p>
+                                    </div>
                                 </div>
 
+                                <div class="field-row gallery-nav">
+                                    <button id="prev-agent-btn">Back</button>
+                                    <button id="next-agent-btn">Next</button>
+                                </div>
+
+                                <hr />
+
+                                <div class="field-row" style="justify-content: center;">
+                                    <button id="exit-btn" style="width: 120px;">Exit</button>
+                                </div>
+
+                                <p
+                                    style="
+                                        font-size: 10px;
+                                        color: #666;
+                                        margin-top: 10px;
+                                    "
+                                >
+                                    Tip: Click the agent for a surprise!
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="window" role="tabpanel" id="panel-behavior" hidden>
+                            <div class="window-body">
                                 <fieldset>
                                     <legend>Actions</legend>
                                     <div class="field-row">
@@ -124,9 +148,6 @@
                                         <button id="visibility-btn" disabled>
                                             Hide
                                         </button>
-                                        <button id="exit-btn" disabled
-                                            >Exit</button
-                                        >
                                     </div>
                                     <hr />
                                     <div
@@ -182,15 +203,6 @@
                                         </button>
                                     </div>
                                 </fieldset>
-                                <p
-                                    style="
-                                        font-size: 10px;
-                                        color: #666;
-                                        margin-top: 10px;
-                                    "
-                                >
-                                    Tip: Click the agent for a surprise!
-                                </p>
                             </div>
                         </div>
 

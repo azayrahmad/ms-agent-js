@@ -1,10 +1,122 @@
 import "./style.css";
 import { Agent } from "../Agent";
 
+const AGENTS = [
+  {
+    name: "Clippit",
+    label: "Clippit",
+    description:
+      "Though nothing more than a thin metal wire, Clippit will help find what you need and keep it all together.",
+    greetings: [
+      "Hey, there. What's the word?",
+      "How's life? All work and no play?",
+      "Hey, there. Want quick answers to your questions about Office? Just click me.",
+    ],
+  },
+  {
+    name: "DOT",
+    label: "The Dot",
+    description:
+      "Need a guide on the electronic frontier? Able to transform into any shape, the Dot will always point you in the right direction. ",
+    greetings: [
+      "When you need help of any kind, just give me a click.",
+      "I’m here to help, so give me a click if you need anything.",
+    ],
+  },
+  {
+    name: "F1",
+    label: "F1",
+    description:
+      "F1 is the first of the 300/M series, built to serve. This robot is fully optimized for Office use.",
+    greetings: [
+      "GREETINGS! STATUS= READY FOR INSTRUCTION",
+      "PROGRAMMED TO SERVE...  USER_COMMAND= ?",
+      "STATUS= VERY_HELPFUL  USER_COMMAND= ?",
+      "QUERY> HOW ARE YOU?  STATUS= READY FOR INSTRUCTION",
+    ],
+  },
+  {
+    name: "GENIUS",
+    label: "The Genius",
+    description:
+      "The mind of the Genius works at the speed of light. Harness his power of thought to save yourself time and energy.",
+    greetings: [
+      "Hello. Can I assist you with your work in electronic space?",
+      "Hello. Getting help in Office is relatively simple. Just give me a click.",
+    ],
+  },
+  {
+    name: "LOGO",
+    label: "Office Logo",
+    description:
+      "The Office Logo gives you help accompanied by a simple spin of its colored pieces.",
+    greetings: ["Click the Office Logo whenever you need help."],
+  },
+  {
+    name: "MNATURE",
+    label: "Mother Nature",
+    description:
+      "Transforming into images from nature, such as the dove, the volcano, and the flower, Mother Nature provides gentle help and guidance.",
+    greetings: [
+      "Welcome. If you desire help on any aspect of this program, simply click me.",
+    ],
+  },
+  {
+    name: "Monkey King",
+    label: "Monkey King",
+    description:
+      "If you need help in Office, call Monkey King, he is an office expert.",
+    greetings: [
+      "Any questions? Let me tell you the answer.",
+      "Problem? Relax, just leave it to me.",
+      "Don't worry,it's a piece of cake.",
+    ],
+  },
+  {
+    name: "OFFCAT",
+    label: "Links",
+    description:
+      "If you're on the prowl for answers in Office, Links can chase them down for you.",
+    greetings: [
+      "Did I hear a mouse click?",
+      "Did I see a mouse move?",
+      "Time to play cat and mouse?",
+    ],
+  },
+  {
+    name: "ROCKY",
+    label: "Rocky",
+    description:
+      "If you fall into a ravine, call Lassie. If you need help in Office, call Rocky.",
+    greetings: [
+      "Got a question? Put me to work.",
+      "Problem? Relax, I'm on it.",
+      "Don't worry, I'm fully Office-trained.",
+    ],
+  },
+];
+
 async function initDemo() {
-  const agentSelect = document.getElementById(
-    "agent-select",
-  ) as HTMLSelectElement;
+  // DOM Elements
+  const previewContainer = document.getElementById(
+    "gallery-preview-container",
+  ) as HTMLDivElement;
+  const galleryAgentName = document.getElementById(
+    "gallery-agent-name",
+  ) as HTMLHeadingElement;
+  const galleryAgentDescription = document.getElementById(
+    "gallery-agent-description",
+  ) as HTMLParagraphElement;
+  const galleryAgentQuote = document.getElementById(
+    "gallery-agent-quote",
+  ) as HTMLDivElement;
+  const prevBtn = document.getElementById(
+    "prev-agent-btn",
+  ) as HTMLButtonElement;
+  const nextBtn = document.getElementById(
+    "next-agent-btn",
+  ) as HTMLButtonElement;
+
   const scaleRange = document.getElementById("scale-range") as HTMLInputElement;
   const scaleValue = document.getElementById("scale-value") as HTMLSpanElement;
   const animationSelect = document.getElementById(
@@ -55,8 +167,59 @@ async function initDemo() {
   const dashQueue = document.getElementById("dash-queue")!;
 
   let currentAgent: Agent | null = null;
+  let previewAgent: Agent | null = null;
   let isVisible = true;
   let loadAbortController: AbortController | null = null;
+  let previewAbortController: AbortController | null = null;
+  let currentGalleryIndex = 0;
+
+  async function loadPreviewAgent(index: number) {
+    if (previewAbortController) {
+      previewAbortController.abort();
+    }
+    previewAbortController = new AbortController();
+
+    if (previewAgent) {
+      previewAgent.destroy();
+      previewAgent = null;
+    }
+    previewContainer.innerHTML = "";
+
+    const agentInfo = AGENTS[index];
+    galleryAgentName.textContent = agentInfo.label;
+    galleryAgentDescription.textContent = agentInfo.description;
+
+    const randomGreeting =
+      agentInfo.greetings[
+        Math.floor(Math.random() * agentInfo.greetings.length)
+      ];
+    galleryAgentQuote.textContent = `"${randomGreeting}"`;
+
+    const wrapper = document.createElement("div");
+    previewContainer.appendChild(wrapper);
+
+    try {
+      const baseUrl = import.meta.env.BASE_URL;
+      previewAgent = await Agent.load(agentInfo.name, {
+        baseUrl: `${baseUrl}agents/${agentInfo.name}`,
+        scale: 1,
+        container: wrapper,
+        fixed: false,
+        useAudio: false,
+        x: 0,
+        y: 0,
+        signal: previewAbortController.signal,
+      });
+
+      if (previewAgent.hasAnimation("Wave")) {
+        previewAgent.play("Wave", undefined, false, true);
+      }
+    } catch (error: any) {
+      if (error.name !== "AbortError") {
+        console.error("Failed to load preview agent:", error);
+      }
+    }
+  }
 
   async function loadAgent(name: string) {
     if (loadAbortController) {
@@ -78,7 +241,6 @@ async function initDemo() {
     playLoopedBtn.textContent = "Play looped";
     randomBtn.disabled = true;
     visibilityBtn.disabled = true;
-    exitBtn.disabled = true;
     speakBtn.disabled = true;
     askBtn.disabled = true;
     gestureLeftBtn.disabled = true;
@@ -200,7 +362,6 @@ async function initDemo() {
       playLoopedBtn.disabled = false;
       randomBtn.disabled = false;
       visibilityBtn.disabled = false;
-      exitBtn.disabled = false;
       speakBtn.disabled = false;
       askBtn.disabled = false;
       gestureLeftBtn.disabled = false;
@@ -237,8 +398,16 @@ async function initDemo() {
     }
   }
 
-  agentSelect.addEventListener("change", () => {
-    loadAgent(agentSelect.value);
+  // Gallery Navigation
+  prevBtn.addEventListener("click", () => {
+    currentGalleryIndex =
+      (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
+    loadPreviewAgent(currentGalleryIndex);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentGalleryIndex = (currentGalleryIndex + 1) % AGENTS.length;
+    loadPreviewAgent(currentGalleryIndex);
   });
 
   scaleRange.addEventListener("input", () => {
@@ -309,7 +478,7 @@ async function initDemo() {
 
   exitBtn.addEventListener("click", async () => {
     if (exitBtn.textContent === "Initialize") {
-      loadAgent(agentSelect.value);
+      await loadAgent(AGENTS[currentGalleryIndex].name);
       return;
     }
 
@@ -484,7 +653,8 @@ async function initDemo() {
 
   // Start
   updateDebug();
-  await loadAgent("Clippit");
+  loadPreviewAgent(currentGalleryIndex);
+  await loadAgent(AGENTS[currentGalleryIndex].name);
   (window as any).agent = currentAgent;
 }
 
