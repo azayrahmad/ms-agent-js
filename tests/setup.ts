@@ -110,9 +110,46 @@ export const setupGlobals = (mockDefinition?: any) => {
           remove: vi.fn(),
           contains: vi.fn().mockReturnValue(false),
         },
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        querySelector: vi.fn(),
+        addEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+          if (!this.listeners) this.listeners = {};
+          if (!this.listeners[type]) this.listeners[type] = [];
+          this.listeners[type].push(listener);
+        }),
+        removeEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+          if (!this.listeners || !this.listeners[type]) return;
+          this.listeners[type] = this.listeners[type].filter((l: any) => l !== listener);
+        }),
+        dispatchEvent: vi.fn().mockImplementation(function(this: any, event) {
+          const type = event.type;
+          const listeners = this.listeners?.[type] || [];
+          listeners.forEach((l: any) => l(event));
+        }),
+        focus: vi.fn().mockImplementation(function(this: any) {
+          const event = { type: 'focus' };
+          const listeners = this.listeners?.[event.type] || [];
+          listeners.forEach((l: any) => l(event));
+        }),
+        blur: vi.fn().mockImplementation(function(this: any) {
+          const event = { type: 'blur' };
+          const listeners = this.listeners?.[event.type] || [];
+          listeners.forEach((l: any) => l(event));
+        }),
+        click: vi.fn().mockImplementation(function(this: any) {
+          const listeners = this.listeners?.['click'] || [];
+          listeners.forEach((l: any) => l({ target: this }));
+        }),
+        querySelector: vi.fn().mockImplementation(function(this: any, selector: string) {
+          // Return a mock element for common selectors in tests
+          if (selector === 'textarea' || selector === '.ask-button' || selector === '.cancel-button') {
+            const el = document.createElement(selector.startsWith('.') ? 'button' : selector);
+            if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
+            if (selector === 'textarea') this.lastQueriedTextarea = el;
+            if (selector === '.ask-button') this.lastQueriedAskButton = el;
+            if (selector === '.cancel-button') this.lastQueriedCancelButton = el;
+            return el;
+          }
+          return null;
+        }),
         getBoundingClientRect: vi.fn().mockReturnValue({
           width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100
         }),
@@ -148,8 +185,15 @@ export const setupGlobals = (mockDefinition?: any) => {
     body: {
       appendChild: vi.fn()
     },
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
+        addEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+          if (!this.listeners) this.listeners = {};
+          if (!this.listeners[type]) this.listeners[type] = [];
+          this.listeners[type].push(listener);
+        }),
+        removeEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+          if (!this.listeners || !this.listeners[type]) return;
+          this.listeners[type] = this.listeners[type].filter((l: any) => l !== listener);
+        }),
   });
 
   vi.stubGlobal('requestAnimationFrame', (cb: any) => setTimeout(() => cb(performance.now()), 16));
