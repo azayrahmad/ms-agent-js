@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG Image Template</title>
+    <link rel="stylesheet" href="https://unpkg.com/98.css">
+    <style>
+        @font-face {
+            font-family: 'MS Sans Serif';
+            src: url('https://unpkg.com/98.css/dist/ms_sans_serif.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #008080;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: none;
+        }
+
+        #capture-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #008080;
+        }
+
+        .og-size {
+            width: 1200px;
+            height: 630px;
+        }
+
+        .social-size {
+            width: 1280px;
+            height: 640px;
+        }
+
+        .window {
+            width: 900px;
+            min-height: 400px;
+        }
+
+        .window-body {
+            display: flex;
+            align-items: center;
+            padding: 60px;
+            gap: 60px;
+        }
+
+        .clippy-container {
+            width: 279px; /* 93 * 3 */
+            height: 258px; /* 86 * 3 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .clippy-frame {
+            width: 93px;
+            height: 86px;
+            /* Reference path from repo root when served locally for capture */
+            background-image: url('../public/agents/Clippit/agent.webp');
+            background-position: -588px -632px;
+            background-repeat: no-repeat;
+            transform: scale(3);
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 72px;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <div id="capture-area" class="og-size">
+        <div class="window">
+            <div class="title-bar">
+                <div class="title-bar-text">📎 Microsoft Agent - Clippit</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize"></button>
+                    <button aria-label="Maximize"></button>
+                    <button aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="clippy-container">
+                    <div class="clippy-frame"></div>
+                </div>
+                <div class="content">
+                    <h1>MSAgentJS</h1>
+                    <p>The modern, dependency-free implementation of Microsoft Agent for the web.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
