@@ -8,7 +8,7 @@
 
 A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy, Merlin, and the rest of the gang to your modern web applications with a simple, promise-based API.
 
-[**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/getting-started.md) | [**Contributing**](./CONTRIBUTING.md)
+[**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/Getting-Started.md) | [**Contributing**](./CONTRIBUTING.md)
 
 ---
 
@@ -56,12 +56,12 @@ init();
 
 ## 📖 Documentation Map
 
-- **[Getting Started](./docs/getting-started.md)**: Installation and basic usage.
-- **[API Reference](./docs/api-reference.md)**: Full list of methods, options, and events.
-- **[Request System](./docs/request-system.md)**: Understanding the asynchronous action queue.
-- **[Asset Management](./docs/assets.md)**: How to add and optimize new agents.
+- **[Getting Started](./docs/Getting-Started.md)**: Installation and basic usage.
+- **[API Reference](./docs/API-Reference.md)**: Full list of methods, options, and events.
+- **[The Request System](./docs/The-Request-System.md)**: Understanding the asynchronous action queue.
+- **[Asset Management](./docs/Asset-Management.md)**: How to add and optimize new agents.
 - **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
-- **[Internal Architecture](./docs/internals.md)**: Deep dive into the engine's core logic.
+- **[Internal Architecture](./docs/Internal-Architecture.md)**: Deep dive into the engine's core logic.
 - **[AI Onboarding](./AGENTS.md)**: Specific recipes and tips for AI agents.
 
 ## 🤝 Credits

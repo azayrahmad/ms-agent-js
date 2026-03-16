@@ -71,10 +71,10 @@ If you are working with agent assets, you will likely use the `optimize-agent.ts
 npx tsx scripts/optimize-agent.ts path/to/agent/folder
 ```
 
-See **[docs/assets.md](./docs/assets.md)** for more details on how this works.
+See **[docs/Asset-Management.md](./docs/Asset-Management.md)** for more details on how this works.
 
 ---
 
 ## 🔍 Internal Architecture
 
-For a deep dive into how the engine works (rendering loops, request queues, etc.), please see **[docs/internals.md](./docs/internals.md)**.
+For a deep dive into how the engine works (rendering loops, request queues, etc.), please see **[docs/Internal-Architecture.md](./docs/Internal-Architecture.md)**.

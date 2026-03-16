@@ -28,11 +28,11 @@ Follow these common patterns when tasked with extending the library:
 -   **Path Normalization**: Files in `public/agents/` often have inconsistent casing. Always use `CharacterParser.normalizePath()` when resolving asset URLs.
 -   **Awaiting Requests**: API methods return `AgentRequest` objects which are "thenable". You can `await agent.play(...)` directly.
 -   **JSDoc**: The codebase is heavily documented. Use the `read_file` tool on `src/types.ts` to understand the primary data structures.
--   **Architecture**: For a visual overview of how the managers interact, see **[docs/internals.md](./docs/internals.md)**.
+-   **Architecture**: For a visual overview of how the managers interact, see **[docs/Internal-Architecture.md](./docs/Internal-Architecture.md)**.
 -   **Testing**: We use Vitest. Run `npm test` after changes. For visual changes, manual verification via `npm run dev` is recommended.
 
 ---
 
 ## 🔍 Further Reading
-- **[docs/api-reference.md](./docs/api-reference.md)**: User-facing API details.
+- **[docs/API-Reference.md](./docs/API-Reference.md)**: User-facing API details.
 - **[CONTRIBUTING.md](./CONTRIBUTING.md)**: Contribution guidelines and environment setup.
