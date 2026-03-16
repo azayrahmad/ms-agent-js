@@ -49,4 +49,49 @@ EndState
     expect(Object.keys(result.states).length).toBeGreaterThan(0);
     expect(result.states['Idle']).toBeDefined();
   });
+
+  it('should parse branching and extra data correctly', () => {
+    const content = `
+DefineCharacter
+  GUID = {BFC9DE40-EBDE-11D1-BC17-00A076803C83}
+  Width = 124
+  Height = 93
+  DefineInfo 0x0409
+    Name = "Clippit"
+    Description = "Clippit"
+    ExtraData = "Greeting 1 ~~ Greeting 2 ^^ Reminder 1 ~~ Reminder 2"
+  EndInfo
+EndCharacter
+
+DefineAnimation "Test"
+  DefineFrame
+    Duration = 10
+    DefineImage
+      Filename = 0000.bmp
+    EndImage
+    DefineBranching
+      BranchTo = 2
+      Probability = 50
+    EndBranching
+  EndFrame
+EndAnimation
+`;
+
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+
+    // Check ExtraData (Greetings/Reminders)
+    const info = result.character.infos[0];
+    expect(info.greetings).toContain('Greeting 1');
+    expect(info.greetings).toContain('Greeting 2');
+    expect(info.reminders).toContain('Reminder 1');
+    expect(info.reminders).toContain('Reminder 2');
+
+    // Check Branching
+    const animation = result.animations['Test'];
+    const frame = animation.frames[0];
+    expect(frame.branching).toBeDefined();
+    expect(frame.branching![0].branchTo).toBe(2);
+    expect(frame.branching![0].probability).toBe(50);
+  });
 });
