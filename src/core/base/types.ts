@@ -18,6 +18,20 @@ export interface Character {
   style: number;
   /** Path to the bitmap file containing the color palette. */
   colorTable: string;
+  /** Path to the icon file. */
+  icon?: string;
+  /** TTS engine identifier. */
+  ttsEngineID?: string;
+  /** TTS mode identifier. */
+  ttsModeID?: string;
+  /** TTS language identifier. */
+  ttsLangID?: string;
+  /** TTS gender (1 = female, 2 = male, etc.). */
+  ttsGender?: number;
+  /** TTS age. */
+  ttsAge?: number;
+  /** TTS style. */
+  ttsStyle?: string;
 }
 
 /**
@@ -36,6 +50,10 @@ export const CharacterStyle = {
   BalloonAutoHide: 0x0008,
   /** Balloon should automatically pace the text display. */
   BalloonAutoPace: 0x0010,
+  /** Character supports Text-To-Speech. */
+  VoiceTTS: 0x0020,
+  /** Character is a system character. */
+  SystemChar: 0x0040,
 } as const;
 
 /**
@@ -92,6 +110,8 @@ export interface FrameDefinition {
   exitBranch?: number;
   /** A list of layers that compose this frame. */
   images: ImageDefinition[];
+  /** Dictionary of mouth shapes indexed by type. */
+  mouths?: Record<string, ImageDefinition>;
   /** A list of potential branches from this frame. */
   branching?: BranchingDefinition[];
 }
@@ -104,6 +124,8 @@ export interface Animation {
   name: string;
   /** Type of transition between animations (legacy property). */
   transitionType: number;
+  /** The name of the animation to return to. */
+  returnAnimation?: string;
   /** Sequential list of frame definitions. */
   frames: FrameDefinition[];
 }

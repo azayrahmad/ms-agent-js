@@ -17,18 +17,39 @@ import { validate as uuidValidate } from "uuid";
  * Used to translate legacy agent language codes to modern locale strings.
  */
 const LCID_MAP: Record<string, string> = {
+  "0x0009": "en-US", // English - Neutral
   "0x0409": "en-US", // English - United States
   "0x0809": "en-GB", // English - United Kingdom
-  "0x040c": "fr-FR", // French - France
-  "0x0407": "de-DE", // German - Germany
-  "0x0410": "it-IT", // Italian - Italy
-  "0x040a": "es-ES", // Spanish - Spain
-  "0x0411": "ja-JP", // Japanese - Japan
-  "0x0412": "ko-KR", // Korean - Korea
+  "0x0401": "ar-SA", // Arabic - Saudi Arabia
   "0x0404": "zh-TW", // Chinese - Taiwan
   "0x0804": "zh-CN", // Chinese - China
+  "0x0407": "de-DE", // German - Germany
+  "0x040d": "he-IL", // Hebrew - Israel
+  "0x0411": "ja-JP", // Japanese - Japan
+  "0x0412": "ko-KR", // Korean - Korea
+  "0x041e": "th-TH", // Thai - Thailand
+  "0x042d": "eu-ES", // Basque - Basque
   "0x0416": "pt-BR", // Portuguese - Brazil
+  "0x0816": "pt-PT", // Portuguese - Portugal
+  "0x041a": "hr-HR", // Croatian - Croatia
+  "0x0405": "cs-CZ", // Czech - Czech Republic
+  "0x0406": "da-DK", // Danish - Denmark
+  "0x0413": "nl-NL", // Dutch - Netherlands
+  "0x040b": "fi-FI", // Finnish - Finland
+  "0x040c": "fr-FR", // French - France
+  "0x040e": "hu-HU", // Hungarian - Hungary
+  "0x0410": "it-IT", // Italian - Italy
+  "0x0414": "nb-NO", // Norwegian - Bokmal
+  "0x0415": "pl-PL", // Polish - Poland
+  "0x0418": "ro-RO", // Romanian - Romania
   "0x0419": "ru-RU", // Russian - Russia
+  "0x041b": "sk-SK", // Slovak - Slovakia
+  "0x0424": "sl-SI", // Slovenian - Slovenia
+  "0x0c0a": "es-ES", // Spanish - Spain (Modern Sort)
+  "0x040a": "es-ES", // Spanish - Spain
+  "0x041d": "sv-SE", // Swedish - Sweden
+  "0x041f": "tr-TR", // Turkish - Turkey
+  "0x0408": "el-GR", // Greek - Greece
 };
 
 /**
@@ -143,6 +164,7 @@ export class CharacterParser {
       const line = lines[i].trim();
       if (line.startsWith("DefineInfo")) {
         i = this.parseCharacterInfo(lines, i);
+        continue;
       }
 
       if (line === "EndInfo") {
@@ -187,6 +209,27 @@ export class CharacterParser {
           case "ColorTable":
             this.currentCharacter.colorTable = value.replace(/\\/g, "/");
             break;
+          case "Icon":
+            this.currentCharacter.icon = value.replace(/\\/g, "/");
+            break;
+          case "TTSEngineID":
+            this.currentCharacter.ttsEngineID = value.replace(/{|}/g, "");
+            break;
+          case "TTSModeID":
+            this.currentCharacter.ttsModeID = value.replace(/{|}/g, "");
+            break;
+          case "TTSLangID":
+            this.currentCharacter.ttsLangID = value;
+            break;
+          case "TTSGender":
+            this.currentCharacter.ttsGender = parseInt(value, 10);
+            break;
+          case "TTSAge":
+            this.currentCharacter.ttsAge = parseInt(value, 10);
+            break;
+          case "TTSStyle":
+            this.currentCharacter.ttsStyle = value;
+            break;
         }
       }
       i++;
@@ -204,11 +247,15 @@ export class CharacterParser {
     if (!match) return i;
 
     const lcid = `0x${match[1].toLowerCase()}`;
-    const localeTag = LCID_MAP[lcid] || "en-US"; // Default to en-US if unknown
+    const localeTag = LCID_MAP[lcid];
+
+    if (!localeTag) {
+      console.warn(`Unknown LCID found in .acd file: ${lcid}. Defaulting to en-US.`);
+    }
 
     this.currentLanguageInfo = {
       languageCode: lcid,
-      locale: new Intl.Locale(localeTag),
+      locale: new Intl.Locale(localeTag || "en-US"),
       name: "",
       description: "",
       greetings: [],
@@ -280,12 +327,16 @@ export class CharacterParser {
       if (trimmedPart === "AXS_VOICE_NONE") style |= CharacterStyle.VoiceNone;
       else if (trimmedPart === "AXS_BALLOON_ROUNDRECT")
         style |= CharacterStyle.BalloonRoundRect;
-      else if (trimmedPart === "AXS_BALLOON_SIZE_TO_TEXT")
+      else if (trimmedPart === "AXS_BALLOON_SIZE_TO_TEXT" || trimmedPart === "AXS_BALLOON_SIZETOTEXT")
         style |= CharacterStyle.BalloonSizeToText;
       else if (trimmedPart === "AXS_BALLOON_AUTO_HIDE")
         style |= CharacterStyle.BalloonAutoHide;
       else if (trimmedPart === "AXS_BALLOON_AUTO_PACE")
         style |= CharacterStyle.BalloonAutoPace;
+      else if (trimmedPart === "AXS_VOICE_TTS")
+        style |= CharacterStyle.VoiceTTS;
+      else if (trimmedPart === "AXS_SYSTEM_CHAR")
+        style |= CharacterStyle.SystemChar;
     }
 
     return style;
@@ -365,6 +416,9 @@ export class CharacterParser {
       if (currentLine.startsWith("TransitionType")) {
         const value = currentLine.split("=")[1].trim();
         this.currentAnimation.transitionType = parseInt(value, 10);
+      } else if (currentLine.startsWith("ReturnAnimation")) {
+        const value = currentLine.split("=")[1].trim().replace(/"/g, "");
+        this.currentAnimation.returnAnimation = value;
       } else if (currentLine.startsWith("DefineFrame")) {
         i = this.parseFrameSection(lines, i);
       }
@@ -384,7 +438,7 @@ export class CharacterParser {
    */
   private parseFrameSection(lines: string[], i: number): number {
     this.currentFrame = {
-      duration: 0,
+      duration: this.currentCharacter?.defaultFrameDuration || 0,
       images: [],
     };
     i++;
@@ -403,6 +457,8 @@ export class CharacterParser {
         this.currentFrame.soundEffect = value;
       } else if (line.startsWith("DefineImage")) {
         i = this.parseImageSection(lines, i);
+      } else if (line.startsWith("DefineMouth")) {
+        i = this.parseMouthSection(lines, i);
       } else if (line.startsWith("DefineBranching")) {
         i = this.parseBranchingSection(lines, i);
       }
@@ -451,6 +507,57 @@ export class CharacterParser {
 
     if (this.currentFrame) {
       this.currentFrame.images.push(image);
+    }
+    return i;
+  }
+
+  /**
+   * Parses a mouth shape definition within a frame.
+   */
+  private parseMouthSection(lines: string[], i: number): number {
+    const line = lines[i].trim();
+    const match = line.match(/DefineMouth/);
+    if (!match) return i;
+
+    const mouthImage: ImageDefinition = {
+      filename: "",
+      offsetX: 0,
+      offsetY: 0,
+    };
+    let mouthType = "";
+
+    i++;
+    while (i < lines.length && lines[i].trim() !== "EndMouth") {
+      const currentLine = lines[i].trim();
+      const parts = currentLine.split("=");
+
+      if (parts.length >= 2) {
+        const key = parts[0].trim();
+        const value = parts.slice(1).join("=").trim().replace(/"/g, "");
+
+        switch (key) {
+          case "Type":
+            mouthType = value.toLowerCase();
+            break;
+          case "Filename":
+            mouthImage.filename = value.replace(/\\/g, "/");
+            break;
+          case "OffsetX":
+            mouthImage.offsetX = parseInt(value, 10);
+            break;
+          case "OffsetY":
+            mouthImage.offsetY = parseInt(value, 10);
+            break;
+        }
+      }
+      i++;
+    }
+
+    if (this.currentFrame && mouthType) {
+      if (!this.currentFrame.mouths) {
+        this.currentFrame.mouths = {};
+      }
+      this.currentFrame.mouths[mouthType] = mouthImage;
     }
     return i;
   }
