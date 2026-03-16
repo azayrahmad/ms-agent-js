@@ -134,7 +134,10 @@ async function initDemo() {
   const visibilityBtn = document.getElementById(
     "visibility-btn",
   ) as HTMLButtonElement;
-  const exitBtn = document.getElementById("exit-btn") as HTMLButtonElement;
+  const startStopBtn = document.getElementById(
+    "start-stop-btn",
+  ) as HTMLButtonElement;
+  const selectBtn = document.getElementById("select-btn") as HTMLButtonElement;
   const speakBtn = document.getElementById("speak-btn") as HTMLButtonElement;
   const askBtn = document.getElementById("ask-btn") as HTMLButtonElement;
   const speakTextInput = document.getElementById(
@@ -371,7 +374,8 @@ async function initDemo() {
 
       isVisible = true;
       visibilityBtn.textContent = "Hide";
-      exitBtn.textContent = "Exit";
+      startStopBtn.textContent = "Stop";
+      (window as any).agent = currentAgent;
 
       playBtn.disabled = false;
       play5sBtn.disabled = false;
@@ -492,15 +496,10 @@ async function initDemo() {
     visibilityBtn.disabled = false;
   });
 
-  exitBtn.addEventListener("click", async () => {
-    if (exitBtn.textContent === "Initialize") {
-      await loadAgent(AGENTS[currentGalleryIndex].name);
-      return;
-    }
-
+  async function stopAgent() {
     if (!currentAgent) return;
 
-    exitBtn.disabled = true;
+    startStopBtn.disabled = true;
     playBtn.disabled = true;
     play5sBtn.disabled = true;
     playLoopedBtn.disabled = true;
@@ -516,15 +515,31 @@ async function initDemo() {
 
     if (currentAgent.hasAnimation("GoodBye")) {
       await currentAgent.hide("GoodBye");
+    } else if (currentAgent.hasAnimation("Goodbye")) {
+      await currentAgent.hide("Goodbye");
     } else {
       await currentAgent.hide();
     }
 
     currentAgent.destroy();
     currentAgent = null;
+    (window as any).agent = null;
 
-    exitBtn.textContent = "Initialize";
-    exitBtn.disabled = false;
+    startStopBtn.textContent = "Start";
+    startStopBtn.disabled = false;
+    dashState.textContent = "Stopped";
+  }
+
+  startStopBtn.addEventListener("click", async () => {
+    if (startStopBtn.textContent?.trim() === "Start") {
+      await loadAgent(AGENTS[currentGalleryIndex].name);
+    } else {
+      await stopAgent();
+    }
+  });
+
+  selectBtn.addEventListener("click", async () => {
+    await loadAgent(AGENTS[currentGalleryIndex].name);
   });
 
   function updateVoiceList() {
@@ -721,8 +736,6 @@ async function initDemo() {
   // Start
   updateDebug();
   loadPreviewAgent(currentGalleryIndex);
-  await loadAgent(AGENTS[currentGalleryIndex].name);
-  (window as any).agent = currentAgent;
 }
 
 initDemo();

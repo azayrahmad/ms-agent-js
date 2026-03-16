@@ -71,8 +71,11 @@
                             <li
                                 role="tab"
                                 aria-selected="true"
-                                id="tab-assistant"
+                                id="tab-about"
                             >
+                                <a href="#about">About</a>
+                            </li>
+                            <li role="tab" id="tab-assistant">
                                 <a href="#assistant">Assistant</a>
                             </li>
                             <li role="tab" id="tab-behavior">
@@ -81,15 +84,50 @@
                             <li role="tab" id="tab-speech">
                                 <a href="#speech">Speech</a>
                             </li>
-                            <li role="tab" id="tab-about">
-                                <a href="#about">About</a>
-                            </li>
                         </menu>
 
                         <div
                             class="window"
                             role="tabpanel"
+                            id="panel-about"
+                        >
+                            <div class="window-body">
+                                <strong>MSAgentJS</strong>
+                                <p>
+                                    A modern, TypeScript-based implementation of
+                                    Microsoft Agent, bringing the charm of
+                                    Clippy and friends back to the web.
+                                </p>
+                                <p>
+                                    Inspired by the original Microsoft Agent
+                                    technology and clippy.js.
+                                </p>
+                                <p>
+                                    <a
+                                        href="https://github.com/azayrahmad/ms-agent-js"
+                                        target="_blank"
+                                        >View on GitHub</a
+                                    >
+                                </p>
+
+                                <hr />
+
+                                <div
+                                    class="field-row"
+                                    style="justify-content: center"
+                                >
+                                    <button id="start-stop-btn" style="width: 120px">
+                                        Start
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="window"
+                            role="tabpanel"
                             id="panel-assistant"
+                            hidden
                         >
                             <div class="window-body">
                                 <div class="gallery">
@@ -122,19 +160,11 @@
                                     <button id="prev-agent-btn">
                                         &lt;Back
                                     </button>
+                                    <button id="select-btn">
+                                        Select
+                                    </button>
                                     <button id="next-agent-btn">
                                         Next&gt;
-                                    </button>
-                                </div>
-
-                                <hr />
-
-                                <div
-                                    class="field-row"
-                                    style="justify-content: center"
-                                >
-                                    <button id="exit-btn" style="width: 120px">
-                                        Exit
                                     </button>
                                 </div>
 
@@ -383,32 +413,6 @@
                             </div>
                         </div>
 
-                        <div
-                            class="window"
-                            role="tabpanel"
-                            id="panel-about"
-                            hidden
-                        >
-                            <div class="window-body">
-                                <strong>MSAgentJS</strong>
-                                <p>
-                                    A modern, TypeScript-based implementation of
-                                    Microsoft Agent, bringing the charm of
-                                    Clippy and friends back to the web.
-                                </p>
-                                <p>
-                                    Inspired by the original Microsoft Agent
-                                    technology and clippy.js.
-                                </p>
-                                <p>
-                                    <a
-                                        href="https://github.com/azayrahmad/ms-agent-js"
-                                        target="_blank"
-                                        >View on GitHub</a
-                                    >
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
