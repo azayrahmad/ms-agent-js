@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { spawnSync } from 'child_process';
 import sharp from 'sharp';
-import { CharacterParser } from '../src/CharacterParser';
-import type { AgentCharacterDefinition, AudioAtlasEntry, AtlasEntry } from '../src/types';
+import { CharacterParser } from '../src/core/resources/CharacterParser';
+import type { AgentCharacterDefinition, AudioAtlasEntry, AtlasEntry } from '../src/core/base/types';
 
 // Mock some browser globals for CharacterParser
 (global as any).fetch = async (url: string) => {

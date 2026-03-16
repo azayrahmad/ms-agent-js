@@ -38,6 +38,7 @@ To convert legacy files into the optimized format, use the included CLI tool:
 
 ```bash
 # Point the script to your agent's folder
+npm install # Ensure dependencies like sharp are installed
 npx tsx scripts/optimize-agent.ts public/agents/Merlin
 ```
 
@@ -52,10 +53,18 @@ Once `agent.json`, `agent.webp`, and `agent.webm` are generated, you can delete 
 
 ## Custom Loading
 
-If your assets are hosted on a CDN or a different path, use the `baseUrl` option:
+By default, `Agent.load` will look for assets on the unpkg CDN if no `baseUrl` is provided. This allows you to get started quickly without hosting your own assets.
 
 ```javascript
+// Loads Clippit assets from unpkg CDN by default
+const agent = await Agent.load('Clippit');
+```
+
+If you want to host assets locally, you should provide a `baseUrl`:
+
+```javascript
+// Looks for /agents/Clippit/agent.json on your local server
 const agent = await Agent.load('Clippit', {
-  baseUrl: 'https://cdn.example.com/assets/agents/clippit'
+  baseUrl: '/agents/Clippit'
 });
 ```

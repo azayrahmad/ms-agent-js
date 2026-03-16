@@ -6,36 +6,41 @@ This document provides a technical deep-dive into the internal workings of **MSA
 
 ## 🏗 System Architecture
 
-The library follows a modular manager-based architecture. The central `Agent` class acts as a coordinator for several specialized managers.
+The library follows a modular manager-based architecture, split between a headless logic core (`AgentCore`) and a browser-based rendering layer (`AgentRenderer`).
 
 ```mermaid
 graph TD
-    A[Agent] --> B[CharacterParser]
-    A --> C[SpriteManager]
-    A --> D[AnimationManager]
-    A --> E[AudioManager]
-    A --> F[StateManager]
-    A --> G[Balloon]
-    A --> H[RequestQueue]
-
-    subgraph "Rendering & Logic"
-    C
-    D
-    F
+    subgraph "Facade"
+    A[Agent]
     end
 
-    subgraph "Output"
-    E
-    G
+    subgraph "Logic Core (AgentCore)"
+    D[AnimationManager]
+    F[StateManager]
+    H[RequestQueue]
+    E[AudioManager]
+    B[CharacterParser]
+    M[MSADPCMDecoder]
+    S[SpriteManager]
     end
 
-    subgraph "Infrastructure"
-    B
-    H
+    subgraph "UI Layer (AgentRenderer)"
+    G[Balloon]
+    R[Canvas Renderer]
     end
+
+    A --> AgentCore
+    A --> AgentRenderer
+    AgentCore --> B
+    AgentCore --> D
+    AgentCore --> E
+    AgentCore --> F
+    AgentCore --> H
+    AgentCore --> S
+    E --> M
 ```
 
-| Manager | Responsibility | Folder |
+| Component | Responsibility | Folder |
 | --- | --- | --- |
 | **`Agent`** | Public API facade. Coordinates `AgentCore` and `AgentRenderer`. | `src/` |
 | **`AgentCore`** | Headless engine. Manages state, animations, and sound logic. | `src/core/` |
@@ -46,6 +51,7 @@ graph TD
 | **`AnimationManager`** | Low-level frame-by-frame timing and branching. | `src/core/behavior/` |
 | **`StateManager`** | High-level behavioral state transitions. | `src/core/behavior/` |
 | **`AudioManager`** | Audio spritesheet and decoding management. | `src/core/resources/` |
+| **`MSADPCMDecoder`** | Decodes legacy Microsoft ADPCM WAV files into PCM. | `src/core/resources/` |
 | **`Balloon`** | Procedural SVG speech bubble rendering. | `src/ui/` |
 | **`RequestQueue`** | Asynchronous character action queuing. | `src/core/behavior/` |
 
@@ -62,7 +68,8 @@ The `Agent` maintains a `requestAnimationFrame` loop that drives the entire syst
 2.  **`StateManager.update(deltaTime)`**:
     - Monitors the `RequestQueue`. If empty, it progresses "Idle" logic.
     - Increments "boredom" levels to trigger more complex idle animations.
-3.  **`Agent.draw()`**:
+    - Note: `StateManager.update` is asynchronous to allow for non-blocking idle transitions.
+3.  **`AgentRenderer.draw()`**:
     - Clears the canvas.
     - Calls `AnimationManager.draw(ctx)`, which delegates to `SpriteManager.drawFrame()`.
 

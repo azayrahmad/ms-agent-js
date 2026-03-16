@@ -4,12 +4,13 @@ This document provides a detailed reference for the `Agent` class and its associ
 
 ## Configuration Options
 
-When calling `Agent.load(name, options)`, you can pass a configuration object:
+### `Agent.load(name, options)` (Static)
+Asynchronously loads and initializes an agent.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `container` | `HTMLElement` | `document.body` | The element where the agent will be appended. |
-| `baseUrl` | `string` | `/agents/{name}` | The base path to the agent's folder. |
+| `baseUrl` | `string` | `unpkg.com` CDN | The base path to the agent's folder. |
 | `scale` | `number` | `1` | Scaling factor (e.g., 2 for double size). |
 | `speed` | `number` | `1` | Multiplier for animation playback speed. |
 | `idleIntervalMs` | `number` | `5000` | Delay between checks for idle animations. |
@@ -43,11 +44,11 @@ Dynamically changes the agent's size.
 
 ## Animations & Behavior
 
-### `agent.play(animationName, options?)`
+### `agent.play(animationName, timeoutMs?, useExitBranch?, loop?)`
 Plays a specific animation by name.
-- **`timeoutMs`**: Max duration for the animation.
-- **`useExitBranch`**: If true, plays the "return to neutral" sequence at the end (default: true).
-- **`loop`**: If true, loops the animation until stopped.
+- **`timeoutMs`**: Optional time limit for the animation playback.
+- **`useExitBranch`**: Whether to take the exit branch immediately (default: `true` if no timeout/loop).
+- **`loop`**: Whether to loop the animation indefinitely (default: `false`).
 
 ### `agent.animate()`
 Plays a random non-idle animation.
@@ -77,6 +78,10 @@ Displays text in a speech balloon.
 - **`useTTS`**: Enable/disable system speech for this request (default: true).
 - **`skipTyping`**: Show all text instantly (default: false).
 
+### `agent.showHtml(html, hold?)`
+Displays raw HTML inside the speech balloon.
+- **`hold`**: If true, the balloon stays open until manually closed.
+
 ### `agent.ask(options?)`
 Opens an interactive dialog with a text input.
 - **`title`**: Header text for the dialog.
@@ -89,6 +94,12 @@ Stops the current action or a specific request.
 
 ### `agent.stopCurrent()`
 Stops the currently active request and proceeds to the next in the queue.
+
+### `agent.wait(request)`
+Causes the character's request queue to wait until the specified `AgentRequest` completes.
+
+### `agent.delay(ms)`
+Queues a silent delay for the specified number of milliseconds.
 
 ### `agent.interrupt(animationName)`
 Stops all current actions and immediately plays the new animation.
@@ -105,6 +116,11 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions.
 
+Subscribe using `agent.on(eventName, callback)` and unsubscribe using `agent.off(eventName, callback)`.
+
+### `agent.destroy()`
+Performs full cleanup: cancels animations, stops speech, and removes the agent from the DOM.
+
 ---
 
 ## Text-to-Speech (TTS)
@@ -119,6 +135,15 @@ agent.setTTSOptions({
   voice: agent.getTTSVoices().find(v => v.name === 'Alex')
 });
 ```
+
+### `agent.setTTSOptions(options)`
+Configures global Text-to-Speech settings (rate, pitch, volume, voice).
+
+### `agent.getTTSVoices()`
+Returns an array of available system voices.
+
+### `agent.stopTTS()`
+Instantly stops any ongoing system speech.
 
 ---
 
