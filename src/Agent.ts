@@ -668,19 +668,23 @@ export class Agent {
     options: {
       title?: string;
       placeholder?: string;
+      choices?: string[];
+      choiceStyle?: "bullet" | "bulb";
       askButtonText?: string;
       cancelButtonText?: string;
       timeout?: number;
     } = {},
-  ): Promise<string | null> {
+  ): Promise<string | number | null> {
     const title = options.title || "What would you like to do?";
     const placeholder = options.placeholder || "Ask me anything...";
     const askButtonText = options.askButtonText || "Ask";
     const cancelButtonText = options.cancelButtonText || "Cancel";
     const timeout = options.timeout || 60000;
+    const choices = options.choices || null;
+    const choiceStyle = options.choiceStyle || "bullet";
 
-    let resolveAsk: (value: string | null) => void;
-    const askPromise = new Promise<string | null>((res) => {
+    let resolveAsk: (value: string | number | null) => void;
+    const askPromise = new Promise<string | number | null>((res) => {
       resolveAsk = res;
     });
 
@@ -693,21 +697,36 @@ export class Agent {
       let inputBalloonTimeout: number | null = null;
       let resolved = false;
 
-      const balloonContent = `
-            <div class="clippy-input">
-              <b>${title}</b>
-              <textarea rows="2" placeholder="${placeholder}"></textarea>
-              <div class="clippy-input-buttons">
-                <button class="ask-button default">${askButtonText}</button>
-                <button class="cancel-button">${cancelButtonText}</button>
-              </div>
-            </div>
-          `;
+      let balloonContent = "";
+      if (choices) {
+        const choicesHtml = choices
+          .map((choice, i) => `<li data-index="${i}"><span>${choice}</span></li>`)
+          .join("");
+        balloonContent = `
+                <div class="clippy-input">
+                    <b>${title}</b>
+                    <ul class="clippy-choices style-${choiceStyle}">
+                        ${choicesHtml}
+                    </ul>
+                </div>
+            `;
+      } else {
+        balloonContent = `
+                <div class="clippy-input">
+                  <b>${title}</b>
+                  <textarea rows="2" placeholder="${placeholder}"></textarea>
+                  <div class="clippy-input-buttons">
+                    <button class="ask-button default">${askButtonText}</button>
+                    <button class="cancel-button">${cancelButtonText}</button>
+                  </div>
+                </div>
+              `;
+      }
 
       this.startTalkingAnimation();
 
       return new Promise<void>((resolveQueue) => {
-        const finish = (value: string | null) => {
+        const finish = (value: string | number | null) => {
           if (resolved) return;
           resolved = true;
           this.renderer.balloon.onHide = null;
@@ -730,6 +749,9 @@ export class Agent {
         };
 
         this.showHtml(balloonContent, true);
+        if (choices) {
+          this.renderer.balloon.speak(() => {}, title, true, true, false, true);
+        }
 
         const balloonEl = this.renderer.balloon.balloonEl;
         const input = balloonEl.querySelector(
@@ -741,6 +763,9 @@ export class Agent {
         const cancelButton = balloonEl.querySelector(
           ".cancel-button",
         ) as HTMLButtonElement;
+        const choicesList = balloonEl.querySelector(
+          ".clippy-choices",
+        ) as HTMLUListElement;
 
         const handleKeypress = (e: KeyboardEvent) => {
           resetBalloonTimeout();
@@ -759,6 +784,16 @@ export class Agent {
         const handleCancel = () => {
           finish(null);
           this.renderer.balloon.close();
+        };
+
+        const handleChoiceClick = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          const li = target.closest("li");
+          if (li && li.hasAttribute("data-index")) {
+            const index = parseInt(li.getAttribute("data-index") || "0");
+            finish(index);
+            this.renderer.balloon.close();
+          }
         };
 
         const handleFocus = () => {
@@ -788,8 +823,9 @@ export class Agent {
           input?.removeEventListener("keypress", handleKeypress);
           input?.removeEventListener("focus", handleFocus);
           input?.removeEventListener("blur", handleBlur);
-          askButton.removeEventListener("click", handleAsk);
-          cancelButton.removeEventListener("click", handleCancel);
+          askButton?.removeEventListener("click", handleAsk);
+          cancelButton?.removeEventListener("click", handleCancel);
+          choicesList?.removeEventListener("click", handleChoiceClick);
         };
 
         if (input) {
@@ -799,8 +835,9 @@ export class Agent {
           input.addEventListener("blur", handleBlur);
         }
 
-        askButton.addEventListener("click", handleAsk);
-        cancelButton.addEventListener("click", handleCancel);
+        askButton?.addEventListener("click", handleAsk);
+        cancelButton?.addEventListener("click", handleCancel);
+        choicesList?.addEventListener("click", handleChoiceClick);
 
         resetBalloonTimeout();
         setTimeout(() => this.renderer.balloon.reposition(), 0);

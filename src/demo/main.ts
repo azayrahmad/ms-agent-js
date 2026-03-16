@@ -140,9 +140,11 @@ async function initDemo() {
   const selectBtn = document.getElementById("select-btn") as HTMLButtonElement;
   const speakBtn = document.getElementById("speak-btn") as HTMLButtonElement;
   const askBtn = document.getElementById("ask-btn") as HTMLButtonElement;
+  const askOptionsBtn = document.getElementById("ask-options-btn") as HTMLButtonElement;
+  const askStyleSelect = document.getElementById("ask-style-select") as HTMLSelectElement;
   const speakTextInput = document.getElementById(
     "speak-text",
-  ) as HTMLInputElement;
+  ) as HTMLTextAreaElement;
   const skipTypingCheck = document.getElementById(
     "skip-typing-check",
   ) as HTMLInputElement;
@@ -260,6 +262,7 @@ async function initDemo() {
     visibilityBtn.disabled = true;
     speakBtn.disabled = true;
     askBtn.disabled = true;
+    askOptionsBtn.disabled = true;
     gestureLeftBtn.disabled = true;
     gestureRightBtn.disabled = true;
     gestureUpBtn.disabled = true;
@@ -386,6 +389,7 @@ async function initDemo() {
       visibilityBtn.disabled = false;
       speakBtn.disabled = false;
       askBtn.disabled = false;
+      askOptionsBtn.disabled = false;
       gestureLeftBtn.disabled = false;
       gestureRightBtn.disabled = false;
       gestureUpBtn.disabled = false;
@@ -509,6 +513,7 @@ async function initDemo() {
     visibilityBtn.disabled = true;
     speakBtn.disabled = true;
     askBtn.disabled = true;
+    askOptionsBtn.disabled = true;
     gestureLeftBtn.disabled = true;
     gestureRightBtn.disabled = true;
     gestureUpBtn.disabled = true;
@@ -609,6 +614,26 @@ async function initDemo() {
     });
     if (answer !== null) {
       currentAgent.speak(`You said: ${answer}`, {
+        skipTyping: skipTypingCheck.checked,
+      });
+    } else {
+      currentAgent.speak("Cancelled.", {
+        skipTyping: skipTypingCheck.checked,
+      });
+    }
+  });
+
+  askOptionsBtn.addEventListener("click", async () => {
+    if (!currentAgent) return;
+    const choices = ["I'm doing great!", "Not too bad.", "Could be better."];
+    const index = await currentAgent.ask({
+      title: "How are you today?",
+      choices: choices,
+      choiceStyle: askStyleSelect.value as "bullet" | "bulb",
+    });
+
+    if (index !== null) {
+      currentAgent.speak(`You chose: ${choices[index as number]}`, {
         skipTyping: skipTypingCheck.checked,
       });
     } else {
