@@ -45,7 +45,15 @@ fieldset label {
 }
 
 fieldset .field-row input[type="checkbox"] + label {
-    width: auto;
+  width: auto;
+}
+
+input[type="checkbox"] + label:before {
+  top: 0;
+}
+
+input[type="checkbox"]:checked + label:after {
+  top: 3px;
 }
 
 fieldset span {
