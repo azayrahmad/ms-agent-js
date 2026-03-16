@@ -94,6 +94,6 @@ if (name) {
 
 ## Next Steps
 
-- **[API Reference](./api-reference.md)**: Explore all available commands and configuration options.
-- **[Asset Management](./assets.md)**: Learn how to add new agents and optimize them for the web.
-- **[The Request System](./request-system.md)**: Understand how the asynchronous action queue works.
+- **[API Reference](./API-Reference.md)**: Explore all available commands and configuration options.
+- **[Asset Management](./Asset-Management.md)**: Learn how to add new agents and optimize them for the web.
+- **[The Request System](./The-Request-System.md)**: Understand how the asynchronous action queue works.
