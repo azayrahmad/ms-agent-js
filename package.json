@@ -30,8 +30,10 @@
   "homepage": "https://azayrahmad.github.io/ms-agent-js/",
   "main": "./dist/ms-agent-js.umd.js",
   "module": "./dist/ms-agent-js.es.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/ms-agent-js.es.js",
       "require": "./dist/ms-agent-js.umd.js"
     },

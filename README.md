@@ -36,6 +36,8 @@ If you're looking for the nostalgic feel of **clippy.js** but need something bui
 npm install ms-agent-js
 ```
 
+You can also download the pre-built library and assets directly from [GitHub Releases](https://github.com/azayrahmad/ms-agent-js/releases).
+
 ## 🛠 Quick Start
 
 ```javascript

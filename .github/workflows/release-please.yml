@@ -44,3 +44,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
+
+      - name: Zip build artifacts
+        run: |
+          cd dist
+          zip -r ../ms-agent-js.zip .
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Upload Release Asset
+        run: gh release upload ${{ steps.release.outputs.tag_name }} ms-agent-js.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ steps.release.outputs.release_created }}

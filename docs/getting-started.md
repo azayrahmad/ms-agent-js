@@ -19,6 +19,32 @@ Or use it via a CDN like unpkg:
 </script>
 ```
 
+### Direct Download (GitHub Release)
+
+If you prefer not to use a package manager, you can download the built library directly from the [GitHub Releases](https://github.com/azayrahmad/ms-agent-js/releases).
+
+1. Download the `ms-agent-js.zip` from the latest release.
+2. Extract the files into your project directory (e.g., into a `lib/ms-agent-js` folder).
+3. Include the library in your HTML:
+
+```html
+<!-- For modern browsers (ES Modules) -->
+<script type="module">
+  import { Agent } from './lib/ms-agent-js/ms-agent-js.es.js';
+  // ...
+</script>
+
+<!-- OR for older browsers or simple scripts (UMD) -->
+<script src="./lib/ms-agent-js/ms-agent-js.umd.js"></script>
+<script>
+  // Access via the MSAgentJS global
+  const { Agent } = MSAgentJS;
+  // ...
+</script>
+```
+
+> **Note:** Ensure the `agents/` folder is located in the same directory as the script, or specify the `baseUrl` when loading an agent.
+
 ## Basic Usage
 
 To bring an agent to life, you need two things: the library and the agent assets.

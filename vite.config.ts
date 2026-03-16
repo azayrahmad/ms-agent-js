@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: isApp ? 'dist-app' : 'dist',
+      emptyOutDir: false,
       lib: isApp
         ? undefined
         : {
