@@ -37,7 +37,7 @@
     "build": "npm run build:lib && npm run build:app",
     "build:lib": "tsc && vite build",
     "build:app": "tsc && vite build --mode app",
-    "preview": "vite preview",
+    "preview": "npm run build:app && vite preview --mode app",
     "test": "vitest run"
   },
   "devDependencies": {
