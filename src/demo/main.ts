@@ -143,6 +143,19 @@ async function initDemo() {
   const skipTypingCheck = document.getElementById(
     "skip-typing-check",
   ) as HTMLInputElement;
+
+  const voiceSelect = document.getElementById(
+    "voice-select",
+  ) as HTMLSelectElement;
+  const volumeRange = document.getElementById(
+    "volume-range",
+  ) as HTMLInputElement;
+  const volumeValue = document.getElementById("volume-value") as HTMLSpanElement;
+  const pitchRange = document.getElementById("pitch-range") as HTMLInputElement;
+  const pitchValue = document.getElementById("pitch-value") as HTMLSpanElement;
+  const rateRange = document.getElementById("rate-range") as HTMLInputElement;
+  const rateValue = document.getElementById("rate-value") as HTMLSpanElement;
+
   const gestureLeftBtn = document.getElementById(
     "gesture-left-btn",
   ) as HTMLButtonElement;
@@ -353,6 +366,9 @@ async function initDemo() {
         stateSelect.appendChild(option);
       });
 
+      updateVoiceList();
+      updateTTSOptions();
+
       isVisible = true;
       visibilityBtn.textContent = "Hide";
       exitBtn.textContent = "Exit";
@@ -510,6 +526,57 @@ async function initDemo() {
     exitBtn.textContent = "Initialize";
     exitBtn.disabled = false;
   });
+
+  function updateVoiceList() {
+    if (!currentAgent) return;
+    const voices = currentAgent.getTTSVoices();
+    const currentVoice = voiceSelect.value;
+    voiceSelect.innerHTML = "";
+
+    voices.forEach((voice) => {
+      const option = document.createElement("option");
+      option.value = voice.name;
+      option.textContent = `${voice.name} (${voice.lang})`;
+      if (voice.name === currentVoice) {
+        option.selected = true;
+      }
+      voiceSelect.appendChild(option);
+    });
+  }
+
+  function updateTTSOptions() {
+    if (!currentAgent) return;
+
+    const voices = currentAgent.getTTSVoices();
+    const selectedVoice = voices.find((v) => v.name === voiceSelect.value);
+
+    const volume = parseFloat(volumeRange.value);
+    const pitch = parseFloat(pitchRange.value);
+    const rate = parseFloat(rateRange.value);
+
+    volumeValue.textContent = volume.toFixed(1);
+    pitchValue.textContent = pitch.toFixed(1);
+    rateValue.textContent = rate.toFixed(1);
+
+    currentAgent.setTTSOptions({
+      voice: selectedVoice,
+      volume,
+      pitch,
+      rate,
+    });
+  }
+
+  // Update voice list when voices are loaded
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      updateVoiceList();
+    };
+  }
+
+  voiceSelect.addEventListener("change", updateTTSOptions);
+  volumeRange.addEventListener("input", updateTTSOptions);
+  pitchRange.addEventListener("input", updateTTSOptions);
+  rateRange.addEventListener("input", updateTTSOptions);
 
   speakBtn.addEventListener("click", () => {
     currentAgent?.speak(speakTextInput.value, {
