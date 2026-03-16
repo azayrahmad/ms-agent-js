@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/azayrahmad/ms-agent-js?style=plastic&color=orange)](./LICENSE)
 [![TypeScript Ready](https://img.shields.io/badge/TypeScript-Ready-blue?style=plastic)](https://www.typescriptlang.org/)
 
-A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy, Merlin, and the rest of the gang to your modern web applications with a simple, promise-based API.
+A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy and the rest of the gang to your modern web applications with a simple, promise-based API. While this is inspired by [clippy.js](https://github.com/clippyjs/clippy.js) and borrows some logic, this is a reimplementation from scratch meant to be a modern, more faithful recreation of Microsoft Agent designed to work on any web page.
 
 [**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/getting-started.md) | [**Contributing**](./CONTRIBUTING.md)
 
@@ -26,9 +26,10 @@ If you're looking for the nostalgic feel of **clippy.js** but need something bui
 
 - **Modern API**: Simple, promise-based API for animations, state transitions, and speech.
 - **Shadow DOM**: Zero CSS leakage. The agent and its balloon are fully isolated.
-- **Procedural Balloons**: SVGs rendered with pixel-perfect fidelity to the original look.
-- **Optimized Assets**: Support for WebP texture atlases and WebM audio spritesheets.
+- **Speech Balloons**: Procedurally generated SVGs with support for text input and action buttons.
+- **Optimized Assets**: Support for both original decompiled MS Agent assets and optimized WebP/WebM formats.
 - **Draggable**: Built-in support for repositioning agents via mouse or touch.
+- **TTS Support**: Built-in text-to-speech support using the browser's native Web Speech API.
 
 ## 📦 Installation
 

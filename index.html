@@ -58,7 +58,7 @@
                 <div class="window control-panel">
                     <div class="title-bar">
                         <div class="title-bar-text">
-                            📎 MSAgentJS Control Panel
+                            📎 MS Agent JS Control Panel
                         </div>
                         <div class="title-bar-controls">
                             <button aria-label="Minimize"></button>
@@ -68,11 +68,7 @@
                     </div>
                     <div class="window-body">
                         <menu role="tablist">
-                            <li
-                                role="tab"
-                                aria-selected="true"
-                                id="tab-about"
-                            >
+                            <li role="tab" aria-selected="true" id="tab-about">
                                 <a href="#about">About</a>
                             </li>
                             <li role="tab" id="tab-assistant">
@@ -86,27 +82,42 @@
                             </li>
                         </menu>
 
-                        <div
-                            class="window"
-                            role="tabpanel"
-                            id="panel-about"
-                        >
+                        <div class="window" role="tabpanel" id="panel-about">
                             <div class="window-body">
-                                <strong>MSAgentJS</strong>
+                                <strong>MS Agent JS</strong>
                                 <p>
                                     A modern, TypeScript-based implementation of
                                     Microsoft Agent, bringing the charm of
                                     Clippy and friends back to the web.
                                 </p>
                                 <p>
-                                    Inspired by the original Microsoft Agent
-                                    technology and clippy.js.
+                                    Inspired by the original
+                                    <a
+                                        href="https://learn.microsoft.com/en-us/windows/win32/lwef/microsoft-agent"
+                                        target="_blank"
+                                        >Microsoft Agent</a
+                                    >
+                                    technology and
+                                    <a
+                                        href="https://github.com/clippyjs/clippy.js"
+                                        target="_blank"
+                                        >clippy.js</a
+                                    >. UI of this page uses
+                                    <a
+                                        href="https://jdan.github.io/98.css/"
+                                        target="_blank"
+                                        >98.css</a
+                                    >.
+                                </p>
+                                <p>
+                                    Press the start button to initialize the
+                                    agent.
                                 </p>
                                 <p>
                                     <a
                                         href="https://github.com/azayrahmad/ms-agent-js"
                                         target="_blank"
-                                        >View on GitHub</a
+                                        >View Source on GitHub</a
                                     >
                                 </p>
 
@@ -116,7 +127,10 @@
                                     class="field-row"
                                     style="justify-content: center"
                                 >
-                                    <button id="start-stop-btn" style="width: 120px">
+                                    <button
+                                        id="start-stop-btn"
+                                        style="width: 120px"
+                                    >
                                         Start
                                     </button>
                                 </div>
@@ -160,9 +174,7 @@
                                     <button id="prev-agent-btn">
                                         &lt;Back
                                     </button>
-                                    <button id="select-btn">
-                                        Select
-                                    </button>
+                                    <button id="select-btn">Select</button>
                                     <button id="next-agent-btn">
                                         Next&gt;
                                     </button>
@@ -355,7 +367,9 @@
                                         ></select>
                                     </div>
                                     <div class="field-row">
-                                        <label for="volume-range">Volume:</label>
+                                        <label for="volume-range"
+                                            >Volume:</label
+                                        >
                                         <input
                                             id="volume-range"
                                             type="range"
@@ -412,7 +426,6 @@
                                 </fieldset>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
