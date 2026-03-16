@@ -36,7 +36,39 @@ EndCharacter
     expect(result.character.style & CharacterStyle.BalloonSizeToText).toBeTruthy();
   });
 
-  it('should parse DefineMouth shapes within frames', () => {
+  it('should parse character and animation set versions', () => {
+    const content = `
+DefineCharacter
+  MajorVersion = 2
+  MinorVersion = 1
+  AnimationSetMajorVersion = 2
+  AnimationSetMinorVersion = 0
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+
+    expect(result.character.majorVersion).toBe(2);
+    expect(result.character.minorVersion).toBe(1);
+    expect(result.character.animationSetMajorVersion).toBe(2);
+    expect(result.character.animationSetMinorVersion).toBe(0);
+  });
+
+  it('should parse balloon typography', () => {
+    const content = `
+DefineBalloon
+  FontWeight = 700
+  Italicized = 1
+EndBalloon
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+
+    expect(result.balloon.fontWeight).toBe(700);
+    expect(result.balloon.italicized).toBe(true);
+  });
+
+  it('should parse DefineMouth shapes with extended metadata', () => {
     const content = `
 DefineAnimation "RestPose"
   DefineFrame
@@ -44,11 +76,14 @@ DefineAnimation "RestPose"
     DefineMouth
       Type = Closed
       Filename = "Images\\0001.bmp"
+      ReplaceTopImage = 1
     EndMouth
     DefineMouth
       Type = OpenWide1
       Filename = "Images\\0002.bmp"
       OffsetY = -3
+      Width = 64
+      Height = 32
     EndMouth
     DefineImage
       Filename = "Images\\0000.bmp"
@@ -63,9 +98,12 @@ EndAnimation
     expect(frame.mouths).toBeDefined();
     expect(frame.mouths?.['closed']).toBeDefined();
     expect(frame.mouths?.['closed'].filename).toBe('Images/0001.bmp');
+    expect(frame.mouths?.['closed'].replaceTopImage).toBe(true);
     expect(frame.mouths?.['openwide1']).toBeDefined();
     expect(frame.mouths?.['openwide1'].filename).toBe('Images/0002.bmp');
     expect(frame.mouths?.['openwide1'].offsetY).toBe(-3);
+    expect(frame.mouths?.['openwide1'].width).toBe(64);
+    expect(frame.mouths?.['openwide1'].height).toBe(32);
   });
 
   it('should parse TransitionType and ReturnAnimation', () => {

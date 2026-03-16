@@ -16,6 +16,14 @@ export interface Character {
   defaultFrameDuration: number;
   /** Bitmask of character styles (see CharacterStyle). */
   style: number;
+  /** Major version of the character. */
+  majorVersion?: number;
+  /** Minor version of the character. */
+  minorVersion?: number;
+  /** Major version of the animation set. */
+  animationSetMajorVersion?: number;
+  /** Minor version of the animation set. */
+  animationSetMinorVersion?: number;
   /** Path to the bitmap file containing the color palette. */
   colorTable: string;
   /** Path to the icon file. */
@@ -74,6 +82,10 @@ export interface Balloon {
   backColor: string;
   /** Border color as a hex string or Win32 BGR color. */
   borderColor: string;
+  /** Font weight (e.g., 400 for normal, 700 for bold). */
+  fontWeight?: number;
+  /** Whether the font is italicized. */
+  italicized?: boolean;
 }
 
 /**
@@ -86,6 +98,18 @@ export interface ImageDefinition {
   offsetX: number;
   /** Vertical offset of the image layer. */
   offsetY: number;
+}
+
+/**
+ * Represents a specialized mouth shape overlay.
+ */
+export interface MouthDefinition extends ImageDefinition {
+  /** Whether to replace the top-most image of the frame instead of overlaying. */
+  replaceTopImage?: boolean;
+  /** Explicit width of the mouth shape (may be scaled). */
+  width?: number;
+  /** Explicit height of the mouth shape (may be scaled). */
+  height?: number;
 }
 
 /**
@@ -111,7 +135,7 @@ export interface FrameDefinition {
   /** A list of layers that compose this frame. */
   images: ImageDefinition[];
   /** Dictionary of mouth shapes indexed by type. */
-  mouths?: Record<string, ImageDefinition>;
+  mouths?: Record<string, MouthDefinition>;
   /** A list of potential branches from this frame. */
   branching?: BranchingDefinition[];
 }

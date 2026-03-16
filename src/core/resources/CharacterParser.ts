@@ -4,6 +4,7 @@ import {
   type Animation,
   type FrameDefinition,
   type ImageDefinition,
+  type MouthDefinition,
   type BranchingDefinition,
   type State,
   type Info,
@@ -181,6 +182,18 @@ export class CharacterParser {
         const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
+          case "MajorVersion":
+            this.currentCharacter.majorVersion = parseInt(value, 10);
+            break;
+          case "MinorVersion":
+            this.currentCharacter.minorVersion = parseInt(value, 10);
+            break;
+          case "AnimationSetMajorVersion":
+            this.currentCharacter.animationSetMajorVersion = parseInt(value, 10);
+            break;
+          case "AnimationSetMinorVersion":
+            this.currentCharacter.animationSetMinorVersion = parseInt(value, 10);
+            break;
           case "GUID": {
             const normalizedGuid = value.replace(/{|}/g, "");
             if (!uuidValidate(normalizedGuid)) {
@@ -386,6 +399,12 @@ export class CharacterParser {
           case "BorderColor":
             balloon.borderColor = value;
             break;
+          case "FontWeight":
+            balloon.fontWeight = parseInt(value, 10);
+            break;
+          case "Italicized":
+            balloon.italicized = value === "1" || value.toLowerCase() === "true";
+            break;
         }
       }
       i++;
@@ -519,7 +538,7 @@ export class CharacterParser {
     const match = line.match(/DefineMouth/);
     if (!match) return i;
 
-    const mouthImage: ImageDefinition = {
+    const mouthImage: MouthDefinition = {
       filename: "",
       offsetX: 0,
       offsetY: 0,
@@ -547,6 +566,15 @@ export class CharacterParser {
             break;
           case "OffsetY":
             mouthImage.offsetY = parseInt(value, 10);
+            break;
+          case "Width":
+            mouthImage.width = parseInt(value, 10);
+            break;
+          case "Height":
+            mouthImage.height = parseInt(value, 10);
+            break;
+          case "ReplaceTopImage":
+            mouthImage.replaceTopImage = value === "1" || value.toLowerCase() === "true";
             break;
         }
       }
