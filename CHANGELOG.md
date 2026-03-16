@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.4.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.3.0...v0.4.0) (2026-03-16)
+
+
+### Features
+
+* accurate balloon text synchronization with TTS ([8621dcd](https://github.com/azayrahmad/ms-agent-js/commit/8621dcd8d756abb66515d44fe58098ef4114df83))
+* add automatic agent repositioning on viewport resize ([4865336](https://github.com/azayrahmad/ms-agent-js/commit/4865336411f035945ad717009042bddfb81b031c))
+* add open graph and social preview images ([e3f73c7](https://github.com/azayrahmad/ms-agent-js/commit/e3f73c76b13cd419a8a7c5daa6447eb9ded1dd02))
+* add speech customization controls to demo Speech tab ([7778a8d](https://github.com/azayrahmad/ms-agent-js/commit/7778a8dd30a5f5daf30c4288a4234a9455ed25af))
+* add vitest coverage configuration and reporting ([9f9fba4](https://github.com/azayrahmad/ms-agent-js/commit/9f9fba4204bfee4a4ebad8e900c31195f22c34ef))
+* **demo:** improve control panel UI and initialization flow ([0b19b54](https://github.com/azayrahmad/ms-agent-js/commit/0b19b54de809f82bfd8bad6012b25649652cb728))
+* **demo:** rearrange into tabbed interface and add about tab ([474d801](https://github.com/azayrahmad/ms-agent-js/commit/474d8012f4ad010c26aad13e15b3d7b924ea08d4))
+* improve discoverability and SEO ([e4ae02d](https://github.com/azayrahmad/ms-agent-js/commit/e4ae02d24c09e8be4c5ea946a0868ddf6f58fe44))
+* include built library as ZIP asset in GitHub releases ([9aceac7](https://github.com/azayrahmad/ms-agent-js/commit/9aceac7555cb27b0ffeaf8b20a5ae2cab4247ab4))
+* rearrange demo UI with behavior tab and agent gallery ([7c54a03](https://github.com/azayrahmad/ms-agent-js/commit/7c54a03315efd850d7f6a99e172c571645e1d977))
+* update demo gallery with authentic agent descriptions and randomized quotes ([247823f](https://github.com/azayrahmad/ms-agent-js/commit/247823f6f0c67a21eb87360393039575bd56dae1))
+
+
+### Bug Fixes
+
+* align checkbox tick correctly ([d5ced98](https://github.com/azayrahmad/ms-agent-js/commit/d5ced98f1d60e1561399c15071e69a1a42a11be9))
+* correct checkbox tick alignment in demo ([eb13184](https://github.com/azayrahmad/ms-agent-js/commit/eb13184af3d23e42f8ed349a557bae12220ae54d))
+* **demo:** improve ui ([b94ad7d](https://github.com/azayrahmad/ms-agent-js/commit/b94ad7d3e0b69a0ce4f09d4a36e5eebc16b4d163))
+* **npm:** update preview script to build and serve the app correctly ([d8664dd](https://github.com/azayrahmad/ms-agent-js/commit/d8664dd015fe2c01c7831b72977b3bdddcaa5595))
+* prevent loading progress bar from overextending in production ([6d5ad83](https://github.com/azayrahmad/ms-agent-js/commit/6d5ad83c45b34e97af246b23ad6b041bdfc12d21))
+
 ## [0.3.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.2.0...v0.3.0) (2026-03-14)
 
 
