@@ -1,5 +1,11 @@
 # 📎 MSAgentJS: The Modern Clippy for the Web
 
+[![npm version](https://img.shields.io/npm/v/ms-agent-js?style=plastic&color=blue)](https://www.npmjs.com/package/ms-agent-js)
+[![GitHub Deploy Status](https://img.shields.io/github/actions/workflow/status/azayrahmad/ms-agent-js/deploy-pages.yml?branch=main&label=deploy&style=plastic)](https://github.com/azayrahmad/ms-agent-js/actions/workflows/deploy-pages.yml)
+[![npm downloads](https://img.shields.io/npm/dm/ms-agent-js?style=plastic&color=brightgreen)](https://www.npmjs.com/package/ms-agent-js)
+[![License](https://img.shields.io/github/license/azayrahmad/ms-agent-js?style=plastic&color=orange)](./LICENSE)
+[![TypeScript Ready](https://img.shields.io/badge/TypeScript-Ready-blue?style=plastic)](https://www.typescriptlang.org/)
+
 A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy, Merlin, and the rest of the gang to your modern web applications with a simple, promise-based API.
 
 [**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/getting-started.md) | [**Contributing**](./CONTRIBUTING.md)
