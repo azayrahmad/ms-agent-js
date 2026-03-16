@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.0...v0.4.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* **demo:** update about tab ([058f40f](https://github.com/azayrahmad/ms-agent-js/commit/058f40f04f67cea0d543d1bc104716bddb5a2697))
+
 ## [0.4.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.3.0...v0.4.0) (2026-03-16)
 
 
