@@ -436,28 +436,28 @@ export class Balloon {
     this._completeCallback = complete;
     this._hold = hold;
 
-    if (skipTyping) {
+    const ttsSystemDisabled = !this._ttsEnabled || !this._ttsUserEnabled;
+    const shouldSkipTyping = skipTyping || ttsSystemDisabled;
+
+    if (shouldSkipTyping) {
       this.reposition();
       this._active = false;
 
-      const onDone = () => {
-        this._active = false;
-        complete();
-        if (!this._hold) {
-          this.hide();
-        }
-      };
-
-      if (useTTS && this._ttsEnabled && this._ttsUserEnabled) {
+      if (useTTS && !ttsSystemDisabled) {
+        const onDone = () => {
+          this._active = false;
+          if (this._hold) {
+            this._callComplete();
+          } else {
+            this.hide();
+          }
+        };
         this._speakTTS(text, null, onDone);
       } else {
-        if (!this._hold) {
-          this._hidingTimeout = window.setTimeout(
-            onDone,
-            this.CLOSE_BALLOON_DELAY,
-          );
+        if (this._hold) {
+          this._callComplete();
         } else {
-          onDone();
+          this.hide();
         }
       }
       return;
@@ -466,37 +466,38 @@ export class Balloon {
     this.reposition();
     this._contentEl.textContent = "";
 
-    if (useTTS && this._ttsEnabled && this._ttsUserEnabled) {
-      this._sayCharsWithTTS(text, hold, complete);
+    if (useTTS) {
+      this._sayCharsWithTTS(text, hold);
     } else {
-      this._sayChars(text, hold, complete);
+      this._sayChars(text, hold);
     }
   }
 
   /**
    * Internal character-by-character typing logic (no TTS).
    */
-  private _sayChars(text: string, hold: boolean, complete: () => void) {
+  private _sayChars(text: string, hold: boolean) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
 
     this._addChar = () => {
       if (!this._active) return;
-      if (idx > text.length) {
+      if (idx >= text.length) {
         this._addChar = null;
         this._active = false;
-        complete();
-        if (!this._hold) {
+        if (this._hold) {
+          this._callComplete();
+        } else {
           this.hide();
         }
       } else {
-        this._contentEl.textContent = text.slice(0, idx);
         idx++;
-        this._loopTimeout = window.setTimeout(
+        this._contentEl.textContent = text.slice(0, idx);
+        this._loopTimeout = setTimeout(
           () => this._addChar?.(),
           this.CHAR_SPEAK_TIME,
-        );
+        ) as any;
       }
     };
     this._addChar();
@@ -505,48 +506,32 @@ export class Balloon {
   /**
    * Internal character-by-character typing logic synchronized with TTS boundaries.
    */
-  private _sayCharsWithTTS(text: string, hold: boolean, complete: () => void) {
+  private _sayCharsWithTTS(text: string, hold: boolean) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
 
     const onTTSComplete = () => {
-      if (this._ttsFallbackTimer) {
-        clearTimeout(this._ttsFallbackTimer);
-        this._ttsFallbackTimer = null;
-      }
       this._active = false;
       this._contentEl.textContent = text;
-      complete();
-      if (!this._hold) {
+      if (this._hold) {
+        this._callComplete();
+      } else {
         this.hide();
       }
     };
 
-    const startFallbackTimer = () => {
-      const timePerChar = this.CHAR_SPEAK_TIME / (this._ttsOptions.rate || 1.0);
-      const addChar = () => {
-        if (!this._active) return;
-        if (idx >= text.length) return;
-        idx++;
-        this._contentEl.textContent = text.slice(0, idx);
-        this._ttsFallbackTimer = window.setTimeout(addChar, timePerChar);
-      };
-      this._ttsFallbackTimer = window.setTimeout(addChar, timePerChar);
-    };
-
     this._speakTTS(
       text,
-      (charIndex) => {
-        if (charIndex > idx) {
-          idx = charIndex;
+      (charIndex, charLength) => {
+        const nextIdx = charLength ? charIndex + charLength : charIndex;
+        if (nextIdx > idx) {
+          idx = nextIdx;
           this._contentEl.textContent = text.slice(0, idx);
         }
       },
       onTTSComplete,
     );
-
-    startFallbackTimer();
   }
 
   /**
@@ -554,7 +539,7 @@ export class Balloon {
    */
   private _speakTTS(
     text: string,
-    onBoundary: ((charIndex: number) => void) | null,
+    onBoundary: ((charIndex: number, charLength?: number) => void) | null,
     onEnd: () => void,
   ) {
     this.stopTTS();
@@ -567,10 +552,10 @@ export class Balloon {
     }
 
     utterance.onboundary = (event) => {
-        if (onBoundary) {
-            onBoundary(event.charIndex);
-        }
-        this.onSpeak?.(text, event.charIndex);
+      if (onBoundary) {
+        onBoundary(event.charIndex, event.charLength);
+      }
+      this.onSpeak?.(text, event.charIndex);
     };
     utterance.onend = () => onEnd();
     utterance.onerror = () => onEnd();
@@ -627,12 +612,13 @@ export class Balloon {
       this._balloonEl.style.display = "none";
       this._hidden = true;
       this.onHide?.();
+      this._callComplete();
       return;
     }
-    this._hidingTimeout = window.setTimeout(
+    this._hidingTimeout = setTimeout(
       () => this._finishHideBalloon(),
       this.CLOSE_BALLOON_DELAY,
-    );
+    ) as any;
   }
 
   private _finishHideBalloon() {
@@ -641,6 +627,18 @@ export class Balloon {
     this._hidden = true;
     this._hidingTimeout = null;
     this.onHide?.();
+    this._callComplete();
+  }
+
+  /**
+   * Internal helper to trigger the completion callback safely.
+   */
+  private _callComplete() {
+    if (this._completeCallback) {
+      const cb = this._completeCallback;
+      this._completeCallback = null;
+      cb();
+    }
   }
 
   /**
@@ -687,8 +685,7 @@ export class Balloon {
   public close() {
     this.stop();
     this.hide(true);
-    this._completeCallback?.();
-    this._completeCallback = null;
+    this._callComplete();
   }
 
   /**
@@ -731,10 +728,10 @@ export class Balloon {
    */
   public resume() {
     if (this._addChar) this._addChar();
-    this._hidingTimeout = window.setTimeout(
+    this._hidingTimeout = setTimeout(
       () => this._finishHideBalloon(),
       this.CLOSE_BALLOON_DELAY,
-    );
+    ) as any;
   }
 
   /**
