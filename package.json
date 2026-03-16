@@ -46,12 +46,14 @@
     "build:lib": "tsc && vite build",
     "build:app": "tsc && vite build --mode app",
     "preview": "npm run build:app && vite preview --mode app",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.5",
     "@types/uuid": "^11.0.0",
+    "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.0.18",
     "canvas": "^3.2.1",
     "sharp": "^0.34.5",

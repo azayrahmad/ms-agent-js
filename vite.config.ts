@@ -7,6 +7,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: isApp ? '/ms-agent-js/' : '/',
+    test: {
+      setupFiles: ['tests/setup.ts'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json-summary', 'html'],
+        exclude: ['tests/**', 'scripts/**', 'vite.config.ts'],
+      },
+    },
     build: {
       outDir: isApp ? 'dist-app' : 'dist',
       lib: isApp
