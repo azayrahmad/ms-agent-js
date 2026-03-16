@@ -1,6 +1,6 @@
 {
   "name": "ms-agent-js",
-  "description": "A modern, TypeScript-based implementation of Microsoft Agent",
+  "description": "The modern, dependency-free Clippy for the web. A TypeScript-based Microsoft Agent implementation perfect for nostalgic apps and unique AI/LLM interfaces.",
   "private": false,
   "version": "0.3.0",
   "type": "module",
@@ -9,8 +9,16 @@
   "keywords": [
     "msagent",
     "clippy",
+    "clippy-js",
+    "microsoft-agent",
+    "nostalgia",
+    "windows-98",
+    "office-2000",
     "typescript",
-    "web-assistant"
+    "web-assistant",
+    "ai-ui",
+    "llm-assistant",
+    "interactive-agent"
   ],
   "repository": {
     "type": "git",

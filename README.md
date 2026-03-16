@@ -1,12 +1,22 @@
-# 📎 MSAgentJS
+# 📎 MSAgentJS: The Modern Clippy for the Web
 
-A modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web.
+A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy, Merlin, and the rest of the gang to your modern web applications with a simple, promise-based API.
 
 [**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/getting-started.md) | [**Contributing**](./CONTRIBUTING.md)
 
 ---
 
-## 🚀 Features
+## 🚀 Why MSAgentJS?
+
+If you're looking for the nostalgic feel of **clippy.js** but need something built for the modern web, MSAgentJS is for you.
+
+- **Zero Dependencies**: No jQuery or heavy external libraries required.
+- **AI-Ready**: Perfect as a unique, interactive UI for LLM-powered assistants.
+- **Shadow DOM Isolation**: Prevents CSS leaks, making it safe to drop into any project.
+- **High Performance**: Uses HTML5 Canvas and optimized asset formats (WebP/WebM).
+- **TypeScript First**: Full type safety for a better developer experience.
+
+## ✨ Features
 
 - **Modern API**: Simple, promise-based API for animations, state transitions, and speech.
 - **Shadow DOM**: Zero CSS leakage. The agent and its balloon are fully isolated.
