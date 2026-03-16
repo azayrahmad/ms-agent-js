@@ -835,8 +835,9 @@ export class Agent {
 
   /**
    * Internal method to enqueue a task and emit events.
+   * @internal
    */
-  private enqueueRequest(
+  public enqueueRequest(
     task: (request: AgentRequest) => Promise<void>,
   ): AgentRequest {
     return this.core.requestQueue.add(async (request) => {
