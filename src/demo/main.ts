@@ -193,7 +193,7 @@ async function initDemo() {
       agentInfo.greetings[
         Math.floor(Math.random() * agentInfo.greetings.length)
       ];
-    galleryAgentQuote.textContent = `"${randomGreeting}"`;
+    galleryAgentQuote.textContent = `${randomGreeting}`;
 
     const wrapper = document.createElement("div");
     previewContainer.appendChild(wrapper);

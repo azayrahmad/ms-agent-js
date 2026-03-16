@@ -5,21 +5,48 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>MSAgentJS - Modern Clippy & Microsoft Agent for the Web</title>
-        <meta name="description" content="A modern, dependency-free implementation of Microsoft Agent (Clippy) in TypeScript. Perfect for nostalgia or unique AI assistant UIs." />
+        <meta
+            name="description"
+            content="A modern, dependency-free implementation of Microsoft Agent (Clippy) in TypeScript. Perfect for nostalgia or unique AI assistant UIs."
+        />
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://azayrahmad.github.io/ms-agent-js/" />
-        <meta property="og:title" content="MSAgentJS - Modern Clippy for the Web" />
-        <meta property="og:description" content="The classic Microsoft Agent (Clippy) experience, rebuilt for the modern web with TypeScript and No Dependencies." />
-        <meta property="og:image" content="https://azayrahmad.github.io/ms-agent-js/og-preview.png" />
+        <meta
+            property="og:url"
+            content="https://azayrahmad.github.io/ms-agent-js/"
+        />
+        <meta
+            property="og:title"
+            content="MSAgentJS - Modern Clippy for the Web"
+        />
+        <meta
+            property="og:description"
+            content="The classic Microsoft Agent (Clippy) experience, rebuilt for the modern web with TypeScript and No Dependencies."
+        />
+        <meta
+            property="og:image"
+            content="https://azayrahmad.github.io/ms-agent-js/og-preview.png"
+        />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://azayrahmad.github.io/ms-agent-js/" />
-        <meta property="twitter:title" content="MSAgentJS - Modern Clippy for the Web" />
-        <meta property="twitter:description" content="The classic Microsoft Agent (Clippy) experience, rebuilt for the modern web with TypeScript and No Dependencies." />
-        <meta property="twitter:image" content="https://azayrahmad.github.io/ms-agent-js/og-preview.png" />
+        <meta
+            property="twitter:url"
+            content="https://azayrahmad.github.io/ms-agent-js/"
+        />
+        <meta
+            property="twitter:title"
+            content="MSAgentJS - Modern Clippy for the Web"
+        />
+        <meta
+            property="twitter:description"
+            content="The classic Microsoft Agent (Clippy) experience, rebuilt for the modern web with TypeScript and No Dependencies."
+        />
+        <meta
+            property="twitter:image"
+            content="https://azayrahmad.github.io/ms-agent-js/og-preview.png"
+        />
 
         <link rel="stylesheet" href="https://unpkg.com/98.css" />
     </head>
@@ -29,7 +56,7 @@
                 <div class="window control-panel">
                     <div class="title-bar">
                         <div class="title-bar-text">
-                            MSAgentJS Control Panel
+                            📎 MSAgentJS Control Panel
                         </div>
                         <div class="title-bar-controls">
                             <button aria-label="Minimize"></button>
@@ -39,7 +66,11 @@
                     </div>
                     <div class="window-body">
                         <menu role="tablist">
-                            <li role="tab" aria-selected="true" id="tab-assistant">
+                            <li
+                                role="tab"
+                                aria-selected="true"
+                                id="tab-assistant"
+                            >
                                 <a href="#assistant">Assistant</a>
                             </li>
                             <li role="tab" id="tab-behavior">
@@ -53,32 +84,56 @@
                             </li>
                         </menu>
 
-                        <div class="window" role="tabpanel" id="panel-assistant">
+                        <div
+                            class="window"
+                            role="tabpanel"
+                            id="panel-assistant"
+                        >
                             <div class="window-body">
                                 <div class="gallery">
-                                    <div class="gallery-preview" id="gallery-preview-container">
+                                    <div
+                                        class="gallery-preview"
+                                        id="gallery-preview-container"
+                                    >
                                         <!-- Preview agent will be loaded here -->
                                     </div>
                                     <div class="gallery-info">
                                         <div class="static-balloon">
-                                            <div class="static-balloon-content" id="gallery-agent-quote">
-                                                "It looks like you're writing a letter. Would you like help?"
+                                            <div
+                                                class="static-balloon-content"
+                                                id="gallery-agent-quote"
+                                            >
+                                                "It looks like you're writing a
+                                                letter. Would you like help?"
                                             </div>
                                         </div>
-                                        <h4 id="gallery-agent-name">Agent Name</h4>
-                                        <p id="gallery-agent-description">Agent description goes here...</p>
+                                        <strong id="gallery-agent-name"
+                                            >Agent Name</strong
+                                        >
+                                        <p id="gallery-agent-description">
+                                            Agent description goes here...
+                                        </p>
                                     </div>
                                 </div>
 
                                 <div class="field-row gallery-nav">
-                                    <button id="prev-agent-btn">Back</button>
-                                    <button id="next-agent-btn">Next</button>
+                                    <button id="prev-agent-btn">
+                                        &lt;Back
+                                    </button>
+                                    <button id="next-agent-btn">
+                                        Next&gt;
+                                    </button>
                                 </div>
 
                                 <hr />
 
-                                <div class="field-row" style="justify-content: center;">
-                                    <button id="exit-btn" style="width: 120px;">Exit</button>
+                                <div
+                                    class="field-row"
+                                    style="justify-content: center"
+                                >
+                                    <button id="exit-btn" style="width: 120px">
+                                        Exit
+                                    </button>
                                 </div>
 
                                 <p
@@ -93,7 +148,12 @@
                             </div>
                         </div>
 
-                        <div class="window" role="tabpanel" id="panel-behavior" hidden>
+                        <div
+                            class="window"
+                            role="tabpanel"
+                            id="panel-behavior"
+                            hidden
+                        >
                             <div class="window-body">
                                 <fieldset>
                                     <legend>Actions</legend>
@@ -144,9 +204,9 @@
                                         >
                                             Play looped
                                         </button>
-                                        <button id="random-btn" disabled
-                                            >Random</button
-                                        >
+                                        <button id="random-btn" disabled>
+                                            Random
+                                        </button>
                                     </div>
                                     <hr />
                                     <div class="field-row">
@@ -259,12 +319,12 @@
                                             margin-top: 4px;
                                         "
                                     >
-                                        <button id="speak-btn" disabled
-                                            >Speak</button
-                                        >
-                                        <button id="ask-btn" disabled
-                                            >Ask</button
-                                        >
+                                        <button id="speak-btn" disabled>
+                                            Speak
+                                        </button>
+                                        <button id="ask-btn" disabled>
+                                            Ask
+                                        </button>
                                     </div>
                                 </fieldset>
                             </div>
@@ -277,7 +337,7 @@
                             hidden
                         >
                             <div class="window-body">
-                                <h3>About MSAgentJS</h3>
+                                <strong>MSAgentJS</strong>
                                 <p>
                                     A modern, TypeScript-based implementation of
                                     Microsoft Agent, bringing the charm of

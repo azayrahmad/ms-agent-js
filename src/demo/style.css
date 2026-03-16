@@ -1,31 +1,35 @@
 body {
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  background-color: #008080; /* Classic Windows 98 Teal */
-  height: 100vh;
-  width: 100vw;
-  font-family: "MS Sans Serif", "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    background-color: #008080; /* Classic Windows 98 Teal */
+    height: 100vh;
+    width: 100vw;
+    font-family: "MS Sans Serif", "Arial", sans-serif;
 }
 
 #desktop {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23008080" /></svg>');
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23008080" /></svg>');
 }
 
 #app {
-  padding: 20px;
+    padding: 20px;
 }
 
 .window {
-  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #ffffff;
+    box-shadow:
+        inset -1px -1px #0a0a0a,
+        inset 1px 1px #dfdfdf,
+        inset -2px -2px #808080,
+        inset 2px 2px #ffffff;
 }
 
 .control-panel {
-  width: 400px;
-  margin: 20px auto;
+    width: 400px;
+    margin: 20px auto;
 }
 
 .debug-window {
@@ -36,8 +40,8 @@ body {
 }
 
 fieldset label {
-  width: 80px;
-  display: inline-block;
+    width: 80px;
+    display: inline-block;
 }
 
 fieldset .field-row input[type="checkbox"] + label {
@@ -45,7 +49,7 @@ fieldset .field-row input[type="checkbox"] + label {
 }
 
 fieldset span {
-  font-family: monospace;
+    font-family: monospace;
 }
 
 #debug-info .field-row {
@@ -57,11 +61,11 @@ fieldset span {
 }
 
 select {
-  flex: 1;
+    flex: 1;
 }
 
 .progress-indicator {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 hr {
@@ -80,24 +84,22 @@ hr {
 }
 
 .gallery {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-  align-items: center;
-  height: 120px;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    align-items: center;
+    height: 120px;
 }
 
 .gallery-preview {
-  width: 124px;
-  height: 93px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
-  background-color: #fff;
-  position: relative;
-  overflow: hidden;
+    width: 124px;
+    height: 93px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .gallery-preview > div {
@@ -108,7 +110,7 @@ hr {
 }
 
 .gallery-info {
-  flex: 1;
+    flex: 1;
 }
 
 .gallery-info h4 {
@@ -120,12 +122,6 @@ hr {
     font-size: 11px;
 }
 
-.gallery-nav {
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
 .static-balloon {
     background-color: #ffffcc;
     border: 1px solid #000;
@@ -134,15 +130,13 @@ hr {
     margin-bottom: 10px;
     position: relative;
     font-size: 11px;
-    font-style: italic;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
     min-height: 32px;
     display: flex;
     align-items: center;
 }
 
 .static-balloon::after {
-    content: '';
+    content: "";
     position: absolute;
     left: -10px;
     top: 50%;
@@ -153,7 +147,7 @@ hr {
 }
 
 .static-balloon::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -8px;
     top: 50%;
