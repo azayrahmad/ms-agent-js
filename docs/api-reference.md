@@ -16,6 +16,7 @@ Asynchronously loads and initializes an agent.
 | `idleIntervalMs` | `number` | `5000` | Delay between checks for idle animations. |
 | `useAudio` | `boolean` | `true` | Whether to enable sound effects. |
 | `fixed` | `boolean` | `true` | Use `fixed` instead of `absolute` positioning. |
+| `keepInViewport` | `boolean` | `true` | Automatically reposition to stay in view on resize. |
 | `x`, `y` | `number` | Bottom Right | Initial coordinates of the agent. |
 | `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 | `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
@@ -115,6 +116,7 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `stateChange`: Triggered when the high-level behavior state changes.
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions.
+- `reposition`: Triggered when automatically moved to stay in viewport.
 
 Subscribe using `agent.on(eventName, callback)` and unsubscribe using `agent.off(eventName, callback)`.
 

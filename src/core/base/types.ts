@@ -185,6 +185,8 @@ export interface AgentOptions {
   useAudio?: boolean;
   /** Whether to use CSS 'fixed' (true) or 'absolute' (false) positioning (default: true). */
   fixed?: boolean;
+  /** Whether the agent should automatically reposition itself to stay within the viewport on resize (default: true). */
+  keepInViewport?: boolean;
   /** Initial horizontal position in pixels. */
   x?: number;
   /** Initial vertical position in pixels. */

@@ -88,7 +88,35 @@ export class Agent {
         this.emit("click");
       }
     });
+
+    if (this.core.options.keepInViewport) {
+      window.addEventListener("resize", this.handleResize);
+    }
   }
+
+  private handleResize = () => {
+    const canvas = this.renderer.canvas;
+    const maxX = window.innerWidth - canvas.width;
+    const maxY = window.innerHeight - canvas.height;
+
+    let nx = this.core.options.x;
+    let ny = this.core.options.y;
+
+    let changed = false;
+    if (nx > maxX) {
+      nx = Math.max(0, maxX);
+      changed = true;
+    }
+    if (ny > maxY) {
+      ny = Math.max(0, maxY);
+      changed = true;
+    }
+
+    if (changed) {
+      this.setInstantPosition(nx, ny);
+      this.emit("reposition", { x: nx, y: ny });
+    }
+  };
 
   /**
    * Static factory method to asynchronously load and initialize an agent.
@@ -153,6 +181,7 @@ export class Agent {
       idleIntervalMs: options.idleIntervalMs ?? 5000,
       useAudio: options.useAudio ?? true,
       fixed: options.fixed ?? true,
+      keepInViewport: options.keepInViewport ?? true,
       initialAnimation: options.initialAnimation || "",
       onProgress: options.onProgress || (() => {}),
       signal: options.signal || new AbortController().signal,
@@ -957,6 +986,7 @@ export class Agent {
   public destroy() {
     this.isDestroyed = true;
     cancelAnimationFrame(this.rafId);
+    window.removeEventListener("resize", this.handleResize);
     if (this.container.parentNode)
       this.container.parentNode.removeChild(this.container);
     this.core.clear();

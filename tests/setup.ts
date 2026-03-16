@@ -15,6 +15,13 @@ export class MockAudioContext {
 }
 
 export const setupGlobals = (mockDefinition?: any) => {
+  if (typeof window === 'undefined') {
+    vi.stubGlobal('window', { _innerWidth: 1024, _innerHeight: 768 });
+  } else {
+    (window as any)._innerWidth = 1024;
+    (window as any)._innerHeight = 768;
+  }
+
   vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
     let result = mockDefinition || {
       character: { width: 100, height: 100, colorTable: 'colortable.bmp' },
@@ -60,9 +67,7 @@ export const setupGlobals = (mockDefinition?: any) => {
     }
   }));
 
-  vi.stubGlobal('window', {
-    innerWidth: 1024,
-    innerHeight: 768,
+  const mockWindow = {
     AudioContext: MockAudioContext,
     webkitAudioContext: MockAudioContext,
     requestAnimationFrame: vi.fn().mockImplementation((cb) => setTimeout(() => cb(performance.now()), 16)),
@@ -76,14 +81,32 @@ export const setupGlobals = (mockDefinition?: any) => {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     },
+    get innerWidth() { return (window as any)._innerWidth ?? 1024; },
+    set innerWidth(v) { (window as any)._innerWidth = v; },
+    get innerHeight() { return (window as any)._innerHeight ?? 768; },
+    set innerHeight(v) { (window as any)._innerHeight = v; },
     performance: {
       now: vi.fn().mockImplementation(() => Date.now())
     },
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
+    addEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+      if (!this.listeners) this.listeners = {};
+      if (!this.listeners[type]) this.listeners[type] = [];
+      this.listeners[type].push(listener);
+    }),
+    removeEventListener: vi.fn().mockImplementation(function(this: any, type, listener) {
+      if (!this.listeners || !this.listeners[type]) return;
+      this.listeners[type] = this.listeners[type].filter((l: any) => l !== listener);
+    }),
+    dispatchEvent: vi.fn().mockImplementation(function(this: any, event) {
+      const type = event.type;
+      const listeners = this.listeners?.[type] || [];
+      listeners.forEach((l: any) => l(event));
+    }),
     setTimeout: global.setTimeout,
     clearTimeout: global.clearTimeout,
-  });
+  };
+
+  vi.stubGlobal('window', mockWindow);
 
   vi.stubGlobal('document', {
     createElementNS: vi.fn().mockImplementation((ns, tag) => {

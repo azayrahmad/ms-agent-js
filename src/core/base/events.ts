@@ -17,7 +17,8 @@ export type AgentEvents =
   | "requestStart"
   | "requestComplete"
   | "frameChanged"
-  | "speak";
+  | "speak"
+  | "reposition";
 
 /**
  * Map of event names to their expected payload types.
@@ -51,4 +52,6 @@ export interface AgentEventPayloads {
   frameChanged: undefined;
   /** Emitted during speech when a word or character boundary is reached. */
   speak: { text: string; charIndex: number };
+  /** Emitted when the agent is automatically repositioned to stay within the viewport. */
+  reposition: { x: number; y: number };
 }

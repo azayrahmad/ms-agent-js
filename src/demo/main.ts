@@ -181,6 +181,7 @@ async function initDemo() {
   const dashLevel = document.getElementById("dash-level")!;
   const dashNextTick = document.getElementById("dash-next-tick")!;
   const dashQueue = document.getElementById("dash-queue")!;
+  const dashPos = document.getElementById("dash-pos")!;
 
   let currentAgent: Agent | null = null;
   let previewAgent: Agent | null = null;
@@ -271,6 +272,7 @@ async function initDemo() {
     dashLevel.textContent = "-";
     dashNextTick.textContent = "-";
     dashQueue.textContent = "-";
+    dashPos.textContent = "-";
 
     // Show Progress Window
     const progressWindow = document.createElement("div");
@@ -707,6 +709,8 @@ async function initDemo() {
       dashQueue.textContent = activeId
         ? `ID:${activeId} (+${length})`
         : "Empty";
+
+      dashPos.textContent = `X:${Math.round(currentAgent.options.x)}, Y:${Math.round(currentAgent.options.y)}`;
     }
     requestAnimationFrame(updateDebug);
   }
