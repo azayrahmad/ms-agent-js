@@ -9,6 +9,7 @@ import {
   type State,
   type Info,
   CharacterStyle,
+  MOUTH_TYPE_MAP,
   type AgentCharacterDefinition,
 } from "../base/types";
 import { validate as uuidValidate } from "uuid";
@@ -595,7 +596,11 @@ export class CharacterParser {
       if (!this.currentFrame.mouths) {
         this.currentFrame.mouths = {};
       }
-      this.currentFrame.mouths[mouthType] = mouthImage;
+
+      // Normalize mouth type to PascalCase for consistency
+      const normalizedKey = MOUTH_TYPE_MAP[mouthType.toLowerCase()] || mouthType;
+
+      this.currentFrame.mouths[normalizedKey] = mouthImage;
     }
     return i;
   }
