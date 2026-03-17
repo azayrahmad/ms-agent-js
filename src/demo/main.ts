@@ -1,100 +1,48 @@
 import "./style.css";
 import { Agent } from "../Agent";
+import type { Info } from "../core/base/types";
 
 const AGENTS = [
-  {
-    name: "Clippit",
-    label: "Clippit",
-    description:
-      "Though nothing more than a thin metal wire, Clippit will help find what you need and keep it all together.",
-    greetings: [
-      "Hey, there. What's the word?",
-      "How's life? All work and no play?",
-      "Hey, there. Want quick answers to your questions about Office? Just click me.",
-    ],
-  },
-  {
-    name: "DOT",
-    label: "The Dot",
-    description:
-      "Need a guide on the electronic frontier? Able to transform into any shape, the Dot will always point you in the right direction. ",
-    greetings: [
-      "When you need help of any kind, just give me a click.",
-      "I’m here to help, so give me a click if you need anything.",
-    ],
-  },
-  {
-    name: "F1",
-    label: "F1",
-    description:
-      "F1 is the first of the 300/M series, built to serve. This robot is fully optimized for Office use.",
-    greetings: [
-      "GREETINGS! STATUS= READY FOR INSTRUCTION",
-      "PROGRAMMED TO SERVE...  USER_COMMAND= ?",
-      "STATUS= VERY_HELPFUL  USER_COMMAND= ?",
-      "QUERY> HOW ARE YOU?  STATUS= READY FOR INSTRUCTION",
-    ],
-  },
-  {
-    name: "GENIUS",
-    label: "The Genius",
-    description:
-      "The mind of the Genius works at the speed of light. Harness his power of thought to save yourself time and energy.",
-    greetings: [
-      "Hello. Can I assist you with your work in electronic space?",
-      "Hello. Getting help in Office is relatively simple. Just give me a click.",
-    ],
-  },
-  {
-    name: "LOGO",
-    label: "Office Logo",
-    description:
-      "The Office Logo gives you help accompanied by a simple spin of its colored pieces.",
-    greetings: ["Click the Office Logo whenever you need help."],
-  },
-  {
-    name: "MNATURE",
-    label: "Mother Nature",
-    description:
-      "Transforming into images from nature, such as the dove, the volcano, and the flower, Mother Nature provides gentle help and guidance.",
-    greetings: [
-      "Welcome. If you desire help on any aspect of this program, simply click me.",
-    ],
-  },
-  {
-    name: "Monkey King",
-    label: "Monkey King",
-    description:
-      "If you need help in Office, call Monkey King, he is an office expert.",
-    greetings: [
-      "Any questions? Let me tell you the answer.",
-      "Problem? Relax, just leave it to me.",
-      "Don't worry,it's a piece of cake.",
-    ],
-  },
-  {
-    name: "OFFCAT",
-    label: "Links",
-    description:
-      "If you're on the prowl for answers in Office, Links can chase them down for you.",
-    greetings: [
-      "Did I hear a mouse click?",
-      "Did I see a mouse move?",
-      "Time to play cat and mouse?",
-    ],
-  },
-  {
-    name: "ROCKY",
-    label: "Rocky",
-    description:
-      "If you fall into a ravine, call Lassie. If you need help in Office, call Rocky.",
-    greetings: [
-      "Got a question? Put me to work.",
-      "Problem? Relax, I'm on it.",
-      "Don't worry, I'm fully Office-trained.",
-    ],
-  },
+  { name: "Clippit" },
+  { name: "DOT" },
+  { name: "F1" },
+  { name: "GENIUS" },
+  { name: "LOGO" },
+  { name: "MNATURE" },
+  { name: "Monkey King" },
+  { name: "OFFCAT" },
+  { name: "ROCKY" },
 ];
+
+function getBestMatchingInfo(infos: Info[]): Info {
+  const userLocales = navigator.languages || [navigator.language];
+
+  for (const userLocale of userLocales) {
+    const normalizedUserLocale = userLocale.toLowerCase();
+
+    // Exact match (e.g. en-US === en-us)
+    const exactMatch = infos.find(
+      (info) => info.locale?.baseName?.toLowerCase() === normalizedUserLocale,
+    );
+    if (exactMatch) return exactMatch;
+
+    // Language-only match (e.g. "en" matches "en-US")
+    const userLang = normalizedUserLocale.split("-")[0];
+    const langMatch = infos.find(
+      (info) => info.locale?.language?.toLowerCase() === userLang,
+    );
+    if (langMatch) return langMatch;
+  }
+
+  // Fallback to English (0x0409 or 0x0009)
+  const englishMatch = infos.find(
+    (info) => info.languageCode === "0x0409" || info.languageCode === "0x0009",
+  );
+  if (englishMatch) return englishMatch;
+
+  // Last resort: first available
+  return infos[0];
+}
 
 async function initDemo() {
   // DOM Elements
@@ -192,92 +140,7 @@ async function initDemo() {
   let previewAbortController: AbortController | null = null;
   let currentGalleryIndex = 0;
 
-  async function loadPreviewAgent(index: number) {
-    if (previewAbortController) {
-      previewAbortController.abort();
-    }
-    previewAbortController = new AbortController();
-
-    if (previewAgent) {
-      previewAgent.destroy();
-      previewAgent = null;
-    }
-    previewContainer.innerHTML = "";
-
-    const agentInfo = AGENTS[index];
-    galleryAgentName.textContent = agentInfo.label;
-    galleryAgentDescription.textContent = agentInfo.description;
-
-    const randomGreeting =
-      agentInfo.greetings[
-        Math.floor(Math.random() * agentInfo.greetings.length)
-      ];
-    galleryAgentQuote.textContent = `${randomGreeting}`;
-
-    const wrapper = document.createElement("div");
-    previewContainer.appendChild(wrapper);
-
-    try {
-      const baseUrl = import.meta.env.BASE_URL;
-      previewAgent = await Agent.load(agentInfo.name, {
-        baseUrl: `${baseUrl}agents/${agentInfo.name}`,
-        scale: 1,
-        container: wrapper,
-        fixed: false,
-        useAudio: false,
-        x: 0,
-        y: 0,
-        signal: previewAbortController.signal,
-      });
-
-      if (previewAgent.hasAnimation("Wave")) {
-        previewAgent.play("Wave", undefined, false, true);
-      }
-    } catch (error: any) {
-      if (error.name !== "AbortError") {
-        console.error("Failed to load preview agent:", error);
-      }
-    }
-  }
-
-  async function loadAgent(name: string) {
-    if (loadAbortController) {
-      loadAbortController.abort();
-    }
-    loadAbortController = new AbortController();
-
-    if (currentAgent) {
-      currentAgent.destroy();
-      currentAgent = null;
-    }
-
-    // Reset UI
-    animationSelect.innerHTML = "";
-    stateSelect.innerHTML = "";
-    playBtn.disabled = true;
-    play5sBtn.disabled = true;
-    playLoopedBtn.disabled = true;
-    playLoopedBtn.textContent = "Play looped";
-    randomBtn.disabled = true;
-    visibilityBtn.disabled = true;
-    speakBtn.disabled = true;
-    askBtn.disabled = true;
-    askOptionsBtn.disabled = true;
-    gestureLeftBtn.disabled = true;
-    gestureRightBtn.disabled = true;
-    gestureUpBtn.disabled = true;
-    gestureDownBtn.disabled = true;
-    moveToMouseBtn.disabled = true;
-
-    dashState.textContent = "Loading...";
-    dashAnim.textContent = "-";
-    dashFrame.textContent = "-";
-    dashLevel.textContent = "-";
-    dashNextTick.textContent = "-";
-    dashQueue.textContent = "-";
-    dashPos.textContent = "-";
-
-    // Show Progress Window
+  function createLoadingWindow(name: string, abortController: AbortController) {
     const progressWindow = document.createElement("div");
     progressWindow.className = "window loading-window";
     progressWindow.style.position = "fixed";
@@ -326,32 +189,146 @@ async function initDemo() {
     ) as HTMLButtonElement;
 
     cancelBtn.onclick = () => {
-      loadAbortController?.abort();
+      abortController.abort();
     };
+
+    return {
+      update: (progress: { loaded: number; total: number; filename: string }) => {
+        loadingStatus.textContent = `Downloading ${progress.filename}...`;
+        if (progress.total > 0) {
+          loadingProgressContainer.classList.remove("segmented");
+          const percent = Math.min(
+            100,
+            Math.round((progress.loaded / progress.total) * 100),
+          );
+          loadingProgressBar.style.width = `${percent}%`;
+        } else {
+          loadingProgressContainer.classList.add("segmented");
+          loadingProgressBar.style.width = "100%";
+        }
+      },
+      destroy: () => {
+        document.body.removeChild(progressWindow);
+        document.body.removeChild(overlay);
+      },
+    };
+  }
+
+  async function loadPreviewAgent(index: number) {
+    if (previewAbortController) {
+      previewAbortController.abort();
+    }
+    previewAbortController = new AbortController();
+
+    if (previewAgent) {
+      previewAgent.destroy();
+      previewAgent = null;
+    }
+    previewContainer.innerHTML = "";
+
+    const agentMeta = AGENTS[index];
+    galleryAgentName.textContent = "Loading...";
+    galleryAgentDescription.textContent = "Please wait while the agent loads.";
+    galleryAgentQuote.textContent = "...";
+
+    const loadingUI = createLoadingWindow(
+      agentMeta.name,
+      previewAbortController,
+    );
+
+    const wrapper = document.createElement("div");
+    previewContainer.appendChild(wrapper);
+
+    try {
+      const baseUrl = import.meta.env.BASE_URL;
+      const agentsPath = `${baseUrl}/agents/${agentMeta.name}`.replace(/\/+/g, "/");
+      previewAgent = await Agent.load(agentMeta.name, {
+        baseUrl: agentsPath,
+        scale: 1,
+        container: wrapper,
+        fixed: false,
+        useAudio: false,
+        x: 0,
+        y: 0,
+        signal: previewAbortController.signal,
+        onProgress: (progress) => loadingUI.update(progress),
+      });
+
+      const info = getBestMatchingInfo(previewAgent.definition.character.infos);
+      galleryAgentName.textContent = info.name;
+      galleryAgentDescription.textContent = info.description;
+
+      if (info.greetings && info.greetings.length > 0) {
+        const randomGreeting =
+          info.greetings[Math.floor(Math.random() * info.greetings.length)];
+        galleryAgentQuote.textContent = randomGreeting;
+      } else {
+        galleryAgentQuote.textContent = "Hello!";
+      }
+
+      if (previewAgent.hasAnimation("Wave")) {
+        previewAgent.play("Wave", undefined, false, true);
+      }
+    } catch (error: any) {
+      if (error.name !== "AbortError") {
+        console.error("Failed to load preview agent:", error);
+        galleryAgentName.textContent = "Error";
+        galleryAgentDescription.textContent = "Failed to load agent metadata.";
+      }
+    } finally {
+      loadingUI.destroy();
+    }
+  }
+
+  async function loadAgent(name: string) {
+    if (loadAbortController) {
+      loadAbortController.abort();
+    }
+    loadAbortController = new AbortController();
+
+    if (currentAgent) {
+      currentAgent.destroy();
+      currentAgent = null;
+    }
+
+    // Reset UI
+    animationSelect.innerHTML = "";
+    stateSelect.innerHTML = "";
+    playBtn.disabled = true;
+    play5sBtn.disabled = true;
+    playLoopedBtn.disabled = true;
+    playLoopedBtn.textContent = "Play looped";
+    randomBtn.disabled = true;
+    visibilityBtn.disabled = true;
+    speakBtn.disabled = true;
+    askBtn.disabled = true;
+    askOptionsBtn.disabled = true;
+    gestureLeftBtn.disabled = true;
+    gestureRightBtn.disabled = true;
+    gestureUpBtn.disabled = true;
+    gestureDownBtn.disabled = true;
+    moveToMouseBtn.disabled = true;
+
+    dashState.textContent = "Loading...";
+    dashAnim.textContent = "-";
+    dashFrame.textContent = "-";
+    dashLevel.textContent = "-";
+    dashNextTick.textContent = "-";
+    dashQueue.textContent = "-";
+    dashPos.textContent = "-";
+
+    const loadingUI = createLoadingWindow(name, loadAbortController);
 
     try {
       const scale = parseFloat(scaleRange.value);
       const baseUrl = import.meta.env.BASE_URL;
+      const agentsPath = `${baseUrl}/agents/${name}`.replace(/\/+/g, "/");
       currentAgent = await Agent.load(name, {
-        baseUrl: `${baseUrl}agents/${name}`,
+        baseUrl: agentsPath,
         scale: scale,
         useAudio: true,
         signal: loadAbortController.signal,
-        onProgress: (progress) => {
-          loadingStatus.textContent = `Downloading ${progress.filename}...`;
-          if (progress.total > 0) {
-            loadingProgressContainer.classList.remove("segmented");
-            const percent = Math.min(
-              100,
-              Math.round((progress.loaded / progress.total) * 100),
-            );
-            loadingProgressBar.style.width = `${percent}%`;
-          } else {
-            // Indeterminate if total is unknown
-            loadingProgressContainer.classList.add("segmented");
-            loadingProgressBar.style.width = "100%";
-          }
-        },
+        onProgress: (progress) => loadingUI.update(progress),
         initialAnimation: "Greeting",
       });
 
@@ -376,6 +353,10 @@ async function initDemo() {
 
       updateVoiceList();
       updateTTSOptions();
+
+      const info = getBestMatchingInfo(currentAgent.definition.character.infos);
+      galleryAgentName.textContent = info.name;
+      galleryAgentDescription.textContent = info.description;
 
       isVisible = true;
       visibilityBtn.textContent = "Hide";
@@ -418,8 +399,7 @@ async function initDemo() {
         alert("Failed to load agent. See console for details.");
       }
     } finally {
-      document.body.removeChild(progressWindow);
-      document.body.removeChild(overlay);
+      loadingUI.destroy();
       loadAbortController = null;
     }
   }
