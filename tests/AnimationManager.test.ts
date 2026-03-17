@@ -298,4 +298,147 @@ describe('AnimationManager', () => {
     await expect(promise).resolves.toBe(true);
     expect(animationManager.isAnimating).toBe(false);
   });
+
+  it('should freeze on the last null frame of a Transition Type 1 animation', () => {
+    const anim: Animation = {
+      name: 'type1-freeze',
+      transitionType: 1,
+      frames: [
+        { duration: 10, images: [] },
+        { duration: 10, images: [] },
+        { duration: 0, images: [] }, // Last frame is null
+      ],
+    };
+    (animationManager as any).animations['type1-freeze'] = anim;
+
+    const now = 1000;
+    animationManager.setAnimation('type1-freeze');
+    (animationManager as any).lastFrameTime = now;
+
+    // Advance to frame 0
+    expect(animationManager.currentFrameIndexValue).toBe(0);
+
+    // Move to frame 1
+    animationManager.update(now + 200);
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+
+    // Update to move towards frame 2
+    animationManager.update(now + 400);
+
+    // Should stay at frame 1 and NOT complete (because frame 2 is null)
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+    expect(animationManager.isAnimating).toBe(true);
+  });
+
+  it('should reverse a Transition Type 1 animation upon exit if no exit branch is defined', async () => {
+    const anim: Animation = {
+      name: 'type1-reverse',
+      transitionType: 1,
+      frames: [
+        { duration: 10, images: [] },
+        { duration: 10, images: [] },
+        { duration: 10, images: [] },
+      ],
+    };
+    (animationManager as any).animations['type1-reverse'] = anim;
+
+    const promise = animationManager.playAnimation('type1-reverse');
+    const now = 1000;
+    (animationManager as any).lastFrameTime = now;
+
+    // Get to frame 2
+    animationManager.update(now + 200);
+    animationManager.update(now + 400);
+    expect(animationManager.currentFrameIndexValue).toBe(2);
+
+    // Set exiting
+    animationManager.isExitingFlag = true;
+
+    // First update should move to frame 1
+    animationManager.update(now + 600);
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+
+    // Second update should move to frame 0
+    animationManager.update(now + 800);
+    expect(animationManager.currentFrameIndexValue).toBe(0);
+
+    // Third update should complete
+    animationManager.update(now + 1000);
+    await expect(promise).resolves.toBe(true);
+    expect(animationManager.isAnimating).toBe(false);
+  });
+
+  it('should prioritize exit branch over reversal in Transition Type 1 animations', async () => {
+    const anim: Animation = {
+      name: 'type1-exit-branch',
+      transitionType: 1,
+      frames: [
+        { duration: 10, images: [] },
+        { duration: 10, images: [], exitBranch: 1 }, // Exit to frame 1 (index 0)
+        { duration: 10, images: [] },
+      ],
+    };
+    (animationManager as any).animations['type1-exit-branch'] = anim;
+
+    animationManager.playAnimation('type1-exit-branch');
+    const now = 1000;
+    (animationManager as any).lastFrameTime = now;
+
+    // Get to frame 1
+    animationManager.update(now + 200);
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+
+    // Set exiting
+    animationManager.isExitingFlag = true;
+
+    // Update should take exit branch to frame 0
+    animationManager.update(now + 400);
+    expect(animationManager.currentFrameIndexValue).toBe(0);
+
+    // Next update should complete
+    animationManager.update(now + 600);
+    expect(animationManager.isAnimating).toBe(false);
+  });
+
+  it('should skip sound effects during Transition Type 1 reversal', async () => {
+    const anim: Animation = {
+      name: 'type1-sound-skip',
+      transitionType: 1,
+      frames: [
+        { duration: 10, images: [], soundEffect: 's1' },
+        { duration: 10, images: [], soundEffect: 's2' },
+        { duration: 10, images: [], soundEffect: 's3' },
+      ],
+    };
+    (animationManager as any).animations['type1-sound-skip'] = anim;
+
+    const promise = animationManager.playAnimation('type1-sound-skip');
+    const now = 1000;
+    (animationManager as any).lastFrameTime = now;
+
+    // Get to frame 2
+    animationManager.update(now + 200);
+    animationManager.update(now + 400);
+    expect(animationManager.currentFrameIndexValue).toBe(2);
+    expect(audioManager.playFrameSound).toHaveBeenCalledWith('s3');
+    audioManager.playFrameSound.mockClear();
+
+    // Start exit (reversal)
+    animationManager.isExitingFlag = true;
+
+    // Moving back to frame 1
+    animationManager.update(now + 600);
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+    expect(audioManager.playFrameSound).not.toHaveBeenCalled();
+
+    // Moving back to frame 0
+    animationManager.update(now + 800);
+    expect(animationManager.currentFrameIndexValue).toBe(0);
+    expect(audioManager.playFrameSound).not.toHaveBeenCalled();
+
+    // Completion
+    animationManager.update(now + 1000);
+    await expect(promise).resolves.toBe(true);
+    expect(animationManager.isAnimating).toBe(false);
+  });
 });
