@@ -1,6 +1,7 @@
 import {
   type FrameDefinition,
   type Animation,
+  TransitionType,
 } from '../base/types';
 import type { SpriteManager } from '../resources/SpriteManager';
 import type { AudioManager } from '../resources/AudioManager';
@@ -253,6 +254,18 @@ export class AnimationManager extends EventEmitter<any> {
       // Normal completion when we loop back to the first frame sequentially
       if (!isBranch && nextFrameIndex === 0 && this.animationPromise) {
         if (this.isLooping) {
+          const currentName = this.currentAnimation!.name;
+          // If we are looping and there's a "Continued" version, switch to it after the first iteration
+          if (
+            this.currentAnimation!.transitionType === TransitionType.Return &&
+            !currentName.endsWith("Continued")
+          ) {
+            const continuedName = `${currentName}Continued`;
+            if (this.animations[continuedName]) {
+              this.setAnimation(continuedName, false, true);
+              return true;
+            }
+          }
           // Instead of completing, we just loop back (which nextFrameIndex 0 already does)
           return false;
         }
@@ -331,6 +344,8 @@ export class AnimationManager extends EventEmitter<any> {
       return this.playAnimation(newAnimationName, useExitBranch, loop);
     }
 
+    const currentAnim = this.currentAnimation!;
+
     // If there is no promise to wait for (e.g. started via setAnimation/Idling),
     // create one so we can await the exit sequence.
     if (!this.activePromise) {
@@ -339,12 +354,29 @@ export class AnimationManager extends EventEmitter<any> {
       });
     }
 
-    // Signal the current animation to interrupt and navigate towards its neutral frame via exit branches
-    this.isExitingFlag = true;
+    // Handle return animations based on naming convention if TransitionType is Return (2)
+    if (currentAnim.transitionType === TransitionType.Return) {
+      let baseName = currentAnim.name;
+      if (baseName.endsWith("Continued")) {
+        baseName = baseName.slice(0, -9);
+      }
+      const returnAnimName = `${baseName}Return`;
+      if (this.animations[returnAnimName]) {
+        // Switch to return animation and wait for it
+        this.setAnimation(returnAnimName);
+        await this.activePromise;
+      } else {
+        // Fallback: just stop
+        this.completeAnimation();
+      }
+    } else {
+      // Signal the current animation to interrupt and navigate towards its neutral frame via exit branches
+      this.isExitingFlag = true;
 
-    // Wait for current animation to complete its exit sequence
-    if (this.activePromise) {
-      await this.activePromise;
+      // Wait for current animation to complete its exit sequence
+      if (this.activePromise) {
+        await this.activePromise;
+      }
     }
 
     // Play the new animation
@@ -384,11 +416,18 @@ export class AnimationManager extends EventEmitter<any> {
    * @param x - Horizontal position.
    * @param y - Vertical position.
    * @param scale - Scaling factor.
+   * @param mouthType - The current mouth shape to overlay.
    */
-  public draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = this.scale): void {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    scale: number = this.scale,
+    mouthType: string | null = null,
+  ): void {
     const frame = this.currentFrame;
     if (frame) {
-      this.spriteManager.drawFrame(ctx, frame, x, y, scale);
+      this.spriteManager.drawFrame(ctx, frame, x, y, scale, mouthType);
     }
   }
 

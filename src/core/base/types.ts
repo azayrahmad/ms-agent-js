@@ -137,22 +137,23 @@ export interface ImageDefinition {
 
 /**
  * Mouth overlay types for speech synchronization (ACSOVERLAYINFO).
+ * These match the names used in Microsoft Agent .acd files.
  */
 export const MouthType = {
   /** Mouth closed. */
-  Closed: "closed",
+  Closed: "Closed",
   /** Mouth wide open 1. */
-  WideOpen1: "wideopen1",
+  OpenWide1: "OpenWide1",
   /** Mouth wide open 2. */
-  WideOpen2: "wideopen2",
+  OpenWide2: "OpenWide2",
   /** Mouth wide open 3. */
-  WideOpen3: "wideopen3",
+  OpenWide3: "OpenWide3",
   /** Mouth wide open 4. */
-  WideOpen4: "wideopen4",
+  OpenWide4: "OpenWide4",
   /** Mouth medium open. */
-  Medium: "medium",
+  OpenMedium: "OpenMedium",
   /** Mouth narrow open. */
-  Narrow: "narrow",
+  OpenNarrow: "OpenNarrow",
 } as const;
 
 export type MouthType = (typeof MouthType)[keyof typeof MouthType];
@@ -204,12 +205,12 @@ export interface FrameDefinition {
  * Transition types between animations (ACSANIMATIONINFO).
  */
 export const TransitionType = {
-  /** Play the return animation specified in the animation definition. */
-  Return: 0,
+  /** No transition animation; just end or loop. */
+  None: 0,
   /** Use the exit branches defined in the frames. */
   Exit: 1,
-  /** No transition animation; just end or loop. */
-  None: 2,
+  /** Play the return animation following the naming convention. */
+  Return: 2,
 } as const;
 
 export type TransitionType = (typeof TransitionType)[keyof typeof TransitionType];
@@ -222,8 +223,6 @@ export interface Animation {
   name: string;
   /** Type of transition between animations. See TransitionType. */
   transitionType: TransitionType | number;
-  /** The name of the animation to return to (used when TransitionType is Return). */
-  returnAnimation?: string;
   /** Sequential list of frame definitions. */
   frames: FrameDefinition[];
 }

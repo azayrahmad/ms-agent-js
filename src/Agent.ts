@@ -7,7 +7,7 @@ import type {
   AgentRequest,
   AgentOptions,
 } from "./core/base/types";
-import { fetchWithProgress } from "./utils";
+import { fetchWithProgress, estimateViseme } from "./utils";
 
 /** Generic listener type for agent events. */
 type AgentEventListener = (...args: any[]) => void;
@@ -207,6 +207,8 @@ export class Agent {
 
     const renderer = new AgentRenderer(core, container);
     renderer.balloon.onSpeak = (text: string, charIndex: number) => {
+      const char = text[charIndex] || "";
+      core.currentMouthType = estimateViseme(char);
       core.emit("speak", { text, charIndex });
     };
 
@@ -620,6 +622,7 @@ export class Agent {
     this.renderer.balloon.onHide = () => {
       this.renderer.balloon.onHide = null;
       this.talkingAnimationName = null;
+      this.core.currentMouthType = null;
       if (this.core.stateManager.currentStateName === "Speaking") {
         this.core.animationManager.isExitingFlag = true;
         this.core.stateManager.handleAnimationCompleted();
@@ -712,6 +715,7 @@ export class Agent {
           resolved = true;
           this.renderer.balloon.onHide = null;
           this.talkingAnimationName = null;
+          this.core.currentMouthType = null;
           if (this.core.stateManager.currentStateName === "Speaking") {
             this.core.animationManager.isExitingFlag = true;
             this.core.stateManager.handleAnimationCompleted();

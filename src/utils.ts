@@ -58,3 +58,40 @@ export async function fetchWithProgress(
     statusText: response.statusText,
   });
 }
+
+/**
+ * Estimates the mouth shape (viseme) for a given character or phoneme.
+ * Based on Microsoft Agent standard mouth positions.
+ *
+ * @param char - The character or phoneme to estimate.
+ * @returns The corresponding MouthType value.
+ */
+export function estimateViseme(char: string): string {
+  const c = char.toLowerCase();
+
+  // Closed: m, b, p, f, v
+  if (/[mbpfv]/.test(c)) return "Closed";
+
+  // OpenNarrow: w, u, o (as in hoop, hope, wet)
+  if (/[wuo]/.test(c)) return "OpenNarrow";
+
+  // OpenMedium: o (as in hot), oy (as in ahoy)
+  if (/[oy]/.test(c)) return "OpenMedium";
+
+  // OpenWide 4: a (as in hat), ow (as in how)
+  if (/[a]/.test(c)) return "OpenWide4";
+
+  // OpenWide 3: u (as in hut), e (as in head), ur (as in hurt)
+  if (/[uer]/.test(c)) return "OpenWide3";
+
+  // OpenWide 2: n, d, t, s, z, k, g
+  if (/[ndtszkg]/.test(c)) return "OpenWide2";
+
+  // OpenWide 1: g, l, i, e (as in hear)
+  if (/[glihe]/.test(c)) return "OpenWide1";
+
+  // Default to Closed for whitespace or punctuation
+  if (/\s|[^a-z]/.test(c)) return "Closed";
+
+  return "OpenWide1";
+}

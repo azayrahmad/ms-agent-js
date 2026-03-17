@@ -69,6 +69,7 @@ export class AgentRenderer {
       0,
       0,
       this.core.options.scale,
+      this.core.currentMouthType,
     );
   }
 
