@@ -88,8 +88,12 @@ async function initDemo() {
   const selectBtn = document.getElementById("select-btn") as HTMLButtonElement;
   const speakBtn = document.getElementById("speak-btn") as HTMLButtonElement;
   const askBtn = document.getElementById("ask-btn") as HTMLButtonElement;
-  const askOptionsBtn = document.getElementById("ask-options-btn") as HTMLButtonElement;
-  const askStyleSelect = document.getElementById("ask-style-select") as HTMLSelectElement;
+  const askOptionsBtn = document.getElementById(
+    "ask-options-btn",
+  ) as HTMLButtonElement;
+  const askStyleSelect = document.getElementById(
+    "ask-style-select",
+  ) as HTMLSelectElement;
   const speakTextInput = document.getElementById(
     "speak-text",
   ) as HTMLTextAreaElement;
@@ -588,12 +592,16 @@ async function initDemo() {
 
   askBtn.addEventListener("click", async () => {
     if (!currentAgent) return;
-    const answer = await currentAgent.ask({
-      title: "Question",
-      placeholder: "Type your answer here...",
+    const result = await currentAgent.ask({
+      title: "What is your next move?",
+      placeholder: "Type a reason...",
+      buttons: ["Ask", "Cancel"],
     });
-    if (answer !== null) {
-      currentAgent.speak(`You said: ${answer}`, {
+
+    if (result !== null) {
+      let msg = `Button: ${result.value}`;
+      if (result.text) msg += `, Input: ${result.text}`;
+      currentAgent.speak(msg, {
         skipTyping: skipTypingCheck.checked,
       });
     } else {
@@ -606,16 +614,23 @@ async function initDemo() {
   askOptionsBtn.addEventListener("click", async () => {
     if (!currentAgent) return;
     const choices = ["I'm doing great!", "Not too bad.", "Could be better."];
-    const index = await currentAgent.ask({
+    const result = await currentAgent.ask({
       title: "How are you today?",
       choices: choices,
       choiceStyle: askStyleSelect.value as "bullet" | "bulb",
+      buttons: ["Cancel"],
     });
 
-    if (index !== null) {
-      currentAgent.speak(`You chose: ${choices[index as number]}`, {
-        skipTyping: skipTypingCheck.checked,
-      });
+    if (result !== null) {
+      if (typeof result.value === "number") {
+        currentAgent.speak(`You chose: ${choices[result.value]}`, {
+          skipTyping: skipTypingCheck.checked,
+        });
+      } else {
+        currentAgent.speak(`You clicked: ${result.value}`, {
+          skipTyping: skipTypingCheck.checked,
+        });
+      }
     } else {
       currentAgent.speak("Cancelled.", {
         skipTyping: skipTypingCheck.checked,

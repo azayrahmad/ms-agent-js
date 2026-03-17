@@ -67,7 +67,7 @@ export const setupGlobals = (mockDefinition?: any) => {
     }
   }));
 
-  const mockWindow = {
+  const mockWindow: any = {
     AudioContext: MockAudioContext,
     webkitAudioContext: MockAudioContext,
     requestAnimationFrame: vi.fn().mockImplementation((cb) => setTimeout(() => cb(performance.now()), 16)),
@@ -107,6 +107,11 @@ export const setupGlobals = (mockDefinition?: any) => {
   };
 
   vi.stubGlobal('window', mockWindow);
+  vi.stubGlobal('SpeechSynthesisUtterance', vi.fn().mockImplementation(function (this: any, text) {
+    this.text = text;
+    this.onend = null;
+    this.onboundary = null;
+  }));
 
   vi.stubGlobal('document', {
     createElementNS: vi.fn().mockImplementation((ns, tag) => {
@@ -123,6 +128,7 @@ export const setupGlobals = (mockDefinition?: any) => {
       const el: any = {
         style: {},
         nodeName: tag.toUpperCase(),
+        attributes: {},
         appendChild: vi.fn().mockImplementation((child) => {
           if (el.shadowNodes) el.shadowNodes.push(child);
           if (el.childNodes) el.childNodes.push(child);
@@ -159,19 +165,45 @@ export const setupGlobals = (mockDefinition?: any) => {
         }),
         click: vi.fn().mockImplementation(function(this: any) {
           const listeners = this.listeners?.['click'] || [];
-          listeners.forEach((l: any) => l({ target: this }));
+          listeners.forEach((l: any) => l({ target: this, currentTarget: this, preventDefault: () => {} }));
+        }),
+        setAttribute: vi.fn().mockImplementation(function(this: any, name, val) {
+          this.attributes[name] = val;
+        }),
+        getAttribute: vi.fn().mockImplementation(function(this: any, name) {
+          return this.attributes[name] || null;
+        }),
+        hasAttribute: vi.fn().mockImplementation(function(this: any, name) {
+          return !!this.attributes[name];
+        }),
+        closest: vi.fn().mockImplementation(function(this: any, selector) {
+          if (this.nodeName.toLowerCase() === selector) return this;
+          return null;
         }),
         querySelector: vi.fn().mockImplementation(function(this: any, selector: string) {
           // Return a mock element for common selectors in tests
-          if (selector === 'textarea' || selector === '.ask-button' || selector === '.cancel-button') {
-            const el = document.createElement(selector.startsWith('.') ? 'button' : selector);
+          if (selector === 'textarea' || selector === '.clippy-choices') {
+            const el = document.createElement(selector === 'textarea' ? 'textarea' : 'ul');
             if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
             if (selector === 'textarea') this.lastQueriedTextarea = el;
-            if (selector === '.ask-button') this.lastQueriedAskButton = el;
-            if (selector === '.cancel-button') this.lastQueriedCancelButton = el;
+            if (selector === '.clippy-choices') this.lastQueriedChoicesList = el;
             return el;
           }
           return null;
+        }),
+        querySelectorAll: vi.fn().mockImplementation(function(this: any, selector: string) {
+           if (selector === '.custom-button') {
+            const el1 = document.createElement('button');
+            el1.className = 'custom-button';
+            el1.setAttribute('data-index', '0');
+            const el2 = document.createElement('button');
+            el2.className = 'custom-button';
+            el2.setAttribute("data-index", "1");
+            const res = [el1, el2];
+            this.lastQueriedCustomButtons = res;
+            return res;
+          }
+          return [];
         }),
         getBoundingClientRect: vi.fn().mockReturnValue({
           width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100
