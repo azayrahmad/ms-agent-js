@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
 import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { AssetCache } from '../src/core/resources/Cache';
 import { setupGlobals } from './setup';
 
 // Mock CharacterParser.load to avoid actual network requests
@@ -33,6 +34,7 @@ describe('Agent.load', () => {
     };
 
     beforeEach(() => {
+        AssetCache.clearMemory();
         vi.clearAllMocks();
         setupGlobals(mockDefinition);
     });
