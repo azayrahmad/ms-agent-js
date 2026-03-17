@@ -566,7 +566,7 @@ export class CharacterParser {
 
         switch (key) {
           case "Type":
-            mouthType = value.toLowerCase();
+            mouthType = value;
             break;
           case "Filename":
             mouthImage.filename = value.replace(/\\/g, "/");

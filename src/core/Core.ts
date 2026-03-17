@@ -27,6 +27,9 @@ export class AgentCore extends EventEmitter<AgentEvents> {
   /** Manager responsible for playing sound effects. */
   public readonly audioManager: AudioManager;
 
+  /** The current mouth shape to display (for lip-syncing). */
+  public currentMouthType: string | null = null;
+
   /**
    * @param definition - The parsed character definition.
    * @param options - Initialization options.

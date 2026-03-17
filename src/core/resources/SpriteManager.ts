@@ -354,13 +354,14 @@ export class SpriteManager {
 
   /**
    * Draws a specific frame onto the provided 2D rendering context.
-   * Handles layering and scaling.
+   * Handles layering, mouth overlays, and scaling.
    *
    * @param ctx - The destination canvas context.
    * @param frame - The definition of the frame to draw.
    * @param x - Horizontal position to draw at.
    * @param y - Vertical position to draw at.
    * @param scale - Scaling factor (default 1).
+   * @param mouthType - The current mouth shape to overlay.
    */
   public drawFrame(
     ctx: CanvasRenderingContext2D,
@@ -368,11 +369,19 @@ export class SpriteManager {
     x: number,
     y: number,
     scale: number = 1,
+    mouthType: string | null = null,
   ): void {
     if (!frame.images) return;
 
-    // Draw images in reverse order as per the original implementation (back-to-front layering)
-    for (let i = frame.images.length - 1; i >= 0; i--) {
+    const mouthDef = mouthType ? frame.mouths?.[mouthType] : null;
+
+    // Draw images as per the original implementation (back-to-front layering)
+    // The last image in the array is the top-most layer.
+    for (let i = 0; i < frame.images.length; i++) {
+      // If we are replacing the top image (last in array), and a mouth exists, skip it.
+      if (i === frame.images.length - 1 && mouthDef?.replaceTopImage) {
+        continue;
+      }
       const imgDef = frame.images[i];
 
       if (this.spriteSheet && this.definition.atlas) {
@@ -404,6 +413,40 @@ export class SpriteManager {
           sprite.width * scale,
           sprite.height * scale,
         );
+      }
+    }
+
+    // Draw mouth overlay
+    if (mouthDef) {
+      const filename = mouthDef.filename;
+      if (this.spriteSheet && this.definition.atlas) {
+        const atlasEntry = this.definition.atlas[filename];
+        if (atlasEntry) {
+          const trimX = atlasEntry.trimX || 0;
+          const trimY = atlasEntry.trimY || 0;
+          ctx.drawImage(
+            this.spriteSheet,
+            atlasEntry.x,
+            atlasEntry.y,
+            atlasEntry.w,
+            atlasEntry.h,
+            x + (mouthDef.offsetX + trimX) * scale,
+            y + (mouthDef.offsetY + trimY) * scale,
+            atlasEntry.w * scale,
+            atlasEntry.h * scale,
+          );
+        }
+      } else {
+        const sprite = this.sprites.get(filename);
+        if (sprite) {
+          ctx.drawImage(
+            sprite,
+            x + mouthDef.offsetX * scale,
+            y + mouthDef.offsetY * scale,
+            sprite.width * scale,
+            sprite.height * scale,
+          );
+        }
       }
     }
   }

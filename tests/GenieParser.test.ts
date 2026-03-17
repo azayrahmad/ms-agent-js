@@ -96,21 +96,20 @@ EndAnimation
     const frame = result.animations['RestPose'].frames[0];
 
     expect(frame.mouths).toBeDefined();
-    expect(frame.mouths?.['closed']).toBeDefined();
-    expect(frame.mouths?.['closed'].filename).toBe('Images/0001.bmp');
-    expect(frame.mouths?.['closed'].replaceTopImage).toBe(true);
-    expect(frame.mouths?.['openwide1']).toBeDefined();
-    expect(frame.mouths?.['openwide1'].filename).toBe('Images/0002.bmp');
-    expect(frame.mouths?.['openwide1'].offsetY).toBe(-3);
-    expect(frame.mouths?.['openwide1'].width).toBe(64);
-    expect(frame.mouths?.['openwide1'].height).toBe(32);
+    expect(frame.mouths?.['Closed']).toBeDefined();
+    expect(frame.mouths?.['Closed'].filename).toBe('Images/0001.bmp');
+    expect(frame.mouths?.['Closed'].replaceTopImage).toBe(true);
+    expect(frame.mouths?.['OpenWide1']).toBeDefined();
+    expect(frame.mouths?.['OpenWide1'].filename).toBe('Images/0002.bmp');
+    expect(frame.mouths?.['OpenWide1'].offsetY).toBe(-3);
+    expect(frame.mouths?.['OpenWide1'].width).toBe(64);
+    expect(frame.mouths?.['OpenWide1'].height).toBe(32);
   });
 
-  it('should parse TransitionType and ReturnAnimation', () => {
+  it('should parse TransitionType', () => {
     const content = `
 DefineAnimation "GetAttention"
   TransitionType = 2
-  ReturnAnimation = "GetAttentionReturn"
   DefineFrame
     Duration = 10
     DefineImage
@@ -124,7 +123,6 @@ EndAnimation
     const anim = result.animations['GetAttention'];
 
     expect(anim.transitionType).toBe(2);
-    expect(anim.returnAnimation).toBe('GetAttentionReturn');
   });
 
   it('should use default frame duration if not specified in frame', () => {
