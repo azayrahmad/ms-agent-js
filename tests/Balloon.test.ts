@@ -123,6 +123,40 @@ describe('Balloon', () => {
         vi.useRealTimers();
     });
 
+    it('should include trailing punctuation during TTS synchronization', () => {
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        const text = 'Hello, world!';
+        balloon.speak(complete, text, false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Simulate boundary event for "Hello" (indices 0-4), comma is at index 5
+        utterance.onboundary({ charIndex: 0, charLength: 5 });
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello,');
+
+        // Simulate boundary event for "world" (indices 7-11), ! is at index 12
+        utterance.onboundary({ charIndex: 7, charLength: 5 });
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello, world!');
+    });
+
+    it('should NOT include punctuation if separated by space', () => {
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        const text = 'Hello , world';
+        balloon.speak(complete, text, false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Simulate boundary event for "Hello"
+        utterance.onboundary({ charIndex: 0, charLength: 5 });
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+    });
+
     it('should use character typing when useTTS is false', () => {
         vi.useFakeTimers();
         const balloon = new Balloon(targetEl, container, mockDefinition);
