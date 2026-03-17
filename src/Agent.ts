@@ -7,7 +7,8 @@ import type {
   AgentRequest,
   AgentOptions,
 } from "./core/base/types";
-import { fetchWithProgress } from "./utils";
+import { fetchWithProgress, estimateVisemes } from "./utils";
+import { MouthType } from "./core/base/types";
 
 /** Generic listener type for agent events. */
 type AgentEventListener = (...args: any[]) => void;
@@ -206,11 +207,14 @@ export class Agent {
     await core.init();
 
     const renderer = new AgentRenderer(core, container);
+    const agent = new Agent(core, renderer, container);
+
     renderer.balloon.onSpeak = (text: string, charIndex: number) => {
+      const words = text.substring(0, charIndex + 1).trim().split(/\s+/);
+      const currentWord = words[words.length - 1] || "";
+      agent.animateMouthForText(currentWord);
       core.emit("speak", { text, charIndex });
     };
-
-    const agent = new Agent(core, renderer, container);
 
     agent.startLoop();
 
@@ -602,6 +606,8 @@ export class Agent {
   }
 
   private talkingAnimationName: string | null = null;
+  /** Timer used for cycling through mouth shapes during speech. */
+  private mouthTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Internal helper to start a talking animation and set up its termination.
@@ -620,11 +626,48 @@ export class Agent {
     this.renderer.balloon.onHide = () => {
       this.renderer.balloon.onHide = null;
       this.talkingAnimationName = null;
+      this.stopMouthMovement();
       if (this.core.stateManager.currentStateName === "Speaking") {
         this.core.animationManager.isExitingFlag = true;
         this.core.stateManager.handleAnimationCompleted();
       }
     };
+  }
+
+  private currentMouthText: string = "";
+  /**
+   * Triggers a sequence of mouth movements based on the provided text.
+   */
+  private animateMouthForText(text: string) {
+    if (this.currentMouthText === text && this.mouthTimer) return;
+    this.currentMouthText = text;
+
+    this.stopMouthMovement();
+    const visemes = estimateVisemes(text);
+    let index = 0;
+
+    const nextMouth = () => {
+      if (index >= visemes.length) {
+        this.core.animationManager.mouthType = MouthType.Closed;
+        return;
+      }
+      this.core.animationManager.mouthType = visemes[index];
+      index++;
+      // Cycle through visemes roughly at the speed of speech
+      this.mouthTimer = setTimeout(nextMouth, 80);
+    };
+    nextMouth();
+  }
+
+  /**
+   * Stops any ongoing mouth movement animation.
+   */
+  private stopMouthMovement() {
+    if (this.mouthTimer) {
+      clearTimeout(this.mouthTimer);
+      this.mouthTimer = null;
+    }
+    this.core.animationManager.mouthType = MouthType.Closed;
   }
 
   /**

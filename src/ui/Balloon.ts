@@ -494,6 +494,7 @@ export class Balloon {
       } else {
         idx++;
         this._contentEl.textContent = text.slice(0, idx);
+        this.onSpeak?.(text, idx - 1);
         this._loopTimeout = setTimeout(
           () => this._addChar?.(),
           this.CHAR_SPEAK_TIME,

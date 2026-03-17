@@ -1,3 +1,5 @@
+import { MouthType } from "./core/base/types";
+
 /**
  * Fetches a resource and tracks its download progress.
  *
@@ -57,4 +59,50 @@ export async function fetchWithProgress(
     status: response.status,
     statusText: response.statusText,
   });
+}
+
+/**
+ * Estimates a sequence of mouth shapes (visemes) for a given piece of text.
+ * This is a lightweight, rule-based heuristic that maps character patterns to mouth types.
+ *
+ * @param text - The text to analyze.
+ * @returns An array of mouth type strings.
+ */
+export function estimateVisemes(text: string): MouthType[] {
+  const visemes: MouthType[] = [];
+  const words = text.split(/\s+/);
+
+  for (const word of words) {
+    if (!word) continue;
+
+    // A simple heuristic: find groups of vowels and treat them as mouth-open events
+    const syllables = word.toLowerCase().match(/[aeiouy]+|[^aeiouy]+/g) || [];
+
+    for (const part of syllables) {
+      const isVowel = /[aeiouy]/.test(part[0]);
+      if (isVowel) {
+        if (part.includes("o") || part.includes("u")) {
+          visemes.push(MouthType.Narrow);
+        } else if (part.includes("a") || part.includes("e")) {
+          visemes.push(MouthType.WideOpen2);
+        } else {
+          visemes.push(MouthType.Medium);
+        }
+      } else {
+        // Consonants
+        if (/[mpb]/.test(part)) {
+          visemes.push(MouthType.Closed);
+        } else if (/[fvw]/.test(part)) {
+          visemes.push(MouthType.Narrow);
+        } else {
+          // Keep it slightly open for other consonants to avoid too much flickering
+          visemes.push(MouthType.Closed);
+        }
+      }
+    }
+    // Add a closed state between words
+    visemes.push(MouthType.Closed);
+  }
+
+  return visemes;
 }

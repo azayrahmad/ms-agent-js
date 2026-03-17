@@ -140,19 +140,19 @@ export interface ImageDefinition {
  */
 export const MouthType = {
   /** Mouth closed. */
-  Closed: "closed",
+  Closed: "Closed",
   /** Mouth wide open 1. */
-  WideOpen1: "wideopen1",
+  WideOpen1: "WideOpen1",
   /** Mouth wide open 2. */
-  WideOpen2: "wideopen2",
+  WideOpen2: "WideOpen2",
   /** Mouth wide open 3. */
-  WideOpen3: "wideopen3",
+  WideOpen3: "WideOpen3",
   /** Mouth wide open 4. */
-  WideOpen4: "wideopen4",
+  WideOpen4: "WideOpen4",
   /** Mouth medium open. */
-  Medium: "medium",
+  Medium: "Medium",
   /** Mouth narrow open. */
-  Narrow: "narrow",
+  Narrow: "Narrow",
 } as const;
 
 export type MouthType = (typeof MouthType)[keyof typeof MouthType];

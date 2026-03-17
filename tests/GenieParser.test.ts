@@ -79,7 +79,7 @@ DefineAnimation "RestPose"
       ReplaceTopImage = 1
     EndMouth
     DefineMouth
-      Type = OpenWide1
+      Type = WideOpen1
       Filename = "Images\\0002.bmp"
       OffsetY = -3
       Width = 64
@@ -96,14 +96,14 @@ EndAnimation
     const frame = result.animations['RestPose'].frames[0];
 
     expect(frame.mouths).toBeDefined();
-    expect(frame.mouths?.['closed']).toBeDefined();
-    expect(frame.mouths?.['closed'].filename).toBe('Images/0001.bmp');
-    expect(frame.mouths?.['closed'].replaceTopImage).toBe(true);
-    expect(frame.mouths?.['openwide1']).toBeDefined();
-    expect(frame.mouths?.['openwide1'].filename).toBe('Images/0002.bmp');
-    expect(frame.mouths?.['openwide1'].offsetY).toBe(-3);
-    expect(frame.mouths?.['openwide1'].width).toBe(64);
-    expect(frame.mouths?.['openwide1'].height).toBe(32);
+    expect(frame.mouths?.['Closed']).toBeDefined();
+    expect(frame.mouths?.['Closed'].filename).toBe('Images/0001.bmp');
+    expect(frame.mouths?.['Closed'].replaceTopImage).toBe(true);
+    expect(frame.mouths?.['WideOpen1']).toBeDefined();
+    expect(frame.mouths?.['WideOpen1'].filename).toBe('Images/0002.bmp');
+    expect(frame.mouths?.['WideOpen1'].offsetY).toBe(-3);
+    expect(frame.mouths?.['WideOpen1'].width).toBe(64);
+    expect(frame.mouths?.['WideOpen1'].height).toBe(32);
   });
 
   it('should parse TransitionType and ReturnAnimation', () => {

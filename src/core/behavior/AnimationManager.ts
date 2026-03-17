@@ -1,6 +1,7 @@
 import {
   type FrameDefinition,
   type Animation,
+  MouthType,
 } from '../base/types';
 import type { SpriteManager } from '../resources/SpriteManager';
 import type { AudioManager } from '../resources/AudioManager';
@@ -33,6 +34,8 @@ export class AnimationManager extends EventEmitter<any> {
   private activePromise: Promise<boolean> | null = null;
   /** Default scaling factor (usually overwritten by the Agent's options). */
   private scale: number = 2;
+  /** The current mouth shape to overlay. */
+  private _currentMouthType: string = MouthType.Closed;
 
   /**
    * The name of the animation currently being played.
@@ -62,6 +65,20 @@ export class AnimationManager extends EventEmitter<any> {
    */
   public get currentFrameIndexValue(): number {
     return this.currentFrameIndex;
+  }
+
+  /**
+   * The current mouth shape being displayed.
+   */
+  public get currentMouthType(): string {
+    return this._currentMouthType;
+  }
+
+  /**
+   * Sets the current mouth shape.
+   */
+  public set mouthType(value: string) {
+    this._currentMouthType = value;
   }
 
   /**
@@ -385,10 +402,22 @@ export class AnimationManager extends EventEmitter<any> {
    * @param y - Vertical position.
    * @param scale - Scaling factor.
    */
-  public draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = this.scale): void {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    scale: number = this.scale,
+  ): void {
     const frame = this.currentFrame;
     if (frame) {
-      this.spriteManager.drawFrame(ctx, frame, x, y, scale);
+      this.spriteManager.drawFrame(
+        ctx,
+        frame,
+        x,
+        y,
+        scale,
+        this._currentMouthType,
+      );
     }
   }
 
@@ -405,6 +434,11 @@ export class AnimationManager extends EventEmitter<any> {
     for (const frame of animation.frames) {
       for (const img of frame.images) {
         await this.spriteManager.loadSprite(img.filename);
+      }
+      if (frame.mouths) {
+        for (const mouth of Object.values(frame.mouths)) {
+          await this.spriteManager.loadSprite(mouth.filename);
+        }
       }
       if (frame.soundEffect) {
         soundsToLoad.push(frame.soundEffect);

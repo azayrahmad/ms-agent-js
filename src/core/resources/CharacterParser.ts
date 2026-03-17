@@ -566,7 +566,12 @@ export class CharacterParser {
 
         switch (key) {
           case "Type":
-            mouthType = value.toLowerCase();
+            // Normalize to PascalCase (e.g., "wideopen1" -> "WideOpen1")
+            mouthType = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+            // Handle specific multi-word types if any (MS Agent standard uses PascalCase)
+            if (mouthType.startsWith("Wideopen")) {
+              mouthType = "WideOpen" + mouthType.substring(8);
+            }
             break;
           case "Filename":
             mouthImage.filename = value.replace(/\\/g, "/");

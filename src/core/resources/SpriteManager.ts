@@ -361,6 +361,7 @@ export class SpriteManager {
    * @param x - Horizontal position to draw at.
    * @param y - Vertical position to draw at.
    * @param scale - Scaling factor (default 1).
+   * @param mouthType - Optional mouth shape to overlay.
    */
   public drawFrame(
     ctx: CanvasRenderingContext2D,
@@ -368,43 +369,72 @@ export class SpriteManager {
     x: number,
     y: number,
     scale: number = 1,
+    mouthType?: string,
   ): void {
     if (!frame.images) return;
 
+    const mouthDef =
+      mouthType && frame.mouths ? frame.mouths[mouthType] : null;
+
     // Draw images in reverse order as per the original implementation (back-to-front layering)
     for (let i = frame.images.length - 1; i >= 0; i--) {
+      // If this is the top-most image (index 0) and we have a mouth that replaces it
+      if (i === 0 && mouthDef?.replaceTopImage) {
+        this.drawOverlay(ctx, mouthDef, x, y, scale);
+        continue;
+      }
+
       const imgDef = frame.images[i];
+      this.drawOverlay(ctx, imgDef, x, y, scale);
+    }
 
-      if (this.spriteSheet && this.definition.atlas) {
-        const atlasEntry = this.definition.atlas[imgDef.filename];
-        if (atlasEntry) {
-          const trimX = atlasEntry.trimX || 0;
-          const trimY = atlasEntry.trimY || 0;
-          ctx.drawImage(
-            this.spriteSheet,
-            atlasEntry.x,
-            atlasEntry.y,
-            atlasEntry.w,
-            atlasEntry.h,
-            x + (imgDef.offsetX + trimX) * scale,
-            y + (imgDef.offsetY + trimY) * scale,
-            atlasEntry.w * scale,
-            atlasEntry.h * scale,
-          );
-          continue;
-        }
-      }
+    // Draw mouth overlay on top if it doesn't replace the top image
+    if (mouthDef && !mouthDef.replaceTopImage) {
+      this.drawOverlay(ctx, mouthDef, x, y, scale);
+    }
+  }
 
-      const sprite = this.sprites.get(imgDef.filename);
-      if (sprite) {
+  /**
+   * Internal helper to draw an image or mouth overlay.
+   */
+  private drawOverlay(
+    ctx: CanvasRenderingContext2D,
+    imgDef: { filename: string; offsetX: number; offsetY: number; width?: number; height?: number },
+    x: number,
+    y: number,
+    scale: number,
+  ): void {
+    if (this.spriteSheet && this.definition.atlas) {
+      const atlasEntry = this.definition.atlas[imgDef.filename];
+      if (atlasEntry) {
+        const trimX = atlasEntry.trimX || 0;
+        const trimY = atlasEntry.trimY || 0;
         ctx.drawImage(
-          sprite,
-          x + imgDef.offsetX * scale,
-          y + imgDef.offsetY * scale,
-          sprite.width * scale,
-          sprite.height * scale,
+          this.spriteSheet,
+          atlasEntry.x,
+          atlasEntry.y,
+          atlasEntry.w,
+          atlasEntry.h,
+          x + (imgDef.offsetX + trimX) * scale,
+          y + (imgDef.offsetY + trimY) * scale,
+          atlasEntry.w * scale,
+          atlasEntry.h * scale,
         );
+        return;
       }
+    }
+
+    const sprite = this.sprites.get(imgDef.filename);
+    if (sprite) {
+      const w = imgDef.width ?? sprite.width;
+      const h = imgDef.height ?? sprite.height;
+      ctx.drawImage(
+        sprite,
+        x + imgDef.offsetX * scale,
+        y + imgDef.offsetY * scale,
+        w * scale,
+        h * scale,
+      );
     }
   }
 
