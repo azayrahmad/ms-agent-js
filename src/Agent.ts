@@ -134,7 +134,6 @@ export class Agent {
     const defaultBaseUrl = `https://unpkg.com/ms-agent-js@latest/dist/agents/${name}`;
     const baseUrl = (options.baseUrl || defaultBaseUrl).replace(/\/$/, "");
     const useCache = options.useCache !== false;
-    const persistCache = options.persistCache === true;
 
     let definition: AgentCharacterDefinition | undefined;
 
@@ -146,21 +145,10 @@ export class Agent {
       try {
         // Prioritize optimized agent.json (atlas-based)
         const agentJsonUrl = `${baseUrl}/agent.json`;
-        let response: Response | undefined;
-
-        if (persistCache) {
-          response = await AssetCache.getPersistent(agentJsonUrl);
-        }
-
-        if (!response) {
-          response = await fetchWithProgress(agentJsonUrl, {
-            signal: options.signal,
-            onProgress: options.onProgress,
-          });
-          if (response.ok && persistCache) {
-            await AssetCache.setPersistent(agentJsonUrl, response);
-          }
-        }
+        const response = await fetchWithProgress(agentJsonUrl, {
+          signal: options.signal,
+          onProgress: options.onProgress,
+        });
 
         if (!response.ok) throw new Error("No agent.json");
         definition = await response.json();
@@ -211,7 +199,6 @@ export class Agent {
       onProgress: options.onProgress || (() => {}),
       signal: options.signal || new AbortController().signal,
       useCache,
-      persistCache,
       x:
         options.x ??
         window.innerWidth -

@@ -46,13 +46,11 @@ export class AgentCore extends EventEmitter<AgentEvents> {
       signal: options.signal,
       onProgress: options.onProgress,
       useCache: options.useCache,
-      persistCache: options.persistCache,
     });
     this.audioManager = new AudioManager(options.baseUrl, {
       signal: options.signal,
       onProgress: options.onProgress,
       useCache: options.useCache,
-      persistCache: options.persistCache,
     });
     this.audioManager.setEnabled(options.useAudio);
     if (definition.audioAtlas) {

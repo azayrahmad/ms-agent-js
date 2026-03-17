@@ -30,7 +30,6 @@ export class SpriteManager {
       filename: string;
     }) => void;
     useCache?: boolean;
-    persistCache?: boolean;
   };
 
   /**
@@ -49,14 +48,12 @@ export class SpriteManager {
         filename: string;
       }) => void;
       useCache?: boolean;
-      persistCache?: boolean;
     } = {},
   ) {
     this.agentRoot = agentRoot;
     this.definition = definition;
     this.options = {
       useCache: true,
-      persistCache: false,
       ...options,
     };
   }
@@ -91,24 +88,14 @@ export class SpriteManager {
           }
         }
 
-        let response: Response | undefined;
-        if (this.options.persistCache) {
-          response = await AssetCache.getPersistent(url);
-        }
-
-        if (!response) {
-          try {
-            response = await fetchWithProgress(url, {
-              signal: this.options.signal,
-              onProgress: this.options.onProgress,
-            });
-          } catch (e) {
-            response = { ok: false } as any as Response;
-          }
-
-          if (response.ok && this.options.persistCache) {
-            await AssetCache.setPersistent(url, response);
-          }
+        let response: Response;
+        try {
+          response = await fetchWithProgress(url, {
+            signal: this.options.signal,
+            onProgress: this.options.onProgress,
+          });
+        } catch (e) {
+          response = { ok: false } as any as Response;
         }
 
         if (!response.ok) continue;
@@ -166,18 +153,7 @@ export class SpriteManager {
 
     for (const url of pathsToTry) {
       try {
-        let res: Response | undefined;
-        if (this.options.persistCache) {
-          res = await AssetCache.getPersistent(url);
-        }
-
-        if (!res) {
-          res = await fetch(url, { signal: this.options.signal });
-          if (res.ok && this.options.persistCache) {
-            await AssetCache.setPersistent(url, res);
-          }
-        }
-
+        const res = await fetch(url, { signal: this.options.signal });
         if (res.ok) {
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("text/html")) {
@@ -270,18 +246,7 @@ export class SpriteManager {
           }
         }
 
-        let res: Response | undefined;
-        if (this.options.persistCache) {
-          res = await AssetCache.getPersistent(url);
-        }
-
-        if (!res) {
-          res = await fetch(url);
-          if (res.ok && this.options.persistCache) {
-            await AssetCache.setPersistent(url, res);
-          }
-        }
-
+        const res = await fetch(url);
         if (res.ok) {
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("text/html")) {

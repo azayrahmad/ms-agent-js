@@ -36,7 +36,6 @@ export class AudioManager {
       filename: string;
     }) => void;
     useCache?: boolean;
-    persistCache?: boolean;
   };
 
   /**
@@ -53,14 +52,12 @@ export class AudioManager {
         filename: string;
       }) => void;
       useCache?: boolean;
-      persistCache?: boolean;
     } = {},
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.audioPath = `${this.baseUrl}/Audio`;
     this.options = {
       useCache: true,
-      persistCache: false,
       ...options,
     };
   }
@@ -147,18 +144,7 @@ export class AudioManager {
     }
 
     try {
-      let response: Response | undefined;
-      if (this.options.persistCache) {
-        response = await AssetCache.getPersistent(url);
-      }
-
-      if (!response) {
-        response = await fetch(url, { signal: this.options.signal });
-        if (response.ok && this.options.persistCache) {
-          await AssetCache.setPersistent(url, response);
-        }
-      }
-
+      const response = await fetch(url, { signal: this.options.signal });
       if (!response.ok) {
         console.warn(
           `Failed to load sound ${soundName}: ${response.statusText}`,
@@ -221,20 +207,10 @@ export class AudioManager {
       }
 
       try {
-        let response: Response | undefined;
-        if (this.options.persistCache) {
-          response = await AssetCache.getPersistent(url);
-        }
-
-        if (!response) {
-          response = await fetchWithProgress(url, {
-            signal: this.options.signal,
-            onProgress: this.options.onProgress,
-          });
-          if (response.ok && this.options.persistCache) {
-            await AssetCache.setPersistent(url, response);
-          }
-        }
+        const response = await fetchWithProgress(url, {
+          signal: this.options.signal,
+          onProgress: this.options.onProgress,
+        });
 
         if (!response.ok) {
           console.warn(
