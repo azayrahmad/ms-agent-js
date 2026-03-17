@@ -243,6 +243,12 @@ export class CharacterParser {
           case "TTSStyle":
             this.currentCharacter.ttsStyle = value;
             break;
+          case "TTSSpeed":
+            this.currentCharacter.ttsSpeed = parseInt(value, 10);
+            break;
+          case "TTSPitch":
+            this.currentCharacter.ttsPitch = parseInt(value, 10);
+            break;
         }
       }
       i++;
@@ -404,6 +410,10 @@ export class CharacterParser {
             break;
           case "Italicized":
             balloon.italicized = value === "1" || value.toLowerCase() === "true";
+            break;
+          case "Underline":
+          case "Underlined":
+            balloon.underline = value === "1" || value.toLowerCase() === "true";
             break;
         }
       }
