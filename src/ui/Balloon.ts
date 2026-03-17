@@ -524,7 +524,11 @@ export class Balloon {
     this._speakTTS(
       text,
       (charIndex, charLength) => {
-        const nextIdx = charLength ? charIndex + charLength : charIndex;
+        let nextIdx = charLength ? charIndex + charLength : charIndex;
+        // Include trailing punctuation/symbols (anything that's not a space)
+        while (nextIdx < text.length && text[nextIdx] !== " ") {
+          nextIdx++;
+        }
         if (nextIdx > idx) {
           idx = nextIdx;
           this._contentEl.textContent = text.slice(0, idx);
