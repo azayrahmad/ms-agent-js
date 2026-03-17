@@ -589,6 +589,8 @@ export class Balloon {
   public showHtml(html: string, hold: boolean) {
     this.stop();
     this._hidden = false;
+    this._hold = hold;
+    this._active = false;
     this._balloonEl.style.visibility = "hidden";
     this._balloonEl.style.display = "block";
 
@@ -598,10 +600,9 @@ export class Balloon {
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        if (this._hidden) return;
         this.reposition();
         this._balloonEl.style.visibility = "visible";
-        this._active = false;
-        this._hold = hold;
       });
     });
   }
