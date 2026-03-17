@@ -209,10 +209,22 @@ export class Agent {
     const renderer = new AgentRenderer(core, container);
     const agent = new Agent(core, renderer, container);
 
-    renderer.balloon.onSpeak = (text: string, charIndex: number) => {
-      const words = text.substring(0, charIndex + 1).trim().split(/\s+/);
-      const currentWord = words[words.length - 1] || "";
-      agent.animateMouthForText(currentWord);
+    renderer.balloon.onSpeak = (text: string, charIndex: number, isTTS: boolean) => {
+      if (isTTS) {
+        // TTS boundary: start of a word. We want to animate the full word.
+        let end = charIndex;
+        while (end < text.length && !/\s/.test(text[end])) end++;
+        const word = text.substring(charIndex, end);
+        agent.animateMouthForText(word);
+      } else {
+        // Manual typing: trigger for vowels or when a word completes
+        const char = text[charIndex]?.toLowerCase();
+        const isVowel = /[aeiouy]/.test(char);
+        const isSpace = /\s/.test(char);
+        if (isVowel || isSpace) {
+          agent.animateMouthForText(char || " ");
+        }
+      }
       core.emit("speak", { text, charIndex });
     };
 
@@ -642,13 +654,18 @@ export class Agent {
     if (this.currentMouthText === text && this.mouthTimer) return;
     this.currentMouthText = text;
 
-    this.stopMouthMovement();
+    if (this.mouthTimer) {
+      clearTimeout(this.mouthTimer);
+      this.mouthTimer = null;
+    }
+
     const visemes = estimateVisemes(text);
     let index = 0;
 
     const nextMouth = () => {
       if (index >= visemes.length) {
         this.core.animationManager.mouthType = MouthType.Closed;
+        this.mouthTimer = null;
         return;
       }
       this.core.animationManager.mouthType = visemes[index];

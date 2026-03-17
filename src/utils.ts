@@ -69,38 +69,45 @@ export async function fetchWithProgress(
  * @returns An array of mouth type strings.
  */
 export function estimateVisemes(text: string): MouthType[] {
-  const visemes: MouthType[] = [];
-  const words = text.split(/\s+/);
+  let visemes: MouthType[] = [];
+  if (!text) return [MouthType.Closed];
 
-  for (const word of words) {
-    if (!word) continue;
+  // A simple heuristic: find groups of vowels and treat them as mouth-open events
+  const syllables = text.toLowerCase().match(/[aeiouy]+|[^aeiouy]+/g) || [];
 
-    // A simple heuristic: find groups of vowels and treat them as mouth-open events
-    const syllables = word.toLowerCase().match(/[aeiouy]+|[^aeiouy]+/g) || [];
-
-    for (const part of syllables) {
-      const isVowel = /[aeiouy]/.test(part[0]);
-      if (isVowel) {
-        if (part.includes("o") || part.includes("u")) {
-          visemes.push(MouthType.Narrow);
-        } else if (part.includes("a") || part.includes("e")) {
-          visemes.push(MouthType.WideOpen2);
-        } else {
-          visemes.push(MouthType.Medium);
-        }
+  for (const part of syllables) {
+    const isVowel = /[aeiouy]/.test(part[0]);
+    if (isVowel) {
+      if (part.includes("o") || part.includes("u")) {
+        visemes.push(MouthType.Narrow);
+      } else if (part.includes("a") || part.includes("e")) {
+        visemes.push(MouthType.WideOpen3);
       } else {
-        // Consonants
-        if (/[mpb]/.test(part)) {
-          visemes.push(MouthType.Closed);
-        } else if (/[fvw]/.test(part)) {
-          visemes.push(MouthType.Narrow);
-        } else {
-          // Keep it slightly open for other consonants to avoid too much flickering
-          visemes.push(MouthType.Closed);
-        }
+        visemes.push(MouthType.Medium);
+      }
+    } else {
+      // Consonants
+      if (/[mpb]/.test(part)) {
+        visemes.push(MouthType.Closed);
+      } else if (/[fvw]/.test(part)) {
+        visemes.push(MouthType.Narrow);
+      } else {
+        // Most other consonants
+        visemes.push(MouthType.Closed);
       }
     }
-    // Add a closed state between words
+  }
+
+  // Filter out excessive consecutive "Closed" states to keep it lively
+  visemes = visemes.filter((v, i) => v !== MouthType.Closed || visemes[i - 1] !== MouthType.Closed);
+
+  // Ensure it starts with the first actual shape if it's not a long silence
+  if (visemes.length > 1 && visemes[0] === MouthType.Closed && visemes[1] !== MouthType.Closed) {
+    // Keep it, it's a natural start
+  }
+
+  // Ensure we end with a closed mouth.
+  if (visemes[visemes.length - 1] !== MouthType.Closed) {
     visemes.push(MouthType.Closed);
   }
 

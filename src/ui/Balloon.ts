@@ -78,7 +78,7 @@ export class Balloon {
   /** Callback triggered when the balloon is hidden. */
   public onHide: (() => void) | null = null;
   /** Callback triggered when a word or character boundary is reached during speech. */
-  public onSpeak: ((text: string, charIndex: number) => void) | null = null;
+  public onSpeak: ((text: string, charIndex: number, isTTS: boolean) => void) | null = null;
 
   /** Time in milliseconds to wait between typing each character. */
   public CHAR_SPEAK_TIME = 50;
@@ -494,7 +494,7 @@ export class Balloon {
       } else {
         idx++;
         this._contentEl.textContent = text.slice(0, idx);
-        this.onSpeak?.(text, idx - 1);
+        this.onSpeak?.(text, idx - 1, false);
         this._loopTimeout = setTimeout(
           () => this._addChar?.(),
           this.CHAR_SPEAK_TIME,
@@ -556,7 +556,7 @@ export class Balloon {
       if (onBoundary) {
         onBoundary(event.charIndex, event.charLength);
       }
-      this.onSpeak?.(text, event.charIndex);
+      this.onSpeak?.(text, event.charIndex, true);
     };
     utterance.onend = () => onEnd();
     utterance.onerror = () => onEnd();
