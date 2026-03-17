@@ -423,13 +423,21 @@ export class Agent {
     loop: boolean = false,
   ): AgentRequest {
     return this.enqueueRequest(async (request) => {
-      if (!this.hasAnimation(animationName)) {
+      const anim = this.core.definition.animations[animationName];
+      if (!anim) {
         console.warn(`MSAgentJS: Animation '${animationName}' not found.`);
         return;
       }
       this.emit("animationStart", animationName);
-      // Default useExitBranch to true if no timeout or loop is provided (play once to completion)
-      const shouldExit = useExitBranch ?? (!timeoutMs && !loop);
+
+      // Transition Type 1 (Exit) means the animation sequence includes its own exit transition.
+      // We should NOT force useExitBranch=true initially because that would skip to the end immediately.
+      // However, Transition Type 1 animations *expect* to eventually take an exit branch
+      // to return to neutral. So we set useExitBranch to true only if it's explicitly requested.
+      // For Transition Type 0 (Return) or 2 (None), we default shouldExit to true for single-plays.
+      const isExitType = anim.transitionType === 1;
+      const shouldExit = useExitBranch ?? (!timeoutMs && !loop && !isExitType);
+
       await this.core.stateManager.playAnimation(
         animationName,
         "Playing",
