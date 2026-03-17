@@ -91,19 +91,19 @@ Opens an interactive dialog with a text input.
 - **`timeout`**: Auto-cancel after milliseconds.
 
 ### `agent.stop(request?)`
-Stops the current action or a specific request.
+Stops the specified request or all requests in the queue. If the active request is stopped, the agent moves to the next one.
 
 ### `agent.stopCurrent()`
 Stops the currently active request and proceeds to the next in the queue.
+
+### `agent.interrupt(animationName)`
+Stops all current actions and immediately plays the new animation. Returns an `AgentRequest` for the new animation.
 
 ### `agent.wait(request)`
 Causes the character's request queue to wait until the specified `AgentRequest` completes.
 
 ### `agent.delay(ms)`
 Queues a silent delay for the specified number of milliseconds.
-
-### `agent.interrupt(animationName)`
-Stops all current actions and immediately plays the new animation.
 
 ---
 
@@ -112,11 +112,12 @@ Stops all current actions and immediately plays the new animation.
 Subscribe to events using `agent.on(eventName, callback)`:
 
 - `click`: User clicked the agent canvas.
-- `animationStart` / `animationEnd`: Triggered when an animation begins/finishes.
-- `stateChange`: Triggered when the high-level behavior state changes.
+- `contextmenu`: User right-clicked or long-pressed the agent. Payload: `{ x, y, originalEvent }`.
+- `animationStart` / `animationEnd`: Triggered when an animation begins/finishes. Payload: `animationName`.
+- `stateChange`: Triggered when the high-level behavior state changes. Payload: `(newState, oldState)`.
 - `show` / `hide`: Triggered for visibility transitions.
-- `dragstart` / `drag` / `dragend`: Triggered during movement interactions.
-- `reposition`: Triggered when automatically moved to stay in viewport.
+- `dragstart` / `drag` / `dragend`: Triggered during movement interactions. Payload: `{ x, y }` for `drag`.
+- `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x, y }`.
 
 Subscribe using `agent.on(eventName, callback)` and unsubscribe using `agent.off(eventName, callback)`.
 
