@@ -414,6 +414,18 @@ export class Balloon {
    * @param skipTyping - If true, displays text instantly without typing animation.
    * @param skipContentUpdate - If true, does not overwrite the current content of the balloon.
    */
+  /**
+   * Displays text in the balloon.
+   *
+   * @param complete - Callback fired when speech is finished.
+   * @param text - The text to display.
+   * @param hold - If true, the balloon won't auto-close.
+   * @param useTTS - If true, will use system Text-to-Speech.
+   * @param skipTyping - If true, displays text instantly without typing animation.
+   * @param skipContentUpdate - If true, does not overwrite the current content of the balloon.
+   * @param title - Optional title to display above the text.
+   * @param typeIntoSelector - Optional CSS selector for the element to type into.
+   */
   public speak(
     complete: () => void,
     text: string,
@@ -421,6 +433,8 @@ export class Balloon {
     useTTS: boolean,
     skipTyping: boolean = false,
     skipContentUpdate: boolean = false,
+    title?: string,
+    typeIntoSelector?: string,
   ) {
     this.stop();
     this._hidden = false;
@@ -432,7 +446,13 @@ export class Balloon {
       this._contentEl.style.maxWidth = "";
       this._contentEl.style.maxHeight = "";
       this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
-      this._contentEl.textContent = text;
+
+      let html = "";
+      if (title) {
+        html += `<span class="clippy-balloon-title">${title}</span>`;
+      }
+      html += `<span class="clippy-balloon-text">${text}</span>`;
+      this._contentEl.innerHTML = html;
     }
 
     this.show();
@@ -443,11 +463,11 @@ export class Balloon {
     const ttsSystemDisabled = !this._ttsEnabled || !this._ttsUserEnabled;
     const shouldSkipTyping = skipTyping || ttsSystemDisabled;
 
-    if (shouldSkipTyping) {
+    if (shouldSkipTyping || text.length === 0) {
       this.reposition();
       this._active = false;
 
-      if (useTTS && !ttsSystemDisabled) {
+      if (useTTS && !ttsSystemDisabled && text.length > 0) {
         const onDone = () => {
           this._active = false;
           if (this._hold) {
@@ -468,21 +488,30 @@ export class Balloon {
     }
 
     this.reposition();
-    if (!skipContentUpdate) {
-      this._contentEl.textContent = "";
+
+    const targetEl = this._contentEl.querySelector(
+      typeIntoSelector || ".clippy-balloon-text",
+    ) as HTMLElement;
+
+    if (targetEl && !skipContentUpdate) {
+      targetEl.textContent = "";
     }
 
     if (useTTS) {
-      this._sayCharsWithTTS(text, hold, skipContentUpdate);
+      this._sayCharsWithTTS(text, hold, targetEl);
     } else {
-      this._sayChars(text, hold, skipContentUpdate);
+      this._sayChars(text, hold, targetEl);
     }
   }
 
   /**
    * Internal character-by-character typing logic (no TTS).
    */
-  private _sayChars(text: string, hold: boolean, skipContentUpdate: boolean = false) {
+  private _sayChars(
+    text: string,
+    hold: boolean,
+    targetEl: HTMLElement | null = null,
+  ) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
@@ -499,8 +528,8 @@ export class Balloon {
         }
       } else {
         idx++;
-        if (!skipContentUpdate) {
-          this._contentEl.textContent = text.slice(0, idx);
+        if (targetEl) {
+          targetEl.textContent = text.slice(0, idx);
         }
         this._loopTimeout = setTimeout(
           () => this._addChar?.(),
@@ -514,15 +543,19 @@ export class Balloon {
   /**
    * Internal character-by-character typing logic synchronized with TTS boundaries.
    */
-  private _sayCharsWithTTS(text: string, hold: boolean, skipContentUpdate: boolean = false) {
+  private _sayCharsWithTTS(
+    text: string,
+    hold: boolean,
+    targetEl: HTMLElement | null = null,
+  ) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
 
     const onTTSComplete = () => {
       this._active = false;
-      if (!skipContentUpdate) {
-        this._contentEl.textContent = text;
+      if (targetEl) {
+        targetEl.textContent = text;
       }
       if (this._hold) {
         this._callComplete();
@@ -541,8 +574,8 @@ export class Balloon {
         }
         if (nextIdx > idx) {
           idx = nextIdx;
-          if (!skipContentUpdate) {
-            this._contentEl.textContent = text.slice(0, idx);
+          if (targetEl) {
+            targetEl.textContent = text.slice(0, idx);
           }
         }
       },

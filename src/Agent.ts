@@ -636,14 +636,27 @@ export class Agent {
    */
   public speak(
     text: string,
-    options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
+    options: {
+      hold?: boolean;
+      useTTS?: boolean;
+      skipTyping?: boolean;
+      title?: string;
+    } = {},
   ): AgentRequest {
-    const { hold = false, useTTS = true, skipTyping = false } = options;
+    const { hold = false, useTTS = true, skipTyping = false, title } = options;
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
       this.startTalkingAnimation();
       return new Promise((resolve) => {
-        this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
+        this.renderer.balloon.speak(
+          resolve,
+          text,
+          hold,
+          useTTS,
+          skipTyping,
+          false,
+          title,
+        );
       });
     });
   }
@@ -667,6 +680,7 @@ export class Agent {
   public ask(
     options: {
       title?: string;
+      text?: string;
       placeholder?: string;
       choices?: string[];
       choiceStyle?: "bullet" | "bulb";
@@ -675,7 +689,8 @@ export class Agent {
       timeout?: number;
     } = {},
   ): Promise<string | number | null> {
-    const title = options.title || "What would you like to do?";
+    const title = options.title || "";
+    const text = options.text || "";
     const placeholder = options.placeholder || "Ask me anything...";
     const askButtonText = options.askButtonText || "Ask";
     const cancelButtonText = options.cancelButtonText || "Cancel";
@@ -697,35 +712,135 @@ export class Agent {
       let inputBalloonTimeout: number | null = null;
       let resolved = false;
 
-      let balloonContent = "";
-      if (choices) {
-        const choicesHtml = choices
-          .map((choice, i) => `<li data-index="${i}"><span>${choice}</span></li>`)
-          .join("");
-        balloonContent = `
-                <div class="clippy-input">
-                    <b>${title}</b>
-                    <ul class="clippy-choices style-${choiceStyle}">
-                        ${choicesHtml}
-                    </ul>
-                </div>
-            `;
-      } else {
-        balloonContent = `
-                <div class="clippy-input">
-                  <b>${title}</b>
-                  <textarea rows="2" placeholder="${placeholder}"></textarea>
-                  <div class="clippy-input-buttons">
-                    <button class="ask-button default">${askButtonText}</button>
-                    <button class="cancel-button">${cancelButtonText}</button>
-                  </div>
-                </div>
-              `;
+      const container = document.createElement("div");
+      container.className = "clippy-input";
+
+      if (title) {
+        const titleEl = document.createElement("span");
+        titleEl.className = "clippy-balloon-title";
+        titleEl.textContent = title;
+        container.appendChild(titleEl);
       }
+
+      const textEl = document.createElement("span");
+      textEl.className = "clippy-balloon-text";
+      textEl.textContent = text;
+      container.appendChild(textEl);
+
+      if (choices) {
+        const choicesUl = document.createElement("ul");
+        choicesUl.className = `clippy-choices style-${choiceStyle}`;
+        choices.forEach((choice, i) => {
+          const li = document.createElement("li");
+          li.setAttribute("data-index", i.toString());
+          const span = document.createElement("span");
+          span.textContent = choice;
+          li.appendChild(span);
+          choicesUl.appendChild(li);
+        });
+        container.appendChild(choicesUl);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.rows = 2;
+        textarea.placeholder = placeholder;
+        container.appendChild(textarea);
+
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.className = "clippy-input-buttons";
+
+        const askBtn = document.createElement("button");
+        askBtn.className = "ask-button default";
+        askBtn.textContent = askButtonText;
+        buttonsDiv.appendChild(askBtn);
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.className = "cancel-button";
+        cancelBtn.textContent = cancelButtonText;
+        buttonsDiv.appendChild(cancelBtn);
+
+        container.appendChild(buttonsDiv);
+      }
+
+      const balloonContent = container.innerHTML;
 
       this.startTalkingAnimation();
 
       return new Promise<void>((resolveQueue) => {
+        const balloonEl = this.renderer.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const askButton = balloonEl.querySelector(
+          ".ask-button",
+        ) as HTMLButtonElement;
+        const cancelButton = balloonEl.querySelector(
+          ".cancel-button",
+        ) as HTMLButtonElement;
+        const choicesList = balloonEl.querySelector(
+          ".clippy-choices",
+        ) as HTMLUListElement;
+
+        const clearBalloonTimeout = () => {
+          if (inputBalloonTimeout) {
+            clearTimeout(inputBalloonTimeout);
+            inputBalloonTimeout = null;
+          }
+        };
+
+        const handleAsk = () => {
+          const value = input.value;
+          finish(value);
+          this.renderer.balloon.close();
+        };
+
+        const handleCancel = () => {
+          finish(null);
+          this.renderer.balloon.close();
+        };
+
+        const resetBalloonTimeout = () => {
+          clearBalloonTimeout();
+          inputBalloonTimeout = window.setTimeout(() => {
+            handleCancel();
+          }, timeout);
+        };
+
+        const handleKeypress = (e: KeyboardEvent) => {
+          resetBalloonTimeout();
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleAsk();
+          }
+        };
+
+        const handleChoiceClick = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          const li = target.closest("li");
+          if (li && li.hasAttribute("data-index")) {
+            const index = parseInt(li.getAttribute("data-index") || "0");
+            finish(index);
+            this.renderer.balloon.close();
+          }
+        };
+
+        const handleFocus = () => {
+          this.startTalkingAnimation("Writing");
+        };
+        const handleBlur = () => {
+          this.startTalkingAnimation("Explain");
+          this.renderer.balloon.reposition();
+        };
+
+        const cleanup = () => {
+          clearBalloonTimeout();
+          input?.removeEventListener("keypress", handleKeypress);
+          input?.removeEventListener("focus", handleFocus);
+          input?.removeEventListener("blur", handleBlur);
+          askButton?.removeEventListener("click", handleAsk);
+          cancelButton?.removeEventListener("click", handleCancel);
+          choicesList?.removeEventListener("click", handleChoiceClick);
+        };
+
         const finish = (value: string | number | null) => {
           if (resolved) return;
           resolved = true;
@@ -749,7 +864,7 @@ export class Agent {
         };
 
         this.showHtml(balloonContent, true);
-        if (choices) {
+        if (text) {
           this.renderer.balloon.speak(
             () => {
               this.talkingAnimationName = null;
@@ -758,88 +873,13 @@ export class Agent {
                 this.core.stateManager.handleAnimationCompleted();
               }
             },
-            title,
+            text,
             true,
             true,
             false,
             true,
           );
         }
-
-        const balloonEl = this.renderer.balloon.balloonEl;
-        const input = balloonEl.querySelector(
-          "textarea",
-        ) as HTMLTextAreaElement;
-        const askButton = balloonEl.querySelector(
-          ".ask-button",
-        ) as HTMLButtonElement;
-        const cancelButton = balloonEl.querySelector(
-          ".cancel-button",
-        ) as HTMLButtonElement;
-        const choicesList = balloonEl.querySelector(
-          ".clippy-choices",
-        ) as HTMLUListElement;
-
-        const handleKeypress = (e: KeyboardEvent) => {
-          resetBalloonTimeout();
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleAsk();
-          }
-        };
-
-        const handleAsk = () => {
-          const value = input.value;
-          finish(value);
-          this.renderer.balloon.close();
-        };
-
-        const handleCancel = () => {
-          finish(null);
-          this.renderer.balloon.close();
-        };
-
-        const handleChoiceClick = (e: MouseEvent) => {
-          const target = e.target as HTMLElement;
-          const li = target.closest("li");
-          if (li && li.hasAttribute("data-index")) {
-            const index = parseInt(li.getAttribute("data-index") || "0");
-            finish(index);
-            this.renderer.balloon.close();
-          }
-        };
-
-        const handleFocus = () => {
-          this.startTalkingAnimation("Writing");
-        };
-        const handleBlur = () => {
-          this.startTalkingAnimation("Explain");
-          this.renderer.balloon.reposition();
-        };
-
-        const resetBalloonTimeout = () => {
-          clearBalloonTimeout();
-          inputBalloonTimeout = window.setTimeout(() => {
-            handleCancel();
-          }, timeout);
-        };
-
-        const clearBalloonTimeout = () => {
-          if (inputBalloonTimeout) {
-            clearTimeout(inputBalloonTimeout);
-            inputBalloonTimeout = null;
-          }
-        };
-
-        const cleanup = () => {
-          clearBalloonTimeout();
-          input?.removeEventListener("keypress", handleKeypress);
-          input?.removeEventListener("focus", handleFocus);
-          input?.removeEventListener("blur", handleBlur);
-          askButton?.removeEventListener("click", handleAsk);
-          cancelButton?.removeEventListener("click", handleCancel);
-          choicesList?.removeEventListener("click", handleChoiceClick);
-        };
 
         if (input) {
           input.focus();

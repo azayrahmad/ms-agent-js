@@ -105,15 +105,22 @@ export class AgentRenderer {
         min-width: 100px;
         user-select: none;
       }
+      .clippy-balloon-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .clippy-balloon-text {
+        display: block;
+      }
       .clippy-input {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 5px;
       }
-      .clippy-input b {
+      .clippy-input .clippy-balloon-title {
         align-self: flex-start;
-        margin-bottom: 5px;
       }
       .clippy-input textarea {
         width: 100%;

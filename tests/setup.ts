@@ -179,6 +179,27 @@ export const setupGlobals = (mockDefinition?: any) => {
         offsetWidth: 100,
         offsetHeight: 100,
         childNodes: [],
+        _innerHTML: '',
+        get innerHTML() {
+          if (this._innerHTML) return this._innerHTML;
+          let html = '';
+          (this.childNodes || []).forEach((node: any) => {
+            if (node.nodeName === '#text') {
+              html += node.textContent;
+            } else {
+              const tag = node.nodeName.toLowerCase();
+              let attrs = '';
+              if (node.className) attrs += ` class="${node.className}"`;
+              if (node.placeholder) attrs += ` placeholder="${node.placeholder}"`;
+              if (node.rows) attrs += ` rows="${node.rows}"`;
+              html += `<${tag}${attrs}>${node.innerHTML || node.textContent || ''}</${tag}>`;
+            }
+          });
+          return html;
+        },
+        set innerHTML(v) {
+          this._innerHTML = v;
+        }
       };
 
       if (tag === 'canvas') {
