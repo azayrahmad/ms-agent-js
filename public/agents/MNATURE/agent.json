@@ -18398,52 +18398,52 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "�������",
-        "description": "����� ������� �������� �������� ��� ����� ���� ������� ��� ����� ������ �� ������ɡ ��� ����� �� ����� �� ����.",
+        "name": "'''''''",
+        "description": "''''' ''''''' '''''''' '''''''' ''' ''''' '''' ''''''' ''' ''''' '''''' '' ''''''ɡ ''' ''''' '' ''''' '' ''''.",
         "greetings": [
-          "����� ������. ��� ���� �� ������ ��� �� ��� �� ��� �������̡ �� ���� ��� ����� ����."
+          "''''' ''''''. ''' '''' '' '''''' ''' '' ''' '' ''' '''''''̡ '' '''' ''' ''''' ''''."
         ],
         "reminders": [
-          "��� ����� ���� �� ������ ����.",
-          "�� ������.",
-          "��� ��� �����."
+          "''' ''''' '''' '' '''''' ''''.",
+          "'' ''''''.",
+          "''' ''' '''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "�ڤۤ��P",
-        "description": "�N���۵M���o�A�N�p�P�Ʊ椧�F�Υi�R�����A�o���ѤF�̿ˤ����A�ȡC",
+        "name": "'ڤۤ''P",
+        "description": "'N'''۵M'''o'A'N'p'P'Ʊ椧'F'Υi'R'''''A'o'''ѤF'̿ˤ''''A'ȡC",
         "greetings": [
-          "�w����{�I�p�G�ݭn�������U�A�u�n�����V�ڤ@�U�Y�i�C"
+          "'w''''{'I'p'G'ݭn'''''''U'A'u'n'''''V'ڤ@'U'Y'i'C"
         ],
         "reminders": [
-          "�ڷ|�H�ɴ����z��I",
-          "�ɫJ��F�I",
-          "�ɶ��v�g��F�I"
+          "'ڷ|'H'ɴ''''z''I",
+          "'ɫJ''F'I",
+          "'ɶ''v'g''F'I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
-        "name": "Matka P��roda",
-        "description": "Matka P��roda rad� a napom�h�, zat�mco se prom��uje v ruzn� p��rodn� objekty, jako je holubice, sopka �i kv�tina.",
+        "name": "Matka P''roda",
+        "description": "Matka P''roda rad' a napom'h', zat'mco se prom''uje v ruzn' p''rodn' objekty, jako je holubice, sopka 'i kv'tina.",
         "greetings": [
-          "V�tejte. Pot�ebujete-li poradit s jakoukoliv ��st� tohoto programu, klepn�te na m�."
+          "V'tejte. Pot'ebujete-li poradit s jakoukoliv ''st' tohoto programu, klepn'te na m'."
         ],
         "reminders": [
-          "P��li jste si upozornit na toto.",
-          "Nastal �as.",
-          "Nade�el ten spr�vn� okam�ik."
+          "P''li jste si upozornit na toto.",
+          "Nastal 'as.",
+          "Nade'el ten spr'vn' okam'ik."
         ]
       },
       {
         "languageCode": "0x0406",
         "locale": {},
         "name": "Moder Jord",
-        "description": "Moder Jord kan forvandle sig til en due, en vulkan eller en blomst, mens hun venligt hj�lper og vejleder dig.",
+        "description": "Moder Jord kan forvandle sig til en due, en vulkan eller en blomst, mens hun venligt hj'lper og vejleder dig.",
         "greetings": [
-          "Velkommen. Hvis du �nsker hj�lp til noget i dette program, skal du blot klikke p� mig."
+          "Velkommen. Hvis du 'nsker hj'lp til noget i dette program, skal du blot klikke p' mig."
         ],
         "reminders": [
           "Du bad mig minde dig om dette.",
@@ -18455,9 +18455,9 @@
         "languageCode": "0x0407",
         "locale": {},
         "name": "Mutter Natur",
-        "description": "Mutter Natur wird Sie mit der Weisheit von Jahrhunderten bei der Erf�llung Ihrer Aufgaben unterst�tzen.",
+        "description": "Mutter Natur wird Sie mit der Weisheit von Jahrhunderten bei der Erf'llung Ihrer Aufgaben unterst'tzen.",
         "greetings": [
-          "Willkommen. Klicken Sie mich einfach an, wenn Sie Hilfe mit diesem Programm w�nschen."
+          "Willkommen. Klicken Sie mich einfach an, wenn Sie Hilfe mit diesem Programm w'nschen."
         ],
         "reminders": [
           "Sie hatten den Wunsch, an folgendes erinnert zu werden:",
@@ -18468,15 +18468,15 @@
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "����",
-        "description": "����������������� �� ������� ��� �� ����������, ���� ��� ���������, ��� ��������� � ��� ��������, � ���� ��� ��������� ���������� ������� ��� ����������.",
+        "name": "''''",
+        "description": "''''''''''''''''' '' ''''''' ''' '' '''''''''', '''' ''' ''''''''', ''' ''''''''' ' ''' '''''''', ' '''' ''' ''''''''' '''''''''' ''''''' ''' ''''''''''.",
         "greetings": [
-          "���� ���. ��� ����������� ������� ��� ����������� ���� ����� ��� ������������, ���� ����� ��� ����."
+          "'''' '''. ''' ''''''''''' ''''''' ''' ''''''''''' '''' ''''' ''' '''''''''''', '''' ''''' ''' ''''."
         ],
         "reminders": [
-          "������ ������� �� ��� ����� ���������� ��� ����.",
-          "����� ���.",
-          "������ � ���."
+          "'''''' ''''''' '' ''' ''''' '''''''''' ''' ''''.",
+          "''''' '''.",
+          "'''''' ' '''."
         ]
       },
       {
@@ -18496,13 +18496,13 @@
       {
         "languageCode": "0x040b",
         "locale": {},
-        "name": "Luonto�iti",
-        "description": "Luonto�iti opastaa lempe�sti esimerkiksi kyyhkysen, tulivuoren ja kukan muodossa.",
+        "name": "Luonto'iti",
+        "description": "Luonto'iti opastaa lempe'sti esimerkiksi kyyhkysen, tulivuoren ja kukan muodossa.",
         "greetings": [
           "Tervetuloa. Jos haluat ohjeita jostakin ohjelman osasta, napsauta minua."
         ],
         "reminders": [
-          "Halusit, ett� muistutan sinua t�st�.",
+          "Halusit, ett' muistutan sinua t'st'.",
           "On aika.",
           "Aika on tullut."
         ]
@@ -18510,85 +18510,85 @@
       {
         "languageCode": "0x040c",
         "locale": {},
-        "name": "M�re Nature",
-        "description": "Qu'elle prenne l'apparence d'une fleur, d'un volcan ou d'une colombe, M�re Nature utilisera sa sagesse mill�naire pour vous guider dans l'accomplissement de vos t�ches.",
+        "name": "M're Nature",
+        "description": "Qu'elle prenne l'apparence d'une fleur, d'un volcan ou d'une colombe, M're Nature utilisera sa sagesse mill'naire pour vous guider dans l'accomplissement de vos t'ches.",
         "greetings": [
-          "Bienvenue. Si certains �l�ments de ce logiciel vous paraissent encore obscurs, faites appel � mes connaissances."
+          "Bienvenue. Si certains 'l'ments de ce logiciel vous paraissent encore obscurs, faites appel ' mes connaissances."
         ],
         "reminders": [
-          "Vous m'avez demand� de vous rappeler ceci.",
-          "C'est l'heure�!",
-          "C'est l'heure�!"
+          "Vous m'avez demand' de vous rappeler ceci.",
+          "C'est l'heure'!",
+          "C'est l'heure'!"
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "��� ����",
-        "description": "��� ���� ����� ������� ������� ����� ����, ���� �����, �� ���� �����, ������ ������� ���� ������.",
+        "name": "''' ''''",
+        "description": "''' '''' ''''' ''''''' ''''''' ''''' '''', '''' ''''', '' '''' ''''', '''''' ''''''' '''' ''''''.",
         "greetings": [
-          "���� ���. �� ������ ���� ���� ���� ���� ����� �� ������ ��, ���� ��� ���."
+          "'''' '''. '' '''''' '''' '''' '''' '''' ''''' '' '''''' '', '''' ''' '''."
         ],
         "reminders": [
-          "����� ������ ���� ���� ��.",
-          "�� ����.",
-          "���� ����."
+          "''''' '''''' '''' '''' ''.",
+          "'' ''''.",
+          "'''' ''''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Gl�busz",
-        "description": "Az �vmilli�k alatt felhalmozott tud�st bocs�tja rendelkez�s�re, ha k�ri.",
+        "name": "Gl'busz",
+        "description": "Az 'vmilli'k alatt felhalmozott tud'st bocs'tja rendelkez's're, ha k'ri.",
         "greetings": [
-          "K�sz�nt�m. Ha ennek a programnak b�rmely vonatkoz�s�ban seg�ts�gre van sz�ks�ge, kattintson r�m."
+          "K'sz'nt'm. Ha ennek a programnak b'rmely vonatkoz's'ban seg'ts'gre van sz'ks'ge, kattintson r'm."
         ],
         "reminders": [
-          "Azt k�v�nta, hogy erre eml�keztessem.",
-          "Itt az id�.",
-          "Elj�tt az id�."
+          "Azt k'v'nta, hogy erre eml'keztessem.",
+          "Itt az id'.",
+          "Elj'tt az id'."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Madre Natura",
-        "description": "Si trasformer� in colomba, fiore o vulcano e vi offrir� il suo aiuto con cortesia.",
+        "description": "Si trasformer' in colomba, fiore o vulcano e vi offrir' il suo aiuto con cortesia.",
         "greetings": [
           "Per qualsiasi informazione sul programma, fate clic con il mouse sulla mia immagine."
         ],
         "reminders": [
           "Come richiesto, ecco il promemoria.",
-          "� ora.",
+          "' ora.",
           "Ci siamo!"
         ]
       },
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "�}�U�[ �l�C�`���[",
-        "description": "�}�U�[ �l�C�`���[�́A���A�ΎR�A�ԂȂǂ̎��R�̂��̂Ɏp��ς��Ȃ���A�D�����K�C�h���܂��B",
+        "name": "'}'U'[ 'l'C'`'''[",
+        "description": "'}'U'[ 'l'C'`'''['́A'''A'ΎR'A'ԂȂǂ̎''R'̂''̂Ɏp''ς''Ȃ'''A'D'''''K'C'h'''܂''B",
         "greetings": [
-          "�悤�����B����ŕ�����Ȃ����Ƃ�����܂�����A�����N���b�N���Ă��������B"
+          "'悤'''''B''''ŕ'''''Ȃ''''Ƃ'''''܂'''''A'''''N'''b'N'''Ă''''''''B"
         ],
         "reminders": [
-          "���m�点����悤�Ɍ����܂����̂ŁB",
-          "�����Ԃł��B",
-          "�A���[���ł��B"
+          "'''m'点''''悤'Ɍ''''܂''''̂ŁB",
+          "'''''Ԃł''B",
+          "'A'''['''ł''B"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "������",
-        "description": "�������� ��ѱ⳪ ��ȭ��, �ɰ� ���� �̹����� ��ȭ�ϸ鼭 ģ���ϰ� �����ְ� �ȳ��� �ݴϴ�.",
+        "name": "''''''",
+        "description": "'''''''' ''ѱ⳪ ''ȭ'', 'ɰ' '''' '̹''''' ''ȭ'ϸ鼭 ģ'''ϰ' '''''ְ' 'ȳ''' 'ݴϴ'.",
         "greetings": [
-          "�����մϴ�. �� ���α׷��� ��� �������� ������ �ʿ��ϸ� ���� ���� �����⸸ �ϼ���."
+          "'''''մϴ'. '' '''α׷''' ''' '''''''' '''''' 'ʿ''ϸ' '''' '''' '''''⸸ 'ϼ'''."
         ],
         "reminders": [
-          "�̰� ����� �޶�� �ϼ̽��ϴ�",
-          "�ð��� �ƾ��.",
-          "�ð��� �Ǿ����ϴ�."
+          "'̰' ''''' '޶'' 'ϼ̽''ϴ'",
+          "'ð''' 'ƾ''.",
+          "'ð''' 'Ǿ''''ϴ'."
         ]
       },
       {
@@ -18609,12 +18609,12 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Moder Jord",
-        "description": "Moder Jord vil gi deg hjelp og veiledning med varsom h�nd, mens hun rolig transformeres til naturbilder som en due, en vulkan eller en blomst.",
+        "description": "Moder Jord vil gi deg hjelp og veiledning med varsom h'nd, mens hun rolig transformeres til naturbilder som en due, en vulkan eller en blomst.",
         "greetings": [
-          "Velkommen! Hvis du �nsker hjelp med noe i dette programmet, bare klikk meg."
+          "Velkommen! Hvis du 'nsker hjelp med noe i dette programmet, bare klikk meg."
         ],
         "reminders": [
-          "Du �nsket � bli minnet p� dette.",
+          "Du 'nsket ' bli minnet p' dette.",
           "Tiden er inne."
         ]
       },
@@ -18622,13 +18622,13 @@
         "languageCode": "0x0415",
         "locale": {},
         "name": "Matka Natura",
-        "description": "Przekszta�caj�ca si� w swe dzie�a, Matka Natura �agodnie udziela pomocy i wskaz�wek.",
+        "description": "Przekszta'caj'ca si' w swe dzie'a, Matka Natura 'agodnie udziela pomocy i wskaz'wek.",
         "greetings": [
-          "Witaj. Je�li �yczysz sobie uzyska� pomoc na dowolny temat zwi�zany z programem, po prostu mnie kliknij."
+          "Witaj. Je'li 'yczysz sobie uzyska' pomoc na dowolny temat zwi'zany z programem, po prostu mnie kliknij."
         ],
         "reminders": [
-          "Zgodnie z Twoim �yczeniem, mam Ci przypomnie�:",
-          "Czas ju�...",
+          "Zgodnie z Twoim 'yczeniem, mam Ci przypomnie':",
+          "Czas ju'...",
           "Nadchodzi czas..."
         ]
       },
@@ -18636,26 +18636,26 @@
         "languageCode": "0x0416",
         "locale": {},
         "name": "Natureza",
-        "description": "Transformando-se em pombas, vulc�es e flores, a Natureza oferece ajuda e orienta��o.",
+        "description": "Transformando-se em pombas, vulc'es e flores, a Natureza oferece ajuda e orienta''o.",
         "greetings": [
           "Bem-vindo. Se precisar de ajuda sobre qualquer aspecto deste programa, clique em mim."
         ],
         "reminders": [
-          "Voc� pediu para ser lembrado disto.",
-          "Est� na hora.",
+          "Voc' pediu para ser lembrado disto.",
+          "Est' na hora.",
           "Aqui vai o seu lembrete."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
-        "name": "Mama Natur�",
-        "description": "�n timp ce se transform� �n imagini din natur�, cum ar fi un porumbel, un vulcan sau o floare, Mama Natur� v� ofer� un ajutor amabil �i v� este c�l�uz�.",
+        "name": "Mama Natur'",
+        "description": "'n timp ce se transform' 'n imagini din natur', cum ar fi un porumbel, un vulcan sau o floare, Mama Natur' v' ofer' un ajutor amabil 'i v' este c'l'uz'.",
         "greetings": [
-          "Bun venit! Dac� ave�i nevoie de ajutor pentru orice aspect al acestui program, face�i un simplu clic pe mine."
+          "Bun venit! Dac' ave'i nevoie de ajutor pentru orice aspect al acestui program, face'i un simplu clic pe mine."
         ],
         "reminders": [
-          "A�i dorit s� vi se reaminteasc� acest lucru.",
+          "A'i dorit s' vi se reaminteasc' acest lucru.",
           "A venit vremea.",
           "A sosit timpul."
         ]
@@ -18663,99 +18663,99 @@
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "������� �����",
-        "description": "������� �����, ���������� � ������ ��������� �������,  ������ �������� �� ������. ",
+        "name": "''''''' '''''",
+        "description": "''''''' ''''', '''''''''' ' '''''' ''''''''' ''''''',  '''''' '''''''' '' ''''''. ",
         "greetings": [
-          "����� ����������. ���� �� ������ ������ ���-������ �� ���� ���������, �������� ��� ������."
+          "''''' ''''''''''. '''' '' '''''' '''''' '''-'''''' '' '''' ''''''''', '''''''' ''' ''''''."
         ],
         "reminders": [
-          "�� ������� ��������� �� ����.",
-          "������ ����� �����.",
-          "������� �����."
+          "'' ''''''' ''''''''' '' ''''.",
+          "'''''' ''''' '''''.",
+          "''''''' '''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "Majka priroda",
-        "description": "Mijenjaju�i se u prirodne likove, kao �to su golubica, vulkan i cvijet, Majka priroda osigurava umjerenu pomo� i vodstvo.",
+        "description": "Mijenjaju'i se u prirodne likove, kao 'to su golubica, vulkan i cvijet, Majka priroda osigurava umjerenu pomo' i vodstvo.",
         "greetings": [
-          "Dobro do�li! �elite li pomo� za koji dio ovog programa, jednostavno me pritisnite."
+          "Dobro do'li! 'elite li pomo' za koji dio ovog programa, jednostavno me pritisnite."
         ],
         "reminders": [
-          "�eljeli ste da vas podsjetim na to.",
+          "'eljeli ste da vas podsjetim na to.",
           "Vrijeme je.",
-          "Do�lo je vrijeme."
+          "Do'lo je vrijeme."
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
-        "name": "Matka pr�roda",
-        "description": "Matka pr�roda dok�e nielen meni� svoju podobu na holubicu, sopku �i kvet, ale aj nevtieravo pom�c� a poradi�.",
+        "name": "Matka pr'roda",
+        "description": "Matka pr'roda dok'e nielen meni' svoju podobu na holubicu, sopku 'i kvet, ale aj nevtieravo pom'c' a poradi'.",
         "greetings": [
-          "Vitajte! Ak by ste si �elali pom�c� s niektorou �as�ou tohto programu, sta�i na m�a klikn��."
+          "Vitajte! Ak by ste si 'elali pom'c' s niektorou 'as'ou tohto programu, sta'i na m'a klikn''."
         ],
         "reminders": [
-          "Priali ste si aby som v�m pripomenula toto.",
-          "Nastal �as.",
-          "Nastala t� prav� chv��a."
+          "Priali ste si aby som v'm pripomenula toto.",
+          "Nastal 'as.",
+          "Nastala t' prav' chv''a."
         ]
       },
       {
         "languageCode": "0x041d",
         "locale": {},
         "name": "Moder Jord",
-        "description": "Medan hon f�rvandlar sig till olika f�reteelser i naturen s�som duvan, vulkanen och blomman bist�r Moder Jord med v�nlig hj�lp och v�gledning.",
+        "description": "Medan hon f'rvandlar sig till olika f'reteelser i naturen s'som duvan, vulkanen och blomman bist'r Moder Jord med v'nlig hj'lp och v'gledning.",
         "greetings": [
-          "V�lkommen. �nskar du hj�lp i n�gon form med programmet klickar du bara p� mig."
+          "V'lkommen. 'nskar du hj'lp i n'gon form med programmet klickar du bara p' mig."
         ],
         "reminders": [
-          "Du �nskade bli p�mind om detta.",
-          "Det �r dags.",
-          "Tiden �r inne."
+          "Du 'nskade bli p'mind om detta.",
+          "Det 'r dags.",
+          "Tiden 'r inne."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "��þ��觸����ҵ�",
-        "description": "��þ��觸����ҵ� ���������ö�ŧ����ͧ�ҡ�����ҵ���繹����Һ ����� ��д͡��� ����ö�����������������Ф��йӷ��յ�ͤس��",
+        "name": "''þ''觸''''ҵ'",
+        "description": "''þ''觸''''ҵ' '''''''''ö'ŧ''''ͧ'ҡ'''''ҵ'''繹''''Һ ''''' ''д͡''' ''''ö'''''''''''''''''Ф''йӷ''յ'ͤس''",
         "greetings": [
-          "�Թ�յ�͹�Ѻ ��Ҥس��ͧ��ä������������ �����������ͧ� ����ԡ����ǩѹ"
+          "'Թ'յ'͹'Ѻ ''Ҥس''ͧ''ä'''''''''''' '''''''''''ͧ' ''''ԡ''''ǩѹ"
         ],
         "reminders": [
-          "�س�µ�ͧ�������ա����͹�����������ͧ���",
-          "��������ҷ���������",
-          "���ҹ�����Ҷ֧����"
+          "'س'µ'ͧ'''''''ա''''͹'''''''''''ͧ'''",
+          "''''''''ҷ'''''''''",
+          "'''ҹ'''''Ҷ֧''''"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
         "name": "Toprak Ana",
-        "description": "Bazen bir g�vercini, bazen bir volkan veya �i�e�i resme d�n��t�ren Toprak Ana, �efkatli yard�mc�n�z ve rehberinizdir.",
+        "description": "Bazen bir g'vercini, bazen bir volkan veya 'i'e'i resme d'n''t'ren Toprak Ana, 'efkatli yard'mc'n'z ve rehberinizdir.",
         "greetings": [
-          "Ho� geldiniz. Bu program�n herhangi bir �zelli�i ile ilgili yard�m isterseniz, beni t�klat�n."
+          "Ho' geldiniz. Bu program'n herhangi bir 'zelli'i ile ilgili yard'm isterseniz, beni t'klat'n."
         ],
         "reminders": [
-          "Bunun hakk�nda an�msat�lmak istediniz.",
-          "�imdi zaman�.",
-          "Zaman� geldi."
+          "Bunun hakk'nda an'msat'lmak istediniz.",
+          "'imdi zaman'.",
+          "Zaman' geldi."
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "Mati narava",
-        "description": "Spreminjajo�a se v podobe iz narave (golob, vulkan, cvetlica), vam Mati narava nudi ne�no pomo� in vodstvo.",
+        "description": "Spreminjajo'a se v podobe iz narave (golob, vulkan, cvetlica), vam Mati narava nudi ne'no pomo' in vodstvo.",
         "greetings": [
-          "Dobrodo�li. �e potrebujete pomo� v zvezi s katerim koli delom tega programa, me kliknite."
+          "Dobrodo'li. 'e potrebujete pomo' v zvezi s katerim koli delom tega programa, me kliknite."
         ],
         "reminders": [
-          "�eleli ste, da vas opomnim.",
-          "�as je ...",
-          "Pri�el je �as."
+          "'eleli ste, da vas opomnim.",
+          "'as je ...",
+          "Pri'el je 'as."
         ]
       },
       {
@@ -18775,28 +18775,28 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "������԰",
-        "description": "��������԰�����ó�������ʫ�续����Ȼ���󣬱����ƽ�롢�ٲ����ʻ����������������������꾡ʵ�õİ�����Ϣһͬ���׸�����",
+        "name": "''''''԰",
+        "description": "''''''''԰'''''ó'''''''ʫ'续''''Ȼ'''󣬱''''ƽ'롢'ٲ''''ʻ''''''''''''''''''''''꾡ʵ'õİ'''''Ϣһͬ'''׸'''''",
         "greetings": [
-          "��ӭ��ʹ����������ڹ��������У���������Ҫ�ķ���İ�������ֻ�赥���Ҿ����ˡ�"
+          "''ӭ''ʹ''''''''''ڹ''''''''У'''''''''Ҫ'ķ'''İ'''''''ֻ'赥'''Ҿ''''ˡ'"
         ],
         "reminders": [
-          "�����ҵ�������ȥ����������ˡ�",
-          "���ڵ�ʱ���ˡ�",
-          "ʱ�䵽�ˡ�"
+          "'''''ҵ'''''''ȥ''''''''''ˡ'",
+          "'''ڵ'ʱ'''ˡ'",
+          "ʱ'䵽'ˡ'"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "Natureza",
-        "description": "Transformando-se em imagens da natureza, tais como uma pomba, um vulc�o ou uma flor, a Natureza providencia amavelmente ajuda e orienta��o.",
+        "description": "Transformando-se em imagens da natureza, tais como uma pomba, um vulc'o ou uma flor, a Natureza providencia amavelmente ajuda e orienta''o.",
         "greetings": [
           "Bem-vindo. Se desejar ajuda em qualquer aspecto deste programa, basta fazer-me um clique."
         ],
         "reminders": [
           "Desejou ser lembrado disto.",
-          "Est� na hora.",
+          "Est' na hora.",
           "Chegou a hora."
         ]
       },
@@ -18804,12 +18804,12 @@
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Natura",
-        "description": "Natura utilizar� la sabidur�a acumulada a lo largo del tiempo para ayudarle en sus tareas.",
+        "description": "Natura utilizar' la sabidur'a acumulada a lo largo del tiempo para ayudarle en sus tareas.",
         "greetings": [
-          "Bienvenido. Si necesita ayuda sobre alg�n aspecto de este programa, simplemente haga clic en m�."
+          "Bienvenido. Si necesita ayuda sobre alg'n aspecto de este programa, simplemente haga clic en m'."
         ],
         "reminders": [
-          "Me pidi� que le recordara esto:",
+          "Me pidi' que le recordara esto:",
           "Ya es la hora.",
           "El momento ha llegado."
         ]

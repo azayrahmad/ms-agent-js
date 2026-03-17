@@ -10037,34 +10037,34 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "���� Office",
-        "description": "����� ���� Office �������� ������ ����� ����� ������� �������.",
+        "name": "'''' Office",
+        "description": "''''' '''' Office '''''''' '''''' ''''' ''''' ''''''' '''''''.",
         "greetings": [
-          "���� ��� ���� Office ���� ����� ��� ������."
+          "'''' ''' '''' Office '''' ''''' ''' ''''''."
         ],
         "reminders": [
-          "��� �� ������."
+          "''' '' ''''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "Office ����",
-        "description": "Office ���Ϸ|�Q��²�檺�������覡���ѱz���n�������C",
+        "name": "Office ''''",
+        "description": "Office '''Ϸ|'Q''²'檺'''''''覡'''ѱz'''n'''''''C",
         "greetings": [
-          "���z�ݭn��U�ɡA�u�n���@�U Office ���ϧY�i�C"
+          "'''z'ݭn''U'ɡA'u'n'''@'U Office '''ϧY'i'C"
         ],
         "reminders": [
-          "�z�����ܦb�o��I"
+          "'z'''''ܦb'o''I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "Logo Office",
-        "description": "P�i poskytov�n� n�pov�dy je Logo Office velice klidn�. Nebude proto rozptylovat va�i soust�ed�nost na pr�ci.",
+        "description": "P'i poskytov'n' n'pov'dy je Logo Office velice klidn'. Nebude proto rozptylovat va'i soust'ed'nost na pr'ci.",
         "greetings": [
-          "Klepn�te na Logo Office kdykoliv budete pot�ebovat poradit."
+          "Klepn'te na Logo Office kdykoliv budete pot'ebovat poradit."
         ],
         "reminders": [
           "A je to tady."
@@ -10074,19 +10074,19 @@
         "languageCode": "0x0406",
         "locale": {},
         "name": "Office-logoet",
-        "description": "Office-logoet giver dig hj�lp uden andre effekter end de farvede elementer, der drejer rundt. Det vil ikke forstyrre dig i dit arbejde.",
+        "description": "Office-logoet giver dig hj'lp uden andre effekter end de farvede elementer, der drejer rundt. Det vil ikke forstyrre dig i dit arbejde.",
         "greetings": [
-          "Klik p� Office-logoet, n�r du har brug for hj�lp."
+          "Klik p' Office-logoet, n'r du har brug for hj'lp."
         ],
         "reminders": [
-          "Her er p�mindelsen."
+          "Her er p'mindelsen."
         ]
       },
       {
         "languageCode": "0x0407",
         "locale": {},
         "name": "Office Logo",
-        "description": "Das Office-Logo mit seinen sich drehenden, farbigen Puzzleteilen begleitet Sie durch Ihre t�glichen Aufgaben, ohne Sie von Ihrer Arbeit abzulenken.",
+        "description": "Das Office-Logo mit seinen sich drehenden, farbigen Puzzleteilen begleitet Sie durch Ihre t'glichen Aufgaben, ohne Sie von Ihrer Arbeit abzulenken.",
         "greetings": [
           "Wenn Sie Hilfe brauchen, klicken Sie auf das Office-Logo."
         ],
@@ -10097,13 +10097,13 @@
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "�������� ��� Office",
-        "description": "�� �������� ��� Office ��� ��������� �� ������� ���, ���� �� ��� ���� ���������� ��� ����������� �������� ���. ��� �� ��� ������ ��� ������� ����� �� ���������� ��� ������� ���.",
+        "name": "'''''''' ''' Office",
+        "description": "'' '''''''' ''' Office ''' ''''''''' '' ''''''' ''', '''' '' ''' '''' '''''''''' ''' ''''''''''' '''''''' '''. ''' '' ''' '''''' ''' ''''''' ''''' '' '''''''''' ''' ''''''' '''.",
         "greetings": [
-          "����� ���������� �������, ������ ���� ��� �������� ��� Office."
+          "''''' '''''''''' ''''''', '''''' '''' ''' '''''''' ''' Office."
         ],
         "reminders": [
-          "���� ����� � ���������� ���."
+          "'''' ''''' ' '''''''''' '''."
         ]
       },
       {
@@ -10122,21 +10122,21 @@
         "languageCode": "0x040b",
         "locale": {},
         "name": "Office-logo",
-        "description": "V�rik�s Office-logo auttaa sovittamaan palaset yhteen.",
+        "description": "V'rik's Office-logo auttaa sovittamaan palaset yhteen.",
         "greetings": [
           "Kun tarvitset ohjeita, napsauta Office-logoa."
         ],
         "reminders": [
-          "Muistin virkist�miseksi."
+          "Muistin virkist'miseksi."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
         "name": "Logo Office",
-        "description": "Le logo Office n'a pas beaucoup de personnalit�, mais il sera un compagnon id�al si vous ne voulez pas �tre perturb� pendant votre travail.",
+        "description": "Le logo Office n'a pas beaucoup de personnalit', mais il sera un compagnon id'al si vous ne voulez pas 'tre perturb' pendant votre travail.",
         "greetings": [
-          "� chaque fois que vous avez besoin d'aide, cliquez sur le Logo Office.�"
+          "' chaque fois que vous avez besoin d'aide, cliquez sur le Logo Office.'"
         ],
         "reminders": [
           "Voici votre rappel."
@@ -10145,32 +10145,32 @@
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "��� Office",
-        "description": "��� Office ���� �� ���� ��� ����� ���� �� ������ ��������� ���.",
+        "name": "''' Office",
+        "description": "''' Office '''' '' '''' ''' ''''' '''' '' '''''' ''''''''' '''.",
         "greetings": [
-          "��� �� ��� Office ��� ��� ���� ���� �����."
+          "''' '' ''' Office ''' ''' '''' '''' '''''."
         ],
         "reminders": [
-          "��� ������� ���."
+          "''' ''''''' '''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Office Embl�ma",
-        "description": "Office Embl�ma - a megfontolt �s komoly d�nt�shoz�k seg�t�t�rsa.",
+        "name": "Office Embl'ma",
+        "description": "Office Embl'ma - a megfontolt 's komoly d'nt'shoz'k seg't't'rsa.",
         "greetings": [
-          "Kattintson az Office Embl�m�ra, ha seg�ts�gre van sz�ks�ge."
+          "Kattintson az Office Embl'm'ra, ha seg'ts'gre van sz'ks'ge."
         ],
         "reminders": [
-          "Eml�keztet�."
+          "Eml'keztet'."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Logo Office animato",
-        "description": "Il logo Office animato vi aiuter� mentre gira su se stesso.",
+        "description": "Il logo Office animato vi aiuter' mentre gira su se stesso.",
         "greetings": [
           "Fare clic sul logo Office animato ogni volta che si desidera il suo aiuto."
         ],
@@ -10181,25 +10181,25 @@
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "Office ���S",
-        "description": "���邭���]���Ȃ���A�K�v�ȃw���v��T���܂��B",
+        "name": "Office '''S",
+        "description": "'''邭''']'''Ȃ'''A'K'v'ȃw'''v''T'''܂''B",
         "greetings": [
-          "�w���v���Q�Ƃ������Ƃ��́A���S���N���b�N���Ă��������B"
+          "'w'''v'''Q'Ƃ''''''Ƃ''́A'''S'''N'''b'N'''Ă''''''''B"
         ],
         "reminders": [
-          "�v���o�����H"
+          "'v'''o'''''H"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "Office �ΰ�",
-        "description": "�������� ������� Office �ΰ��� ������ ���� �帳�ϴ�.",
+        "name": "Office 'ΰ'",
+        "description": "'''''''' ''''''' Office 'ΰ''' '''''' '''' '帳'ϴ'.",
         "greetings": [
-          "������ �ʿ��� ���� Office �ΰ��� �����ּ���."
+          "'''''' 'ʿ''' '''' Office 'ΰ''' '''''ּ'''."
         ],
         "reminders": [
-          "������ ����Ͻ�����?"
+          "'''''' ''''Ͻ'''''?"
         ]
       },
       {
@@ -10220,19 +10220,19 @@
         "name": "Office-logo",
         "description": "Den fargesprakende Office-logoen spinner rundt og hjelper deg, men den forstyrrer deg ikke i arbeidet.",
         "greetings": [
-          "Klikk Office-logoen n�r du trenger hjelp."
+          "Klikk Office-logoen n'r du trenger hjelp."
         ],
         "reminders": [
-          "Her er p�minnelsen."
+          "Her er p'minnelsen."
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "Logo Office",
-        "description": "Logo Office wesprze Ci� w kalejdoskopie swych barwnych element�w. Nie przeszkodzi Ci to w skutecznej pracy.",
+        "description": "Logo Office wesprze Ci' w kalejdoskopie swych barwnych element'w. Nie przeszkodzi Ci to w skutecznej pracy.",
         "greetings": [
-          "Kliknij logo Office zawsze, kiedy b�dziesz potrzebowa� pomocy."
+          "Kliknij logo Office zawsze, kiedy b'dziesz potrzebowa' pomocy."
         ],
         "reminders": [
           "Oto Twoje przypomnienie:"
@@ -10242,57 +10242,57 @@
         "languageCode": "0x0416",
         "locale": {},
         "name": "Office Logo",
-        "description": "Mesmo brincando com as suas cores, o Office Logo oferece ajuda sem distra�-lo.",
+        "description": "Mesmo brincando com as suas cores, o Office Logo oferece ajuda sem distra'-lo.",
         "greetings": [
           "Sempre que precisar, clique no Office Logo."
         ],
         "reminders": [
-          "Aqui est� o seu lembrete."
+          "Aqui est' o seu lembrete."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "Sigla Office",
-        "description": "Sigla Office v� ofer� ajutor �mpreun� cu o simpl� rotire a pieselor ei colorate.",
+        "description": "Sigla Office v' ofer' ajutor 'mpreun' cu o simpl' rotire a pieselor ei colorate.",
         "greetings": [
-          "Face�i clic pe sigla Office ori de c�te ori ave�i nevoie de ajutor."
+          "Face'i clic pe sigla Office ori de c'te ori ave'i nevoie de ajutor."
         ],
         "reminders": [
-          "Iat� memento-ul."
+          "Iat' memento-ul."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "������� Office",
-        "description": "������� Office ������������ ������ ������� ����� �������� ����������.",
+        "name": "''''''' Office",
+        "description": "''''''' Office '''''''''''' '''''' ''''''' ''''' '''''''' ''''''''''.",
         "greetings": [
-          "��� ������ ��� ����������� �������, �������� ������� Office."
+          "''' '''''' ''' ''''''''''' ''''''', '''''''' ''''''' Office."
         ],
         "reminders": [
-          "�����������."
+          "'''''''''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "Office Logo",
-        "description": "Office Logo poma�e vam uz pratnju jednostavne vrtnje svojih obojenih dijelova.",
+        "description": "Office Logo poma'e vam uz pratnju jednostavne vrtnje svojih obojenih dijelova.",
         "greetings": [
-          "Pritisnite Office Logo kad god vam zatreba pomo�."
+          "Pritisnite Office Logo kad god vam zatreba pomo'."
         ],
         "reminders": [
-          "Ovdje je va� podsjetnik."
+          "Ovdje je va' podsjetnik."
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
         "name": "Logo Office",
-        "description": "Logo Office v�m pom��e jednoduch�m oto�en�m svojich farebn�ch �ast� a nebude odv�dza� va�u pozornos� od pr�ce.",
+        "description": "Logo Office v'm pom''e jednoduch'm oto'en'm svojich farebn'ch 'ast' a nebude odv'dza' va'u pozornos' od pr'ce.",
         "greetings": [
-          "Kliknite na logo Office v�dy ke� budete potrebova� poradi�."
+          "Kliknite na logo Office v'dy ke' budete potrebova' poradi'."
         ],
         "reminders": [
           "Tak a je to tu."
@@ -10302,48 +10302,48 @@
         "languageCode": "0x041d",
         "locale": {},
         "name": "Office-logon",
-        "description": "Office-logon ger dig hj�lp, ackompanjerad av en stilla piruett. ",
+        "description": "Office-logon ger dig hj'lp, ackompanjerad av en stilla piruett. ",
         "greetings": [
-          "Klicka p� Office-logon n�r du beh�ver hj�lp."
+          "Klicka p' Office-logon n'r du beh'ver hj'lp."
         ],
         "reminders": [
-          "H�r �r din p�minnelse."
+          "H'r 'r din p'minnelse."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "Office ���",
-        "description": "Office ��� �������������������س ������Ѻ�����ع�ͺ����ͧ",
+        "name": "Office '''",
+        "description": "Office ''' '''''''''''''''''''س ''''''Ѻ'''''ع'ͺ''''ͧ",
         "greetings": [
-          "��ԡ��� Office ��� ������á������س��ͧ��ä������������"
+          "''ԡ''' Office ''' ''''''á''''''س''ͧ''ä''''''''''''"
         ],
         "reminders": [
-          "����͵����͹�ͧ�س"
+          "''''͵''''͹'ͧ'س"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
         "name": "Office Logo",
-        "description": "Office Logo, renkli par�alar�n� ���ldatarak size yard�m eder.",
+        "description": "Office Logo, renkli par'alar'n' '''ldatarak size yard'm eder.",
         "greetings": [
-          "Yard�ma gerek duydu�unuzda Office Logo'yu t�klat�n."
+          "Yard'ma gerek duydu'unuzda Office Logo'yu t'klat'n."
         ],
         "reminders": [
-          "��te an�msat�c�n�z."
+          "''te an'msat'c'n'z."
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "Officeov logotip",
-        "description": "Pomo� Officeovega logotipa spremlja vrtenje njegovih delov.",
+        "description": "Pomo' Officeovega logotipa spremlja vrtenje njegovih delov.",
         "greetings": [
-          "Ko potrebujete pomo�, kliknite Officeov logotip."
+          "Ko potrebujete pomo', kliknite Officeov logotip."
         ],
         "reminders": [
-          "Tukaj je va� opomin."
+          "Tukaj je va' opomin."
         ]
       },
       {
@@ -10361,32 +10361,32 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "���ɰ�",
-        "description": "�����ɰ塱������Ϊ���ṩ���������������ͷ׵�ɫ����������ҫ�����������ˡ�",
+        "name": "'''ɰ'",
+        "description": "'''''ɰ塱''''''Ϊ'''ṩ'''''''''''''''ͷ׵'ɫ''''''''''ҫ'''''''''''ˡ'",
         "greetings": [
-          "�������Ҫ�������͵��������ɰ塱�ɡ�"
+          "'''''''Ҫ'''''''͵''''''''ɰ塱'ɡ'"
         ],
         "reminders": [
-          "����������һ�¡�"
+          "''''''''''һ'¡'"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
-        "name": "Log�tipo do Office",
-        "description": "O Log�tipo do Office fornece ajuda acompanhada de uma simples rota��o das suas pe�as coloridas.",
+        "name": "Log'tipo do Office",
+        "description": "O Log'tipo do Office fornece ajuda acompanhada de uma simples rota''o das suas pe'as coloridas.",
         "greetings": [
-          "Fa�a clique sobre o Log�tipo do Office para obter ajuda."
+          "Fa'a clique sobre o Log'tipo do Office para obter ajuda."
         ],
         "reminders": [
-          "Aqui est� o seu lembrete."
+          "Aqui est' o seu lembrete."
         ]
       },
       {
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Logotipo de Office",
-        "description": "El Logotipo de Office le ayudar� al tiempo que gira sus piezas de colores.",
+        "description": "El Logotipo de Office le ayudar' al tiempo que gira sus piezas de colores.",
         "greetings": [
           "Haga clic en el logotipo de Office cuando necesite ayuda."
         ],

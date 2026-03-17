@@ -26529,60 +26529,60 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "�����",
-        "description": "��� ���� �� ���ɡ ���� �� �����. ��� ����� ��� ������ �� Office� �� ������� �����.",
+        "name": "'''''",
+        "description": "''' '''' '' '''ɡ '''' '' '''''. ''' ''''' ''' '''''' '' Office' '' ''''''' '''''.",
         "greetings": [
-          "�� ���� ���� ���� ���� �� �� �������.",
-          "�� �� ����ɿ ����͡ ��� ���� �� ����.",
-          "�� ���� ����ޡ ��� ����� ��� Office ������� ������."
+          "'' '''' '''' '''' '''' '' '' '''''''.",
+          "'' '' ''''ɿ ''''͡ ''' '''' '' ''''.",
+          "'' '''' ''''ޡ ''' ''''' ''' Office ''''''' ''''''."
         ],
         "reminders": [
-          "��� �� ������.",
-          "��� ���� ��� ������ ����� ���."
+          "''' '' ''''''.",
+          "''' '''' ''' '''''' ''''' '''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
         "name": "Rocky",
-        "description": "�p�G�z�ݭn���������A�O�o�s�ڤ@�U��I",
+        "description": "'p'G'z'ݭn'''''''''A'O'o's'ڤ@'U''I",
         "greetings": [
-          "�����D�ܡH���ڨӧa�I",
-          "���x���ܡH���P�A���ڬ��z�ѨM�C",
-          "�O��ߡI�ڬO�ܼF�`����I"
+          "'''''D'ܡH'''ڨӧa'I",
+          "'''x'''ܡH'''P'A'''ڬ''z'ѨM'C",
+          "'O''ߡI'ڬO'ܼF'`''''I"
         ],
         "reminders": [
-          "�z�����ܦb�o��I",
-          "�z�i�H�s�ڨӴ����z�o��ơI"
+          "'z'''''ܦb'o''I",
+          "'z'i'H's'ڨӴ''''z'o''ơI"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "Rek",
-        "description": "Kdy� spadnete do rokle, zavol�te Lassie. Kdy� pot�ebujete pomoci v aplikac�ch Office, zavol�te Reka.",
+        "description": "Kdy' spadnete do rokle, zavol'te Lassie. Kdy' pot'ebujete pomoci v aplikac'ch Office, zavol'te Reka.",
         "greetings": [
-          "M�te dotaz? Pus�te m� do pr�ce.",
-          "Probl�m? Uvoln�te se, v�m jak na to.",
-          "Ned�lejte si starosti, jsem vytr�nov�n pro Office."
+          "M'te dotaz? Pus'te m' do pr'ce.",
+          "Probl'm? Uvoln'te se, v'm jak na to.",
+          "Ned'lejte si starosti, jsem vytr'nov'n pro Office."
         ],
         "reminders": [
           "A je to tady.",
-          "Toto jste cht�li p�ipomenout."
+          "Toto jste cht'li p'ipomenout."
         ]
       },
       {
         "languageCode": "0x0406",
         "locale": {},
         "name": "Trofast",
-        "description": "Hvis du falder ned i en kl�ft, s� kald p� Lassie. Hvis du har brug for hj�lp i Office, s� kald p� Trofast.",
+        "description": "Hvis du falder ned i en kl'ft, s' kald p' Lassie. Hvis du har brug for hj'lp i Office, s' kald p' Trofast.",
         "greetings": [
-          "Har du sp�rgsm�l? Lad mig hj�lpe dig.",
+          "Har du sp'rgsm'l? Lad mig hj'lpe dig.",
           "Problemer? Bare rolig, jeg har snart opsnuset svaret.",
-          "Bare rolig, jeg har v�ret p� Office-skole."
+          "Bare rolig, jeg har v'ret p' Office-skole."
         ],
         "reminders": [
-          "Her er p�mindelsen.",
+          "Her er p'mindelsen.",
           "Du bad mig om at minde dig om dette."
         ]
       },
@@ -26592,9 +26592,9 @@
         "name": "Rocky",
         "description": "Wenn Sie in Bergnot geraten, rufen Sie einen Bernhardiner. Wenn Sie Hilfe mit Office brauchen, rufen Sie Rocky.",
         "greetings": [
-          "Haben Sie Fragen? Lassen Sie mich f�r Sie arbeiten.",
+          "Haben Sie Fragen? Lassen Sie mich f'r Sie arbeiten.",
           "Probleme? Beruhigen Sie sich, ich bin schon da.",
-          "Keine Sorge, ich bin f�r Office ausgebildet."
+          "Keine Sorge, ich bin f'r Office ausgebildet."
         ],
         "reminders": [
           "Hier ist Ihre Erinnerung.",
@@ -26604,16 +26604,16 @@
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "����",
-        "description": "��� ������ �� ����� �������, ������� �� �����. ��� ���������� ������� ��� �� Office, ������� ��� ����.",
+        "name": "''''",
+        "description": "''' '''''' '' ''''' ''''''', ''''''' '' '''''. ''' '''''''''' ''''''' ''' '' Office, ''''''' ''' ''''.",
         "greetings": [
-          "����� ������ �������; ����� �� �� �������.",
-          "���������������; ���������, ��� ����� ���.",
-          "�� �������������, �� Office ����� � ���������� ���."
+          "''''' '''''' '''''''; ''''' '' '' '''''''.",
+          "'''''''''''''''; ''''''''', ''' ''''' '''.",
+          "'' ''''''''''''', '' Office ''''' ' '''''''''' '''."
         ],
         "reminders": [
-          "���� ����� � ���������� ���.",
-          "��� �������� �� ��� ���� ���������� ��� ����."
+          "'''' ''''' ' '''''''''' '''.",
+          "''' '''''''' '' ''' '''' '''''''''' ''' ''''."
         ]
       },
       {
@@ -26637,65 +26637,65 @@
         "name": "Rekku",
         "description": "Lassie pelastaa vaikka kaivosta, mutta Officen ohjeita antaa Rekku.",
         "greetings": [
-          "Onko sinulla kysytt�v��? Pist� minut asialle.",
-          "Ongelma? Ei h�t��, min� hoidan homman.",
+          "Onko sinulla kysytt'v''? Pist' minut asialle.",
+          "Ongelma? Ei h't'', min' hoidan homman.",
           "Olen valmis auttamaan sinua kaikissa ongelmatilanteissa."
         ],
         "reminders": [
-          "Muistin virkist�miseksi.",
-          "Pyysit muistuttamaan t�st�."
+          "Muistin virkist'miseksi.",
+          "Pyysit muistuttamaan t'st'."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
         "name": "Toufou",
-        "description": "Si vous tombez dans un ravin, appelez Lassie. Si vous avez besoin d'aide, faites appel � Toufou.",
+        "description": "Si vous tombez dans un ravin, appelez Lassie. Si vous avez besoin d'aide, faites appel ' Toufou.",
         "greetings": [
-          "Une question�? Je suis pr�t � intervenir.",
-          "Un probl�me�? D�tendez-vous, je m'en occupe.",
-          "Ne vous inqui�tez pas, je suis un sp�cialiste d'Office."
+          "Une question'? Je suis pr't ' intervenir.",
+          "Un probl'me'? D'tendez-vous, je m'en occupe.",
+          "Ne vous inqui'tez pas, je suis un sp'cialiste d'Office."
         ],
         "reminders": [
           "Voici votre rappel.",
-          "Vous m'avez demand� de vous rappeler quelque chose."
+          "Vous m'avez demand' de vous rappeler quelque chose."
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "����",
-        "description": "�� ��� ���� ����, ��� �����. �� ��� ���� ����� �- Office, ��� �����.",
+        "name": "''''",
+        "description": "'' ''' '''' '''', ''' '''''. '' ''' '''' ''''' '- Office, ''' '''''.",
         "greetings": [
-          "�� �� ����? ��� ���� ����� �����.",
-          "����? �����, ��� ���� ���.",
-          "�� ����, ��� ����� �- Office."
+          "'' '' ''''? ''' '''' ''''' '''''.",
+          "''''? ''''', ''' '''' '''.",
+          "'' '''', ''' ''''' '- Office."
         ],
         "reminders": [
-          "��� ������� ���.",
-          "����� ���� ������ �� ���� ���� ��."
+          "''' ''''''' '''.",
+          "''''' '''' '''''' '' '''' '''' ''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Bl�ki",
-        "description": "Ha lavin�ba keveredn�l, h�vd Lassie-t. Ha Office-seg�ts�gre van sz�ks�ged, f�ttyents Bl�kinek.",
+        "name": "Bl'ki",
+        "description": "Ha lavin'ba keveredn'l, h'vd Lassie-t. Ha Office-seg'ts'gre van sz'ks'ged, f'ttyents Bl'kinek.",
         "greetings": [
-          "K�rd�sed van? Hadd r�gjam �t magam rajta!",
-          "Probl�ma? Nyugi, m�r cs�cs�lom.",
+          "K'rd'sed van? Hadd r'gjam 't magam rajta!",
+          "Probl'ma? Nyugi, m'r cs'cs'lom.",
           "Ne izgulj, teljesen Office-tiszta vagyok."
         ],
         "reminders": [
-          "Itt az eml�keztet�d.",
-          "Azt k�rted, eml�keztesselek erre."
+          "Itt az eml'keztet'd.",
+          "Azt k'rted, eml'keztesselek erre."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Augusto",
-        "description": "Chi � in pericolo chiede aiuto a Lassie. Chi ha bisogno di aiuto su Office chiama Augusto.",
+        "description": "Chi ' in pericolo chiede aiuto a Lassie. Chi ha bisogno di aiuto su Office chiama Augusto.",
         "greetings": [
           "Hai una domanda? Mettimi al lavoro.",
           "Problemi? Rilassati, ci sono io!",
@@ -26709,31 +26709,31 @@
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "���b�L�[",
-        "description": "Office �ł킩��Ȃ����Ƃ��������烍�b�L�[���Ă�ł��������B",
+        "name": "'''b'L'[",
+        "description": "Office 'ł킩''Ȃ''''Ƃ''''''''烍'b'L'['''Ă'ł''''''''B",
         "greetings": [
-          "����H ���ł��܂����Ă�I",
-          "���܂������Ȃ��H �������傤�ԁA�ڂ������Ă��B",
-          "�S�z���Ȃ��ŁBOffice �̂��ƂȂ牽�ł������āB"
+          "''''H '''ł''܂''''Ă'I",
+          "'''܂''''''Ȃ''H '''''''傤'ԁA'ڂ''''''Ă''B",
+          "'S'z'''Ȃ''ŁBOffice '̂''ƂȂ牽'ł''''''āB"
         ],
         "reminders": [
-          "�v���o�����H",
-          "���m�点�ł�"
+          "'v'''o'''''H",
+          "'''m'点'ł'"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "�����",
-        "description": "�ʿ��Ͻ� �� �������� ������ �帳�ϴ�.",
+        "name": "'''''",
+        "description": "'ʿ''Ͻ' '' '''''''' '''''' '帳'ϴ'.",
         "greetings": [
-          "������ ��������? ���� �ҷ� �ּ���.",
-          "������? ���� �ذ��� �帱����.",
-          "���� ������. ���� ���ݾƿ�."
+          "'''''' ''''''''? '''' 'ҷ' 'ּ'''.",
+          "''''''? '''' 'ذ''' '帱''''.",
+          "'''' ''''''. '''' '''ݾƿ'."
         ],
         "reminders": [
-          "������ ����Ͻ�����?",
-          "����Ͻð�����?"
+          "'''''' ''''Ͻ'''''?",
+          "''''Ͻð'''''?"
         ]
       },
       {
@@ -26755,165 +26755,165 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Sniff",
-        "description": "Hvis du havner i en kl�ft, rop p� Lassie. Hvis du trenger hjelp i Office, rop p� Sniff.",
+        "description": "Hvis du havner i en kl'ft, rop p' Lassie. Hvis du trenger hjelp i Office, rop p' Sniff.",
         "greetings": [
-          "Du har et sp�rsm�l? Sett meg i arbeid.",
+          "Du har et sp'rsm'l? Sett meg i arbeid.",
           "Problem? Slapp av, jeg tar saken.",
-          "Ikke bekymre deg, jeg er fullt utl�rt i Office."
+          "Ikke bekymre deg, jeg er fullt utl'rt i Office."
         ],
         "reminders": [
-          "Her er p�minnelsen.",
-          "Du ba meg minne deg p� dette."
+          "Her er p'minnelsen.",
+          "Du ba meg minne deg p' dette."
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "Reks",
-        "description": "Je�li wpadniesz w k�opoty, zawo�aj Szarika. Je�li potrzebujesz pomocy w programie Office, zawo�aj Reksa.",
+        "description": "Je'li wpadniesz w k'opoty, zawo'aj Szarika. Je'li potrzebujesz pomocy w programie Office, zawo'aj Reksa.",
         "greetings": [
           "Masz pytanie? Skorzystaj z mojej pomocy.",
-          "Problem? Spokojnie, ju� si� tym zajmuj�.",
-          "Nie martw si�, jestem dobrze wyszkolony w pracy z programem Office."
+          "Problem? Spokojnie, ju' si' tym zajmuj'.",
+          "Nie martw si', jestem dobrze wyszkolony w pracy z programem Office."
         ],
         "reminders": [
           "Oto Twoje przypomnienie:",
-          "Mia�em Ci o tym przypomnie�:"
+          "Mia'em Ci o tym przypomnie':"
         ]
       },
       {
         "languageCode": "0x0416",
         "locale": {},
         "name": "Rex",
-        "description": "Se voc� cair em um barranco, chame a Lassie. Se voc� precisar de ajuda no Office, chame o Rex.",
+        "description": "Se voc' cair em um barranco, chame a Lassie. Se voc' precisar de ajuda no Office, chame o Rex.",
         "greetings": [
-          "Voc� tem alguma d�vida? Estou aqui para servi-lo.",
+          "Voc' tem alguma d'vida? Estou aqui para servi-lo.",
           "Algum problema? Relaxe, eu cuido disso.",
-          "N�o se preocupe, eu sou altamente treinado em Office."
+          "N'o se preocupe, eu sou altamente treinado em Office."
         ],
         "reminders": [
-          "Aqui est� o seu lembrete.",
-          "Voc� me pediu para lembr�-lo sobre isso."
+          "Aqui est' o seu lembrete.",
+          "Voc' me pediu para lembr'-lo sobre isso."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "Rocky",
-        "description": "C�nd c�de�i �ntr-o pr�pastie, apela�i la Lessie. C�nd ave�i nevoie de ajutor �n Office, apela�i la Rocky.",
+        "description": "C'nd c'de'i 'ntr-o pr'pastie, apela'i la Lessie. C'nd ave'i nevoie de ajutor 'n Office, apela'i la Rocky.",
         "greetings": [
-          "Ave�i o �ntrebare? Da�i-mi de lucru.",
-          "O problem�? Lini�ti�i-v�, m� ocup eu de ea.",
-          "Nu v� face�i griji, sunt perfect instruit pentru Office."
+          "Ave'i o 'ntrebare? Da'i-mi de lucru.",
+          "O problem'? Lini'ti'i-v', m' ocup eu de ea.",
+          "Nu v' face'i griji, sunt perfect instruit pentru Office."
         ],
         "reminders": [
-          "Iat� memento-ul.",
-          "Mi-a�i cerut s� v� reamintesc despre aceasta."
+          "Iat' memento-ul.",
+          "Mi-a'i cerut s' v' reamintesc despre aceasta."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "�����",
-        "description": "���������� � ������, ������ �����. �� ���� ��� ����� ������ � Office, ������ ������.",
+        "name": "'''''",
+        "description": "'''''''''' ' '''''', '''''' '''''. '' '''' ''' ''''' '''''' ' Office, '''''' ''''''.",
         "greetings": [
-          "� ��� ������? �������� ����.",
-          "���������? ������������, � ���� �������.",
-          "�� ������������, � ������� �������� �� Office."
+          "' ''' ''''''? '''''''' ''''.",
+          "'''''''''? '''''''''''', ' '''' '''''''.",
+          "'' '''''''''''', ' ''''''' '''''''' '' Office."
         ],
         "reminders": [
-          "�����������.",
-          "�� ��������� ��������� �� ����."
+          "'''''''''''.",
+          "'' ''''''''' ''''''''' '' ''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "Rocky",
-        "description": "Ako padnete u ponor, pozovite Lassie. Zatrebate li pomo� u Officeu, pozovite Rockyja.",
+        "description": "Ako padnete u ponor, pozovite Lassie. Zatrebate li pomo' u Officeu, pozovite Rockyja.",
         "greetings": [
           "Imate li pitanja? Zaposlite mene.",
-          "Problem? Opustite se, rje�avam ga.",
+          "Problem? Opustite se, rje'avam ga.",
           "Ne brinite se, potpuno sam osposobljen za Office."
         ],
         "reminders": [
-          "Ovdje je va� podsjetnik.",
-          "Zatra�ili ste me da vas podsjetim na to."
+          "Ovdje je va' podsjetnik.",
+          "Zatra'ili ste me da vas podsjetim na to."
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
         "name": "Rexo",
-        "description": "Ak by ste spadli do priepasti, zavolajte Lassie. Ak potrebujete pom�c� v aplik�ci�ch Office zavolajte Rexa.",
+        "description": "Ak by ste spadli do priepasti, zavolajte Lassie. Ak potrebujete pom'c' v aplik'ci'ch Office zavolajte Rexa.",
         "greetings": [
-          "M�te ot�zku? Hne� sa d�m do pr�ce.",
-          "M�te probl�m? Len pokoj, u� na tom pracujem.",
-          "Bu�te bez ob�v, som tr�novan� v aplik�ci�ch Office."
+          "M'te ot'zku? Hne' sa d'm do pr'ce.",
+          "M'te probl'm? Len pokoj, u' na tom pracujem.",
+          "Bu'te bez ob'v, som tr'novan' v aplik'ci'ch Office."
         ],
         "reminders": [
-          "Priali ste si pripomen��.",
-          "Priali ste si aby som v�m pripomenul toto."
+          "Priali ste si pripomen''.",
+          "Priali ste si aby som v'm pripomenul toto."
         ]
       },
       {
         "languageCode": "0x041d",
         "locale": {},
         "name": "Karo",
-        "description": "Om du trillar ner i en ravin kallar du p� Lassie. Om du beh�ver hj�lp med Office kallar du p� Karo.",
+        "description": "Om du trillar ner i en ravin kallar du p' Lassie. Om du beh'ver hj'lp med Office kallar du p' Karo.",
         "greetings": [
-          "Har du en fr�ga? Skicka iv�g mig efter svaret!",
-          "Problem? Ta't lugnt, jag �r p� spr�ng.",
-          "Oroa dig inte. Jag �r grundligt  Office-dresserad."
+          "Har du en fr'ga? Skicka iv'g mig efter svaret!",
+          "Problem? Ta't lugnt, jag 'r p' spr'ng.",
+          "Oroa dig inte. Jag 'r grundligt  Office-dresserad."
         ],
         "reminders": [
-          "H�r kommer p�minnelsen.",
-          "Du bad mig p�minna dig om det h�r."
+          "H'r kommer p'minnelsen.",
+          "Du bad mig p'minna dig om det h'r."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "��ҵٺ",
-        "description": "��Ҥس��������غ���֡ ���¡��ʫ�� ���Ҥس��ͧ��ä������������� Office ���¡��ҵٺ",
+        "name": "''ҵٺ",
+        "description": "''Ҥس''''''''غ'''֡ '''¡''ʫ'' '''Ҥس''ͧ''ä''''''''''''' Office '''¡''ҵٺ",
         "greetings": [
-          "�դӶ������ ���ѹ�ӧҹ��",
-          "�ջѭ������ �������´ �թѹ�����駤�",
-          "���ҡѧ������ �ѹ�١�֡�Ѵ㹷ҧ Office �����ҧ��"
+          "'դӶ'''''' '''ѹ'ӧҹ''",
+          "'ջѭ'''''' '''''''´ 'թѹ'''''駤'",
+          "'''ҡѧ'''''' 'ѹ'١'֡'Ѵ㹷ҧ Office '''''ҧ''"
         ],
         "reminders": [
-          "����͵����͹�ͧ�س",
-          "�س�º͡���ѹ��͹�س���觹��"
+          "''''͵''''͹'ͧ'س",
+          "'س'º͡'''ѹ''͹'س'''觹''"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
-        "name": "�omar",
-        "description": "Bir vadiye d��ersen Lassie'yi, Office i�in yard�m gerekiyorsa �omar'� �a��r.",
+        "name": "'omar",
+        "description": "Bir vadiye d''ersen Lassie'yi, Office i'in yard'm gerekiyorsa 'omar'' 'a''r.",
         "greetings": [
-          "Bir sorun mu var? ��i bana devret.",
-          "Sorunun mu var? Sakin ol, i� ba��nday�m.",
-          "Merak etme, tamamen Office i�in e�itildim."
+          "Bir sorun mu var? ''i bana devret.",
+          "Sorunun mu var? Sakin ol, i' ba''nday'm.",
+          "Merak etme, tamamen Office i'in e'itildim."
         ],
         "reminders": [
-          "��te an�msat�c�n.",
-          "Bunu an�msatmam� istemi�tin."
+          "''te an'msat'c'n.",
+          "Bunu an'msatmam' istemi'tin."
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "Bevsk",
-        "description": "�e padete v globel, pokli�ite Lesi. �e potrebujete pomo� v Officeu, pokli�ite Bevska.",
+        "description": "'e padete v globel, pokli'ite Lesi. 'e potrebujete pomo' v Officeu, pokli'ite Bevska.",
         "greetings": [
-          "Ali vas mori vpra�anje? Dovolite, da se ga lotim jaz.",
-          "Te�ave? Brez skrbi, jih bom �e pregnal.",
-          "Skrbi so odve�, Office poznam do kosti."
+          "Ali vas mori vpra'anje? Dovolite, da se ga lotim jaz.",
+          "Te'ave? Brez skrbi, jih bom 'e pregnal.",
+          "Skrbi so odve', Office poznam do kosti."
         ],
         "reminders": [
-          "Va� opomin�ek je tu.",
-          "�eleli ste, da vas opozorim na to."
+          "Va' opomin'ek je tu.",
+          "'eleli ste, da vas opozorim na to."
         ]
       },
       {
@@ -26934,16 +26934,16 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "�ϴ�",
-        "description": "��ɮ����Σ��ʱ�Ằ����վ��ң�������Ҫ����ʹ�� Office ʱ��Ҫ������ֻҪ�����ϴϾ��ҡ������ˡ�",
+        "name": "'ϴ'",
+        "description": "''ɮ''''Σ''ʱ'Ằ''''վ''ң'''''''Ҫ''''ʹ'' Office ʱ''Ҫ''''''ֻҪ'''''ϴϾ''ҡ''''''ˡ'",
         "greetings": [
-          "�������ˣ���������",
-          "�������ˣ����£������أ�",
-          "���ص��ģ��ҿ����ܹ��ϸ� Office ѵ���ġ�"
+          "'''''''ˣ'''''''''",
+          "'''''''ˣ''''£''''''أ'",
+          "'''ص''ģ''ҿ''''ܹ''ϸ' Office ѵ'''ġ'"
         ],
         "reminders": [
-          "���ڸ��������ˡ�",
-          "�����ڸ�ȥ����������ˡ�"
+          "'''ڸ''''''''ˡ'",
+          "'''''ڸ'ȥ''''''''''ˡ'"
         ]
       },
       {
@@ -26953,11 +26953,11 @@
         "description": "Se cair numa ravina, chame a Lassie. Se necessitar de ajuda no Office, chame o Rocky.",
         "greetings": [
           "Tem uma pergunta? Deixe-me ajudar.",
-          "Problema? Estou j� a tratar disso.",
-          "N�o se preocupe, estou totalmente treinado para o Office."
+          "Problema? Estou j' a tratar disso.",
+          "N'o se preocupe, estou totalmente treinado para o Office."
         ],
         "reminders": [
-          "Aqui est� o seu lembrete.",
+          "Aqui est' o seu lembrete.",
           "Pediu-me que o recordasse disto."
         ]
       },
@@ -26965,15 +26965,15 @@
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Rocky",
-        "description": "Si se pierde en la monta�a, llame a un San Bernardo. Pero si necesita ayuda con Office, llame a Rocky.",
+        "description": "Si se pierde en la monta'a, llame a un San Bernardo. Pero si necesita ayuda con Office, llame a Rocky.",
         "greetings": [
-          "�Tiene una pregunta? P�ngame a trabajar.",
-          "�Ha perdido el control? �Rel�jese! Yo lo soluciono.",
+          "'Tiene una pregunta? P'ngame a trabajar.",
+          "'Ha perdido el control? 'Rel'jese! Yo lo soluciono.",
           "No se preocupe, me entrenaron para ayudarle con Office."
         ],
         "reminders": [
           "Esto es un aviso.",
-          "Me pidi� que le avisara."
+          "Me pidi' que le avisara."
         ]
       }
     ],

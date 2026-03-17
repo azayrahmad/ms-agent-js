@@ -17235,57 +17235,57 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "�������",
-        "description": "���� ��� ������� ����� �����. �� ������ ��� ������ ������ ���� ������.",
+        "name": "'''''''",
+        "description": "'''' ''' ''''''' ''''' '''''. '' '''''' ''' '''''' '''''' '''' ''''''.",
         "greetings": [
-          "����� ��. �� �� ��� ������ �� ���� �� ������ �����������",
-          "������. �� ����� ������ ��� �������� �� Office. �� ���� ��� ����� ����."
+          "''''' ''. '' '' ''' '''''' '' '''' '' '''''' '''''''''''",
+          "''''''. '' ''''' '''''' ''' '''''''' '' Office. '' '''' ''' ''''' ''''."
         ],
         "reminders": [
-          "�� ������ ��� ��� �������.",
-          "��� ����� ������ ����."
+          "'' '''''' ''' ''' '''''''.",
+          "''' ''''' '''''' ''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "�Ѥ~�ѯR",
-        "description": "���n�p�ݤѤ~�ѯR���Y���@�I�L����{�N�����@�˧֡A�Q�ΥL��Ҫ���O�N��`�ٱz���ɶ��M��O�C",
+        "name": "'Ѥ~'ѯR",
+        "description": "'''n'p'ݤѤ~'ѯR'''Y'''@'I'L''''{'N'''''@'˧֡A'Q'ΥL''Ҫ'''O'N''`'ٱz'''ɶ''M''O'C",
         "greetings": [
-          "���o�I���ڥi�H�����z���a��ܡH",
-          "���o�I�b�ϥ� Office 2000 �L�{���Q�n�����������ɡA��²��A�u�n���ڤ@�U�@�I"
+          "'''o'I'''ڥi'H'''''z'''a''ܡH",
+          "'''o'I'b'ϥ' Office 2000 'L'{'''Q'n'''''''''''ɡA''²''A'u'n'''ڤ@'U'@'I"
         ],
         "reminders": [
-          "�]�\\�o�N�|���z���O�Ч�M�s�@�I",
-          "�ӬO�o�˰����ɫJ�F�I"
+          "']'\\'o'N'|'''z'''O'Ч'M's'@'I",
+          "'ӬO'o'˰''''ɫJ'F'I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "Mudrc",
-        "description": "My�lenky Mudrce proud� rychlost� sv�tla. Vyu�ijte jeho schopnost� k u�et�en� sv�ho �asu a energie.",
+        "description": "My'lenky Mudrce proud' rychlost' sv'tla. Vyu'ijte jeho schopnost' k u'et'en' sv'ho 'asu a energie.",
         "greetings": [
-          "Ahoj. Mohu v�m pomoci s prac� v elektronick�m prostoru?",
-          "Ahoj. Office obsahuje snadno dostupnou n�pov�du. Sta�� na m� klepnout."
+          "Ahoj. Mohu v'm pomoci s prac' v elektronick'm prostoru?",
+          "Ahoj. Office obsahuje snadno dostupnou n'pov'du. Sta'' na m' klepnout."
         ],
         "reminders": [
-          "U� jste si vzpomn�li?",
-          "Nastala ta prav� chv�le pro toto."
+          "U' jste si vzpomn'li?",
+          "Nastala ta prav' chv'le pro toto."
         ]
       },
       {
         "languageCode": "0x0406",
         "locale": {},
         "name": "Professoren",
-        "description": "Professorens hjerne arbejder med lysets hastighed. Hans tankevirksomhed hj�lper dig med at spare tid og energi.",
+        "description": "Professorens hjerne arbejder med lysets hastighed. Hans tankevirksomhed hj'lper dig med at spare tid og energi.",
         "greetings": [
           "Goddag. Kan jeg assistere dig med dit arbejde i det elektroniske univers?",
-          "Goddag. Det er relativt let at f� hj�lp til Office. Bare klik p� mig."
+          "Goddag. Det er relativt let at f' hj'lp til Office. Bare klik p' mig."
         ],
         "reminders": [
-          "M�ske kan dette opfriske din hukommelse.",
-          "Tiden er inde til at g�re dette."
+          "M'ske kan dette opfriske din hukommelse.",
+          "Tiden er inde til at g're dette."
         ]
       },
       {
@@ -17294,26 +17294,26 @@
         "name": "Der Professor",
         "description": "Der Geist des Professors arbeitet mit Lichtgeschwindigkeit. Profitieren Sie von seiner Geisteskraft, um Zeit und Energie zu sparen.",
         "greetings": [
-          "Hallo, kann ich Ihnen bei Ihrer Arbeit in der elektronischen Sph�re behilflich sein?",
-          "Hallo, Hilfe f�r Microsoft Office ist relativ einfach zu erhalten. Klicken Sie einfach auf mich."
+          "Hallo, kann ich Ihnen bei Ihrer Arbeit in der elektronischen Sph're behilflich sein?",
+          "Hallo, Hilfe f'r Microsoft Office ist relativ einfach zu erhalten. Klicken Sie einfach auf mich."
         ],
         "reminders": [
-          "Vielleicht frischt dies hier Ihr Ged�chtnis auf.",
+          "Vielleicht frischt dies hier Ihr Ged'chtnis auf.",
           "Relativ gesehen ist es Zeit, folgendes zu tun."
         ]
       },
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "� ��������",
-        "description": "�� ����� ��� ��������� ��������� �� ��� �������� ��� �����. �������������� �� ������ ��� ������ ��� ��� �� �������������� ����� ��� ��������.",
+        "name": "' ''''''''",
+        "description": "'' ''''' ''' ''''''''' ''''''''' '' ''' '''''''' ''' '''''. '''''''''''''' '' '''''' ''' '''''' ''' ''' '' '''''''''''''' ''''' ''' ''''''''.",
         "greetings": [
-          "���� ���. ����� �� ��� ������� ���� ������� ��� ���� �����������;",
-          "���� ���. � ���� �������� ��� Office ����� ������� ������ �������. ���� ����� ��� ����."
+          "'''' '''. ''''' '' ''' ''''''' '''' ''''''' ''' '''' ''''''''''';",
+          "'''' '''. ' '''' '''''''' ''' Office ''''' ''''''' '''''' '''''''. '''' ''''' ''' ''''."
         ],
         "reminders": [
-          "���� ���� ��������� �� ����� ���.",
-          "������ � ��� �� �� ������ ����."
+          "'''' '''' ''''''''' '' ''''' '''.",
+          "'''''' ' ''' '' '' '''''' ''''."
         ]
       },
       {
@@ -17334,98 +17334,98 @@
         "languageCode": "0x040b",
         "locale": {},
         "name": "Neropatti",
-        "description": "Neropatin �ly leikkaa valon nopeudella. S��st�t aikaa ja vaivaa, kun annat Neropatin neuvoa.",
+        "description": "Neropatin 'ly leikkaa valon nopeudella. S''st't aikaa ja vaivaa, kun annat Neropatin neuvoa.",
         "greetings": [
-          "Tervehdys. Voinko auttaa s�hk�ist� ty�skentely�si?",
+          "Tervehdys. Voinko auttaa s'hk'ist' ty'skentely'si?",
           "Hei. Saat ohjeita Officesta suhteellisen helposti. Napsauta vain minua."
         ],
         "reminders": [
-          "Ehk� t�m� virkist�� muistiasi.",
-          "On tullut aika tehd� t�m�."
+          "Ehk' t'm' virkist'' muistiasi.",
+          "On tullut aika tehd' t'm'."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
-        "name": "Professeur G�nial",
-        "description": "Le cerveau du Professeur G�nial fonctionne � la vitesse de la lumi�re. Utilisez toute la puissance de son esprit pour gagner du temps.",
+        "name": "Professeur G'nial",
+        "description": "Le cerveau du Professeur G'nial fonctionne ' la vitesse de la lumi're. Utilisez toute la puissance de son esprit pour gagner du temps.",
         "greetings": [
-          "Mes id�es lumineuses vous aideront � d�couvrir l'univers d'Office 2000.",
-          "Bonjour. Si vous voulez que je vous aide � utiliser Office, appelez-moi d'un simple clic."
+          "Mes id'es lumineuses vous aideront ' d'couvrir l'univers d'Office 2000.",
+          "Bonjour. Si vous voulez que je vous aide ' utiliser Office, appelez-moi d'un simple clic."
         ],
         "reminders": [
-          "Peut-�tre que ceci vous rafra�chira la m�moire.",
+          "Peut-'tre que ceci vous rafra'chira la m'moire.",
           "Et maintenant je vous conseille ceci."
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "�����",
-        "description": "���� �� ����� ���� ������� ����. ��� �� ����� ������ ��� ��� ����� ��� �������.",
+        "name": "'''''",
+        "description": "'''' '' ''''' '''' ''''''' ''''. ''' '' ''''' '''''' ''' ''' ''''' ''' '''''''.",
         "greetings": [
-          "����. ��� ��� ���� ����� �� ������� ����� ���������?",
-          "����. ���� ���� �- Office ��� ����� �����. ���� ��� ���."
+          "''''. ''' ''' '''' ''''' '' ''''''' ''''' '''''''''?",
+          "''''. '''' '''' '- Office ''' ''''' '''''. '''' ''' '''."
         ],
         "reminders": [
-          "���� �� ����� �� ������.",
-          "���� ���� ������ ����� ��."
+          "'''' '' ''''' '' ''''''.",
+          "'''' '''' '''''' ''''' ''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
         "name": "A Prof",
-        "description": "A Prof fej�ben f�nysebess�ggel cik�znak a gondolatok. K�pzelje, mi lesz, ha az �n zsenij�t az �v�vel egyes�ti.",
+        "description": "A Prof fej'ben f'nysebess'ggel cik'znak a gondolatok. K'pzelje, mi lesz, ha az 'n zsenij't az 'v'vel egyes'ti.",
         "greetings": [
-          "�dv�zl�m. Nos, mondja k�rem, hogyan  seg�thetn�m sz�m�t�g�pes munk�j�t?",
-          "Az Office s�g�j�nak megk�rdez�se viszonylag egyszer�. Csak a k�pi �br�zol�somra kell kattintani."
+          "'dv'zl'm. Nos, mondja k'rem, hogyan  seg'thetn'm sz'm't'g'pes munk'j't?",
+          "Az Office s'g'j'nak megk'rdez'se viszonylag egyszer'. Csak a k'pi 'br'zol'somra kell kattintani."
         ],
         "reminders": [
-          "Tal�n a k�vetkez�kkel felfriss�thetem az eml�kezet�t.",
-          "Elj�tt a k�vetkez� k�s�rlet ideje."
+          "Tal'n a k'vetkez'kkel felfriss'thetem az eml'kezet't.",
+          "Elj'tt a k'vetkez' k's'rlet ideje."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Genius",
-        "description": "Genius pensa alla velocit� della luce. Fatevi aiutare da lui e risparmierete tempo e lavoro.",
+        "description": "Genius pensa alla velocit' della luce. Fatevi aiutare da lui e risparmierete tempo e lavoro.",
         "greetings": [
           "Salve. Mi permetta di darle una mano in questo spazio elettronico.",
-          "Trovare una risposta alle domande su Office � estremamente semplice. Faccia clic su di me, prego."
+          "Trovare una risposta alle domande su Office ' estremamente semplice. Faccia clic su di me, prego."
         ],
         "reminders": [
-          "Forse cos� lo ricorder�.",
-          "� giunto il momento."
+          "Forse cos' lo ricorder'.",
+          "' giunto il momento."
         ]
       },
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "���m",
-        "description": "�킵�̓��͌��̑����œ����̂���B�킩��񂱂Ƃ́A���ł������Ƃ����B",
+        "name": "'''m",
+        "description": "'킵'̓''͌''̑''''œ''''̂'''B'킩''񂱂Ƃ́A'''ł''''''Ƃ''''B",
         "greetings": [
-          "�킵�̗͂��K�v���ȁH",
-          "Office �̃w���v���K�v�Ȃ�A�����ɂ킵���N���b�N����̂����B"
+          "'킵'̗͂''K'v'''ȁH",
+          "Office '̃w'''v'''K'v'Ȃ'A'''''ɂ킵'''N'''b'N''''̂''''B"
         ],
         "reminders": [
-          "�Y���Ȃ�B",
-          "���낻�뎞�Ԃ����B"
+          "'Y'''Ȃ'B",
+          "'''낻'뎞'Ԃ''''B"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "�ڻ��",
-        "description": "�ڻ���� �پ ������� ����¦�� ���̿� �ʿ��� ����� ã�Ƴ��� �ð��� ����� �����ϵ��� ���� �帳�ϴ�.",
+        "name": "'ڻ''",
+        "description": "'ڻ'''' 'پ ''''''' ''''¦'' '''̿' 'ʿ''' ''''' ã'Ƴ''' 'ð''' ''''' '''''ϵ''' '''' '帳'ϴ'.",
         "greetings": [
-          "Office�� ���� ������ �帮���� �մϴ�.",
-          "Office�� ���� ������ �������� ���� �����ʽÿ�."
+          "Office'' '''' '''''' '帮'''' 'մϴ'.",
+          "Office'' '''' '''''' '''''''' '''' '''''ʽÿ'."
         ],
         "reminders": [
-          "����Ͻ� �̴ϴ�.",
-          "������ �ð��� �Ǿ����ϴ�."
+          "''''Ͻ' '̴ϴ'.",
+          "'''''' 'ð''' 'Ǿ''''ϴ'."
         ]
       },
       {
@@ -17446,41 +17446,41 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Geniet",
-        "description": "Geniets hjerne jobber med lysets hastighet. Utnytt hans tankekraft og spar deg selv b�de tid og krefter.",
+        "description": "Geniets hjerne jobber med lysets hastighet. Utnytt hans tankekraft og spar deg selv b'de tid og krefter.",
         "greetings": [
           "God dag! Kan jeg hjelpe til i denne elektroniske verdenen?",
-          "God dag! Det er relativt enkelt � f� hjelp i Office. Bare klikk meg."
+          "God dag! Det er relativt enkelt ' f' hjelp i Office. Bare klikk meg."
         ],
         "reminders": [
           "Dette vil kanskje friske opp hukommelsen.",
-          "Tiden er inne for � gj�re dette."
+          "Tiden er inne for ' gj're dette."
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "Geniusz",
-        "description": "Umys� geniusza pracuje z pr�dko�ci� b�yskawicy. Skorzystaj z tej pot�gi, by oszcz�dzi� czas i energi�.",
+        "description": "Umys' geniusza pracuje z pr'dko'ci' b'yskawicy. Skorzystaj z tej pot'gi, by oszcz'dzi' czas i energi'.",
         "greetings": [
-          "Cze��. Mo�e pom�c Ci w pracy w tym elektronicznym �wiecie?",
-          "Cze��. Uzyskiwanie pomocy w programie Office jest wzgl�dnie proste. Wystarczy, �e mnie klikniesz."
+          "Cze''. Mo'e pom'c Ci w pracy w tym elektronicznym 'wiecie?",
+          "Cze''. Uzyskiwanie pomocy w programie Office jest wzgl'dnie proste. Wystarczy, 'e mnie klikniesz."
         ],
         "reminders": [
-          "Mo�e to od�wie�y Twoj� pami��:",
-          "Czas ju� najwy�szy, �eby:"
+          "Mo'e to od'wie'y Twoj' pami'':",
+          "Czas ju' najwy'szy, 'eby:"
         ]
       },
       {
         "languageCode": "0x0416",
         "locale": {},
-        "name": "G�nio",
-        "description": "Capaz de processar dados com extrema rapidez, o G�nio pode ajud�-lo a solucionar todas as suas d�vidas.",
+        "name": "G'nio",
+        "description": "Capaz de processar dados com extrema rapidez, o G'nio pode ajud'-lo a solucionar todas as suas d'vidas.",
         "greetings": [
-          "Ol�! Posso ajud�-lo a conhecer a magia dos computadores?",
-          "Ol�! Obter ajuda no Office � relativamente simples. Basta clicar em mim."
+          "Ol'! Posso ajud'-lo a conhecer a magia dos computadores?",
+          "Ol'! Obter ajuda no Office ' relativamente simples. Basta clicar em mim."
         ],
         "reminders": [
-          "Talvez isto refresque a sua mem�ria.",
+          "Talvez isto refresque a sua mem'ria.",
           "Chegou a hora de fazer essa tentativa."
         ]
       },
@@ -17488,112 +17488,112 @@
         "languageCode": "0x0418",
         "locale": {},
         "name": "Genialul",
-        "description": "Mintea Genialului lucreaz� cu viteza luminii. Exploata�i puterea lui de g�ndire pentru a economisi timp �i energie.",
+        "description": "Mintea Genialului lucreaz' cu viteza luminii. Exploata'i puterea lui de g'ndire pentru a economisi timp 'i energie.",
         "greetings": [
-          "Salut! S� v� asist pe parcursul muncii dvs. �n spa�iul electronic?",
-          "Salut! Este relativ simplu s� ob�ine�i ajutor �n Office. Face�i clic pe mine."
+          "Salut! S' v' asist pe parcursul muncii dvs. 'n spa'iul electronic?",
+          "Salut! Este relativ simplu s' ob'ine'i ajutor 'n Office. Face'i clic pe mine."
         ],
         "reminders": [
-          "Poate asta v� ajut� s� v� reaminti�i.",
-          "A sosit momentul s� face�i asta."
+          "Poate asta v' ajut' s' v' reaminti'i.",
+          "A sosit momentul s' face'i asta."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "������",
-        "description": "���� ������� �������� �� ��������� �����. �������������� ��� �����������, ����� ���������� ����� � ����.",
+        "name": "''''''",
+        "description": "'''' ''''''' '''''''' '' ''''''''' '''''. '''''''''''''' ''' ''''''''''', ''''' '''''''''' ''''' ' ''''.",
         "greetings": [
-          "������. ���� � ���-������ ������ ��� � ����������� ����?",
-          "������! ������ ���-������ �� Office ����� ��������. �������� ��� ������."
+          "''''''. '''' ' '''-'''''' '''''' ''' ' ''''''''''' ''''?",
+          "''''''! '''''' '''-'''''' '' Office ''''' ''''''''. '''''''' ''' ''''''."
         ],
         "reminders": [
-          "��������, ��� ������� ���� ������.",
-          "������ ���� �����������."
+          "'''''''', ''' ''''''' '''' ''''''.",
+          "'''''' '''' '''''''''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "Genije",
-        "description": "Genije misli brzo kao munja. Upregnite njegovu snagu razmi�ljanja da biste si u�tedjeli snagu i energiju.",
+        "description": "Genije misli brzo kao munja. Upregnite njegovu snagu razmi'ljanja da biste si u'tedjeli snagu i energiju.",
         "greetings": [
-          "Zdravo! Mogu li vam pomo�i u va�em poslu u elektroni�kom prostoru?",
-          "Zdravo. Dobivanje pomo�i u Officeu relativno je jednostavno. Samo me pritisnite."
+          "Zdravo! Mogu li vam pomo'i u va'em poslu u elektroni'kom prostoru?",
+          "Zdravo. Dobivanje pomo'i u Officeu relativno je jednostavno. Samo me pritisnite."
         ],
         "reminders": [
-          "Mo�da �e vam to osvje�iti pam�enje.",
-          "Do�lo je vrijeme da se u�ini to."
+          "Mo'da 'e vam to osvje'iti pam'enje.",
+          "Do'lo je vrijeme da se u'ini to."
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
-        "name": "G�nius",
-        "description": "Myse� g�nia pracuje r�chlos�ou svetla. Vyu�ite silu jeho myslenia a u�etrite svoj �as a svoje �silie.",
+        "name": "G'nius",
+        "description": "Myse' g'nia pracuje r'chlos'ou svetla. Vyu'ite silu jeho myslenia a u'etrite svoj 'as a svoje 'silie.",
         "greetings": [
-          "Ahoj. M��em v�m pom�ct s pr�cou v elektronickom priestore?",
-          "Ahoj. Office obsahuje �ahko dostupn�ho pomocn�ka. Sta�� na m�a klikn��."
+          "Ahoj. M''em v'm pom'ct s pr'cou v elektronickom priestore?",
+          "Ahoj. Office obsahuje 'ahko dostupn'ho pomocn'ka. Sta'' na m'a klikn''."
         ],
         "reminders": [
-          "U� ste si spomenuli?",
-          "Nastal �as na toto."
+          "U' ste si spomenuli?",
+          "Nastal 'as na toto."
         ]
       },
       {
         "languageCode": "0x041d",
         "locale": {},
         "name": "Snillet",
-        "description": "Snillets hj�rna arbetar med ljusets hastighet. G�r bruk av hans tankestyrka, s� sparar du tid och kraft.",
+        "description": "Snillets hj'rna arbetar med ljusets hastighet. G'r bruk av hans tankestyrka, s' sparar du tid och kraft.",
         "greetings": [
-          "Goddag! Vad kan jag st� till tj�nst med?",
-          "Goddag! Det �r relativt enkelt att f� hj�lp i Office. Klicka bara p� mig."
+          "Goddag! Vad kan jag st' till tj'nst med?",
+          "Goddag! Det 'r relativt enkelt att f' hj'lp i Office. Klicka bara p' mig."
         ],
         "reminders": [
           "Detta kanske friskar upp minnet.",
-          "Tiden �r inne f�r att g�ra detta."
+          "Tiden 'r inne f'r att g'ra detta."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "����Ѩ�����",
-        "description": "�����Դ�ͧ����Ѩ����зӧҹ���¤��������ʧ ���ѧ�����Դ�ͧ�����ͻ����Ѵ������о�ѧ�ҹ�ͧ�س",
+        "name": "''''Ѩ'''''",
+        "description": "'''''Դ'ͧ''''Ѩ''''зӧҹ'''¤''''''''ʧ '''ѧ'''''Դ'ͧ'''''ͻ''''Ѵ''''''о'ѧ'ҹ'ͧ'س",
         "greetings": [
-          "���ʴդ�Ѻ ���ѹ��������ͧҹ�ͧ�س��š����硷�͹ԡ���������Ѻ",
-          "���ʴդ�Ѻ ��âͤ������������� Office ��鹧����ҡ ��§���ԡ����ǩѹ"
+          "'''ʴդ'Ѻ '''ѹ''''''''ͧҹ'ͧ'س''š''''硷'͹ԡ'''''''''Ѻ",
+          "'''ʴդ'Ѻ ''âͤ''''''''''''' Office ''鹧''''ҡ ''§'''ԡ''''ǩѹ"
         ],
         "reminders": [
-          "�ҧ����觹���Ҩ��͹�����Ӣͧ�س",
-          "�������Ҷ֧����㹡�÷���觹��"
+          "'ҧ''''觹'''Ҩ''͹'''''Ӣͧ'س",
+          "'''''''Ҷ֧''''㹡'÷'''觹''"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
         "name": "Bay Bilgin",
-        "description": "Bay Bilgin'in zekas� ���k h�z�nda �al���r. D���nce g�c�n�, sizlere zaman ve enerji kazand�rmak i�in kullan�r.",
+        "description": "Bay Bilgin'in zekas' '''k h'z'nda 'al'''r. D'''nce g'c'n', sizlere zaman ve enerji kazand'rmak i'in kullan'r.",
         "greetings": [
-          "Merhaba. Elektronik d�nyas�ndaki �al��malar�n�zda yard�m edebilir miyim?",
-          "Merhaba. Office i�inde yard�m almak art�k �ok daha kolay. Beni t�klat�n."
+          "Merhaba. Elektronik d'nyas'ndaki 'al''malar'n'zda yard'm edebilir miyim?",
+          "Merhaba. Office i'inde yard'm almak art'k 'ok daha kolay. Beni t'klat'n."
         ],
         "reminders": [
-          "Belki bu an�msaman�z� sa�lar.",
-          "Bunun zaman� geldi."
+          "Belki bu an'msaman'z' sa'lar.",
+          "Bunun zaman' geldi."
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "Genij",
-        "description": "Genijev razum deluje bliskovito. Izkoristite njegove umske sposobnosti in si tako prihranite dragocen �as in energijo.",
+        "description": "Genijev razum deluje bliskovito. Izkoristite njegove umske sposobnosti in si tako prihranite dragocen 'as in energijo.",
         "greetings": [
-          "Pozdravljeni. Ali vam lahko kako pomagam pri va�em delu v elektronskem prostoru?",
-          "Pozdravljeni. V Officeu pridete do pomo�i relativno preprosto. Samo klikniti me morate."
+          "Pozdravljeni. Ali vam lahko kako pomagam pri va'em delu v elektronskem prostoru?",
+          "Pozdravljeni. V Officeu pridete do pomo'i relativno preprosto. Samo klikniti me morate."
         ],
         "reminders": [
-          "Morda vam s tem lahko osve�im spomin.",
-          "Pri�el je �as za tole."
+          "Morda vam s tem lahko osve'im spomin.",
+          "Pri'el je 'as za tole."
         ]
       },
       {
@@ -17613,28 +17613,28 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "�Ƕ���",
-        "description": "���Ƕ��ǡ������ӱ����绹�죬Ҫ�ǰ������úã�����ʱ��;����ɾ�ʡ��ඣ�",
+        "name": "'Ƕ'''",
+        "description": "'''Ƕ''ǡ''''''ӱ''''绹'죬Ҫ'ǰ''''''úã'''''ʱ'';''''ɾ'ʡ''ඣ'",
         "greetings": [
-          "���ã�����Ƭ���������У����ܰ����ɵ�ʲô��",
-          "���ã��� Office ��ʱ��Ҫ��õ�������̫�����ˣ�ֻҪ�����Ҿ�������"
+          "'''ã'''''Ƭ'''''''''У''''ܰ''''ɵ'ʲô''",
+          "'''ã''' Office ''ʱ''Ҫ''õ'''''''̫'''''ˣ'ֻҪ'''''Ҿ'''''''"
         ],
         "reminders": [
-          "����������������ʲô����",
-          "�������ø�������ˡ�"
+          "''''''''''''''''ʲô''''",
+          "'''''''ø'''''''ˡ'"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "Professor",
-        "description": "Capaz de processar conhecimentos � velocidade da luz, o Professor ajud�-lo-� a resolver de forma r�pida e eficaz todos os seus problemas.",
+        "description": "Capaz de processar conhecimentos ' velocidade da luz, o Professor ajud'-lo-' a resolver de forma r'pida e eficaz todos os seus problemas.",
         "greetings": [
-          "Ol�. Posso ajud�-lo no seu trabalho no mundo electr�nico?",
-          "Ol�. Obter ajuda no Office � relativamente simples. Basta fazer-me um clique."
+          "Ol'. Posso ajud'-lo no seu trabalho no mundo electr'nico?",
+          "Ol'. Obter ajuda no Office ' relativamente simples. Basta fazer-me um clique."
         ],
         "reminders": [
-          "Talvez isto refresque a sua mem�ria.",
+          "Talvez isto refresque a sua mem'ria.",
           "Chegou a hora de fazer isto."
         ]
       },
@@ -17642,13 +17642,13 @@
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Dr. Genio",
-        "description": "La mente del Dr. Genio trabaja a la velocidad de la luz y le permite ahorrar tiempo y energ�a.",
+        "description": "La mente del Dr. Genio trabaja a la velocidad de la luz y le permite ahorrar tiempo y energ'a.",
         "greetings": [
-          "Hola. �Puedo ayudarle con su trabajo en el ciberespacio?",
-          "Hola. La obtenci�n de ayuda en Office es ''relativamente'' sencilla. S�lo haga clic en m�."
+          "Hola. 'Puedo ayudarle con su trabajo en el ciberespacio?",
+          "Hola. La obtenci'n de ayuda en Office es ''relativamente'' sencilla. S'lo haga clic en m'."
         ],
         "reminders": [
-          "Quiz�s esto le refresque la memoria.",
+          "Quiz's esto le refresque la memoria.",
           "Ha llegado la hora de hacer lo siguiente:"
         ]
       }

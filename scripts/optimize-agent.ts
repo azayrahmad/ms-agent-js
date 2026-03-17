@@ -7,10 +7,19 @@ import type { AgentCharacterDefinition, AudioAtlasEntry, AtlasEntry } from '../s
 
 // Mock some browser globals for CharacterParser
 (global as any).fetch = async (url: string) => {
-    const content = fs.readFileSync(url, 'utf-8');
+    const buffer = fs.readFileSync(url);
     return {
         ok: true,
-        text: async () => content
+        arrayBuffer: async () => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
+        text: async () => {
+            try {
+                const decoder = new TextDecoder('utf-8', { fatal: true });
+                return decoder.decode(buffer);
+            } catch (e) {
+                const decoder = new TextDecoder('windows-1252');
+                return decoder.decode(buffer);
+            }
+        }
     };
 };
 

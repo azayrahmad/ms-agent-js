@@ -13387,63 +13387,63 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "����",
-        "description": "��� ��� ���� �� ������ �� Office� ������ ���� �� ������� ��.",
+        "name": "''''",
+        "description": "''' ''' '''' '' '''''' '' Office' '''''' '''' '' ''''''' ''.",
         "greetings": [
-          "�� ���� ���� ���ӿ",
-          "�� ���� ���� ����߿",
-          "�� ��� ����� ����� ������ �����ӿ"
+          "'' '''' '''' '''ӿ",
+          "'' '''' '''' ''''߿",
+          "'' ''' ''''' ''''' '''''' '''''ӿ"
         ],
         "reminders": [
-          "��� �� ������.",
-          "��� �� ����.",
-          "������ ��� �������."
+          "''' '' ''''''.",
+          "''' '' ''''.",
+          "'''''' ''' '''''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "������",
-        "description": "�p�G�z���b Office �̴M��ѵ��A�����߯����z���ѵ���I",
+        "name": "''''''",
+        "description": "'p'G'z'''b Office '̴M''ѵ''A'''''߯''''z'''ѵ'''I",
         "greetings": [
-          "�ڬO���Oť���F���ƹ����n���O�H",
-          "�ڬO���O�ݨ��F�ƹ��b���ʩO�H",
-          "���߮��ѹ����ɫJ��F�I"
+          "'ڬO'''Oť'''F'''ƹ''''n'''O'H",
+          "'ڬO'''O'ݨ''F'ƹ''b'''ʩO'H",
+          "'''߮''ѹ''''ɫJ''F'I"
         ],
         "reminders": [
-          "�z�����ܦb�o��I",
-          "�u�r�I�ڮt�I�ѤF�C",
-          "�O�ѰO��I"
+          "'z'''''ܦb'o''I",
+          "'u'r'I'ڮt'I'ѤF'C",
+          "'O'ѰO''I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "Micka",
-        "description": "Jestli�e lov�te odpov�di v aplikac�ch Office, Micka je pro V�s chyt�.",
+        "description": "Jestli'e lov'te odpov'di v aplikac'ch Office, Micka je pro V's chyt'.",
         "greetings": [
-          "Sly�eli jste klepnut� my�i?",
-          "Vid�li jste pohnout my�?",
-          "Je �as na hru ko�ky s my��?"
+          "Sly'eli jste klepnut' my'i?",
+          "Vid'li jste pohnout my'?",
+          "Je 'as na hru ko'ky s my''?"
         ],
         "reminders": [
           "A je to tady.",
-          "Jejej, m�lem jsem zapomn�la.",
-          "Nezapome�te na toto."
+          "Jejej, m'lem jsem zapomn'la.",
+          "Nezapome'te na toto."
         ]
       },
       {
         "languageCode": "0x0406",
         "locale": {},
         "name": "Mis",
-        "description": "Hvis du er p� jagt efter svar i Office, kan Mis hj�lpe dig med at finde dem.",
+        "description": "Hvis du er p' jagt efter svar i Office, kan Mis hj'lpe dig med at finde dem.",
         "greetings": [
-          "Var det et museklik, jeg h�rte?",
-          "Var det en mus, jeg s� bev�ge sig?",
+          "Var det et museklik, jeg h'rte?",
+          "Var det en mus, jeg s' bev'ge sig?",
           "Er det tid til at lege katten efter musen?"
         ],
         "reminders": [
-          "Her er p�mindelsen.",
+          "Her er p'mindelsen.",
           "Ups, jeg var lige ved at glemme det.",
           "Husk det nu."
         ]
@@ -13452,7 +13452,7 @@
         "languageCode": "0x0407",
         "locale": {},
         "name": "Minki",
-        "description": "Immer auf der Suche nach Antworten, schleicht Minki f�r Sie auf sanften Pfoten durch Office.",
+        "description": "Immer auf der Suche nach Antworten, schleicht Minki f'r Sie auf sanften Pfoten durch Office.",
         "greetings": [
           "War da ein Mausklick?",
           "War da eine Mausbewegung?",
@@ -13460,24 +13460,24 @@
         ],
         "reminders": [
           "Hier ist Ihre Erinnerung.",
-          "Hoppla, beinahe h�tte ich etwas vergessen.",
+          "Hoppla, beinahe h'tte ich etwas vergessen.",
           "Nicht vergessen."
         ]
       },
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "� ������",
-        "description": "��� ����� ��� ������ ��� ���������� ������� �� �� Office, � ������ ������ �� ��� ������ ��� ���.",
+        "name": "' ''''''",
+        "description": "''' ''''' ''' '''''' ''' '''''''''' ''''''' '' '' Office, ' '''''' '''''' '' ''' '''''' ''' '''.",
         "greetings": [
-          "����� ������ ��� ���� ��� ���������;",
-          "����� ���� ��� ������� �� ��������;",
-          "������ � ��� �� �������� �� ���� ��� �� �������;"
+          "''''' '''''' ''' '''' ''' ''''''''';",
+          "''''' '''' ''' ''''''' '' '''''''';",
+          "'''''' ' ''' '' '''''''' '' '''' ''' '' ''''''';"
         ],
         "reminders": [
-          "���� ����� � ���������� ���.",
-          "��, �������� �� �������.",
-          "��� ��������."
+          "'''' ''''' ' '''''''''' '''.",
+          "'', '''''''' '' '''''''.",
+          "''' ''''''''."
         ]
       },
       {
@@ -13502,72 +13502,72 @@
         "name": "Katti",
         "description": "Katti saalistaa puolestasi vastauksia Officea koskeviin kysymyksiin.",
         "greetings": [
-          "Napsahtiko t��ll� hiiri?",
+          "Napsahtiko t''ll' hiiri?",
           "Liikkuiko hiiri?",
-          "Leikit��nk� kissaa ja hiirt�?"
+          "Leikit''nk' kissaa ja hiirt'?"
         ],
         "reminders": [
-          "Muistin virkist�miseksi.",
+          "Muistin virkist'miseksi.",
           "Hups! Melkein unohtui.",
-          "�l� unohda t�t�."
+          "'l' unohda t't'."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
         "name": "Tifauve",
-        "description": "Si vous �tes � la recherche de r�ponses sur Office, Tifauve peut les d�busquer pour vous.",
+        "description": "Si vous 'tes ' la recherche de r'ponses sur Office, Tifauve peut les d'busquer pour vous.",
         "greetings": [
           "Ai-je bien entendu un clic de souris?",
-          "N'aurais-je pas vu une souris se d�placer?",
-          "Vous voulez jouer au chat et � la souris?"
+          "N'aurais-je pas vu une souris se d'placer?",
+          "Vous voulez jouer au chat et ' la souris?"
         ],
         "reminders": [
           "Voici votre rappel.",
-          "Oh la la, j'allais oubli�.",
+          "Oh la la, j'allais oubli'.",
           "N'oubliez pas."
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "�����",
-        "description": "�� ��� ���� ������� �- Office, ����� ���� ����� ������ �����.",
+        "name": "'''''",
+        "description": "'' ''' '''' ''''''' '- Office, ''''' '''' ''''' '''''' '''''.",
         "greetings": [
-          "��� ����� ����� ����?",
-          "��� ����� ����� ����?",
-          "��� ���� ���� ���� ����� �����?"
+          "''' ''''' ''''' ''''?",
+          "''' ''''' ''''' ''''?",
+          "''' '''' '''' '''' ''''' '''''?"
         ],
         "reminders": [
-          "��� ������� ���.",
-          "����, ���� �����.",
-          "�� ����."
+          "''' ''''''' '''.",
+          "'''', '''' '''''.",
+          "'' ''''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
         "name": "Offica",
-        "description": "Ha Office-os k�rd�seire keres v�laszt, Offica majd felhajszolja �ket.",
+        "description": "Ha Office-os k'rd'seire keres v'laszt, Offica majd felhajszolja 'ket.",
         "greetings": [
-          "Csak nem eg�rkattint�st hallottam?",
-          "Csak nem egy eg�r mozgol�dik?",
-          "J�tszunk egy kis macskafog�csk�t?"
+          "Csak nem eg'rkattint'st hallottam?",
+          "Csak nem egy eg'r mozgol'dik?",
+          "J'tszunk egy kis macskafog'csk't?"
         ],
         "reminders": [
-          "Itt az eml�keztet�je.",
+          "Itt az eml'keztet'je.",
           "Hopp, majdnem elfelejtettem.",
-          "Ne feledkezz�k meg r�la."
+          "Ne feledkezz'k meg r'la."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Arturo",
-        "description": "Se siete a caccia di risposte ai vostri dubbi su Office, Arturo vi aiuter� a catturarle.",
+        "description": "Se siete a caccia di risposte ai vostri dubbi su Office, Arturo vi aiuter' a catturarle.",
         "greetings": [
           "Sbaglio o il mouse ha fatto clic?",
-          "Sbaglio o il mouse si � mosso?",
+          "Sbaglio o il mouse si ' mosso?",
           "Con quella codina, il mouse sembra proprio un topolino."
         ],
         "reminders": [
@@ -13579,33 +13579,33 @@
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "�~�~�[",
-        "description": "Office �ł��Y�݂̂��Ȃ��A���킢���~�~�[������`�����܂��B",
+        "name": "'~'~'[",
+        "description": "Office 'ł''Y'݂̂''Ȃ''A'''킢'''~'~'[''''''`'''''܂''B",
         "greetings": [
-          "�~�~�[���Ă񂾁H",
-          "�~�~�[�̏o�ԁH",
-          "���Ԃ�I"
+          "'~'~'['''Ă񂾁H",
+          "'~'~'['̏o'ԁH",
+          "'''Ԃ'I"
         ],
         "reminders": [
-          "�v���o�����H",
-          "�Y�ꂿ�Ⴞ�߂�B",
-          "���Y��Ȃ��B"
+          "'v'''o'''''H",
+          "'Y'ꂿ'Ⴞ'߂'B",
+          "'''Y''Ȃ''B"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "������",
-        "description": "����� ã�� ��Ű� �ִٸ�, �����̰� �ذ��� �� �� �ֽ��ϴ�.",
+        "name": "''''''",
+        "description": "''''' ã'' ''Ű' 'ִٸ', '''''̰' 'ذ''' '' '' 'ֽ''ϴ'.",
         "greetings": [
-          "���콺 Ŭ���ϴ� �Ҹ��� �� �� ������...",
-          "���콺�� �����̴� �� ���� ������...",
-          "��� ���콺�� ��ƺ���?"
+          "'''콺 Ŭ'''ϴ' 'Ҹ''' '' '' ''''''...",
+          "'''콺'' '''''̴' '' '''' ''''''...",
+          "''' '''콺'' ''ƺ'''?"
         ],
         "reminders": [
-          "����� �ּ���.",
-          "���, ���� �ؾ��׿�.",
-          "���� ������."
+          "''''' 'ּ'''.",
+          "''', '''' 'ؾ''׿'.",
+          "'''' ''''''."
         ]
       },
       {
@@ -13628,14 +13628,14 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Murre",
-        "description": "Hvis du er p� jakt etter svar i Office, da kan Murre fange dem for deg.",
+        "description": "Hvis du er p' jakt etter svar i Office, da kan Murre fange dem for deg.",
         "greetings": [
-          "H�rte jeg en mus klikke?",
-          "S� jeg en mus r�re p� seg?",
-          "Tid for � leke katt og mus?"
+          "H'rte jeg en mus klikke?",
+          "S' jeg en mus r're p' seg?",
+          "Tid for ' leke katt og mus?"
         ],
         "reminders": [
-          "Her er p�minnelsen.",
+          "Her er p'minnelsen.",
           "Oops, jeg glemte det nesten.",
           "Ikke glem det."
         ]
@@ -13644,11 +13644,11 @@
         "languageCode": "0x0415",
         "locale": {},
         "name": "Links",
-        "description": "Je�li polujesz na odpowiedzi w programie Office, Links mo�e je dla Ciebie z�apa�.",
+        "description": "Je'li polujesz na odpowiedzi w programie Office, Links mo'e je dla Ciebie z'apa'.",
         "greetings": [
-          "Czy�bym us�ysza� chrobot myszy?",
-          "Czy widzia�em ruch myszy?",
-          "Mo�e zabawimy si� w kotka i myszk�?"
+          "Czy'bym us'ysza' chrobot myszy?",
+          "Czy widzia'em ruch myszy?",
+          "Mo'e zabawimy si' w kotka i myszk'?"
         ],
         "reminders": [
           "Oto Twoje przypomnienie:",
@@ -13659,48 +13659,48 @@
         "languageCode": "0x0416",
         "locale": {},
         "name": "Mimi",
-        "description": "Se voc� anda � espreita de respostas no Office, a gatinha Mimi pode captur�-las para voc�.",
+        "description": "Se voc' anda ' espreita de respostas no Office, a gatinha Mimi pode captur'-las para voc'.",
         "greetings": [
           "Acho que ouvi o clique de um mouse!",
           "Acho que vi um mouse mover-se.",
-          "� hora de brincar de gato e rato?"
+          "' hora de brincar de gato e rato?"
         ],
         "reminders": [
-          "Aqui est� o seu lembrete.",
+          "Aqui est' o seu lembrete.",
           "Opa! Quase me esqueci!",
-          "N�o se esque�a."
+          "N'o se esque'a."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "Links",
-        "description": "Dac� da�i t�rcoale prin Office dup� r�spunsuri, Links poate s� le v�neze pentru dvs.",
+        "description": "Dac' da'i t'rcoale prin Office dup' r'spunsuri, Links poate s' le v'neze pentru dvs.",
         "greetings": [
           "Am auzit cumva un clic de maus?",
-          "S-a mi�cat cumva vreun maus?",
-          "E vremea s� ne juc�m de-a �oarecele �i pisica?"
+          "S-a mi'cat cumva vreun maus?",
+          "E vremea s' ne juc'm de-a 'oarecele 'i pisica?"
         ],
         "reminders": [
-          "Iat� memento-ul.",
-          "Vai, aproape c� uitasem.",
+          "Iat' memento-ul.",
+          "Vai, aproape c' uitasem.",
           "Nu uita."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "�����",
-        "description": "���� �� ��������� �� �������� �� ���������� Office, ����� ������� �� ���������.",
+        "name": "'''''",
+        "description": "'''' '' ''''''''' '' '''''''' '' '''''''''' Office, ''''' ''''''' '' '''''''''.",
         "greetings": [
-          "�, �������, �������� ������ �����.",
-          "�, �������, �������� �������� �����.",
-          "�� ������ �� ����� �������� � �����-�����?"
+          "', ''''''', '''''''' '''''' '''''.",
+          "', ''''''', '''''''' '''''''' '''''.",
+          "'' '''''' '' ''''' '''''''' ' '''''-'''''?"
         ],
         "reminders": [
-          "�����������.",
-          "��, ���� �� ������.",
-          "�� ��������."
+          "'''''''''''.",
+          "'', '''' '' ''''''.",
+          "'' ''''''''."
         ]
       },
       {
@@ -13709,12 +13709,12 @@
         "name": "Veze",
         "description": "Ako ste u potrazi za odgovorima u Officeu, Veze ih mogu uloviti za vas.",
         "greetings": [
-          "Jesam li �uo pritisak mi�a?",
-          "Jesam li opazio pomak mi�a?",
-          "Vrijeme je da se igramo ma�ke i mi�a?"
+          "Jesam li 'uo pritisak mi'a?",
+          "Jesam li opazio pomak mi'a?",
+          "Vrijeme je da se igramo ma'ke i mi'a?"
         ],
         "reminders": [
-          "Ovdje je va� podsjetnik.",
+          "Ovdje je va' podsjetnik.",
           "Hopa, skoro sam zaboravio.",
           "Ne zaboravite."
         ]
@@ -13723,14 +13723,14 @@
         "languageCode": "0x041b",
         "locale": {},
         "name": "Micka",
-        "description": "Ak h�ad�te odpovede v aplik�ci�ch Office, Micka ich pre v�s ulov�.",
+        "description": "Ak h'ad'te odpovede v aplik'ci'ch Office, Micka ich pre v's ulov'.",
         "greetings": [
-          "�eby som po�ula klikn�� my�?",
-          "�eby som zbadala prebehn�� my�?",
-          "U� je �as zahra� sa na ma�ku a my�?"
+          "'eby som po'ula klikn'' my'?",
+          "'eby som zbadala prebehn'' my'?",
+          "U' je 'as zahra' sa na ma'ku a my'?"
         ],
         "reminders": [
-          "Priali ste si pripomen��.",
+          "Priali ste si pripomen''.",
           "Jaj, skoro by som zabudla.",
           "Nezabudnite."
         ]
@@ -13738,47 +13738,47 @@
       {
         "languageCode": "0x041d",
         "locale": {},
-        "name": "L�nken",
-        "description": "Om du �r p� spaning efter svar p� fr�gor om Office, kan L�nken hj�lpa dig att jaga r�tt p� dem.",
+        "name": "L'nken",
+        "description": "Om du 'r p' spaning efter svar p' fr'gor om Office, kan L'nken hj'lpa dig att jaga r'tt p' dem.",
         "greetings": [
-          "H�rde jag ett musklick?",
-          "S�g jag en musr�relse?",
-          "Dags f�r kattens lek med musen?"
+          "H'rde jag ett musklick?",
+          "S'g jag en musr'relse?",
+          "Dags f'r kattens lek med musen?"
         ],
         "reminders": [
-          "H�r kommer p�minnelsen.",
-          "Hoppla, jag h�ll p� att gl�mma bort!",
-          "Gl�m inte."
+          "H'r kommer p'minnelsen.",
+          "Hoppla, jag h'll p' att gl'mma bort!",
+          "Gl'm inte."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "���������",
-        "description": "��Ҥس���ѧ���Ҥӵͺ� Office �������������ö�������觷��س��ͧ�����",
+        "name": "'''''''''",
+        "description": "''Ҥس'''ѧ'''Ҥӵͺ' Office '''''''''''''ö'''''''觷''س''ͧ'''''",
         "greetings": [
-          "���ѹ���Թ���§��ԡ��������������",
-          "���ѹ������������͹������������",
-          "�֧�������������Ѻ˹�����"
+          "'''ѹ'''Թ'''§''ԡ''''''''''''''",
+          "'''ѹ''''''''''''͹''''''''''''",
+          "'֧'''''''''''''Ѻ˹'''''"
         ],
         "reminders": [
-          "����͵����͹�ͧ�س",
-          "��� �ѹ��ͺ�����������",
-          "���������"
+          "''''͵''''͹'ͧ'س",
+          "''' 'ѹ''ͺ'''''''''''",
+          "'''''''''"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
-        "name": "Minno�",
-        "description": "Office'de yan�tlar� bulmak i�in ko�u�turuyorsan�z, Minno� bunlar� sizin i�in yakalar.",
+        "name": "Minno'",
+        "description": "Office'de yan'tlar' bulmak i'in ko'u'turuyorsan'z, Minno' bunlar' sizin i'in yakalar.",
         "greetings": [
-          "Bir fare t�klatmas� m� duydum?",
+          "Bir fare t'klatmas' m' duydum?",
           "Sanki bir fare hareket mi ediyor?",
-          "Kedi fare oyunu zaman� geldi mi?"
+          "Kedi fare oyunu zaman' geldi mi?"
         ],
         "reminders": [
-          "��te an�msat�c�n�z.",
+          "''te an'msat'c'n'z.",
           "Az daha unutuyordum.",
           "Unutma."
         ]
@@ -13787,14 +13787,14 @@
         "languageCode": "0x0424",
         "locale": {},
         "name": "Mijavko",
-        "description": "�e v Officeu lovite odgovore, vam jih Mijavko lahko pomaga uloviti.",
+        "description": "'e v Officeu lovite odgovore, vam jih Mijavko lahko pomaga uloviti.",
         "greetings": [
-          "Ali sem sli�al mi�kin klik?",
-          "Ali se je mi�ka premaknila?",
-          "Ali je �as za igro ma�ke z mi�ko?"
+          "Ali sem sli'al mi'kin klik?",
+          "Ali se je mi'ka premaknila?",
+          "Ali je 'as za igro ma'ke z mi'ko?"
         ],
         "reminders": [
-          "Va� opomin je tu.",
+          "Va' opomin je tu.",
           "Mijauuu, skoraj bi pozabil.",
           "Ne pozabite."
         ]
@@ -13818,48 +13818,48 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "����",
-        "description": "�������ʹ�� Office ʱ���������⣬����ΪѰ�Ҵ𰸶�ǧ�����������С�����������������ɳ��",
+        "name": "''''",
+        "description": "'''''''ʹ'' Office ʱ'''''''''⣬''''ΪѰ'Ҵ𰸶'ǧ'''''''''''С'''''''''''''''''ɳ''",
         "greetings": [
-          "���ǲ���������������갴ť�ˣ�",
-          "���ǲ��ǿ������ƶ����ָ���ˣ�",
-          "���ڸ��桰è�������ˣ�"
+          "'''ǲ'''''''''''''''갴ť'ˣ'",
+          "'''ǲ''ǿ''''''ƶ''''ָ'''ˣ'",
+          "'''ڸ''桰è'''''''ˣ'"
         ],
         "reminders": [
-          "���ڵ��������ˡ�",
-          "�ޣ��Ҳ�����ˡ�",
-          "�ɱ�����Ŷ��"
+          "'''ڵ''''''''ˡ'",
+          "'ޣ''Ҳ'''''ˡ'",
+          "'ɱ'''''Ŷ''"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "Links",
-        "description": "Se est� � procura de respostas no Office, a Links pode ca��-las para si.",
+        "description": "Se est' ' procura de respostas no Office, a Links pode ca''-las para si.",
         "greetings": [
           "Ouvi um clique de um rato?",
           "Vi um rato a mexer-se?",
-          "Est� na hora de brincar ao gato e ao rato?"
+          "Est' na hora de brincar ao gato e ao rato?"
         ],
         "reminders": [
-          "Aqui est� o seu lembrete.",
+          "Aqui est' o seu lembrete.",
           "Oops, quase que me esquecia.",
-          "N�o se esque�a."
+          "N'o se esque'a."
         ]
       },
       {
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Minino",
-        "description": "Si est�s a la caza de respuestas sobre Office, Minino te puede ayudar a atraparlas.",
+        "description": "Si est's a la caza de respuestas sobre Office, Minino te puede ayudar a atraparlas.",
         "greetings": [
-          "�Se ha movido el ''rat�n''?",
-          "�D�nde est� el ''rat�n''?",
-          "�Quieres jugar?"
+          "'Se ha movido el ''rat'n''?",
+          "'D'nde est' el ''rat'n''?",
+          "'Quieres jugar?"
         ],
         "reminders": [
           "Esto es un aviso.",
-          "�Ay! Casi se me olvida.",
+          "'Ay! Casi se me olvida.",
           "No lo olvides."
         ]
       }

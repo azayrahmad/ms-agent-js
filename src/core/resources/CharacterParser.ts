@@ -77,7 +77,19 @@ export class CharacterParser {
     if (!response.ok) {
       throw new Error(`Failed to load .acd file: ${response.statusText}`);
     }
-    const content = await response.text();
+
+    let content: string;
+    const buffer = await response.arrayBuffer();
+
+    try {
+      const decoder = new TextDecoder("utf-8", { fatal: true });
+      content = decoder.decode(buffer);
+    } catch (e) {
+      // Fallback to Windows-1252 for legacy character files
+      const decoder = new TextDecoder("windows-1252");
+      content = decoder.decode(buffer);
+    }
+
     const parser = new CharacterParser();
     return parser.parse(content);
   }

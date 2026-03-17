@@ -18951,44 +18951,44 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "������� �����",
-        "description": "������� ����� �� ����� �� ����� �300/M� ��� �� ����� ������ �����ɡ ������ ��� Office ��� ����� ������.",
+        "name": "''''''' '''''",
+        "description": "''''''' ''''' '' ''''' '' ''''' '300/M' ''' '' ''''' '''''' '''''ɡ '''''' ''' Office ''' ''''' ''''''.",
         "greetings": [
-          "������! ������= ���� ����� ���������",
-          "��� ����� ������...  ���_ ��������= �",
-          "������= �����_������  ��� ��������= �",
-          "�������> ��� ���߿  ������= ���� ����� ���������"
+          "''''''! ''''''= '''' ''''' '''''''''",
+          "''' ''''' ''''''...  '''_ ''''''''= '",
+          "''''''= '''''_''''''  ''' ''''''''= '",
+          "'''''''> ''' '''߿  ''''''= '''' ''''' '''''''''"
         ],
         "reminders": [
-          "�����_����:",
-          "��� �������: ����� >",
-          "������ >",
-          "�������> �� ���� ������ ���� ����"
+          "'''''_'''':",
+          "''' ''''''': ''''' >",
+          "'''''' >",
+          "'''''''> '' '''' '''''' '''' ''''"
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "�L�n�@��",
-        "description": "�L�n�@���i�O 300/M �t�C���Ĥ@�W�@�A�o�O�]�p�Ӭ��z�A�Ȫ��C�o�x�����i�����O���F Office 2000 �Ӷq���q������I",
+        "name": "'L'n'@''",
+        "description": "'L'n'@'''i'O 300/M 't'C'''Ĥ@'W'@'A'o'O']'p'Ӭ''z'A'Ȫ''C'o'x'''''i'''''O'''F Office 2000 'Ӷq'''q''''''I",
         "greetings": [
-          "���o�I���A = �w�ǳƱ������O",
-          "�{���]�p���F���ѪA��...  �ϥΪ̫��O= ?",
-          "���A =  �D�`�����U  �ϥΪ̫��O= ?",
-          "�d��> �z�n�ܡH ���A= �w�ǳƱ������O"
+          "'''o'I'''A = 'w'ǳƱ''''''O",
+          "'{''']'p'''F'''ѪA''...  'ϥΪ̫''O= ?",
+          "'''A =  'D'`'''''U  'ϥΪ̫''O= ?",
+          "'d''> 'z'n'ܡH '''A= 'w'ǳƱ''''''O"
         ],
         "reminders": [
-          "�ƥ󴣿�:",
-          "�p�n�D: ���� >",
-          "�z������ >",
-          "�d��> �z�{�b�ݭn���o�ӶܡH"
+          "'ƥ󴣿':",
+          "'p'n'D: '''' >",
+          "'z'''''' >",
+          "'d''> 'z'{'b'ݭn'''o'ӶܡH"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "F1",
-        "description": "F1 je prvn� ze s�rie 300/M a je sestrojen tak, aby slou�il. Tento robot je pln� optimalizov�n pro pou�it� v aplikac�ch Office.",
+        "description": "F1 je prvn' ze s'rie 300/M a je sestrojen tak, aby slou'il. Tento robot je pln' optimalizov'n pro pou'it' v aplikac'ch Office.",
         "greetings": [
           "ZDRAVIM! STAV= PRIPRAVEN PRO INSTRUKCE",
           "NAPROGRAMOVAN KE SLUZBE...  PRIKAZ= ?",
@@ -19006,27 +19006,27 @@
         "languageCode": "0x0406",
         "locale": {},
         "name": "F1",
-        "description": "F1 er den f�rste i 300/M-serien, bygget til at st� til tjeneste. Denne robot er helt optimeret til Office-brug.",
+        "description": "F1 er den f'rste i 300/M-serien, bygget til at st' til tjeneste. Denne robot er helt optimeret til Office-brug.",
         "greetings": [
           "GODDAG! STATUS= KLAR TIL INSTRUKTION",
           "PROGRAMMERET TIL AT TJENE...  BRUGERKOMMANDO= ?",
-          "STATUS= MEGET_HJ�LPSOM  BRUGERKOMMANDO= ?",
-          "SP�RGSM�L> HVORDAN G�R DET?  STATUS= KLAR TIL INSTRUKTION"
+          "STATUS= MEGET_HJ'LPSOM  BRUGERKOMMANDO= ?",
+          "SP'RGSM'L> HVORDAN G'R DET?  STATUS= KLAR TIL INSTRUKTION"
         ],
         "reminders": [
-          "P�MINDELSE:",
-          "SOM BEFALET: P�MINDELSE >",
-          "DIN_P�MINDELSE >",
-          "SP�RGSM�L> SKAL DU G�RE DETTE NU?"
+          "P'MINDELSE:",
+          "SOM BEFALET: P'MINDELSE >",
+          "DIN_P'MINDELSE >",
+          "SP'RGSM'L> SKAL DU G'RE DETTE NU?"
         ]
       },
       {
         "languageCode": "0x0407",
         "locale": {},
         "name": "F1",
-        "description": "F1 ist der Erste der 300/M-Serie, der sich f�r Sie n�tzlich macht. Dieser Roboter ist speziell f�r Office optimiert.",
+        "description": "F1 ist der Erste der 300/M-Serie, der sich f'r Sie n'tzlich macht. Dieser Roboter ist speziell f'r Office optimiert.",
         "greetings": [
-          "GR��E! STATUS= BEREIT F�R BEFEHLE",
+          "GR''E! STATUS= BEREIT F'R BEFEHLE",
           "AUF SERVICE PROGRAMMIERT  BENUTZER_BEFEHL= ?",
           "STATUS= SEHR HILFSBEREIT BENUTZER_BEFEHL= ?",
           "ANFRAGE> WIE GEHT ES?  STATUS= WARTE AUF BEFEHLE"
@@ -19042,18 +19042,18 @@
         "languageCode": "0x0408",
         "locale": {},
         "name": "F1",
-        "description": "�� F1 ����� �� ����� ������ ��� ������ 300/�, ������ �������������� �� ��� ��������. ����� ������ ������������� ��� ����� ��� Office.",
+        "description": "'' F1 ''''' '' ''''' '''''' ''' '''''' 300/', '''''' '''''''''''''' '' ''' ''''''''. ''''' '''''' ''''''''''''' ''' ''''' ''' Office.",
         "greetings": [
-          "�������! ���������=������ ��� �������.",
-          "���������������� �� ��������...������_������= ;",
-          "���������=���� �����������  ������_������= ;",
-          "�������> �� ������; ���������= ������ ��� �������"
+          "'''''''! '''''''''='''''' ''' '''''''.",
+          "'''''''''''''''' '' ''''''''...''''''_''''''= ;",
+          "'''''''''='''' '''''''''''  ''''''_''''''= ;",
+          "'''''''> '' ''''''; '''''''''= '''''' ''' '''''''"
         ],
         "reminders": [
-          "����������_���������:",
-          "���� ��������: ����������>",
-          "�_����������_���>",
-          "�������> ������ �� �� ������ ���� ����;"
+          "''''''''''_''''''''':",
+          "'''' '''''''': ''''''''''>",
+          "'_''''''''''_'''>",
+          "'''''''> '''''' '' '' '''''' '''' '''';"
         ]
       },
       {
@@ -19078,79 +19078,79 @@
         "languageCode": "0x040b",
         "locale": {},
         "name": "F1",
-        "description": "F1 on ensimm�inen Office-k�ytt��n suunniteltu 300/M-sarjan palvelurobotti.",
+        "description": "F1 on ensimm'inen Office-k'ytt''n suunniteltu 300/M-sarjan palvelurobotti.",
         "greetings": [
           "TERVEHDYS! TILA= VALMIS OPASTAMAAN",
-          "OHJELMOITU AUTTAMAAN...  K�YTT�J�N_KOMENTO= ?",
-          "TILA= AUTTAVAINEN  K�YTT�J�N_KOMENTO= ?",
-          "KYSELY> MIT� KUULUU?  TILA= VALMIS OPASTAMAAN"
+          "OHJELMOITU AUTTAMAAN...  K'YTT'J'N_KOMENTO= ?",
+          "TILA= AUTTAVAINEN  K'YTT'J'N_KOMENTO= ?",
+          "KYSELY> MIT' KUULUU?  TILA= VALMIS OPASTAMAAN"
         ],
         "reminders": [
           "MUISTUTUS:",
           "PYYDETTY: MUISTUTUS >",
           "MUISTUTUKSESI >",
-          "KYSELY> PIT��K� SINUN TEHD� T�M� NYT?"
+          "KYSELY> PIT''K' SINUN TEHD' T'M' NYT?"
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
-        "name": "M�canOffice",
-        "description": "M�canOffice est le premier robot de la s�rie 300/M, con�u pour servir. Avec Office, il offre la pleine mesure de ses moyens.",
+        "name": "M'canOffice",
+        "description": "M'canOffice est le premier robot de la s'rie 300/M, con'u pour servir. Avec Office, il offre la pleine mesure de ses moyens.",
         "greetings": [
-          "SALUTATIONS! �TAT= PRET POUR INSTRUCTIONS",
-          "PROGRAMM� POUR SERVIR...COMMANDE_UTILISATEUR= ?",
-          "�TAT= COMMANDE_UTILISATEUR_TRES_UTILE= ?",
-          "REQUETE> COMMENT ALLEZ VOUS? �TAT= PRET POUR INSTRUCTIONS"
+          "SALUTATIONS! 'TAT= PRET POUR INSTRUCTIONS",
+          "PROGRAMM' POUR SERVIR...COMMANDE_UTILISATEUR= ?",
+          "'TAT= COMMANDE_UTILISATEUR_TRES_UTILE= ?",
+          "REQUETE> COMMENT ALLEZ VOUS? 'TAT= PRET POUR INSTRUCTIONS"
         ],
         "reminders": [
-          "RAPPEL_�V�NEMENT:",
+          "RAPPEL_'V'NEMENT:",
           "SELON DEMANDE: RAPPEL >",
           "VOTRE_RAPPEL >",
-          "REQUETE> VOULEZ VOUS EFFECTUEZ CETTE OP�RATION MAINTENANT?"
+          "REQUETE> VOULEZ VOUS EFFECTUEZ CETTE OP'RATION MAINTENANT?"
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
         "name": "F1",
-        "description": "F1 ��� ���� ������ ������ �300/M, ���� ���� ��� ���� ����. ����� �� ����� ����� ��� ������ �- Office.",
+        "description": "F1 ''' '''' '''''' '''''' '300/M, '''' '''' ''' '''' ''''. ''''' '' ''''' ''''' ''' '''''' '- Office.",
         "greetings": [
-          "����! ���= ���� ����� ������",
-          "������ ����...  �����_�����= ?",
-          "���= �����_����  �����_�����= ?",
-          "������> �� �����?  ���= ���� ����� ������"
+          "''''! '''= '''' ''''' ''''''",
+          "'''''' ''''...  '''''_'''''= ?",
+          "'''= '''''_''''  '''''_'''''= ?",
+          "''''''> '' '''''?  '''= '''' ''''' ''''''"
         ],
         "reminders": [
-          "������_�����:",
-          "������: ������ >",
-          "�������_��� >",
-          "������> ��� ���� ����� ��� ���?"
+          "''''''_''''':",
+          "'''''': '''''' >",
+          "'''''''_''' >",
+          "''''''> ''' '''' ''''' ''' '''?"
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Seg�ts Elek",
-        "description": "Elek a 300/M-sorozat szolg�latk�szre tervezett els� darabja. Ezt a robotot kifejezetten az Office haszn�lat�hoz fejlesztett�k ki.",
+        "name": "Seg'ts Elek",
+        "description": "Elek a 300/M-sorozat szolg'latk'szre tervezett els' darabja. Ezt a robotot kifejezetten az Office haszn'lat'hoz fejlesztett'k ki.",
         "greetings": [
-          "�DV�ZL�M! �LLAPOT= UTAS�T�SRA K�SZ",
-          "SZOLG�LATRA  BEPROGRAMOZVA...  FELHASZN�L�_PARANCSA= ?",
-          "�LLAPOT= NAGYON_SEG�T�K�SZ  FELHASZN�L�_PARANCSA= ?",
-          "K�RD�S> HOGY' S MINT?  �LLAPOT= UTAS�T�SRA K�SZ"
+          "'DV'ZL'M! 'LLAPOT= UTAS'T'SRA K'SZ",
+          "SZOLG'LATRA  BEPROGRAMOZVA...  FELHASZN'L'_PARANCSA= ?",
+          "'LLAPOT= NAGYON_SEG'T'K'SZ  FELHASZN'L'_PARANCSA= ?",
+          "K'RD'S> HOGY' S MINT?  'LLAPOT= UTAS'T'SRA K'SZ"
         ],
         "reminders": [
-          "ESEM�NY_EML�KEZTET�:",
-          "K�V�NS�GA SZERINT: EML�KEZTET� >",
-          "EML�KEZTET�_�NNEK >",
-          "K�RD�S> MOST KELL EZT ELINT�ZNIE?"
+          "ESEM'NY_EML'KEZTET':",
+          "K'V'NS'GA SZERINT: EML'KEZTET' >",
+          "EML'KEZTET'_'NNEK >",
+          "K'RD'S> MOST KELL EZT ELINT'ZNIE?"
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "F1",
-        "description": "F1 � il primo robot della serie 300/M. � perfettamente ottimizzato per l'utilizzo con Office.",
+        "description": "F1 ' il primo robot della serie 300/M. ' perfettamente ottimizzato per l'utilizzo con Office.",
         "greetings": [
           "SALVE! STATO= PRONTO PER RICEVERE ISTRUZIONI",
           "PROGRAMMATO PER SERVIRE... COMANDO_UTENTE= ?",
@@ -19168,36 +19168,36 @@
         "languageCode": "0x0411",
         "locale": {},
         "name": "F1",
-        "description": "300/M�V���[�Y�̏��ヂ�f���BOffice �p�Ƀ`���[�j���O�����B",
+        "description": "300/M'V'''['Y'̏''ヂ'f'''BOffice 'p'Ƀ`'''['j'''O'''''B",
         "greetings": [
-          "�R���j�`�n�B�S�V�c�������h�E�]�I",
-          "�R���j�`�n�B�S�V�c�������h�E�]�I",
-          "�R���j�`�n�B�S�V�c�������h�E�]�I",
-          "�R���j�`�n�B�S�V�c�������h�E�]�I"
+          "'R'''j'`'n'B'S'V'c'''''''h'E']'I",
+          "'R'''j'`'n'B'S'V'c'''''''h'E']'I",
+          "'R'''j'`'n'B'S'V'c'''''''h'E']'I",
+          "'R'''j'`'n'B'S'V'c'''''''h'E']'I"
         ],
         "reminders": [
-          "�I�W�J���f�X",
-          "�I�W�J���f�X",
-          "�I�W�J���f�X",
-          "�I�W�J���f�X"
+          "'I'W'J'''f'X",
+          "'I'W'J'''f'X",
+          "'I'W'J'''f'X",
+          "'I'W'J'''f'X"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "�κ�",
-        "description": "�κ��� 300M ���ָ� ���� �� ù �����Դϴ�. Office ����ڸ� ���� ������ �κ��Դϴ�.",
+        "name": "'κ'",
+        "description": "'κ''' 300M '''ָ' '''' '' ù '''''Դϴ'. Office ''''ڸ' '''' '''''' 'κ''Դϴ'.",
         "greetings": [
-          "�����մϴ�! ����= �Ұ� �غ� �Ϸ�",
-          "���͵帱 �غ���...  ����� ���ɾ�= ?",
-          "����= �ſ� ������  ����� ����= ?",
-          "����> �ȳ��ϼ���?  ����= �Ұ� �غ� �Ϸ�"
+          "'''''մϴ'! ''''= 'Ұ' 'غ' 'Ϸ'",
+          "'''͵帱 'غ'''...  ''''' '''ɾ'= ?",
+          "''''= 'ſ' ''''''  ''''' ''''= ?",
+          "''''> 'ȳ''ϼ'''?  ''''= 'Ұ' 'غ' 'Ϸ'"
         ],
         "reminders": [
-          "����Ͻʽÿ�:",
-          "��û ����: ����ϼ��� >",
-          "����ϼ��� >",
-          "����> �̰��� ���� �ʿ��Ͻʴϱ�?"
+          "''''Ͻʽÿ':",
+          "''û '''': ''''ϼ''' >",
+          "''''ϼ''' >",
+          "''''> '̰''' '''' 'ʿ''Ͻʴϱ'?"
         ]
       },
       {
@@ -19222,115 +19222,115 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "F1",
-        "description": "F1 er den f�rste i 300/M-serien, bygget for � st� til tjeneste. Denne roboten er fullstendig optimalisert for Office-bruk.",
+        "description": "F1 er den f'rste i 300/M-serien, bygget for ' st' til tjeneste. Denne roboten er fullstendig optimalisert for Office-bruk.",
         "greetings": [
-          "V�R HILSET! STATUS= KLAR FOR INSTRUKSJON",
-          "PROGRAMMERT FOR � ST� TIL TJENESTE...  BRUKERKOMMANDO= ?",
-          "STATUS= SV�RT HJELPSOM  BRUKERKOMMANDO= ?",
-          "SP�RSM�L> HVORDAN ST�R DET TIL?  STATUS= KLAR FOR INSTRUKSJON"
+          "V'R HILSET! STATUS= KLAR FOR INSTRUKSJON",
+          "PROGRAMMERT FOR ' ST' TIL TJENESTE...  BRUKERKOMMANDO= ?",
+          "STATUS= SV'RT HJELPSOM  BRUKERKOMMANDO= ?",
+          "SP'RSM'L> HVORDAN ST'R DET TIL?  STATUS= KLAR FOR INSTRUKSJON"
         ],
         "reminders": [
-          "HENDELSES P�MINNELSE:",
-          "SOM FORESPURT: P�MINNELSE >",
-          "P�MINNELSEN_DIN >",
-          "SP�RSM�L> TRENGER DU � GJ�RE DETTE N�?"
+          "HENDELSES P'MINNELSE:",
+          "SOM FORESPURT: P'MINNELSE >",
+          "P'MINNELSEN_DIN >",
+          "SP'RSM'L> TRENGER DU ' GJ'RE DETTE N'?"
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "F1",
-        "description": "F1 to pierwszy model z serii 300/M. Ten robot jest w pe�ni zoptymalizowany do pracy w programie Office.",
+        "description": "F1 to pierwszy model z serii 300/M. Ten robot jest w pe'ni zoptymalizowany do pracy w programie Office.",
         "greetings": [
           "POZDROWIENIA! STAN= GOTOWY DO PRACY",
-          "ZAPROGRAMOWANY BY POMAGA�...  POLECENIE_U�YTKOWNIKA= ?",
-          "STAN= BARDZO_POMOCNY  POLECENIE_U�YTKOWNIKA= ?",
-          "PYTANIE> JAK SI� MASZ?  STAN= GOTOWY DO PRACY"
+          "ZAPROGRAMOWANY BY POMAGA'...  POLECENIE_U'YTKOWNIKA= ?",
+          "STAN= BARDZO_POMOCNY  POLECENIE_U'YTKOWNIKA= ?",
+          "PYTANIE> JAK SI' MASZ?  STAN= GOTOWY DO PRACY"
         ],
         "reminders": [
           "PRZYPOMNIENIE_O_WYDARZENIU:",
-          "ZGODNIE Z ��DANIEM: PRZYPOMNIENIE >",
+          "ZGODNIE Z ''DANIEM: PRZYPOMNIENIE >",
           "TWOJE_PRZYPOMNIENIE >",
-          "PYTANIE> CZY MUSISZ TO TERAZ ZROBI�?"
+          "PYTANIE> CZY MUSISZ TO TERAZ ZROBI'?"
         ]
       },
       {
         "languageCode": "0x0416",
         "locale": {},
         "name": "F1",
-        "description": "F1 � o primeiro rob� da s�rie 300/M, criado para servi-lo. Ele � totalmente programado para o Office.",
+        "description": "F1 ' o primeiro rob' da s'rie 300/M, criado para servi-lo. Ele ' totalmente programado para o Office.",
         "greetings": [
-          "OL�! STATUS= AGUARDANDO INSTRU��ES",
-          "PROGRAMADO PARA SERVIR...  COMANDO_DO_USU�RIO= ?",
-          "STATUS= COMANDO_DO_USU�RIO   MUITO_�TIL= ?",
-          "CONSULTA>COMO VAI VOC�?  STATUS= AGUARDANDO INSTRU��ES"
+          "OL'! STATUS= AGUARDANDO INSTRU''ES",
+          "PROGRAMADO PARA SERVIR...  COMANDO_DO_USU'RIO= ?",
+          "STATUS= COMANDO_DO_USU'RIO   MUITO_'TIL= ?",
+          "CONSULTA>COMO VAI VOC'?  STATUS= AGUARDANDO INSTRU''ES"
         ],
         "reminders": [
           "LEMBRETE_DE_EVENTOS:",
           "CONFORME SOLICITADO: LEMBRETE>",
           "SEU_LEMBRETE >",
-          "CONSULTA>VOC� PRECISA FAZER ISSO AGORA?"
+          "CONSULTA>VOC' PRECISA FAZER ISSO AGORA?"
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "F1",
-        "description": "F1 este primul din seria 300/M, creat pentru a v� servi. Acest robot este complet optimizat pentru utilizarea �n Office.",
+        "description": "F1 este primul din seria 300/M, creat pentru a v' servi. Acest robot este complet optimizat pentru utilizarea 'n Office.",
         "greetings": [
-          "SALUT�RI! STAREA= PREG�TIT PENTRU A PRIMI INSTRUC�IUNI",
-          "PROGRAMAT PENTRU A SERVI...  COMAND�_UTILIZATOR= ?",
-          "STAREA= COMAND�_UTILIZATOR FOARTE_UTIL�= ?",
-          "�NTREBARE> CE MAI FACE�I?  STAREA= PREG�TIT PENTRU A PRIMI INSTRUC�IUNI"
+          "SALUT'RI! STAREA= PREG'TIT PENTRU A PRIMI INSTRUC'IUNI",
+          "PROGRAMAT PENTRU A SERVI...  COMAND'_UTILIZATOR= ?",
+          "STAREA= COMAND'_UTILIZATOR FOARTE_UTIL'= ?",
+          "'NTREBARE> CE MAI FACE'I?  STAREA= PREG'TIT PENTRU A PRIMI INSTRUC'IUNI"
         ],
         "reminders": [
           "MEMENTO_EVENIMENT:",
           "LA CERERE: MEMENTO >",
           "MEMENTO_DVS >",
-          "�NTREBARE> ESTE NECESAR S� FACE�I ASTA ACUM?"
+          "'NTREBARE> ESTE NECESAR S' FACE'I ASTA ACUM?"
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "�1",
-        "description": "�1 ������������ ����� ������ ������� ����� ��������� ������� 300/�. �� ��������� ������������� ��� ������ � Office.",
+        "name": "'1",
+        "description": "'1 '''''''''''' ''''' '''''' ''''''' ''''' ''''''''' ''''''' 300/'. '' ''''''''' ''''''''''''' ''' '''''' ' Office.",
         "greetings": [
-          "�����������! ���������= ����� � ������ ����������",
-          "���������������� �� �����������Ņ   �������_������������= ?",
-          "���������������� �� �����������Ņ   �������_������������= ?",
-          "������> ��� ���� ����?  ���������= ����� � ������ ����������"
+          "'''''''''''! '''''''''= ''''' ' '''''' ''''''''''",
+          "'''''''''''''''' '' '''''''''''Ņ   '''''''_''''''''''''= ?",
+          "'''''''''''''''' '' '''''''''''Ņ   '''''''_''''''''''''= ?",
+          "''''''> ''' '''' ''''?  '''''''''= ''''' ' '''''' ''''''''''"
         ],
         "reminders": [
-          "�����������_�_�������:",
-          "���������: ����������� >",
-          "����_����������� >",
-          "������> ��� ������������� ���������� �������?"
+          "'''''''''''_'_''''''':",
+          "''''''''': ''''''''''' >",
+          "''''_''''''''''' >",
+          "''''''> ''' ''''''''''''' '''''''''' '''''''?"
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "F1",
-        "description": "F1 prvi je iz niza 300/M, napravljen da slu�i. Taj je robot posve optimiziran za kori�tenje u Officeu.",
+        "description": "F1 prvi je iz niza 300/M, napravljen da slu'i. Taj je robot posve optimiziran za kori'tenje u Officeu.",
         "greetings": [
           "POZDRAVI! STANJE= SPREMAN ZA NAREDBE",
-          "PROGRAMIRAN DA SLU�I...  KORISNI�KA_NAREDBA= ?",
-          "STANJE= VRLO_USLU�AN  KORISNI�KA_NAREDBA= ?",
+          "PROGRAMIRAN DA SLU'I...  KORISNI'KA_NAREDBA= ?",
+          "STANJE= VRLO_USLU'AN  KORISNI'KA_NAREDBA= ?",
           "UPIT> KAKO SI?  STANJE= SPREMAN ZA NAREDBE"
         ],
         "reminders": [
-          "PODSJETNIK_DOGA�AJA:",
+          "PODSJETNIK_DOGA'AJA:",
           "NA ZAHTJEV: PODSJETNIK >",
-          "VA�_PODSJETNIK >",
-          "UPIT> TREBATE LI SADA U�INITI TO?"
+          "VA'_PODSJETNIK >",
+          "UPIT> TREBATE LI SADA U'INITI TO?"
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
         "name": "F1",
-        "description": "F1 je prv� zo s�rie 300/M a bol zostrojen� tak, aby sl��il. Tento robot je plne optimalizovan� na pou�itie v aplik�ci�ch Office.",
+        "description": "F1 je prv' zo s'rie 300/M a bol zostrojen' tak, aby sl''il. Tento robot je plne optimalizovan' na pou'itie v aplik'ci'ch Office.",
         "greetings": [
           "ZDRAVIM VAS! STAV= PRIPRAVENY NA INSTRUKCIE.",
           "NAPROGRAMOVANY ABY SLUZIL...  PRIKAZ= ?",
@@ -19348,72 +19348,72 @@
         "languageCode": "0x041d",
         "locale": {},
         "name": "F1",
-        "description": "F1 �r den f�rsta roboten i 300/M-serien med bruksmaskiner som �r helt och h�llet optimerade f�r Office.",
+        "description": "F1 'r den f'rsta roboten i 300/M-serien med bruksmaskiner som 'r helt och h'llet optimerade f'r Office.",
         "greetings": [
-          "V�LKOMMEN! STATUS=REDO ATT INSTRUERAS",
-          "PROGRAMMERAD ATT HJ�LPA...  ANV�NDAR_KOMMANDO= ?",
-          "STATUS=MYCKET_HJ�LPSAM ANV�NDAR_KOMMANDO= ?",
-          "FR�GA> HUR ST�R DET TILL?  STATUS= REDO ATT INSTRUERAS"
+          "V'LKOMMEN! STATUS=REDO ATT INSTRUERAS",
+          "PROGRAMMERAD ATT HJ'LPA...  ANV'NDAR_KOMMANDO= ?",
+          "STATUS=MYCKET_HJ'LPSAM ANV'NDAR_KOMMANDO= ?",
+          "FR'GA> HUR ST'R DET TILL?  STATUS= REDO ATT INSTRUERAS"
         ],
         "reminders": [
-          "H�NDELSE_P�MINNELSE:",
-          "P� BEG�RAN: P�MINNELSE >",
-          "DIN_P�MINNELSE >",
-          "FR�GA > BEH�VER DU F� REDA P� DET H�R NU?"
+          "H'NDELSE_P'MINNELSE:",
+          "P' BEG'RAN: P'MINNELSE >",
+          "DIN_P'MINNELSE >",
+          "FR'GA > BEH'VER DU F' REDA P' DET H'R NU?"
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "�Ϳ˹��",
-        "description": "�Ϳ˹�� �����¹�����á�ͧ�ش 300/M �ѹ�١���ҧ�����������ԡ�� ���¹���ǹ��١����������������ش�Ѻ Office",
+        "name": "'Ϳ˹''",
+        "description": "'Ϳ˹'' '''''¹'''''á'ͧ'ش 300/M 'ѹ'١'''ҧ'''''''''''ԡ'' '''¹'''ǹ''١''''''''''''''''ش'Ѻ Office",
         "greetings": [
-          "���ʴդ�Ѻ! ʶҹ� = ���������Ѻ��ҹ",
-          "�ѹ�١���������Ѻ����ԡ��...  ����觢ͧ����� = ?",
-          "ʶҹ� = ������������������ҧ������  ����觢ͧ����� = ?",
-          "Ẻ�ͺ���> �س�����ҧ�ú�ҧ  ʶҹ� = ���������Ѻ��鹵͹�����"
+          "'''ʴդ'Ѻ! ʶҹ' = '''''''''Ѻ''ҹ",
+          "'ѹ'١'''''''''Ѻ''''ԡ''...  ''''觢ͧ''''' = ?",
+          "ʶҹ' = ''''''''''''''''''ҧ''''''  ''''觢ͧ''''' = ?",
+          "Ẻ'ͺ'''> 'س'''''ҧ'ú'ҧ  ʶҹ' = '''''''''Ѻ''鹵͹'''''"
         ],
         "reminders": [
-          "�����͹�˵ء�ó�:",
-          "���ҧ���س��ͧ���: �����͹ >",
-          "�����͹�ͧ�س >",
-          "Ẻ�ͺ���> �س��ͧ��÷���觹������ǹ���������"
+          "'''''͹'˵ء'ó':",
+          "'''ҧ'''س''ͧ''': '''''͹ >",
+          "'''''͹'ͧ'س >",
+          "Ẻ'ͺ'''> 'س''ͧ''÷'''觹''''''ǹ'''''''''"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
         "name": "F1",
-        "description": "300/M serisinin ilk �r�n� olan F1, hizmet i�in �retilmi�tir. Bu robot, Office kullan�m� i�in en verimli �ekilde d�zenlenmi�tir.",
+        "description": "300/M serisinin ilk 'r'n' olan F1, hizmet i'in 'retilmi'tir. Bu robot, Office kullan'm' i'in en verimli 'ekilde d'zenlenmi'tir.",
         "greetings": [
-          "MERHABALAR! DURUM= EM�RLER�N�Z ���N HAZIR",
-          "H�ZMET ���N PROGRAMLANMI�TIR...  KULLANICI_KOMUTU= ?",
-          "DURUM= �Y�_B�R_YARDIMCI  KULLANICI_KOMUTU= ?",
-          "SORGU> NASILSINIZ?  DURUM= EM�RLER�N�Z ���N HAZIR"
+          "MERHABALAR! DURUM= EM'RLER'N'Z '''N HAZIR",
+          "H'ZMET '''N PROGRAMLANMI'TIR...  KULLANICI_KOMUTU= ?",
+          "DURUM= 'Y'_B'R_YARDIMCI  KULLANICI_KOMUTU= ?",
+          "SORGU> NASILSINIZ?  DURUM= EM'RLER'N'Z '''N HAZIR"
         ],
         "reminders": [
           "OLAY_ANIMSATICI:",
-          "�STEND�: ANIMSATICI >",
+          "'STEND': ANIMSATICI >",
           "ANIMSATICINIZ >",
-          "SORGU> BUNU ��MD� YAPMALI MISINIZ?"
+          "SORGU> BUNU ''MD' YAPMALI MISINIZ?"
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "F1",
-        "description": "F1 je prvi robot iz serije 300/M, narejen za izpolnjevanje ukazov. Prilagojen je pisarni�kem okolju.",
+        "description": "F1 je prvi robot iz serije 300/M, narejen za izpolnjevanje ukazov. Prilagojen je pisarni'kem okolju.",
         "greetings": [
           "POZDRAVLJENI! STANJE= PRIPRAVLJEN NA UKAZ",
           "PROGRAMIRAN ZA IZPOLNJEVANJE UKAZOV ...  UPORABNIKOV_UKAZ= ?",
-          "STANJE= V_VELIKO_POMO�  UPORABNIKOV_UKAZ= ?",
-          "VPRA�ANJE> KAKO STE KAJ?  STANJE= PRIPRAVLJEN NA UKAZ"
+          "STANJE= V_VELIKO_POMO'  UPORABNIKOV_UKAZ= ?",
+          "VPRA'ANJE> KAKO STE KAJ?  STANJE= PRIPRAVLJEN NA UKAZ"
         ],
         "reminders": [
           "DOGODKOVNI_OPOMIN:",
-          "KOT STE �ELELI: OPOMIN >",
-          "VA�_OPOMIN >",
-          "VPRA�ANJE> ALI MORATE TO NAREDITI ZDAJ?"
+          "KOT STE 'ELELI: OPOMIN >",
+          "VA'_OPOMIN >",
+          "VPRA'ANJE> ALI MORATE TO NAREDITI ZDAJ?"
         ]
       },
       {
@@ -19438,30 +19438,30 @@
         "languageCode": "0x0804",
         "locale": {},
         "name": "F1",
-        "description": "F1 ������ 300/M ϵ���еĵ�һλ���Ѿ����Կ�ʼ�����ˡ���λ��������Ϊ Office ��ʹ�ö�������ȫ����Ż���",
+        "description": "F1 '''''' 300/M ϵ'''еĵ'һλ'''Ѿ''''Կ'ʼ'''''ˡ'''λ''''''''Ϊ Office ''ʹ'ö'''''''ȫ''''Ż'''",
         "greetings": [
-          "��Һã�״̬ = ׼���ṩָ��",
-          "������Ϊ��ʼ����...  �û����� = ��",
-          "״̬ = �ǳ�����  �û����� = ��",
-          "��ѯ > ���ã� ״̬ = ׼���ṩָ��"
+          "''Һã'״̬ = ׼'''ṩָ''",
+          "''''''Ϊ''ʼ''''...  'û''''' = ''",
+          "״̬ = 'ǳ'''''  'û''''' = ''",
+          "''ѯ > '''ã' ״̬ = ׼'''ṩָ''"
         ],
         "reminders": [
-          "�¼�����װ�ã�",
-          "����Ҫ�����ס >",
-          "���������� >",
-          "��ѯ > ��������Ҫ�������������"
+          "'¼'''''װ'ã'",
+          "''''Ҫ'''''ס >",
+          "'''''''''' >",
+          "''ѯ > ''''''''Ҫ'''''''''''''"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "F1",
-        "description": "F1 � o primeiro modelo da s�rie 300/M, constru�do para servir. Este robot est� totalmente optimizado para utiliza��o no Office.",
+        "description": "F1 ' o primeiro modelo da s'rie 300/M, constru'do para servir. Este robot est' totalmente optimizado para utiliza''o no Office.",
         "greetings": [
-          "SAUDA��ES! ESTADO= A AGUARDAR INSTRU��ES",
+          "SAUDA''ES! ESTADO= A AGUARDAR INSTRU''ES",
           "PROGRAMADO PARA SERVIR...  COMANDO= ?",
-          "ESTADO= MUITO_�TIL  COMANDO= ?",
-          "CONSULTA> COMO EST�?  ESTADO= A AGUARDAR INSTRU��ES"
+          "ESTADO= MUITO_'TIL  COMANDO= ?",
+          "CONSULTA> COMO EST'?  ESTADO= A AGUARDAR INSTRU''ES"
         ],
         "reminders": [
           "LEMBRETE_DE_EVENTO:",
@@ -19474,18 +19474,18 @@
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "F1",
-        "description": "F1 es el primer robot de la serie 300/M, listo para servir. Este robot ha sido optimizado para ser �til en Office.",
+        "description": "F1 es el primer robot de la serie 300/M, listo para servir. Este robot ha sido optimizado para ser 'til en Office.",
         "greetings": [
           "SALUDOS. ESTADO= ESPERANDO INSTRUCCIONES",
           "PROGRAMADO PARA SERVIR...  COMANDO_DEL_USUARIO= ?",
-          "ESTADO= MUY_�TIL  COMANDO_DEL_ USUARIO= ?",
-          "PREGUNTA> �C�MO EST�?  ESTADO= LISTO PARA CUMPLIR �RDENES"
+          "ESTADO= MUY_'TIL  COMANDO_DEL_ USUARIO= ?",
+          "PREGUNTA> 'C'MO EST'?  ESTADO= LISTO PARA CUMPLIR 'RDENES"
         ],
         "reminders": [
           "AVISO_DE_EVENTOS:",
-          "COMO SOLICIT�: AVISO >",
+          "COMO SOLICIT': AVISO >",
           "SU_AVISO >",
-          "PREGUNTA> �NECESITA HACER ESTO AHORA?"
+          "PREGUNTA> 'NECESITA HACER ESTO AHORA?"
         ]
       }
     ],

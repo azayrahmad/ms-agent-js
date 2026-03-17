@@ -13723,63 +13723,63 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "������",
-        "description": "�� ��� ��� ��� ��� ����� ���ڡ ��� �� ������ ������� �� ������ ��� �� ������ ������� ���� ��������.",
+        "name": "''''''",
+        "description": "'' ''' ''' ''' ''' ''''' '''ڡ ''' '' '''''' ''''''' '' '''''' ''' '' '''''' ''''''' '''' ''''''''.",
         "greetings": [
-          "������. �� ������ѿ",
-          "��� ������ ��߿ ���� ��� ��� ����ɿ",
-          "������ �� ���� ������ ����� �� ������ ��� Office� �� ���� ��� �� ���� ����"
+          "''''''. '' ''''''ѿ",
+          "''' '''''' ''߿ '''' ''' ''' ''''ɿ",
+          "'''''' '' '''' '''''' ''''' '' '''''' ''' Office' '' '''' ''' '' '''' ''''"
         ],
         "reminders": [
-          ".��� �� ������.",
-          "�� ���� ���.",
-          "����� ��� �� ������."
+          ".''' '' ''''''.",
+          "'' '''' '''.",
+          "''''' ''' '' ''''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "�j���w�ŭ�",
-        "description": "���M���ۥu���L�O�ӲӲӪ����ݽu�A���O�ŭ��i�H���z���ҭn�������A�åB���n�۱¡I",
+        "name": "'j'''w'ŭ'",
+        "description": "'''M'''ۥu'''L'O'ӲӲӪ''''ݽu'A'''O'ŭ''i'H'''z'''ҭn'''''''A'åB'''n'۱¡I",
         "greetings": [
-          "���o�I�o�O����r���O�H",
-          "�̪�n�ܡH�u�@�֤F�A�n�𮧤@�U�@�C",
-          "���o�I�Q�n�ֳt�o�즳�� Office 2000 ���D�����׶ܡH�N�ηƹ����ڤ@�U�a�I"
+          "'''o'I'o'O''''r'''O'H",
+          "'̪'n'ܡH'u'@'֤F'A'n'𮧤@'U'@'C",
+          "'''o'I'Q'n'ֳt'o'즳'' Office 2000 '''D'''''׶ܡH'N'ηƹ''''ڤ@'U'a'I"
         ],
         "reminders": [
-          "�z�����ܦb�o��I",
-          "�ЧO�ѤF�C",
-          "�z�n�H�ɷQ�_�ڮ@�I"
+          "'z'''''ܦb'o''I",
+          "'ЧO'ѤF'C",
+          "'z'n'H'ɷQ'_'ڮ@'I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
         "name": "Svorka",
-        "description": "A�koliv je Svorka v podstat� jen kus �elezn�ho dr�tu, pom��e v�m naj�t a pou��vat v�echny pot�ebn� informace.",
+        "description": "A'koliv je Svorka v podstat' jen kus 'elezn'ho dr'tu, pom''e v'm naj't a pou''vat v'echny pot'ebn' informace.",
         "greetings": [
           "Ahoj. Jak je?",
-          "Jak se m�te? Sam� starosti a ��dn� z�bava?",
-          "Dobr� den. Hled�te rychl� odpov�di na ot�zky t�kaj�c� se programu Office? Klepn�te na m�."
+          "Jak se m'te? Sam' starosti a ''dn' z'bava?",
+          "Dobr' den. Hled'te rychl' odpov'di na ot'zky t'kaj'c' se programu Office? Klepn'te na m'."
         ],
         "reminders": [
           "A je to tady.",
-          "Nezapome�te na toto.",
-          "Toto byste nem�li zapomenout."
+          "Nezapome'te na toto.",
+          "Toto byste nem'li zapomenout."
         ]
       },
       {
         "languageCode": "0x0406",
         "locale": {},
         "name": "Hr. Clips",
-        "description": "Selvom hr. Clips kun best�r af en tynd metaltr�d, kan han hj�lpe dig med at finde lige netop det, du har brug for, og holde styr p� det hele.",
+        "description": "Selvom hr. Clips kun best'r af en tynd metaltr'd, kan han hj'lpe dig med at finde lige netop det, du har brug for, og holde styr p' det hele.",
         "greetings": [
           "Hej med dig. Noget nyt under solen?",
-          "Hvordan g�r det? Holder du aldrig fri?",
-          "Hej, vil du have nogle hurtige svar p� dine sp�rgsm�l om Office? Bare klik p� mig."
+          "Hvordan g'r det? Holder du aldrig fri?",
+          "Hej, vil du have nogle hurtige svar p' dine sp'rgsm'l om Office? Bare klik p' mig."
         ],
         "reminders": [
-          "Her er p�mindelsen.",
+          "Her er p'mindelsen.",
           "Glem det nu ikke.",
           "Nu er du blevet mindet om det."
         ]
@@ -13788,14 +13788,14 @@
         "languageCode": "0x0407",
         "locale": {},
         "name": "Karl Klammer",
-        "description": "Obwohl er nicht viel mehr ist als ein d�nner Draht, hilft Karl Klammer Ihnen, wichtige Dinge zu finden und zusammenzuhalten.",
+        "description": "Obwohl er nicht viel mehr ist als ein d'nner Draht, hilft Karl Klammer Ihnen, wichtige Dinge zu finden und zusammenzuhalten.",
         "greetings": [
           "Hallo, was ist los?",
-          "Wie l�uft's? Nur Arbeit und kein Vergn�gen?",
+          "Wie l'uft's? Nur Arbeit und kein Vergn'gen?",
           "He, Du willst schnelle Antworten auf Deine Office-Fragen? Klick einfach auf mich."
         ],
         "reminders": [
-          "Kleine Ged�chtnisst�tze gef�llig?",
+          "Kleine Ged'chtnisst'tze gef'llig?",
           "Nicht vergessen!",
           "Darf ich erinnern?"
         ]
@@ -13803,17 +13803,17 @@
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "����������",
-        "description": "�� ��� ��� ����� ������ �������� ��� ��� ����� ��������� �����, � ���������� �� ��� �������� �� ������ �,�� ���������� ��� �� �� ��������� ��� �������.",
+        "name": "''''''''''",
+        "description": "'' ''' ''' ''''' '''''' '''''''' ''' ''' ''''' ''''''''' ''''', ' '''''''''' '' ''' '''''''' '' '''''' ','' '''''''''' ''' '' '' ''''''''' ''' '''''''.",
         "greetings": [
-          "���� ���. �� ������ �� ���� ��� ����;",
-          "��� �������; ��� ������� ��� ������� ����������;",
-          "���� ���. ������ �������� ���������� ���� ��������� ��� ������� �� �� Office; ���� ����� ��� ����."
+          "'''' '''. '' '''''' '' '''' ''' '''';",
+          "''' '''''''; ''' ''''''' ''' ''''''' '''''''''';",
+          "'''' '''. '''''' '''''''' '''''''''' '''' ''''''''' ''' ''''''' '' '' Office; '''' ''''' ''' ''''."
         ],
         "reminders": [
-          "���� ����� � ���������� ���.",
-          "��� �� �������� ����.",
-          "�������� ��� ��� ���� ����� ����������."
+          "'''' ''''' ' '''''''''' '''.",
+          "''' '' '''''''' ''''.",
+          "'''''''' ''' ''' '''' ''''' ''''''''''."
         ]
       },
       {
@@ -13836,27 +13836,27 @@
         "languageCode": "0x040b",
         "locale": {},
         "name": "Klemmari",
-        "description": "Klemmari pit�� kaiken kasassa ja v��nt�� tarvitsemasi tiedot vaikka rautalangasta.",
+        "description": "Klemmari pit'' kaiken kasassa ja v''nt'' tarvitsemasi tiedot vaikka rautalangasta.",
         "greetings": [
-          "Hei siell�. Onko homma hanskassa?",
-          "Miten menee? Pelkk�� ty�t� eik� lainkaan huvia?",
-          "Hei sin� siell�. Haluatko vastauksia Officen k�ytt�mist� koskeviin kysymyksiin?"
+          "Hei siell'. Onko homma hanskassa?",
+          "Miten menee? Pelkk'' ty't' eik' lainkaan huvia?",
+          "Hei sin' siell'. Haluatko vastauksia Officen k'ytt'mist' koskeviin kysymyksiin?"
         ],
         "reminders": [
-          "Muistin virkist�miseksi.",
-          "�l� unohda t�t�.",
-          "Muista t�m�."
+          "Muistin virkist'miseksi.",
+          "'l' unohda t't'.",
+          "Muista t'm'."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
         "name": "Trombine",
-        "description": "Trombine est un trombone d�contract� et fac�tieux, mais il saura se plier en quatre pour vous aider.",
+        "description": "Trombine est un trombone d'contract' et fac'tieux, mais il saura se plier en quatre pour vous aider.",
         "greetings": [
-          "Allez, au travail�! Je suis pr�t � r�pondre � vos questions.",
-          "Dites-moi quel est votre probl�me�?",
-          "Salut. Appelez-moi d'un simple clic et je r�pondrai � vos questions sur Office."
+          "Allez, au travail'! Je suis pr't ' r'pondre ' vos questions.",
+          "Dites-moi quel est votre probl'me'?",
+          "Salut. Appelez-moi d'un simple clic et je r'pondrai ' vos questions sur Office."
         ],
         "reminders": [
           "Voici votre rappel.",
@@ -13867,40 +13867,40 @@
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "�����",
-        "description": "����� ������ ��� �� �� ���� ��, ��� ����� �� ����� ������ �� �� ����� ����� ��.",
+        "name": "'''''",
+        "description": "''''' '''''' ''' '' '' '''' '', ''' ''''' '' ''''' '''''' '' '' ''''' ''''' ''.",
         "greetings": [
-          "��, �� ��������?",
-          "��� �����? �� ����� ��� �������?",
-          "���� ��. ��� ��� ���� ���� ������ ������ �������� ���� Office? ���� ��� ���."
+          "'', '' ''''''''?",
+          "''' '''''? '' ''''' ''' '''''''?",
+          "'''' ''. ''' ''' '''' '''' '''''' '''''' '''''''' '''' Office? '''' ''' '''."
         ],
         "reminders": [
-          "��� ������� ���.",
-          "�� ���� �� ��.",
-          "��� ������ ��."
+          "''' ''''''' '''.",
+          "'' '''' '' ''.",
+          "''' '''''' ''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Gem G�za",
-        "description": "Gem G�za a gemkapcsok gy�ngye! Seg�t abban, hogy munk�ja �ttekinthet� maradjon.",
+        "name": "Gem G'za",
+        "description": "Gem G'za a gemkapcsok gy'ngye! Seg't abban, hogy munk'ja 'ttekinthet' maradjon.",
         "greetings": [
-          "Hell�-bell�! Miz�js?",
-          "Hogysmint? M�r megint csak a munka, sosem j�tszunk?",
-          "Hell�. Ha esetleg k�rd�se lenne az Office-szal kapcsolatban, csak kattintson r�m."
+          "Hell'-bell'! Miz'js?",
+          "Hogysmint? M'r megint csak a munka, sosem j'tszunk?",
+          "Hell'. Ha esetleg k'rd'se lenne az Office-szal kapcsolatban, csak kattintson r'm."
         ],
         "reminders": [
-          "Ez itt az eml�keztet�.",
-          "Ne feledkezz�k meg err�l!",
-          "Vegye �gy, hogy sz�ltam."
+          "Ez itt az eml'keztet'.",
+          "Ne feledkezz'k meg err'l!",
+          "Vegye 'gy, hogy sz'ltam."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
         "name": "Clippy",
-        "description": "Clippy non � che un piccolo filo di metallo, ma vi aiuter� a trovare quello che cercate e a tenere tutto in ordine.",
+        "description": "Clippy non ' che un piccolo filo di metallo, ma vi aiuter' a trovare quello che cercate e a tenere tutto in ordine.",
         "greetings": [
           "Allora, di che parola si tratta?",
           "Come va la vita? Stai lavorando troppo?",
@@ -13915,33 +13915,33 @@
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "�N���b�p�[",
-        "description": "�ׂ������̐��łł����ȊO�̉����ł��Ȃ����ǁA���Ȃ����K�v�Ƃ�����̂������A�܂Ƃ߂Ă����܂��B",
+        "name": "'N'''b'p'[",
+        "description": "'ׂ''''''̐''łł''''ȊO'̉''''ł''Ȃ''''ǁA'''Ȃ''''K'v'Ƃ'''''̂''''''A'܂Ƃ߂Ă''''܂''B",
         "greetings": [
-          "�₠�A���C�H Office �̎g�����ł킩��Ȃ����Ƃ���������A�l���N���b�N���Ă����B",
-          "���q�͂ǂ��H ���ς�炸�d���΂���̖����H",
-          "�₠�A�����ς�������Ƃ�����?"
+          "'₠'A'''C'H Office '̎g'''''ł킩''Ȃ''''Ƃ'''''''''A'l'''N'''b'N'''Ă''''B",
+          "'''q'͂ǂ''H '''ς'炸'd'''΂'''̖''''H",
+          "'₠'A'''''ς'''''''Ƃ'''''?"
         ],
         "reminders": [
-          "�v���o�����H",
-          "�Y��Ȃ��łˁB",
-          "�o���Ă�H"
+          "'v'''o'''''H",
+          "'Y''Ȃ''łˁB",
+          "'o'''Ă'H"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "Ŭ��",
-        "description": "Ŭ���� Office�� ��� ����� �� ���� ��� ������ �Ӵϴ�. ������ �ʿ��� ���� �ٷ� ã�Ƽ� ���ϰ� �˷� �帳�ϴ�.",
+        "name": "Ŭ''",
+        "description": "Ŭ'''' Office'' ''' ''''' '' '''' ''' '''''' 'Ӵϴ'. '''''' 'ʿ''' '''' 'ٷ' ã'Ƽ' '''ϰ' '˷' '帳'ϴ'.",
         "greetings": [
-          "�ȳ��ϼ���. �ܾ �Է��� �ּ���",
-          "������ �����? �ʹ� �ٻڽŰ���?",
-          "Office�� ���� ���� ����� ���Ͻó���? ���� ���� �ּ���."
+          "'ȳ''ϼ'''. 'ܾ 'Է''' 'ּ'''",
+          "'''''' '''''? 'ʹ' 'ٻڽŰ'''?",
+          "Office'' '''' '''' ''''' '''Ͻó'''? '''' '''' 'ּ'''."
         ],
         "reminders": [
-          "������ ����Ͻ�����?",
-          "���� ������.",
-          "�׻� ����ϼ���."
+          "'''''' ''''Ͻ'''''?",
+          "'''' ''''''.",
+          "'׻' ''''ϼ'''."
         ]
       },
       {
@@ -13964,94 +13964,94 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Bindersen",
-        "description": "Bindersen er bare en tynn og hengslete metalltr�d, men gj�r alt for � finne det du sp�r om, og vil holde alt samlet.",
+        "description": "Bindersen er bare en tynn og hengslete metalltr'd, men gj'r alt for ' finne det du sp'r om, og vil holde alt samlet.",
         "greetings": [
           "Heisan! Hva skjer?",
-          "St�r til? Bare jobbing for tiden?",
-          "Hei! Trenger du kjappe svar p� sp�rsm�l om Office? Klikk meg!"
+          "St'r til? Bare jobbing for tiden?",
+          "Hei! Trenger du kjappe svar p' sp'rsm'l om Office? Klikk meg!"
         ],
         "reminders": [
-          "Her er p�minnelsen.",
+          "Her er p'minnelsen.",
           "Ikke glem dette.",
-          "Du er herved p�minnet."
+          "Du er herved p'minnet."
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "Spinacz",
-        "description": "Spinacz pomo�e Ci znale�� to, czego potrzebujesz, i zapi�� wszystko na ostatni guzik.",
+        "description": "Spinacz pomo'e Ci znale'' to, czego potrzebujesz, i zapi'' wszystko na ostatni guzik.",
         "greetings": [
           "Hej, hej. O co chodzi?",
-          "Co s�ycha�? Roboty po �okcie i zero oddechu?",
+          "Co s'ycha'? Roboty po 'okcie i zero oddechu?",
           "Hej, siemanko. Potrzebujesz szybkich odpowiedzi na pytania o Office? Po prostu mnie kliknij."
         ],
         "reminders": [
           "Oto Twoje przypomnienie:",
           "Nie zapomnij o tym:",
-          "Powiedzmy, �e co� Ci w�a�nie przypominam:"
+          "Powiedzmy, 'e co' Ci w'a'nie przypominam:"
         ]
       },
       {
         "languageCode": "0x0416",
         "locale": {},
         "name": "Clip",
-        "description": "Embora seja apenas um fino fio de metal, o Clip o ajudar� a encontrar respostas para as suas perguntas.",
+        "description": "Embora seja apenas um fino fio de metal, o Clip o ajudar' a encontrar respostas para as suas perguntas.",
         "greetings": [
-          "Oi, tudo bem? Voc� tem alguma d�vida?",
-          "Como � que vai? S� trabalho e nenhuma divers�o?",
-          "Ol�! Voc� quer respostas r�pidas para as suas perguntas sobre o Office? � s� clicar em mim."
+          "Oi, tudo bem? Voc' tem alguma d'vida?",
+          "Como ' que vai? S' trabalho e nenhuma divers'o?",
+          "Ol'! Voc' quer respostas r'pidas para as suas perguntas sobre o Office? ' s' clicar em mim."
         ],
         "reminders": [
           "Olha aqui o seu lembrete.",
-          "N�o se esque�a disto.",
-          "N�o se esque�a do lembrete."
+          "N'o se esque'a disto.",
+          "N'o se esque'a do lembrete."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "Clippit",
-        "description": "De�i nu este dec�t o bucat� de s�rm� sub�ire, Clippit va g�si informa�iile de care ave�i nevoie �i vi le va p�stra la �ndem�n�.",
+        "description": "De'i nu este dec't o bucat' de s'rm' sub'ire, Clippit va g'si informa'iile de care ave'i nevoie 'i vi le va p'stra la 'ndem'n'.",
         "greetings": [
-          "Salut! Care sunt nout��ile?",
-          "Cum mai merge? Tot timpul numai munc� �i nici o distrac�ie?",
-          "Salut! Ave�i nevoie de r�spunsuri rapide la �ntreb�rile dvs. legate de Office? Face�i clic pe mine."
+          "Salut! Care sunt nout''ile?",
+          "Cum mai merge? Tot timpul numai munc' 'i nici o distrac'ie?",
+          "Salut! Ave'i nevoie de r'spunsuri rapide la 'ntreb'rile dvs. legate de Office? Face'i clic pe mine."
         ],
         "reminders": [
-          "Iat� memento-ul.",
-          "Nu uita�i acest lucru.",
-          "Considera�i-v� avertizat."
+          "Iat' memento-ul.",
+          "Nu uita'i acest lucru.",
+          "Considera'i-v' avertizat."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "�������",
-        "description": "������, �������� ��, ����� ���� ������ ������ ���������, ������� ����� ������ ���, ��� ��� �����, � ������� ������� ��� �������.",
+        "name": "'''''''",
+        "description": "'''''', '''''''' '', ''''' '''' '''''' '''''' ''''''''', ''''''' ''''' '''''' ''', ''' ''' ''''', ' ''''''' ''''''' ''' '''''''.",
         "greetings": [
-          "������! � ��� ���� ����?",
-          "��� �����? ��� ���� �� ����?",
-          "������! ������ ������ ������ ���-������ �� Office? �������� ��� ������."
+          "''''''! ' ''' '''' ''''?",
+          "''' '''''? ''' '''' '' ''''?",
+          "''''''! '''''' '''''' '''''' '''-'''''' '' Office? '''''''' ''' ''''''."
         ],
         "reminders": [
-          "�����������.",
-          "�� ��������.",
-          "��������, ��� ��� ���������."
+          "'''''''''''.",
+          "'' ''''''''.",
+          "'''''''', ''' ''' '''''''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "Spajalica",
-        "description": "Iako je samo tanka �i�ica, Spajalica �e vam pomo�i  potra�iti ono �to vam treba i pobrinuti se da to bude na jednom mjestu.",
+        "description": "Iako je samo tanka 'i'ica, Spajalica 'e vam pomo'i  potra'iti ono 'to vam treba i pobrinuti se da to bude na jednom mjestu.",
         "greetings": [
           "Hej, zdravo. Kako smo danas?",
           "Kako ide? Samo rad, rad i rad?",
-          "�elite li brze odgovore na svoja pitanja o Officeu? Samo me pritisnite."
+          "'elite li brze odgovore na svoja pitanja o Officeu? Samo me pritisnite."
         ],
         "reminders": [
-          "Ovdje je va� podsjetnik.",
+          "Ovdje je va' podsjetnik.",
           "Ne zaboravite ga.",
           "Podsjetili smo vas."
         ]
@@ -14060,74 +14060,74 @@
         "languageCode": "0x041b",
         "locale": {},
         "name": "Spinka",
-        "description": "Hoci Spinka je len tenk� dr�tik, pom��e v�m v�etko, �o potrebujete, n�js� a udr�a� v poriadku.",
+        "description": "Hoci Spinka je len tenk' dr'tik, pom''e v'm v'etko, 'o potrebujete, n'js' a udr'a' v poriadku.",
         "greetings": [
-          "Tak �o? Ak� je to slovo?",
-          "Ako sa dar�? Sam� pr�ca a �iadna z�bava?",
-          "Tak �o? Chcete r�chle odpovede na ot�zky o aplik�cii Office? Sta�� na m�a klikn��."
+          "Tak 'o? Ak' je to slovo?",
+          "Ako sa dar'? Sam' pr'ca a 'iadna z'bava?",
+          "Tak 'o? Chcete r'chle odpovede na ot'zky o aplik'cii Office? Sta'' na m'a klikn''."
         ],
         "reminders": [
-          "Chcem v�s len upozorni�.",
+          "Chcem v's len upozorni'.",
           "Na toto nezabudnite.",
-          "Ja som v�s upozornila."
+          "Ja som v's upozornila."
         ]
       },
       {
         "languageCode": "0x041d",
         "locale": {},
         "name": "Gemet",
-        "description": "Fast�n blott en tunn metalltr�d kan Gemet hj�lpa dig hitta det du s�ker och h�lla ihop det hela.",
+        "description": "Fast'n blott en tunn metalltr'd kan Gemet hj'lpa dig hitta det du s'ker och h'lla ihop det hela.",
         "greetings": [
-          "Hall� d�r, vad skriver vi idag?",
+          "Hall' d'r, vad skriver vi idag?",
           "Hur lever livet? Bara gno och ingen ro?",
-          "Hall� d�r, vill du ha snabba svar p� dina fr�gor om Office? Klicka p� mig."
+          "Hall' d'r, vill du ha snabba svar p' dina fr'gor om Office? Klicka p' mig."
         ],
         "reminders": [
-          "H�r kommer p�minnelsen.",
-          "Gl�m inte detta.",
-          "Betrakta dig som p�mind."
+          "H'r kommer p'minnelsen.",
+          "Gl'm inte detta.",
+          "Betrakta dig som p'mind."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "���˹պ��д��",
-        "description": "�֧�����Ҩ�����§�����硺ҧ � ���˹�� ���˹պ��д�� �Ъ��¤س������觷���ͧ���������ѹ�������ѹ",
+        "name": "'''˹պ''д''",
+        "description": "'֧'''''Ҩ'''''§'''''硺ҧ ' '''˹'' '''˹պ''д'' 'Ъ''¤س''''''觷'''ͧ'''''''''ѹ'''''''ѹ",
         "greetings": [
-          "���ʴդ�Ѻ",
-          "���ѧ䧺�ҧ��Ѻ ����ҹ��������",
-          "��Ҥس�դӶ������ǡѺ Office ��е�ͧ��äӵͺ���ҧ�Ǵ���� ���ԡ����ǩѹ"
+          "'''ʴդ'Ѻ",
+          "'''ѧ䧺'ҧ''Ѻ ''''ҹ''''''''",
+          "''Ҥس'դӶ''''''ǡѺ Office ''е'ͧ''äӵͺ'''ҧ'Ǵ'''' '''ԡ''''ǩѹ"
         ],
         "reminders": [
-          "����͵����͹�ͧ�س",
-          "��������Ф�Ѻ"
+          "''''͵''''͹'ͧ'س",
+          "''''''''Ф'Ѻ"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
-        "name": "Ata�",
-        "description": "�nce metal bir telden yap�lm�� olsa da, Ata�, gerek duyduklar�n�z� bulman�za yard�m edip hepsini bir arada tutacakt�r.",
+        "name": "Ata'",
+        "description": "'nce metal bir telden yap'lm'' olsa da, Ata', gerek duyduklar'n'z' bulman'za yard'm edip hepsini bir arada tutacakt'r.",
         "greetings": [
           "Merhaba. Ne var ne yok?",
-          "��ler nas�l? Hep �al��t���n i�in e�lenmeye zaman�n yok mu?",
-          "Merhaba. Office hakk�ndaki sorulara h�zl� yan�tlar m� ar�yorsunuz? Beni t�klat�n."
+          "''ler nas'l? Hep 'al''t'''n i'in e'lenmeye zaman'n yok mu?",
+          "Merhaba. Office hakk'ndaki sorulara h'zl' yan'tlar m' ar'yorsunuz? Beni t'klat'n."
         ],
         "reminders": [
-          "��te an�msat�c�n�z.",
+          "''te an'msat'c'n'z.",
           "Bunu unutma.",
-          "An�msat�lacaks�n."
+          "An'msat'lacaks'n."
         ]
       },
       {
         "languageCode": "0x0424",
         "locale": {},
         "name": "Sponka",
-        "description": "�eprav je samo tanka �ica, vam Sponka pomaga najti, kar potrebujete, in nato vse skupaj povezati.",
+        "description": "'eprav je samo tanka 'ica, vam Sponka pomaga najti, kar potrebujete, in nato vse skupaj povezati.",
         "greetings": [
           "Pozdravljeni! Kaj bo dobrega?",
-          "Kako vam gre? Samo delo, ni� zabave?",
-          "Pozdravljeni! Ali potrebujte hitre odgovore na svoja vpra�anja o Officeu? Kliknite me."
+          "Kako vam gre? Samo delo, ni' zabave?",
+          "Pozdravljeni! Ali potrebujte hitre odgovore na svoja vpra'anja o Officeu? Kliknite me."
         ],
         "reminders": [
           "Tukaj je opomin.",
@@ -14154,32 +14154,32 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "���ۼ�",
-        "description": "�ɱ�С����ֻ��һ��ϸ��˿Ŷ�������ۼС��ܹ������ҵ���Ҫ�Ķ������������ǻ㼯��һ��",
+        "name": "'''ۼ'",
+        "description": "'ɱ'С''''ֻ''һ''ϸ''˿Ŷ'''''''ۼС''ܹ''''''ҵ'''Ҫ'Ķ''''''''''''ǻ㼯''һ''",
         "greetings": [
-          "�٣�����������Ǹ�ʲô�֣�",
-          "������ô�����������������죿",
-          "�٣����Ƕ�����Ͽ�Ū�����й� Office ��������ֻҪ�����Ҿ�������"
+          "'٣'''''''''''Ǹ'ʲô'֣'",
+          "''''''ô'''''''''''''''''죿",
+          "'٣''''Ƕ'''''Ͽ'Ū'''''й' Office ''''''''ֻҪ'''''Ҿ'''''''"
         ],
         "reminders": [
-          "���ڸ��������ˡ�",
-          "�ɱ����������Ŷ��",
-          "���ɵ��Լ�����ŵ㣡"
+          "'''ڸ''''''''ˡ'",
+          "'ɱ''''''''''Ŷ''",
+          "'''ɵ''Լ'''''ŵ㣡"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "Clip",
-        "description": "Apesar de ser um simples fio de arame, o Clip ir� ajud�-lo a encontrar aquilo que precisa e a manter tudo organizado.",
+        "description": "Apesar de ser um simples fio de arame, o Clip ir' ajud'-lo a encontrar aquilo que precisa e a manter tudo organizado.",
         "greetings": [
-          "Ol�! O que h� de novo?",
-          "Como vai? S� trabalho e nenhuma divers�o?",
-          "Ol�! Quer respostas r�pidas �s suas perguntas sobre o Office? Basta fazer clique sobre mim."
+          "Ol'! O que h' de novo?",
+          "Como vai? S' trabalho e nenhuma divers'o?",
+          "Ol'! Quer respostas r'pidas 's suas perguntas sobre o Office? Basta fazer clique sobre mim."
         ],
         "reminders": [
-          "Aqui est� o seu lembrete.",
-          "N�o se esque�a disto.",
+          "Aqui est' o seu lembrete.",
+          "N'o se esque'a disto.",
           "Considere-se recordado."
         ]
       },
@@ -14187,16 +14187,16 @@
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Clipo",
-        "description": "Aunque no es m�s que un alambrito, Clipo le ayudar� a encontrar lo que necesita.",
+        "description": "Aunque no es m's que un alambrito, Clipo le ayudar' a encontrar lo que necesita.",
         "greetings": [
-          "Hola. �Qu� hay que buscar?",
-          "�C�mo van las cosas? �Mucho trabajo y poca diversi�n?",
-          "Hola. �Necesita respuestas r�pidas a sus preguntas acerca de Office? Haga clic en m�."
+          "Hola. 'Qu' hay que buscar?",
+          "'C'mo van las cosas? 'Mucho trabajo y poca diversi'n?",
+          "Hola. 'Necesita respuestas r'pidas a sus preguntas acerca de Office? Haga clic en m'."
         ],
         "reminders": [
           "Esto es un aviso.",
           "No lo olvide.",
-          "Est� avisado."
+          "Est' avisado."
         ]
       }
     ],

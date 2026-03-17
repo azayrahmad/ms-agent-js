@@ -22931,45 +22931,45 @@
       {
         "languageCode": "0x0401",
         "locale": {},
-        "name": "������",
-        "description": "�� ��� ����� ��� ���� �� ����� ����������� ������ ������ �� ����� ��� �� ��� ����� ����� ��� ������� ������.",
+        "name": "''''''",
+        "description": "'' ''' ''''' ''' '''' '' ''''' ''''''''''' '''''' '''''' '' ''''' ''' '' ''' ''''' ''''' ''' ''''''' ''''''.",
         "greetings": [
-          "���� ��� ��� �������� ���� ������ǡ �� ���� ��� ����� ����.",
-          "��� ��� �������ɡ ���� ���� ��� ����� ��� �� ���."
+          "'''' ''' ''' '''''''' '''' ''''''ǡ '' '''' ''' ''''' ''''.",
+          "''' ''' '''''''ɡ '''' '''' ''' ''''' ''' '' '''."
         ],
         "reminders": [
-          "���� ����� ��.",
-          "��� �� �����.",
-          "��� �� ������."
+          "'''' ''''' ''.",
+          "''' '' '''''.",
+          "''' '' ''''''."
         ]
       },
       {
         "languageCode": "0x0404",
         "locale": {},
-        "name": "�J�Y",
-        "description": "�b�q���ǲߪ���줤�ݭn���ɶܡH�J�Y�i�H���ܦ��U�ؤ��P���Ϊ��A�åB���ޱz�����T����V�e�i�C",
+        "name": "'J'Y",
+        "description": "'b'q'''ǲߪ'''줤'ݭn'''ɶܡH'J'Y'i'H'''ܦ''U'ؤ''P'''Ϊ''A'åB'''ޱz'''''T''''V'e'i'C",
         "greetings": [
-          "���z�ݭn�����U�ɡA�u�n���ڤ@�U�@�I",
-          "�ڴN�b�o��A�ҥH�p�G�z������ݭn�A�u�n���ڤ@�U�@�I"
+          "'''z'ݭn'''''U'ɡA'u'n'''ڤ@'U'@'I",
+          "'ڴN'b'o''A'ҥH'p'G'z''''''ݭn'A'u'n'''ڤ@'U'@'I"
         ],
         "reminders": [
-          "���z�����ܳ�I",
-          "�z�n�����G�b�o��C",
-          "�z�����ܦb�o��I"
+          "'''z'''''ܳ'I",
+          "'z'n'''''G'b'o''C",
+          "'z'''''ܦb'o''I"
         ]
       },
       {
         "languageCode": "0x0405",
         "locale": {},
-        "name": "Pu�a",
-        "description": "Pot�ebujete pr�vodce v elektronick�m sv�t�? Pu�a se um� prom�nit v libovoln� tvar a v�dy v�s navede spr�vn�m sm�rem. ",
+        "name": "Pu'a",
+        "description": "Pot'ebujete pr'vodce v elektronick'm sv't'? Pu'a se um' prom'nit v libovoln' tvar a v'dy v's navede spr'vn'm sm'rem. ",
         "greetings": [
-          "Kdykoliv budete pot�ebovat jakoukoliv radu, sta�� na m� klepnout.",
-          "Jsem zde, abych v�m pom�hal. Proto nev�hejte na m� klepnout."
+          "Kdykoliv budete pot'ebovat jakoukoliv radu, sta'' na m' klepnout.",
+          "Jsem zde, abych v'm pom'hal. Proto nev'hejte na m' klepnout."
         ],
         "reminders": [
-          "Na toto byste nem�li zapomenout.",
-          "P�ipomenut� ud�losti.",
+          "Na toto byste nem'li zapomenout.",
+          "P'ipomenut' ud'losti.",
           "A je to tady."
         ]
       },
@@ -22979,43 +22979,43 @@
         "name": "Smilet",
         "description": "Har du brug for en guide i den elektroniske verden? Smilet kan forvandle sig til enhver form og vil altid lede dig i den rigtige retning.  ",
         "greetings": [
-          "N�r du har brug for hj�lp, skal du blot klikke p� mig.",
-          "Jeg er her for at hj�lpe, s� klik p� mig, hvis du vil have hj�lp."
+          "N'r du har brug for hj'lp, skal du blot klikke p' mig.",
+          "Jeg er her for at hj'lpe, s' klik p' mig, hvis du vil have hj'lp."
         ],
         "reminders": [
-          "Der er en p�mindelse til dig.",
+          "Der er en p'mindelse til dig.",
           "Nu skete handlingen.",
-          "Her er p�mindelsen."
+          "Her er p'mindelsen."
         ]
       },
       {
         "languageCode": "0x0407",
         "locale": {},
-        "name": "H�pfer",
-        "description": "Brauchst Du Hilfe an der elektronischen Front? Der superflexible H�pfer wird Dich immer an die richtige Stelle verweisen.",
+        "name": "H'pfer",
+        "description": "Brauchst Du Hilfe an der elektronischen Front? Der superflexible H'pfer wird Dich immer an die richtige Stelle verweisen.",
         "greetings": [
-          "Wenn Du irgendwie Hilfe brauchst, mu�t Du nur auf mich klicken.",
+          "Wenn Du irgendwie Hilfe brauchst, mu't Du nur auf mich klicken.",
           "Ich bin da, um Dir zu helfen. Klick mich einfach an."
         ],
         "reminders": [
           "Termin nicht vergessen!",
-          "Demn�chst findet statt:",
+          "Demn'chst findet statt:",
           "Darf ich erinnern?"
         ]
       },
       {
         "languageCode": "0x0408",
         "locale": {},
-        "name": "�� �����",
-        "description": "���������� ���� ����� ��� ����������� ��� ������; �� ��� ��������� ��� �� �������������� �� ����������� �����, �� ����� �� ��� ������ ����� ��� ����� ����������.",
+        "name": "'' '''''",
+        "description": "'''''''''' '''' ''''' ''' ''''''''''' ''' ''''''; '' ''' ''''''''' ''' '' '''''''''''''' '' ''''''''''' ''''', '' ''''' '' ''' '''''' ''''' ''' ''''' ''''''''''.",
         "greetings": [
-          "����, �������� ��� ��� �����. ���� ����������� ����������� �������, ���� ����� ��� ����.",
-          "�������� ��� ��� �����. ��������� ��� ��� �� ��� �������, ��'���� �� ����������� ���������, ����� ��� ����."
+          "'''', '''''''' ''' ''' '''''. '''' ''''''''''' ''''''''''' ''''''', '''' ''''' ''' ''''.",
+          "'''''''' ''' ''' '''''. ''''''''' ''' ''' '' ''' ''''''', ''''''' '' ''''''''''' ''''''''', ''''' ''' ''''."
         ],
         "reminders": [
-          "��� ������� ����������.",
-          "���� ����� �� ������ ��� ��� ����������.",
-          "���� ����� � ���������� ���."
+          "''' ''''''' ''''''''''.",
+          "'''' ''''' '' '''''' ''' ''' ''''''''''.",
+          "'''' ''''' ' '''''''''' '''."
         ]
       },
       {
@@ -23025,7 +23025,7 @@
         "description": "Need a guide on the electronic frontier? Able to transform into any shape, the Dot will always point you in the right direction. ",
         "greetings": [
           "When you need help of any kind, just give me a click.",
-          "I�m here to help, so give me a click if you need anything."
+          "I'm here to help, so give me a click if you need anything."
         ],
         "reminders": [
           "You have a reminder.",
@@ -23037,67 +23037,67 @@
         "languageCode": "0x040b",
         "locale": {},
         "name": "Pompula",
-        "description": "Tarvitsetko s�h�k�n oppaan? Pompula muuttaa muotoaan ja ohjaa sinut aina oikeaan suuntaan.",
+        "description": "Tarvitsetko s'h'k'n oppaan? Pompula muuttaa muotoaan ja ohjaa sinut aina oikeaan suuntaan.",
         "greetings": [
           "Kun haluat ohjeita, napsauta minua.",
-          "Olen t��ll� avustajanasi, joten napsauta minua, kun haluat ohjeita."
+          "Olen t''ll' avustajanasi, joten napsauta minua, kun haluat ohjeita."
         ],
         "reminders": [
           "Minulla on muistutus sinulle.",
-          "Muistin virkist�miseksi.",
-          "Muista t�m�."
+          "Muistin virkist'miseksi.",
+          "Muista t'm'."
         ]
       },
       {
         "languageCode": "0x040c",
         "locale": {},
         "name": "Bille de clown",
-        "description": "Vous avez besoin d'un guide pour le monde virtuel�? Avec sa t�te transformable � volont�, Bille de clown vous indiquera toujours la bonne direction. ",
+        "description": "Vous avez besoin d'un guide pour le monde virtuel'? Avec sa t'te transformable ' volont', Bille de clown vous indiquera toujours la bonne direction. ",
         "greetings": [
-          "Il vous suffit de cliquer et j'apparais, � chaque fois que vous avez besoin d'aide.",
-          "Je suis l� pour vous aider, alors appelez-moi d�s que vous avez besoin de moi."
+          "Il vous suffit de cliquer et j'apparais, ' chaque fois que vous avez besoin d'aide.",
+          "Je suis l' pour vous aider, alors appelez-moi d's que vous avez besoin de moi."
         ],
         "reminders": [
           "Vous avez un rappel.",
-          "Voici votre �v�nement.",
+          "Voici votre 'v'nement.",
           "Voici votre rappel."
         ]
       },
       {
         "languageCode": "0x040d",
         "locale": {},
-        "name": "������",
-        "description": "��� ���� ������ ����� ���������? ������ ����� ����� ��� ����, ���� ���� ���� ���� ������ �����. ",
+        "name": "''''''",
+        "description": "''' '''' '''''' ''''' '''''''''? '''''' ''''' ''''' ''' '''', '''' '''' '''' '''' '''''' '''''. ",
         "greetings": [
-          "����� ���� ����� ��� ���, ���� ��� ���.",
-          "��� ��� ��� �����, �� ��� ��� �� ��� ���� �����."
+          "''''' '''' ''''' ''' ''', '''' ''' '''.",
+          "''' ''' ''' ''''', '' ''' ''' '' ''' '''' '''''."
         ],
         "reminders": [
-          "�� �� ������.",
-          "��� ������ ���.",
-          "��� ������� ���."
+          "'' '' ''''''.",
+          "''' '''''' '''.",
+          "''' ''''''' '''."
         ]
       },
       {
         "languageCode": "0x040e",
         "locale": {},
-        "name": "Gomb�c",
-        "description": "J�pajt�sra van sz�ks�ge az elektronik�ban? B�rmilyen alakot is �lt, Gomb�c mindig kedves �s seg�t.",
+        "name": "Gomb'c",
+        "description": "J'pajt'sra van sz'ks'ge az elektronik'ban? B'rmilyen alakot is 'lt, Gomb'c mindig kedves 's seg't.",
         "greetings": [
-          "Nagyon �r�l�k, hogy l�tlak. Ha b�rmiben seg�thetek, csak kattints r�m!",
-          "De j�, hogy l�tlak. Arra v�rok, hogy seg�thessek, ha kell valami, kattints r�m."
+          "Nagyon 'r'l'k, hogy l'tlak. Ha b'rmiben seg'thetek, csak kattints r'm!",
+          "De j', hogy l'tlak. Arra v'rok, hogy seg'thessek, ha kell valami, kattints r'm."
         ],
         "reminders": [
-          "Ehhez van egy eml�keztet�.",
+          "Ehhez van egy eml'keztet'.",
           "El ne feledd!",
-          "K�rted, hogy sz�ljak."
+          "K'rted, hogy sz'ljak."
         ]
       },
       {
         "languageCode": "0x0410",
         "locale": {},
-        "name": "Caucci�",
-        "description": "Se cercate una guida elettronica, adattabile e capace di assumere qualsiasi forma, Caucci� vi indicher� sempre la direzione giusta.",
+        "name": "Caucci'",
+        "description": "Se cercate una guida elettronica, adattabile e capace di assumere qualsiasi forma, Caucci' vi indicher' sempre la direzione giusta.",
         "greetings": [
           "Se ti serve aiuto, chiamami con un clic del mouse.",
           "Eccomi qui, pronto ad aiutarti. Se hai bisogno di me, basta un clic."
@@ -23111,31 +23111,31 @@
       {
         "languageCode": "0x0411",
         "locale": {},
-        "name": "�|��",
-        "description": "�d�q�̍őO����i�ނɂ�����A�K�C�h���K�v�ł͂���܂��񂩁H �|���͂��낢��Ȍ`�Ɏp��ς��Ȃ���A���ł����Ȃ��𐳂��������ɓ����܂��B",
+        "name": "'|''",
+        "description": "'d'q'̍őO''''i'ނɂ'''''A'K'C'h'''K'v'ł͂'''܂''񂩁H '|'''͂''낢''Ȍ`'Ɏp''ς''Ȃ'''A'''ł''''Ȃ''𐳂''''''''ɓ''''܂''B",
         "greetings": [
-          "�����킩��Ȃ����Ƃ���������A���ɕ����ĂˁB",
-          "���������Ƃ���������A�����N���b�N���ĂˁB"
+          "'''''킩''Ȃ''''Ƃ'''''''''A'''ɕ''''ĂˁB",
+          "'''''''''Ƃ'''''''''A'''''N'''b'N'''ĂˁB"
         ],
         "reminders": [
-          "�Y��Ȃ��łˁB",
-          "�o���Ă�H",
-          "�v���o�����H"
+          "'Y''Ȃ''łˁB",
+          "'o'''Ă'H",
+          "'v'''o'''''H"
         ]
       },
       {
         "languageCode": "0x0412",
         "locale": {},
-        "name": "ǳ��",
-        "description": "�������� ������ �ʿ��Ͻʴϱ�? �پ��� ������� ��Ÿ���� ǳ���� ��Ȯ�� ���� �ȳ��� �ݴϴ�.",
+        "name": "ǳ''",
+        "description": "'''''''' '''''' 'ʿ''Ͻʴϱ'? 'پ''' ''''''' ''Ÿ'''' ǳ'''' ''Ȯ'' '''' 'ȳ''' 'ݴϴ'.",
         "greetings": [
-          "������ �ʿ��Ͻø� ���� ��������.",
-          "������ �帳�ϴ�. ���� �ּ���."
+          "'''''' 'ʿ''Ͻø' '''' ''''''''.",
+          "'''''' '帳'ϴ'. '''' 'ּ'''."
         ],
         "reminders": [
-          "����� �ּ���.",
-          "���� ������.",
-          "������ ����Ͻ�����?"
+          "''''' 'ּ'''.",
+          "'''' ''''''.",
+          "'''''' ''''Ͻ'''''?"
         ]
       },
       {
@@ -23157,149 +23157,149 @@
         "languageCode": "0x0414",
         "locale": {},
         "name": "Fargeklatten",
-        "description": "Fargeklatten endrer form n�r som helst. Hun peker ut riktig retning for deg i den elektroniske jungelen.",
+        "description": "Fargeklatten endrer form n'r som helst. Hun peker ut riktig retning for deg i den elektroniske jungelen.",
         "greetings": [
           "Hei! Hvis du trenger hjelp med noe, bare klikk meg.",
-          "Jeg er her for � hjelpe deg, s� du m� bare klikke meg hvis du trenger hjelp."
+          "Jeg er her for ' hjelpe deg, s' du m' bare klikke meg hvis du trenger hjelp."
         ],
         "reminders": [
-          "Du har f�tt en p�minnelse.",
-          "Dette skulle du gj�re.",
-          "Her er p�minnelsen."
+          "Du har f'tt en p'minnelse.",
+          "Dette skulle du gj're.",
+          "Her er p'minnelsen."
         ]
       },
       {
         "languageCode": "0x0415",
         "locale": {},
         "name": "Punkt",
-        "description": "Potrzebujesz przewodnika po elektronicznym labiryncie? Zmiennokszta�tny Punkt pozwoli Ci zawsze trafi� w sedno.",
+        "description": "Potrzebujesz przewodnika po elektronicznym labiryncie? Zmiennokszta'tny Punkt pozwoli Ci zawsze trafi' w sedno.",
         "greetings": [
-          "Kliknij mnie, gdy tylko b�dziesz potrzebowa� pomocy!",
-          "Jestem tu po to, �eby Ci pom�c, wi�c w razie potrzeby po prostu mnie kliknij."
+          "Kliknij mnie, gdy tylko b'dziesz potrzebowa' pomocy!",
+          "Jestem tu po to, 'eby Ci pom'c, wi'c w razie potrzeby po prostu mnie kliknij."
         ],
         "reminders": [
           "Oto Twoje przypomnienie:",
-          "Oto wydarzenie, kt�re mia�em Ci przypomnie�:"
+          "Oto wydarzenie, kt're mia'em Ci przypomnie':"
         ]
       },
       {
         "languageCode": "0x0416",
         "locale": {},
         "name": "Pingo",
-        "description": "Voc� precisa de um guia no reino da computa��o? Capaz de adquirir qualquer forma, o Pingo sempre aponta para voc� a dire��o certa. ",
+        "description": "Voc' precisa de um guia no reino da computa''o? Capaz de adquirir qualquer forma, o Pingo sempre aponta para voc' a dire''o certa. ",
         "greetings": [
-          "Ol�! Que bom ver voc�! Quando precisar de ajuda, basta clicar em mim.",
-          "Que legal conhecer voc�! Estou aqui para ajud�-lo. Quando precisar, clique em mim."
+          "Ol'! Que bom ver voc'! Quando precisar de ajuda, basta clicar em mim.",
+          "Que legal conhecer voc'! Estou aqui para ajud'-lo. Quando precisar, clique em mim."
         ],
         "reminders": [
-          "Voc� tem um lembrete",
-          "Aqui est� o seu evento.",
-          "Aqui est� o seu lembrete."
+          "Voc' tem um lembrete",
+          "Aqui est' o seu evento.",
+          "Aqui est' o seu lembrete."
         ]
       },
       {
         "languageCode": "0x0418",
         "locale": {},
         "name": "Punctul",
-        "description": "Ave�i nevoie de un ghid pentru a dep�i frontiera electronic�? Capabil s� ia orice form�, Punctul v� va �ndruma �ntotdeauna �n direc�ia potrivit�. ",
+        "description": "Ave'i nevoie de un ghid pentru a dep'i frontiera electronic'? Capabil s' ia orice form', Punctul v' va 'ndruma 'ntotdeauna 'n direc'ia potrivit'. ",
         "greetings": [
-          "Atunci c�nd ave�i nevoie de orice fel de ajutor, face�i clic pe mine.",
-          "Sunt aici ca s� v� ajut, a�a c� face�i clic pe mine atunci c�nd ave�i nevoie de orice fel de ajutor."
+          "Atunci c'nd ave'i nevoie de orice fel de ajutor, face'i clic pe mine.",
+          "Sunt aici ca s' v' ajut, a'a c' face'i clic pe mine atunci c'nd ave'i nevoie de orice fel de ajutor."
         ],
         "reminders": [
-          "Ave�i un memento.",
-          "Iat� evenimentul.",
-          "Iat� memento-ul."
+          "Ave'i un memento.",
+          "Iat' evenimentul.",
+          "Iat' memento-ul."
         ]
       },
       {
         "languageCode": "0x0419",
         "locale": {},
-        "name": "�������",
-        "description": "��� ����� ��������� ����� ����������� �������, ������� ����� ������� ����� �����? ������� ������ ������ ���������� ������.",
+        "name": "'''''''",
+        "description": "''' ''''' ''''''''' ''''' ''''''''''' ''''''', ''''''' ''''' ''''''' ''''' '''''? ''''''' '''''' '''''' '''''''''' ''''''.",
         "greetings": [
-          "��� ������ ��� ����������� ������, �������� ��� ������.",
-          "� ����� ������. ��� ������ ��� ���-������ �����������, �������� ��� ������."
+          "''' '''''' ''' ''''''''''' '''''', '''''''' ''' ''''''.",
+          "' ''''' ''''''. ''' '''''' ''' '''-'''''' ''''''''''', '''''''' ''' ''''''."
         ],
         "reminders": [
-          "��� ��� ���� �����������.",
-          "�������.",
-          "�����������."
+          "''' ''' '''' '''''''''''.",
+          "'''''''.",
+          "'''''''''''."
         ]
       },
       {
         "languageCode": "0x041a",
         "locale": {},
         "name": "The Dot",
-        "description": "Trebate li vodi�a na elektroni�koj granici? Loptica se mo�e promijniti u bilo koji oblik i uvijek �e vas uputiti u pravom smjeru.",
+        "description": "Trebate li vodi'a na elektroni'koj granici? Loptica se mo'e promijniti u bilo koji oblik i uvijek 'e vas uputiti u pravom smjeru.",
         "greetings": [
-          "Kad vam je potrebna kakva pomo�, samo me pritisnite.",
-          "Tu sam da vam pomognem, pritisnite me ako vam �to treba."
+          "Kad vam je potrebna kakva pomo', samo me pritisnite.",
+          "Tu sam da vam pomognem, pritisnite me ako vam 'to treba."
         ],
         "reminders": [
           "Imate svog podsjetnika.",
           "Ovo je zgoda za vas.",
-          "Ovdje je va� podsjetnik."
+          "Ovdje je va' podsjetnik."
         ]
       },
       {
         "languageCode": "0x041b",
         "locale": {},
-        "name": "Gu�ka",
-        "description": "Potrebujete sprievodcu po elektronickej krajine? Som schopn� zmeni� svoj tvar a nasmerova� v�s v�dy spr�vnym smerom. ",
+        "name": "Gu'ka",
+        "description": "Potrebujete sprievodcu po elektronickej krajine? Som schopn' zmeni' svoj tvar a nasmerova' v's v'dy spr'vnym smerom. ",
         "greetings": [
-          "Ak by ste potrebovali pom�c�, sta�� na m�a klikn��.",
-          "Som tu na to aby som pom�hala, tak nev�hajte na m�a klikn��."
+          "Ak by ste potrebovali pom'c', sta'' na m'a klikn''.",
+          "Som tu na to aby som pom'hala, tak nev'hajte na m'a klikn''."
         ],
         "reminders": [
-          "Priali ste si pripomen��.",
-          "Pripom�nam v�m udalos�.",
-          "Chcem v�s len upozorni�."
+          "Priali ste si pripomen''.",
+          "Pripom'nam v'm udalos'.",
+          "Chcem v's len upozorni'."
         ]
       },
       {
         "languageCode": "0x041d",
         "locale": {},
         "name": "Pricken",
-        "description": "Pricken �r en glad figur som med l�tthet hoppar mellan de olika Office-programmen.",
+        "description": "Pricken 'r en glad figur som med l'tthet hoppar mellan de olika Office-programmen.",
         "greetings": [
-          "Klicka p� mig n�r du beh�ver hj�lp.",
-          "Jag �r h�r f�r att hj�lpa till, s� klicka p� mig om du beh�ver n�got."
+          "Klicka p' mig n'r du beh'ver hj'lp.",
+          "Jag 'r h'r f'r att hj'lpa till, s' klicka p' mig om du beh'ver n'got."
         ],
         "reminders": [
-          "Du har en p�minnelse.",
-          "H�r �r din h�ndelse.",
-          "H�r �r din p�minnelse."
+          "Du har en p'minnelse.",
+          "H'r 'r din h'ndelse.",
+          "H'r 'r din p'minnelse."
         ]
       },
       {
         "languageCode": "0x041e",
         "locale": {},
-        "name": "�١��",
-        "description": "��ͧ��ü��ӷҧ��š����硷�͹ԡ���������� �١�� �������ö�ŧ���ٻ��ҧ��ҧ � �� �Ф�����Ƿҧ���١��ͧ���س���� ",
+        "name": "'١''",
+        "description": "''ͧ''ü''ӷҧ''š''''硷'͹ԡ'''''''''' '١'' '''''''ö'ŧ'''ٻ''ҧ''ҧ ' '' 'Ф'''''Ƿҧ'''١''ͧ'''س'''' ",
         "greetings": [
-          "�����㴷��س��ͧ��ä������������ �����Ҩ�������ͧ� ���ԡ����ǩѹ��ҹ��",
-          "�ѹ�繼���������� �ѧ��鹶�Ҥس��ͧ������� ��ԡ����ǩѹ"
+          "'''''㴷''س''ͧ''ä'''''''''''' '''''Ҩ'''''''ͧ' '''ԡ''''ǩѹ''ҹ''",
+          "'ѹ'繼'''''''''' 'ѧ''鹶'Ҥس''ͧ''''''' ''ԡ''''ǩѹ"
         ],
         "reminders": [
-          "�س�յ����͹",
-          "������˵ء�ó�ͧ�س",
-          "����͵����͹�ͧ�س"
+          "'س'յ''''͹",
+          "''''''˵ء'ó'ͧ'س",
+          "''''͵''''͹'ͧ'س"
         ]
       },
       {
         "languageCode": "0x041f",
         "locale": {},
         "name": "Boncuk",
-        "description": "Elektronik d�nyas�nda bir rehbere mi gereksiniminiz var? �ekilden �ekle giren Boncuk, sizi her zaman do�ru y�nlendirecektir.",
+        "description": "Elektronik d'nyas'nda bir rehbere mi gereksiniminiz var? 'ekilden 'ekle giren Boncuk, sizi her zaman do'ru y'nlendirecektir.",
         "greetings": [
-          "Herhangi bir konuda yard�ma gerek duydu�unda, beni t�klatman yeterli.",
-          "Burada yard�m i�in bulunuyorum. Bir �eye gerek duydu�unuzda beni t�klat�n."
+          "Herhangi bir konuda yard'ma gerek duydu'unda, beni t'klatman yeterli.",
+          "Burada yard'm i'in bulunuyorum. Bir 'eye gerek duydu'unuzda beni t'klat'n."
         ],
         "reminders": [
-          "An�msat�c�n�z var.",
-          "��te olay�n�z.",
-          "��te an�msat�c�n�z."
+          "An'msat'c'n'z var.",
+          "''te olay'n'z.",
+          "''te an'msat'c'n'z."
         ]
       },
       {
@@ -23308,13 +23308,13 @@
         "name": "Pika",
         "description": "Ali potrebujete vodnika po elektronskih prostranstvih? S spreminjanjem svoje oblike vas Pika vedno usmeri v pravo smer.",
         "greetings": [
-          "Ko boste potreboval pomo�, me kliknite.",
-          "Tukaj sem, da vam pomagam, zato me kliknite, �e potrebujete kako informacijo."
+          "Ko boste potreboval pomo', me kliknite.",
+          "Tukaj sem, da vam pomagam, zato me kliknite, 'e potrebujete kako informacijo."
         ],
         "reminders": [
-          "Opomin vas �aka.",
+          "Opomin vas 'aka.",
           "Za tole gre.",
-          "Tukaj je va� opomin."
+          "Tukaj je va' opomin."
         ]
       },
       {
@@ -23335,40 +23335,40 @@
       {
         "languageCode": "0x0804",
         "locale": {},
-        "name": "С��ͨ",
-        "description": "��õ����ڵ��������ָ���𣿡�С��ͨ�������ܱ仯�ɸ�����״������Ϊ��ָ�������أ�",
+        "name": "С''ͨ",
+        "description": "''õ''''ڵ''''''''ָ'''𣿡'С''ͨ'''''''ܱ仯'ɸ'''''״''''''Ϊ''ָ'''''''أ'",
         "greetings": [
-          "����ʲôʱ�����������ѣ�ֻҪ������һ�¾����ˡ�",
-          "�Ҿʹ������������æ��������Ҫ��ʲô�Ը���������һ�¾��С�"
+          "''''ʲôʱ'''''''''''ѣ'ֻҪ''''''һ'¾''''ˡ'",
+          "'Ҿʹ''''''''''''æ''''''''Ҫ''ʲô'Ը'''''''''һ'¾''С'"
         ],
         "reminders": [
-          "����Ҫ������һ�¡�",
-          "���м���Ҫ�졣",
-          "��������һ���ˡ�"
+          "''''Ҫ''''''һ'¡'",
+          "'''м'''Ҫ'졣",
+          "''''''''һ'''ˡ'"
         ]
       },
       {
         "languageCode": "0x0816",
         "locale": {},
         "name": "Ponto",
-        "description": "Deixe que o Ponto o conduza pelos limites da electr�nica. Ele ir� sempre direccion�-lo para  a melhor op��o. ",
+        "description": "Deixe que o Ponto o conduza pelos limites da electr'nica. Ele ir' sempre direccion'-lo para  a melhor op''o. ",
         "greetings": [
-          "Quando precisar de ajuda, j� sabe: fa�a-me um clique!",
-          "Estou aqui para ajudar, por isso fa�a-me um clique se precisar de alguma coisa."
+          "Quando precisar de ajuda, j' sabe: fa'a-me um clique!",
+          "Estou aqui para ajudar, por isso fa'a-me um clique se precisar de alguma coisa."
         ],
         "reminders": [
           "Tem um lembrete.",
-          "Aqui est� o seu evento.",
-          "Aqui est� o seu lembrete."
+          "Aqui est' o seu evento.",
+          "Aqui est' o seu lembrete."
         ]
       },
       {
         "languageCode": "0x0c0a",
         "locale": {},
         "name": "Ridondo",
-        "description": "�Necesita un gu�a en el ciberespacio? Capaz de adoptar cualquier forma, Ridondo siempre le llevar� por el buen camino. ",
+        "description": "'Necesita un gu'a en el ciberespacio? Capaz de adoptar cualquier forma, Ridondo siempre le llevar' por el buen camino. ",
         "greetings": [
-          "Si necesita ayuda, haga clic en m�.",
+          "Si necesita ayuda, haga clic en m'.",
           "A su servicio. Si me necesita, haga clic."
         ],
         "reminders": [
