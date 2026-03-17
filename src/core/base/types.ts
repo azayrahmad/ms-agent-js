@@ -201,6 +201,8 @@ export interface AgentOptions {
   }) => void;
   /** AbortSignal to cancel loading. */
   signal?: AbortSignal;
+  /** Whether to use the in-memory cache (default: true). */
+  useCache?: boolean;
 }
 
 export interface AgentCharacterDefinition {
