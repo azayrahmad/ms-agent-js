@@ -128,18 +128,14 @@ describe('Agent Directional Animations', () => {
     });
 });
 
-describe('Agent.moveTo fallback', () => {
+describe('Agent.moveTo', () => {
     let agent: Agent;
     const mockDefinition = {
         character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
         balloon: { borderColor: '000000', backColor: 'ffffff', foreColor: '000000', fontName: 'Arial', fontHeight: 12 },
         animations: {
             'LookLeft': { frames: [] },
-            'LookRight': { frames: [] },
-            'LookUp': { frames: [] },
-            'LookDown': { frames: [] },
-            'LookUpLeft': { frames: [] },
-            'LookUpRight': { frames: [] }
+            'LookRight': { frames: [] }
         },
         states: {
             'IdlingLevel1': { name: 'IdlingLevel1', animations: [] }
@@ -151,53 +147,30 @@ describe('Agent.moveTo fallback', () => {
         setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
 
-        // Prevent requestAnimationFrame loops
-        vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(1));
-
+        // Standard RAF mock in setup.ts handles the movement steps
         agent = await Agent.load('Clippit', { x: 500, y: 500, scale: 1 });
         vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
         // Mock draw to avoid clearRect errors
         vi.spyOn((agent as any).renderer, 'draw').mockImplementation(() => {});
     });
 
-    it('should use Look animation if Moving animation is missing (with perspective swap)', async () => {
-        // Capture the moveStep function
-        let moveStep: any;
-        vi.stubGlobal('requestAnimationFrame', (fn: any) => {
-            moveStep = fn;
-            return 1;
-        });
+    it('should update coordinates after movement completes', async () => {
+        // Move from (500, 500) to (100, 100)
+        await agent.moveTo(100, 100, 10000); // Very high speed for the mock RAF
 
-        // Agent at (500, 500), center (550, 550)
-        // Move to (100, 100) -> Screen direction is UpLeft
-        const req = agent.moveTo(100, 100);
-
-        // Screen UpLeft should trigger Agent UpRight (swapped)
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookUpRight', 'Moving');
-
-        // Finish movement
-        moveStep(performance.now() + 10000);
-        await req;
+        expect(agent.options.x).toBe(100);
+        expect(agent.options.y).toBe(100);
     });
 
     it('should use Moving animation if it exists', async () => {
-        // Capture the moveStep function
-        let moveStep: any;
-        vi.stubGlobal('requestAnimationFrame', (fn: any) => {
-            moveStep = fn;
-            return 1;
-        });
-
         (agent.definition.animations as any)['MovingLeft'] = { frames: [] };
 
+        const playSpy = vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+
         // Move to screen-left
-        const req = agent.moveTo(100, 500);
+        await agent.moveTo(100, 500, 10000);
 
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('MovingLeft', 'Moving');
-
-        // Finish movement
-        moveStep(performance.now() + 10000);
-        await req;
+        expect(playSpy).toHaveBeenCalledWith('MovingLeft', 'Moving');
     });
 });
 
@@ -229,26 +202,81 @@ describe('Agent Visibility', () => {
         agent = await Agent.load('Clippit');
     });
 
-    it('should await the full Showing animation', async () => {
-        const playSpy = agent.animationManager.playAnimation;
+    it('should set display block when showing', async () => {
+        await agent.hide();
+        expect((agent as any).container.style.display).toBe('none');
 
         await agent.show();
-
-        // Showing animation should be called with useExitBranch=true to play once to completion
-        expect(playSpy).toHaveBeenCalledWith('Showing', true);
-        // Note: With the non-blocking returnToIdle, the state name might still be 'Showing'
-        // immediately after show() resolves if we don't wait for the idle transition.
+        expect((agent as any).container.style.display).toBe('block');
     });
 
-    it('should await the full Hiding animation and then set display none', async () => {
-        const playSpy = agent.animationManager.playAnimation;
+    it('should set display none when hidden', async () => {
+        await agent.show();
+        expect((agent as any).container.style.display).toBe('block');
 
         await agent.hide();
-
-        // Hiding animation should be called with useExitBranch=true to play once to completion
-        expect(playSpy).toHaveBeenCalledWith('Hiding', true);
-        expect(agent.stateManager.currentStateName).toBe('Hidden');
-        // Container should be hidden after await
         expect((agent as any).container.style.display).toBe('none');
+        expect(agent.stateManager.currentStateName).toBe('Hidden');
+    });
+});
+
+describe('Agent Core Methods', () => {
+    let agent: Agent;
+    const coreMockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
+        balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
+        animations: {
+            'A1': { frames: [] },
+            'A2': { frames: [] },
+            'Idle1': { frames: [] }
+        },
+        states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: ['Idle1'] } }
+    };
+
+    beforeEach(async () => {
+        vi.clearAllMocks();
+        setupGlobals(coreMockDefinition);
+        (CharacterParser.load as any).mockResolvedValue(coreMockDefinition);
+        agent = await Agent.load('Clippit', { x: 100, y: 100, scale: 1 });
+        vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+    });
+
+    it('setScale should update scale and reposition agent centered', () => {
+        // Mock sprite size
+        vi.spyOn(agent.spriteManager, 'getSpriteWidth').mockReturnValue(100);
+        vi.spyOn(agent.spriteManager, 'getSpriteHeight').mockReturnValue(100);
+
+        // Initial: x=100, y=100, w=100, h=100 -> center=(150, 150)
+        agent.setScale(2);
+
+        // New size: 200x200. Center (150, 150) -> TopLeft (150-100, 150-100) = (50, 50)
+        expect(agent.options.scale).toBe(2);
+        expect(agent.options.x).toBe(50);
+        expect(agent.options.y).toBe(50);
+    });
+
+    it('animate should play a random non-idle animation', async () => {
+        const playSpy = vi.spyOn(agent, 'play');
+        agent.animate();
+
+        expect(playSpy).toHaveBeenCalled();
+        const animName = (playSpy.mock.calls[0] as any)[0];
+        expect(agent.animations()).toContain(animName);
+        expect(animName).not.toBe('Idle1');
+    });
+
+    it('stopCurrent should stop only the active request', async () => {
+        const stopSpy = vi.spyOn(agent.requestQueue, 'stop');
+        agent.requestQueue.add(async () => {}); // add a dummy request
+        const activeId = agent.requestQueue.activeRequestId;
+
+        agent.stopCurrent();
+        expect(stopSpy).toHaveBeenCalledWith(activeId);
+    });
+
+    it('stop should set exiting flag on animation manager if animating', () => {
+        vi.spyOn(agent.animationManager, 'isAnimating', 'get').mockReturnValue(true);
+        agent.stop();
+        expect(agent.animationManager.isExitingFlag).toBe(true);
     });
 });

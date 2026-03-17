@@ -124,4 +124,23 @@ describe('fetchWithProgress', () => {
     const response = await fetchWithProgress('http://example.com/404');
     expect(response.status).toBe(404);
   });
+
+  it('should respect AbortSignal', async () => {
+    const controller = new AbortController();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((_url, options) => {
+        if (options.signal) {
+            return new Promise((_, reject) => {
+                options.signal.addEventListener('abort', () => {
+                    reject(new Error('AbortError'));
+                });
+            });
+        }
+        return Promise.resolve(new Response('ok'));
+    }));
+
+    const promise = fetchWithProgress('http://example.com/test.txt', { signal: controller.signal });
+    controller.abort();
+
+    await expect(promise).rejects.toThrow('AbortError');
+  });
 });
