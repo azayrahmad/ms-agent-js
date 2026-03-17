@@ -124,33 +124,32 @@ describe('Agent Public API', () => {
     });
 
     describe('agent.ask()', () => {
-        it('should resolve with input value when Ask button is clicked', async () => {
+        it('should resolve with default Ask button value when clicked', async () => {
             const agent = await Agent.load('Clippit');
             const askPromise = agent.ask({ title: 'Test Question' });
 
             // Small delay for task to start
             await new Promise(resolve => setTimeout(resolve, 50));
 
-            const balloonEl = agent.balloon.balloonEl;
+            const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
             const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
-            const askButton = (agent.balloon.balloonEl as any).lastQueriedAskButton as HTMLButtonElement;
 
             textarea.value = 'User Answer';
-            askButton.click();
+            customButtons[0].click(); // Click "Ask"
 
             const result = await askPromise;
-            expect(result).toBe('User Answer');
+            expect(result).toEqual({ value: 'Ask', text: 'User Answer' });
         });
 
-        it('should resolve with null when Cancel button is clicked', async () => {
+        it('should resolve with null when default Cancel button is clicked', async () => {
             const agent = await Agent.load('Clippit');
             const askPromise = agent.ask();
 
             await new Promise(resolve => setTimeout(resolve, 50));
 
-            const cancelButton = (agent.balloon.balloonEl as any).lastQueriedCancelButton as HTMLButtonElement;
+            const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
 
-            cancelButton.click();
+            customButtons[1].click(); // Click "Cancel"
 
             const result = await askPromise;
             expect(result).toBe(null);
@@ -186,5 +185,53 @@ describe('Agent Public API', () => {
             const result = await askPromise;
             expect(result).toBe(null);
         });
+
+        it('should resolve with custom button value and text input', async () => {
+          const agent = await Agent.load('Clippit');
+          const askPromise = agent.ask({
+            title: "Choice",
+            placeholder: "Reason",
+            buttons: [{ label: "Yes", value: "yes_val" }, "No"],
+          });
+
+          await new Promise((resolve) => setTimeout(resolve, 50));
+
+          const customButtons = (agent.balloon.balloonEl as any)
+            .lastQueriedCustomButtons as HTMLButtonElement[];
+          const textarea = (agent.balloon.balloonEl as any)
+            .lastQueriedTextarea as HTMLTextAreaElement;
+
+          textarea.value = "Because I want to";
+          customButtons[0].click(); // Click "Yes"
+
+          const result = await askPromise;
+          expect(result).toEqual({
+            value: "yes_val",
+            text: "Because I want to",
+          });
+      });
+
+      it("should resolve with choice index and text input", async () => {
+          const agent = await Agent.load("Clippit");
+          const askPromise = agent.ask({
+            title: "Choice",
+            choices: ["Option 1", "Option 2"],
+          });
+
+          await new Promise((resolve) => setTimeout(resolve, 50));
+
+          const choicesList = (agent.balloon.balloonEl as any)
+            .lastQueriedChoicesList as HTMLUListElement;
+
+          // Mock clicking the first li
+          const li = document.createElement("li");
+          li.setAttribute("data-index", "1");
+          const event = { target: li };
+          const clickListener = (choicesList as any).listeners["click"][0];
+          clickListener(event);
+
+          const result = await askPromise;
+          expect(result).toEqual({ value: 1, text: undefined });
+      });
     });
 });
