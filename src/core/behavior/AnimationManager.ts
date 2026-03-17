@@ -445,6 +445,11 @@ export class AnimationManager extends EventEmitter<any> {
       for (const img of frame.images) {
         await this.spriteManager.loadSprite(img.filename);
       }
+      if (frame.mouths) {
+        for (const mouth of Object.values(frame.mouths)) {
+          await this.spriteManager.loadSprite(mouth.filename);
+        }
+      }
       if (frame.soundEffect) {
         soundsToLoad.push(frame.soundEffect);
       }

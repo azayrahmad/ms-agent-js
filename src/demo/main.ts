@@ -126,6 +126,7 @@ async function initDemo() {
 
   const dashState = document.getElementById("dash-state")!;
   const dashAnim = document.getElementById("dash-anim")!;
+  const dashMouth = document.getElementById("dash-mouth")!;
   const dashFrame = document.getElementById("dash-frame")!;
   const dashLevel = document.getElementById("dash-level")!;
   const dashNextTick = document.getElementById("dash-next-tick")!;
@@ -214,6 +215,7 @@ async function initDemo() {
 
     dashState.textContent = "Loading...";
     dashAnim.textContent = "-";
+    dashMouth.textContent = "-";
     dashFrame.textContent = "-";
     dashLevel.textContent = "-";
     dashNextTick.textContent = "-";
@@ -600,6 +602,7 @@ async function initDemo() {
     if (currentAgent && currentAgent.stateManager && currentAgent.animationManager) {
       dashState.textContent = currentAgent.stateManager.currentStateName;
       dashAnim.textContent = currentAgent.animationManager.currentAnimationName || "-";
+      dashMouth.textContent = currentAgent.currentMouthType || "-";
       dashFrame.textContent = currentAgent.animationManager.currentFrameIndexValue.toString();
       dashLevel.textContent = currentAgent.stateManager.idleLevel.toString();
       dashNextTick.textContent = (currentAgent.stateManager.timeUntilNextTick / 1000).toFixed(1);

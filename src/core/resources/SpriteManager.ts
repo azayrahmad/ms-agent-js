@@ -375,11 +375,12 @@ export class SpriteManager {
 
     const mouthDef = mouthType ? frame.mouths?.[mouthType] : null;
 
-    // Draw images in reverse order as per the original implementation (back-to-front layering)
-    for (let i = frame.images.length - 1; i >= 0; i--) {
+    // Draw images as per the original implementation (back-to-front layering)
+    // The last image in the array is the top-most layer.
+    for (let i = 0; i < frame.images.length; i++) {
       // If we are replacing the top image (last in array), and a mouth exists, skip it.
-      if (i === 0 && mouthDef?.replaceTopImage) {
-          continue;
+      if (i === frame.images.length - 1 && mouthDef?.replaceTopImage) {
+        continue;
       }
       const imgDef = frame.images[i];
 

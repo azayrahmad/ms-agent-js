@@ -72,6 +72,10 @@ export class Agent {
   public get options() {
     return this.core.options;
   }
+  /** The current mouth shape being displayed (for lip-syncing). */
+  public get currentMouthType(): string | null {
+    return this.core.currentMouthType;
+  }
 
   private constructor(
     core: AgentCore,
@@ -249,6 +253,11 @@ export class Agent {
         frame.images.forEach((image) => {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
         });
+        if (frame.mouths) {
+          Object.values(frame.mouths).forEach((mouth) => {
+            mouth.filename = mouth.filename.replace(/\\/g, "/").toLowerCase();
+          });
+        }
         if (frame.soundEffect) {
           frame.soundEffect = frame.soundEffect.toLowerCase();
         }
