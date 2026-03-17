@@ -6,7 +6,6 @@ import type {
   AgentCharacterDefinition,
   AgentRequest,
   AgentOptions,
-  MOUTH_TYPE_MAP,
 } from "./core/base/types";
 import { fetchWithProgress, estimateViseme } from "./utils";
 
@@ -256,13 +255,9 @@ export class Agent {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
         });
         if (frame.mouths) {
-          const normalizedMouths: any = {};
-          Object.entries(frame.mouths).forEach(([key, mouth]) => {
-            const normalizedKey = MOUTH_TYPE_MAP[key.toLowerCase()] || key;
+          Object.values(frame.mouths).forEach((mouth) => {
             mouth.filename = mouth.filename.replace(/\\/g, "/").toLowerCase();
-            normalizedMouths[normalizedKey] = mouth;
           });
-          frame.mouths = normalizedMouths;
         }
         if (frame.soundEffect) {
           frame.soundEffect = frame.soundEffect.replace(/\\/g, "/").toLowerCase();

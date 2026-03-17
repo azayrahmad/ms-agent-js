@@ -6,18 +6,16 @@ import { MOUTH_TYPE_MAP } from '../src/core/base/types';
 (global as any).MOUTH_TYPE_MAP = MOUTH_TYPE_MAP;
 
 describe('Agent Normalization', () => {
-    it('should normalize mouth keys to PascalCase', () => {
+    it('should normalize filenames in Agent.normalizeDefinition', () => {
         const mockDefinition: any = {
             character: { colorTable: 'ColorTable.bmp' },
             animations: {
                 'Speak': {
                     frames: [
                         {
-                            images: [{ filename: 'img.bmp', offsetX: 0, offsetY: 0 }],
+                            images: [{ filename: 'IMG.BMP', offsetX: 0, offsetY: 0 }],
                             mouths: {
-                                'closed': { filename: 'closed.bmp', offsetX: 0, offsetY: 0 },
-                                'openwide1': { filename: 'open1.bmp', offsetX: 0, offsetY: 0 },
-                                'OpenMedium': { filename: 'med.bmp', offsetX: 0, offsetY: 0 }
+                                'Closed': { filename: 'CLOSED.BMP', offsetX: 0, offsetY: 0 }
                             }
                         }
                     ]
@@ -25,19 +23,11 @@ describe('Agent Normalization', () => {
             }
         };
 
-        // Access private static method for testing
         (Agent as any).normalizeDefinition(mockDefinition);
 
-        const mouths = mockDefinition.animations['Speak'].frames[0].mouths;
-        expect(mouths).toHaveProperty('Closed');
-        expect(mouths).toHaveProperty('OpenWide1');
-        expect(mouths).toHaveProperty('OpenMedium');
-
-        expect(mouths).not.toHaveProperty('closed');
-        expect(mouths).not.toHaveProperty('openwide1');
-
-        expect(mouths['Closed'].filename).toBe('closed.bmp');
-        expect(mouths['OpenWide1'].filename).toBe('open1.bmp');
+        const frame = mockDefinition.animations['Speak'].frames[0];
+        expect(frame.images[0].filename).toBe('img.bmp');
+        expect(frame.mouths['Closed'].filename).toBe('closed.bmp');
     });
 
     it('should normalize mouth keys in CharacterParser', () => {

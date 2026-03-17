@@ -68,7 +68,13 @@ function decode8bppBmp(filePath: string) {
 
 async function optimizeAgent(agentDir: string) {
     const agentName = path.basename(agentDir);
-    const acdPath = path.join(agentDir, `${agentName.toUpperCase()}.acd`);
+    let acdPath = path.join(agentDir, `${agentName.toUpperCase()}.acd`);
+    if (!fs.existsSync(acdPath)) {
+        acdPath = path.join(agentDir, `${agentName.toLowerCase()}.acd`);
+    }
+    if (!fs.existsSync(acdPath)) {
+        acdPath = path.join(agentDir, `${agentName}.acd`);
+    }
 
     console.log(`Optimizing agent: ${agentName}`);
 
@@ -91,6 +97,13 @@ async function optimizeAgent(agentDir: string) {
                 img.filename = normalized; // Normalize in definition too
                 imagesToProcess.add(normalized);
             });
+            if (frame.mouths) {
+                Object.values(frame.mouths).forEach(mouth => {
+                    const normalized = mouth.filename.replace(/\\/g, '/').toLowerCase();
+                    mouth.filename = normalized;
+                    imagesToProcess.add(normalized);
+                });
+            }
         });
     });
 
