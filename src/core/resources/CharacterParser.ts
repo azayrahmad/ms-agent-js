@@ -10,7 +10,6 @@ import {
   CharacterStyle,
   type AgentCharacterDefinition,
 } from "../base/types";
-import { validate as uuidValidate } from "uuid";
 
 /**
  * Mapping from Windows LCID (Language Code Identifier) to BCP 47 language tags.
@@ -160,13 +159,7 @@ export class CharacterParser {
 
         switch (key) {
           case "GUID": {
-            const normalizedGuid = value.replace(/{|}/g, "");
-            if (!uuidValidate(normalizedGuid)) {
-              console.warn(
-                `Invalid GUID found in .acd file: ${value}. Using raw string as fallback.`,
-              );
-            }
-            this.currentCharacter.guid = normalizedGuid;
+            this.currentCharacter.guid = value.replace(/{|}/g, "");
             break;
           }
           case "Width":
