@@ -1,5 +1,7 @@
 import { AgentCore } from "../core/Core";
 import { Balloon } from "./Balloon";
+import bulletsUrl from "../assets/ui/ask-bullets.png";
+import bulbsUrl from "../assets/ui/ask-bulbs.png";
 
 /**
  * The rendering layer of the Agent system.
@@ -142,6 +144,55 @@ export class AgentRenderer {
       }
       .clippy-input-buttons .ask-button {
         margin-right: 5px;
+      }
+      .clippy-choices {
+        width: 100%;
+        margin: 5px 0 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .clippy-choices li {
+        display: flex;
+        align-items: center;
+        padding: 2px 4px;
+        cursor: pointer;
+      }
+      .clippy-choices li span {
+        border: 1px dashed transparent;
+        padding: 1px 2px;
+      }
+      .clippy-choices li:hover span {
+        border: 1px dashed grey;
+      }
+      .clippy-choices li::before {
+        content: "";
+        display: inline-block;
+        margin-right: 8px;
+        background-repeat: no-repeat;
+      }
+      .clippy-choices.style-bullet li::before {
+        width: 10px;
+        height: 10px;
+        background-image: url('${bulletsUrl}');
+        background-position: 0 0;
+      }
+      .clippy-choices.style-bullet li:hover::before {
+        background-position: -10px 0;
+      }
+      .clippy-choices.style-bullet li:active::before {
+        background-position: -20px 0;
+      }
+      .clippy-choices.style-bulb li::before {
+        width: 11px;
+        height: 15px;
+        background-image: url('${bulbsUrl}');
+        background-position: 0 0;
+      }
+      .clippy-choices.style-bulb li:hover::before {
+        background-position: -11px 0;
+      }
+      .clippy-choices.style-bulb li:active::before {
+        background-position: -22px 0;
       }
     `;
   }

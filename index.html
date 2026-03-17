@@ -339,21 +339,50 @@
                                         <label for="speak-text"
                                             >Text to speak:</label
                                         >
-                                        <input
-                                            type="text"
+                                        <textarea
                                             id="speak-text"
-                                            value="Hello! My name is Clippy."
-                                            style="width: 100%"
-                                        />
+                                            rows="3"
+                                            style="width: 100%; resize: none;"
+                                        >Hello! My name is Clippy.</textarea>
                                     </div>
-                                    <div class="field-row">
-                                        <input
-                                            type="checkbox"
-                                            id="skip-typing-check"
-                                        />
-                                        <label for="skip-typing-check"
-                                            >Skip typing</label
-                                        >
+                                    <div class="field-row" style="justify-content: space-between;">
+                                        <div class="field-row">
+                                            <input
+                                                type="checkbox"
+                                                id="skip-typing-check"
+                                            />
+                                            <label for="skip-typing-check"
+                                                >Skip typing</label
+                                            >
+                                        </div>
+                                        <button id="speak-btn" disabled>
+                                            Speak
+                                        </button>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset style="margin-top: 8px">
+                                    <legend>Ask</legend>
+                                    <div
+                                        class="field-row"
+                                        style="
+                                            justify-content: flex-end;
+                                            gap: 4px;
+                                        "
+                                    >
+                                        <button id="ask-btn" disabled>
+                                            Ask
+                                        </button>
+                                        <button id="ask-options-btn" disabled>
+                                            Ask Options
+                                        </button>
+                                        <div class="field-row">
+                                            <label for="ask-style-select">Style:</label>
+                                            <select id="ask-style-select">
+                                                <option value="bullet">Bullet</option>
+                                                <option value="bulb">Bulb</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </fieldset>
 
@@ -403,25 +432,6 @@
                                             value="1"
                                         />
                                         <span id="rate-value">1.0</span>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset style="margin-top: 8px">
-                                    <legend>Actions</legend>
-                                    <div
-                                        class="field-row"
-                                        style="
-                                            justify-content: flex-end;
-                                            gap: 4px;
-                                            margin-top: 4px;
-                                        "
-                                    >
-                                        <button id="speak-btn" disabled>
-                                            Speak
-                                        </button>
-                                        <button id="ask-btn" disabled>
-                                            Ask
-                                        </button>
                                     </div>
                                 </fieldset>
                             </div>

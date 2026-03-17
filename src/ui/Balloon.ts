@@ -412,6 +412,7 @@ export class Balloon {
    * @param hold - If true, the balloon won't auto-close.
    * @param useTTS - If true, will use system Text-to-Speech.
    * @param skipTyping - If true, displays text instantly without typing animation.
+   * @param skipContentUpdate - If true, does not overwrite the current content of the balloon.
    */
   public speak(
     complete: () => void,
@@ -419,17 +420,20 @@ export class Balloon {
     hold: boolean,
     useTTS: boolean,
     skipTyping: boolean = false,
+    skipContentUpdate: boolean = false,
   ) {
     this.stop();
     this._hidden = false;
 
-    // Reset styles for measurement
-    this._contentEl.style.width = "";
-    this._contentEl.style.height = "";
-    this._contentEl.style.maxWidth = "";
-    this._contentEl.style.maxHeight = "";
-    this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
-    this._contentEl.textContent = text;
+    if (!skipContentUpdate) {
+      // Reset styles for measurement
+      this._contentEl.style.width = "";
+      this._contentEl.style.height = "";
+      this._contentEl.style.maxWidth = "";
+      this._contentEl.style.maxHeight = "";
+      this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
+      this._contentEl.textContent = text;
+    }
 
     this.show();
 
@@ -464,19 +468,21 @@ export class Balloon {
     }
 
     this.reposition();
-    this._contentEl.textContent = "";
+    if (!skipContentUpdate) {
+      this._contentEl.textContent = "";
+    }
 
     if (useTTS) {
-      this._sayCharsWithTTS(text, hold);
+      this._sayCharsWithTTS(text, hold, skipContentUpdate);
     } else {
-      this._sayChars(text, hold);
+      this._sayChars(text, hold, skipContentUpdate);
     }
   }
 
   /**
    * Internal character-by-character typing logic (no TTS).
    */
-  private _sayChars(text: string, hold: boolean) {
+  private _sayChars(text: string, hold: boolean, skipContentUpdate: boolean = false) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
@@ -493,7 +499,9 @@ export class Balloon {
         }
       } else {
         idx++;
-        this._contentEl.textContent = text.slice(0, idx);
+        if (!skipContentUpdate) {
+          this._contentEl.textContent = text.slice(0, idx);
+        }
         this._loopTimeout = setTimeout(
           () => this._addChar?.(),
           this.CHAR_SPEAK_TIME,
@@ -506,14 +514,16 @@ export class Balloon {
   /**
    * Internal character-by-character typing logic synchronized with TTS boundaries.
    */
-  private _sayCharsWithTTS(text: string, hold: boolean) {
+  private _sayCharsWithTTS(text: string, hold: boolean, skipContentUpdate: boolean = false) {
     this._active = true;
     this._hold = hold;
     let idx = 0;
 
     const onTTSComplete = () => {
       this._active = false;
-      this._contentEl.textContent = text;
+      if (!skipContentUpdate) {
+        this._contentEl.textContent = text;
+      }
       if (this._hold) {
         this._callComplete();
       } else {
@@ -531,7 +541,9 @@ export class Balloon {
         }
         if (nextIdx > idx) {
           idx = nextIdx;
-          this._contentEl.textContent = text.slice(0, idx);
+          if (!skipContentUpdate) {
+            this._contentEl.textContent = text.slice(0, idx);
+          }
         }
       },
       onTTSComplete,
