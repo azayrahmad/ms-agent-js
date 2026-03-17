@@ -54,7 +54,6 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.5",
-    "@types/uuid": "^11.0.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.0.18",
     "canvas": "^3.2.1",
@@ -65,8 +64,5 @@
     "vite": "^7.3.1",
     "vite-plugin-static-copy": "^3.2.0",
     "vitest": "^4.0.18"
-  },
-  "dependencies": {
-    "uuid": "^13.0.0"
   }
 }
