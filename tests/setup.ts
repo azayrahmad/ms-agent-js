@@ -73,9 +73,19 @@ export const setupGlobals = (mockDefinition?: any) => {
     requestAnimationFrame: vi.fn().mockImplementation((cb) => setTimeout(() => cb(performance.now()), 16)),
     cancelAnimationFrame: vi.fn().mockImplementation((id) => clearTimeout(id)),
     navigator: { userAgent: 'test' },
+    SpeechSynthesisUtterance: function(text: string) {
+        this.text = text;
+        this.onend = null;
+        this.onboundary = null;
+        this.onerror = null;
+    },
     speechSynthesis: {
       getVoices: vi.fn().mockReturnValue([]),
-      speak: vi.fn(),
+      speak: vi.fn().mockImplementation((utterance) => {
+          setTimeout(() => {
+              if (utterance.onend) utterance.onend();
+          }, 0);
+      }),
       cancel: vi.fn(),
       speaking: false,
       addEventListener: vi.fn(),
@@ -107,6 +117,8 @@ export const setupGlobals = (mockDefinition?: any) => {
   };
 
   vi.stubGlobal('window', mockWindow);
+  vi.stubGlobal('SpeechSynthesisUtterance', mockWindow.SpeechSynthesisUtterance);
+  vi.stubGlobal('speechSynthesis', mockWindow.speechSynthesis);
 
   vi.stubGlobal('document', {
     createElementNS: vi.fn().mockImplementation((ns, tag) => {
@@ -163,7 +175,7 @@ export const setupGlobals = (mockDefinition?: any) => {
         }),
         querySelector: vi.fn().mockImplementation(function(this: any, selector: string) {
           // Return a mock element for common selectors in tests
-          if (selector === 'textarea' || selector === '.ask-button' || selector === '.cancel-button') {
+          if (selector === 'textarea' || selector === '.ask-button' || selector === '.cancel-button' || selector === '.clippy-title') {
             const el = document.createElement(selector.startsWith('.') ? 'button' : selector);
             if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
             if (selector === 'textarea') this.lastQueriedTextarea = el;
@@ -173,6 +185,7 @@ export const setupGlobals = (mockDefinition?: any) => {
           }
           return null;
         }),
+        querySelectorAll: vi.fn().mockReturnValue([]),
         getBoundingClientRect: vi.fn().mockReturnValue({
           width: 100, height: 100, top: 0, left: 0, bottom: 100, right: 100
         }),
@@ -219,7 +232,13 @@ export const setupGlobals = (mockDefinition?: any) => {
         }),
   });
 
-  vi.stubGlobal('requestAnimationFrame', (cb: any) => setTimeout(() => cb(performance.now()), 16));
+  vi.stubGlobal('requestAnimationFrame', (cb: any) => setTimeout(() => {
+    if (typeof window !== 'undefined' && (window as any).performance) {
+      cb((window as any).performance.now());
+    } else {
+      cb(Date.now());
+    }
+  }, 16));
   vi.stubGlobal('cancelAnimationFrame', (id: any) => clearTimeout(id));
   vi.stubGlobal('performance', {
     now: () => Date.now()

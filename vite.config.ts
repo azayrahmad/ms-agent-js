@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: isApp ? '/ms-agent-js/' : '/',
     test: {
+      environment: 'jsdom',
       setupFiles: ['tests/setup.ts'],
       coverage: {
         provider: 'v8',

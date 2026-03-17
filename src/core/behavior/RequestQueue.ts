@@ -1,25 +1,25 @@
 import { type AgentRequest, RequestStatus } from "../base/types";
 
-type RequestTask = (request: AgentRequest) => Promise<void>;
+type RequestTask<T = any> = (request: AgentRequest<T>) => Promise<T>;
 
-interface QueueEntry {
-  request: InternalAgentRequest;
-  task: RequestTask;
+interface QueueEntry<T = any> {
+  request: InternalAgentRequest<T>;
+  task: RequestTask<T>;
 }
 
-class InternalAgentRequest implements AgentRequest {
+class InternalAgentRequest<T = void> implements AgentRequest<T> {
   public readonly id: number;
   public status: RequestStatus;
-  public readonly promise: Promise<void>;
-  private resolveFn: () => void = () => {};
+  public readonly promise: Promise<T>;
+  private resolveFn: (value: T) => void = () => {};
   private rejectFn: (reason?: any) => void = () => {};
 
   constructor(id: number) {
     this.id = id;
     this.status = RequestStatus.Pending;
-    let res: (() => void) | undefined;
+    let res: ((value: T) => void) | undefined;
     let rej: ((err: any) => void) | undefined;
-    this.promise = new Promise<void>((resolve, reject) => {
+    this.promise = new Promise<T>((resolve, reject) => {
       res = resolve;
       rej = reject;
     });
@@ -33,9 +33,9 @@ class InternalAgentRequest implements AgentRequest {
   /**
    * Implementation of PromiseLike, allowing the request to be awaited directly.
    */
-  public then<TResult1 = void, TResult2 = never>(
+  public then<TResult1 = T, TResult2 = never>(
     onfulfilled?:
-      | ((value: void) => TResult1 | PromiseLike<TResult1>)
+      | ((value: T) => TResult1 | PromiseLike<TResult1>)
       | undefined
       | null,
     onrejected?:
@@ -46,9 +46,9 @@ class InternalAgentRequest implements AgentRequest {
     return this.promise.then(onfulfilled, onrejected);
   }
 
-  public resolve() {
+  public resolve(value: T) {
     this.status = RequestStatus.Complete;
-    this.resolveFn();
+    this.resolveFn(value);
   }
 
   public reject(err: any) {
@@ -65,7 +65,7 @@ class InternalAgentRequest implements AgentRequest {
 
   public interrupt() {
     this.status = RequestStatus.Interrupted;
-    this.resolveFn();
+    this.resolveFn(null as any);
   }
 }
 
@@ -77,9 +77,9 @@ export class RequestQueue {
   /**
    * Adds a new task to the queue and returns a request object to track it.
    */
-  public add(task: RequestTask): AgentRequest {
-    const request = new InternalAgentRequest(this.nextId++);
-    const entry: QueueEntry = { request, task };
+  public add<T = void>(task: RequestTask<T>): AgentRequest<T> {
+    const request = new InternalAgentRequest<T>(this.nextId++);
+    const entry: QueueEntry<T> = { request, task };
 
     this.queue.push(entry);
     this.processNext();
@@ -95,9 +95,9 @@ export class RequestQueue {
     request.status = RequestStatus.InProgress;
 
     try {
-      await this.currentEntry.task(request);
+      const result = await this.currentEntry.task(request);
       if (request.status === RequestStatus.InProgress) {
-        request.resolve();
+        request.resolve(result);
       }
     } catch (err) {
       this.currentEntry.request.reject(err);

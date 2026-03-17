@@ -89,6 +89,7 @@ describe('Agent Public API', () => {
             while (!request.isCancelled) {
                 await new Promise(resolve => setTimeout(resolve, 10));
             }
+            return undefined;
         });
 
         const req2 = agent.delay(1000);
@@ -124,67 +125,16 @@ describe('Agent Public API', () => {
     });
 
     describe('agent.ask()', () => {
-        it('should resolve with input value when Ask button is clicked', async () => {
+        it('should return a request that resolves to an InteractionResult', async () => {
             const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask({ title: 'Test Question' });
-
-            // Small delay for task to start
-            await new Promise(resolve => setTimeout(resolve, 50));
-
-            const balloonEl = agent.balloon.balloonEl;
-            const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
-            const askButton = (agent.balloon.balloonEl as any).lastQueriedAskButton as HTMLButtonElement;
-
-            textarea.value = 'User Answer';
-            askButton.click();
-
-            const result = await askPromise;
-            expect(result).toBe('User Answer');
-        });
-
-        it('should resolve with null when Cancel button is clicked', async () => {
-            const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask();
-
-            await new Promise(resolve => setTimeout(resolve, 50));
-
-            const cancelButton = (agent.balloon.balloonEl as any).lastQueriedCancelButton as HTMLButtonElement;
-
-            cancelButton.click();
-
-            const result = await askPromise;
-            expect(result).toBe(null);
-        });
-
-        it('should switch animations on focus and blur of the textarea', async () => {
-            const agent = await Agent.load('Clippit');
-            const playAnimationSpy = vi.spyOn(agent.stateManager, 'playAnimation');
-
-            agent.ask();
-
-            await new Promise(resolve => setTimeout(resolve, 50));
-
-            const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
-
-            // Trigger focus
-            textarea.focus();
-            expect(playAnimationSpy).toHaveBeenCalledWith('Writing', 'Speaking', false, undefined, true);
-
-            // Trigger blur
-            textarea.blur();
-            expect(playAnimationSpy).toHaveBeenCalledWith('Explain', 'Speaking', false, undefined, true);
-        });
-
-        it('should resolve with null if balloon is hidden', async () => {
-            const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask();
-
-            await new Promise(resolve => setTimeout(resolve, 0));
+            const askRequest = agent.ask('Test Question');
+            expect(askRequest.promise).toBeInstanceOf(Promise);
 
             agent.balloon.close();
-
-            const result = await askPromise;
-            expect(result).toBe(null);
+            const result = await askRequest;
+            expect(result).toHaveProperty('choiceIndex');
+            expect(result).toHaveProperty('buttonIndex');
+            expect(result).toHaveProperty('checkboxChecked');
         });
     });
 });

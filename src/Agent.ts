@@ -639,13 +639,7 @@ export class Agent {
     options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
   ): AgentRequest {
     const { hold = false, useTTS = true, skipTyping = false } = options;
-    return this.enqueueRequest(async (request) => {
-      if (request.isCancelled) return;
-      this.startTalkingAnimation();
-      return new Promise((resolve) => {
-        this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
-      });
-    });
+    return this.ask(text, { useTTS, skipTyping }).then(() => {});
   }
 
   /**
@@ -659,76 +653,52 @@ export class Agent {
   }
 
   /**
-   * Asks the user a question with a text input field in the balloon.
+   * Asks the user a question with an interactive balloon.
    *
-   * @param options - Configuration for the input dialog (labels, placeholder, timeout).
-   * @returns A promise resolving to the user's input string, or null if cancelled.
+   * @param title - The title/text of the question.
+   * @param options - Configuration for content, choices, checkbox, and buttons.
+   * @returns A request object that resolves to the interaction result.
    */
   public ask(
-    options: {
-      title?: string;
-      placeholder?: string;
-      choices?: string[];
-      choiceStyle?: "bullet" | "bulb";
-      askButtonText?: string;
-      cancelButtonText?: string;
-      timeout?: number;
-    } = {},
-  ): Promise<string | number | null> {
-    const title = options.title || "What would you like to do?";
-    const placeholder = options.placeholder || "Ask me anything...";
-    const askButtonText = options.askButtonText || "Ask";
-    const cancelButtonText = options.cancelButtonText || "Cancel";
-    const timeout = options.timeout || 60000;
-    const choices = options.choices || null;
-    const choiceStyle = options.choiceStyle || "bullet";
+    title: string,
+    options: AskOptions = {},
+  ): AgentRequest<InteractionResult> {
+    const {
+      content,
+      choices,
+      checkbox,
+      buttons,
+      timeout,
+      useTTS = true,
+      skipTyping = false,
+    } = options;
 
-    let resolveAsk: (value: string | number | null) => void;
-    const askPromise = new Promise<string | number | null>((res) => {
-      resolveAsk = res;
-    });
+    return this.enqueueRequest<InteractionResult>(async (request) => {
+      const defaultResult: InteractionResult = {
+        choiceIndex: null,
+        buttonIndex: null,
+        checkboxChecked: false,
+      };
 
-    this.enqueueRequest(async (request) => {
-      if (request.isCancelled) {
-        resolveAsk(null);
-        return;
-      }
-
-      let inputBalloonTimeout: number | null = null;
-      let resolved = false;
-
-      let balloonContent = "";
-      if (choices) {
-        const choicesHtml = choices
-          .map((choice, i) => `<li data-index="${i}"><span>${choice}</span></li>`)
-          .join("");
-        balloonContent = `
-                <div class="clippy-input">
-                    <b>${title}</b>
-                    <ul class="clippy-choices style-${choiceStyle}">
-                        ${choicesHtml}
-                    </ul>
-                </div>
-            `;
-      } else {
-        balloonContent = `
-                <div class="clippy-input">
-                  <b>${title}</b>
-                  <textarea rows="2" placeholder="${placeholder}"></textarea>
-                  <div class="clippy-input-buttons">
-                    <button class="ask-button default">${askButtonText}</button>
-                    <button class="cancel-button">${cancelButtonText}</button>
-                  </div>
-                </div>
-              `;
-      }
+      if (request.isCancelled) return defaultResult;
 
       this.startTalkingAnimation();
 
-      return new Promise<void>((resolveQueue) => {
-        const finish = (value: string | number | null) => {
+      return new Promise<InteractionResult>((resolve) => {
+        let timer: number | null = null;
+        let resolved = false;
+
+        const getCheckboxState = () => {
+          const checkboxInput = this.renderer.balloon.balloonEl.querySelector(
+            ".clippy-checkbox input",
+          ) as HTMLInputElement;
+          return !!checkboxInput?.checked;
+        };
+
+        const finish = (result: InteractionResult) => {
           if (resolved) return;
           resolved = true;
+          if (timer) window.clearTimeout(timer);
           this.renderer.balloon.onHide = null;
           this.talkingAnimationName = null;
           if (this.core.stateManager.currentStateName === "Speaking") {
@@ -736,128 +706,136 @@ export class Agent {
             this.core.stateManager.handleAnimationCompleted();
           }
           cleanup();
-          resolveAsk(value);
-          resolveQueue();
-        };
-
-        this.renderer.balloon.onHide = () => {
-          if (this.core.stateManager.currentStateName === "Speaking") {
-            this.core.animationManager.isExitingFlag = true;
-            this.core.stateManager.handleAnimationCompleted();
-          }
-          finish(null);
-        };
-
-        this.showHtml(balloonContent, true);
-        if (choices) {
-          this.renderer.balloon.speak(
-            () => {
-              this.talkingAnimationName = null;
-              if (this.core.stateManager.currentStateName === "Speaking") {
-                this.core.animationManager.isExitingFlag = true;
-                this.core.stateManager.handleAnimationCompleted();
-              }
-            },
-            title,
-            true,
-            true,
-            false,
-            true,
-          );
-        }
-
-        const balloonEl = this.renderer.balloon.balloonEl;
-        const input = balloonEl.querySelector(
-          "textarea",
-        ) as HTMLTextAreaElement;
-        const askButton = balloonEl.querySelector(
-          ".ask-button",
-        ) as HTMLButtonElement;
-        const cancelButton = balloonEl.querySelector(
-          ".cancel-button",
-        ) as HTMLButtonElement;
-        const choicesList = balloonEl.querySelector(
-          ".clippy-choices",
-        ) as HTMLUListElement;
-
-        const handleKeypress = (e: KeyboardEvent) => {
-          resetBalloonTimeout();
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleAsk();
-          }
-        };
-
-        const handleAsk = () => {
-          const value = input.value;
-          finish(value);
-          this.renderer.balloon.close();
-        };
-
-        const handleCancel = () => {
-          finish(null);
-          this.renderer.balloon.close();
-        };
-
-        const handleChoiceClick = (e: MouseEvent) => {
-          const target = e.target as HTMLElement;
-          const li = target.closest("li");
-          if (li && li.hasAttribute("data-index")) {
-            const index = parseInt(li.getAttribute("data-index") || "0");
-            finish(index);
-            this.renderer.balloon.close();
-          }
-        };
-
-        const handleFocus = () => {
-          this.startTalkingAnimation("Writing");
-        };
-        const handleBlur = () => {
-          this.startTalkingAnimation("Explain");
-          this.renderer.balloon.reposition();
-        };
-
-        const resetBalloonTimeout = () => {
-          clearBalloonTimeout();
-          inputBalloonTimeout = window.setTimeout(() => {
-            handleCancel();
-          }, timeout);
-        };
-
-        const clearBalloonTimeout = () => {
-          if (inputBalloonTimeout) {
-            clearTimeout(inputBalloonTimeout);
-            inputBalloonTimeout = null;
-          }
+          resolve(result);
         };
 
         const cleanup = () => {
-          clearBalloonTimeout();
-          input?.removeEventListener("keypress", handleKeypress);
-          input?.removeEventListener("focus", handleFocus);
-          input?.removeEventListener("blur", handleBlur);
-          askButton?.removeEventListener("click", handleAsk);
-          cancelButton?.removeEventListener("click", handleCancel);
-          choicesList?.removeEventListener("click", handleChoiceClick);
+          const balloonEl = this.renderer.balloon.balloonEl;
+          balloonEl.querySelectorAll(".clippy-btn").forEach((btn) => {
+            btn.removeEventListener("click", handleButtonClick);
+          });
+          balloonEl.querySelectorAll(".clippy-choices li").forEach((li) => {
+            li.removeEventListener("click", handleChoiceClick);
+          });
         };
 
-        if (input) {
-          input.focus();
-          input.addEventListener("keypress", handleKeypress);
-          input.addEventListener("focus", handleFocus);
-          input.addEventListener("blur", handleBlur);
+        const handleButtonClick = (e: Event) => {
+          const index = parseInt(
+            (e.currentTarget as HTMLElement).dataset.index!,
+          );
+          finish({
+            choiceIndex: null,
+            buttonIndex: index,
+            checkboxChecked: getCheckboxState(),
+          });
+          this.renderer.balloon.close();
+        };
+
+        const handleChoiceClick = (e: Event) => {
+          const index = parseInt(
+            (e.currentTarget as HTMLElement).dataset.index!,
+          );
+          finish({
+            choiceIndex: index,
+            buttonIndex: null,
+            checkboxChecked: getCheckboxState(),
+          });
+          this.renderer.balloon.close();
+        };
+
+        this.renderer.balloon.onHide = () => {
+          finish({
+            choiceIndex: null,
+            buttonIndex: null,
+            checkboxChecked: getCheckboxState(),
+          });
+        };
+
+        // Build HTML
+        let html = `<div class="clippy-ask">`;
+        html += `<div class="clippy-title"></div>`;
+        if (content) {
+          html += `<div class="clippy-content-area">${content}</div>`;
         }
+        if (choices && choices.length > 0) {
+          html += `<ul class="clippy-choices style-bullet">`;
+          choices.forEach((c, i) => {
+            html += `<li data-index="${i}"><span>${c}</span></li>`;
+          });
+          html += `</ul>`;
+        }
+        if (checkbox) {
+          html += `<div class="clippy-checkbox">
+                        <label>
+                            <input type="checkbox" ${checkbox.checked ? "checked" : ""}>
+                            <span>${checkbox.label}</span>
+                        </label>
+                    </div>`;
+        }
+        if (buttons && buttons.length > 0) {
+          html += `<div class="clippy-buttons">`;
+          buttons.forEach((b, i) => {
+            html += `<button class="clippy-btn" data-index="${i}">${b}</button>`;
+          });
+          html += `</div>`;
+        }
+        html += `</div>`;
 
-        askButton?.addEventListener("click", handleAsk);
-        cancelButton?.addEventListener("click", handleCancel);
-        choicesList?.addEventListener("click", handleChoiceClick);
+        // Use hold=true so it stays open for interaction
+        const hold = !!(choices?.length || buttons?.length || checkbox);
+        this.renderer.balloon.showHtml(html, hold);
 
-        resetBalloonTimeout();
-        setTimeout(() => this.renderer.balloon.reposition(), 0);
+        const balloonEl = this.renderer.balloon.balloonEl;
+        const titleEl = balloonEl.querySelector(".clippy-title") as HTMLElement;
+
+        balloonEl.querySelectorAll(".clippy-btn").forEach((btn) => {
+          btn.addEventListener("click", handleButtonClick);
+        });
+        balloonEl.querySelectorAll(".clippy-choices li").forEach((li) => {
+          li.addEventListener("click", handleChoiceClick);
+        });
+
+        // Speak/Type the title into the title element
+        this.renderer.balloon.speak(
+          () => {
+            // If there's no interactive elements, we can auto-hide
+            if (!hold) {
+              this.renderer.balloon.hide();
+            }
+          },
+          title,
+          hold,
+          useTTS,
+          skipTyping,
+          true, // skipContentUpdate: don't overwrite the HTML
+        );
+
+        // Update title element as it speaks
+        const originalOnSpeak = this.renderer.balloon.onSpeak;
+        this.renderer.balloon.onSpeak = (text, charIndex) => {
+          if (titleEl) titleEl.textContent = text.slice(0, charIndex + 1);
+          originalOnSpeak?.(text, charIndex);
+        };
+
+        // When done speaking, ensure full text is shown
+        const originalOnHide = this.renderer.balloon.onHide;
+        this.renderer.balloon.onHide = () => {
+          if (titleEl) titleEl.textContent = title;
+          originalOnHide?.();
+        };
+
+        if (timeout) {
+          timer = window.setTimeout(() => {
+            finish({
+              choiceIndex: null,
+              buttonIndex: null,
+              checkboxChecked: getCheckboxState(),
+            });
+            this.renderer.balloon.close();
+          }, timeout);
+        }
       });
     });
-
-    return askPromise;
   }
 
   /** Configures global system Text-to-Speech options. */
@@ -916,13 +894,14 @@ export class Agent {
    * Internal method to enqueue a task and emit events.
    * @internal
    */
-  public enqueueRequest(
-    task: (request: AgentRequest) => Promise<void>,
-  ): AgentRequest {
-    return this.core.requestQueue.add(async (request) => {
+  public enqueueRequest<T = void>(
+    task: (request: AgentRequest<T>) => Promise<T>,
+  ): AgentRequest<T> {
+    return this.core.requestQueue.add<T>(async (request) => {
       this.emit("requestStart", request);
-      await task(request);
+      const result = await task(request);
       this.emit("requestComplete", request);
+      return result;
     });
   }
 

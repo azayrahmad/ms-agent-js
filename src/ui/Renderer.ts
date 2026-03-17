@@ -102,48 +102,58 @@ export class AgentRenderer {
       }
       .clippy-content {
         max-width: 250px;
-        min-width: 100px;
+        min-width: 120px;
         user-select: none;
       }
-      .clippy-input {
+      .clippy-ask {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        padding: 5px;
-      }
-      .clippy-input b {
-        align-self: flex-start;
-        margin-bottom: 5px;
-      }
-      .clippy-input textarea {
+        gap: 8px;
         width: 100%;
-        margin-bottom: 10px;
-        background-color: white;
-        border: 1px solid grey;
-        box-shadow: none;
-        resize: none;
-        font-family: inherit;
-        font-size: inherit;
-        box-sizing: border-box;
       }
-      .clippy-input-buttons {
+      .clippy-title {
+        font-weight: bold;
+        white-space: pre-wrap;
+      }
+      .clippy-content-area {
+        font-size: 0.9em;
+      }
+      .clippy-content-area img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 4px 0;
+      }
+      .clippy-checkbox {
         display: flex;
-        justify-content: space-between;
-        width: 100%;
-      }
-      .clippy-input-buttons button {
-        background-color: transparent;
-        border: 1px solid grey;
-        border-radius: 4px;
-        width: 70px;
-        padding: 2px;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9em;
         cursor: pointer;
       }
-      .clippy-input-buttons button:hover {
-        background-color: #eee;
+      .clippy-checkbox input {
+        margin: 0;
+        cursor: pointer;
       }
-      .clippy-input-buttons .ask-button {
-        margin-right: 5px;
+      .clippy-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-end;
+        margin-top: 4px;
+      }
+      .clippy-btn {
+        padding: 2px 10px;
+        font-family: inherit;
+        font-size: 11px;
+        background: #efefef;
+        border: 1px solid #7f7f7f;
+        box-shadow: inset 1px 1px #fff, 1px 1px #000;
+        cursor: pointer;
+      }
+      .clippy-btn:active {
+        box-shadow: inset 1px 1px #000, 1px 1px #fff;
+        padding: 3px 9px 1px 11px;
       }
       .clippy-choices {
         width: 100%;

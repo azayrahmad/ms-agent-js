@@ -219,6 +219,41 @@ export interface AgentCharacterDefinition {
 }
 
 /**
+ * Options for the Agent.ask method.
+ */
+export interface AskOptions {
+  /** The HTML/Markdown content to display below the title. */
+  content?: string;
+  /** A list of choice strings to display as a bulleted list. */
+  choices?: string[];
+  /** Configuration for an optional checkbox. */
+  checkbox?: {
+    label: string;
+    checked?: boolean;
+  };
+  /** A list of button labels to display at the bottom of the balloon. */
+  buttons?: string[];
+  /** Time in milliseconds before the request automatically cancels (default: infinite). */
+  timeout?: number;
+  /** Whether to use Text-to-Speech for the title. */
+  useTTS?: boolean;
+  /** Whether to skip the typing animation for the title. */
+  skipTyping?: boolean;
+}
+
+/**
+ * The result of a user interaction with the speech balloon.
+ */
+export interface InteractionResult {
+  /** The index of the choice selected, or null if none. */
+  choiceIndex: number | null;
+  /** The index of the button clicked, or null if none. */
+  buttonIndex: number | null;
+  /** The state of the checkbox when the interaction completed. */
+  checkboxChecked: boolean;
+}
+
+/**
  * Request status codes mirroring the original Microsoft Agent implementation.
  */
 export const RequestStatus = {
@@ -239,19 +274,19 @@ export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
 /**
  * Represents an asynchronous character action request.
  */
-export interface AgentRequest {
+export interface AgentRequest<T = void> {
   /** Unique identifier for the request. */
   readonly id: number;
   /** The current status of the request. */
   readonly status: RequestStatus;
   /** A promise that resolves when the request completes, fails, or is interrupted. */
-  readonly promise: Promise<void>;
+  readonly promise: Promise<T>;
   /** Whether the request has been cancelled (interrupted or failed). */
   readonly isCancelled: boolean;
   /** Allows the request to be awaited directly. */
-  then<TResult1 = void, TResult2 = never>(
+  then<TResult1 = T, TResult2 = never>(
     onfulfilled?:
-      | ((value: void) => TResult1 | PromiseLike<TResult1>)
+      | ((value: T) => TResult1 | PromiseLike<TResult1>)
       | undefined
       | null,
     onrejected?:

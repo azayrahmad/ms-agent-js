@@ -433,6 +433,9 @@ export class Balloon {
       this._contentEl.style.maxHeight = "";
       this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
       this._contentEl.textContent = text;
+    } else {
+      // Even if skipping content update, we need to ensure the balloon is prepared for potential size changes
+      this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
     }
 
     this.show();
@@ -502,6 +505,7 @@ export class Balloon {
         if (!skipContentUpdate) {
           this._contentEl.textContent = text.slice(0, idx);
         }
+        this.onSpeak?.(text, idx - 1);
         this._loopTimeout = setTimeout(
           () => this._addChar?.(),
           this.CHAR_SPEAK_TIME,

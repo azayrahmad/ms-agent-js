@@ -626,21 +626,26 @@ async function initDemo() {
   askOptionsBtn.addEventListener("click", async () => {
     if (!currentAgent) return;
     const choices = ["I'm doing great!", "Not too bad.", "Could be better."];
-    const index = await currentAgent.ask({
-      title: "How are you today?",
+    const result = await currentAgent.ask("How are you today?", {
+      content: "<p>This is some <b>HTML</b> content with an image:<br><img src='https://placehold.co/100x50' /></p>",
       choices: choices,
-      choiceStyle: askStyleSelect.value as "bullet" | "bulb",
+      checkbox: { label: "Don't ask me again", checked: false },
+      buttons: ["Cancel", "OK"],
     });
 
-    if (index !== null) {
-      currentAgent.speak(`You chose: ${choices[index as number]}`, {
-        skipTyping: skipTypingCheck.checked,
-      });
-    } else {
-      currentAgent.speak("Cancelled.", {
-        skipTyping: skipTypingCheck.checked,
-      });
-    }
+    const { choiceIndex, buttonIndex, checkboxChecked } = result;
+
+    let response = "";
+    if (buttonIndex === 0) response = "You clicked Cancel.";
+    else if (buttonIndex === 1) response = "You clicked OK.";
+    else if (choiceIndex !== null) response = `You chose: ${choices[choiceIndex]}`;
+    else response = "You closed the balloon.";
+
+    if (checkboxChecked) response += " And you checked the box!";
+
+    currentAgent.speak(response, {
+      skipTyping: skipTypingCheck.checked,
+    });
   });
 
   gestureLeftBtn.addEventListener("click", () => {
