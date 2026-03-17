@@ -1,5 +1,7 @@
 import { AgentCore } from "../core/Core";
 import { Balloon } from "./Balloon";
+import bulletsUrl from "../assets/ui/ask-bullets.png";
+import bulbsUrl from "../assets/ui/ask-bulbs.png";
 
 /**
  * The rendering layer of the Agent system.
@@ -171,7 +173,7 @@ export class AgentRenderer {
       .clippy-choices.style-bullet li::before {
         width: 10px;
         height: 10px;
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAKCAYAAACjd+4vAAAACXBIWXMAAAPoAAAD6AG1e1JrAAABJ0lEQVR4nI2T0ZHDMAhE6YmeaMEduAfacB0Uk/98kAEtFnKUm2NGk9ja7NOCQoS6rsuP4/DzPHPFM20q3pfmL52Z5V5f9MuMRZ3ZnFicWL/EXRf7hM+nrqBq7urubO6kvurKLExYDWYD3E1vqAIY+tLK1BVUzF0alNWdrMETykhaSViW5FF1OMrDWZqM7+M3cYioMA4YF9THYsMaMqeY60wow2xJLhOc++pkNloYBk17gxVQHMAanAqc0QHIlGpo0UxThneLw8nH/PKZH7pqLaBRCUfqBxizU6QxQ7ubIVoaOon9SNDG0xP3tHVI7uC6OB0+5z3M+kVcDomLtdUBIoAKWt91WfkCLa8b/SVadPMvtdPF7c6W16x30G7aaysq3fv1P90Pvw9ngYe+Mzz0LwAAAABJRU5ErkJggg==');
+        background-image: url('${bulletsUrl}');
         background-position: 0 0;
       }
       .clippy-choices.style-bullet li:hover::before {
@@ -183,7 +185,7 @@ export class AgentRenderer {
       .clippy-choices.style-bulb li::before {
         width: 11px;
         height: 15px;
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAPCAYAAABqQqYpAAAACXBIWXMAAAPoAAAD6AG1e1JrAAABF0lEQVR4nM2TwQ3DIAxF2SmzZAVWyCzccugEmYM7A2SCTED1oQbHGJpGOdTSV6T0YV4xMYaVjybK8N/vssdxRJlu0yiCd05pnlkv4lQWG2rsvu+xI2BZdBFdIDfGOs7qApUtIq2AU0VCCOlZG/GqjRGwZwHJVh6skHCiYU9CK6yZUs4SWtEemb15ElrlpsT+LOEv3IkqQaclBWxHYjQOJuFOIu3XYT2XIBGeLJ7/EB+HHVxMCH8kUCGEIsJDAtu2lRsPlmbPQ3zL0oh5poZNhRck4piAdVPz7YNVhTusFFYFpEjavCMg2SL8hcXRX2HNur7SjPCc5zkuy9KFwWDuT7OGLhSegJERiwL/JGv+4iRoAaCh7cPsG2DiVwOHvNTDAAAAAElFTkSuQmCC');
+        background-image: url('${bulbsUrl}');
         background-position: 0 0;
       }
       .clippy-choices.style-bulb li:hover::before {

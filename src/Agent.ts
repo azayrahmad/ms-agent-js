@@ -750,7 +750,20 @@ export class Agent {
 
         this.showHtml(balloonContent, true);
         if (choices) {
-          this.renderer.balloon.speak(() => {}, title, true, true, false, true);
+          this.renderer.balloon.speak(
+            () => {
+              this.talkingAnimationName = null;
+              if (this.core.stateManager.currentStateName === "Speaking") {
+                this.core.animationManager.isExitingFlag = true;
+                this.core.stateManager.handleAnimationCompleted();
+              }
+            },
+            title,
+            true,
+            true,
+            false,
+            true,
+          );
         }
 
         const balloonEl = this.renderer.balloon.balloonEl;
