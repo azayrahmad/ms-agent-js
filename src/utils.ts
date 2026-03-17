@@ -19,7 +19,11 @@ export async function fetchWithProgress(
   const { signal, onProgress } = options;
   const response = await fetch(url, { signal });
 
-  if (!response.ok || !onProgress || !response.body) {
+  if (!response.ok || !onProgress) {
+    return response;
+  }
+
+  if (!response.body) {
     return response;
   }
 

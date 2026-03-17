@@ -1,6 +1,7 @@
 import { MSADPCMDecoder } from "./MSADPCMDecoder";
 import type { AudioAtlasEntry } from "../base/types";
 import { fetchWithProgress } from "../../utils";
+import { AssetCache } from "./Cache";
 
 /**
  * AudioManager class for loading and playing agent sound effects.
@@ -8,8 +9,8 @@ import { fetchWithProgress } from "../../utils";
  * Also supports optimized audio spritesheets (webm) for modern agents.
  */
 export class AudioManager {
-  /** The shared Web Audio context for this agent. */
-  private audioContext: AudioContext | null = null;
+  /** The shared Web Audio context across all agents. */
+  private static sharedAudioContext: AudioContext | null = null;
   /** Cache of individual decoded audio buffers. */
   private soundBuffers: Map<string, AudioBuffer> = new Map();
   /** Map of sounds currently being loaded to avoid duplicate requests. */
@@ -34,6 +35,8 @@ export class AudioManager {
       total: number;
       filename: string;
     }) => void;
+    useCache?: boolean;
+    persistCache?: boolean;
   };
 
   /**
@@ -49,11 +52,17 @@ export class AudioManager {
         total: number;
         filename: string;
       }) => void;
+      useCache?: boolean;
+      persistCache?: boolean;
     } = {},
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.audioPath = `${this.baseUrl}/Audio`;
-    this.options = options;
+    this.options = {
+      useCache: true,
+      persistCache: false,
+      ...options,
+    };
   }
 
   /**
@@ -73,15 +82,15 @@ export class AudioManager {
   }
 
   /**
-   * Returns the lazy-initialized AudioContext.
+   * Returns the lazy-initialized global AudioContext.
    */
   private getContext(): AudioContext {
-    if (!this.audioContext) {
-      this.audioContext = new (
+    if (!AudioManager.sharedAudioContext) {
+      AudioManager.sharedAudioContext = new (
         window.AudioContext || (window as any).webkitAudioContext
       )();
     }
-    return this.audioContext;
+    return AudioManager.sharedAudioContext!;
   }
 
   /**
@@ -129,8 +138,27 @@ export class AudioManager {
       : `${soundName}.wav`;
     const url = `${this.audioPath}/${normalizedFilename}`;
 
+    if (this.options.useCache) {
+      const cached = AssetCache.getAudioBuffer(url);
+      if (cached) {
+        this.soundBuffers.set(soundName, cached);
+        return;
+      }
+    }
+
     try {
-      const response = await fetch(url, { signal: this.options.signal });
+      let response: Response | undefined;
+      if (this.options.persistCache) {
+        response = await AssetCache.getPersistent(url);
+      }
+
+      if (!response) {
+        response = await fetch(url, { signal: this.options.signal });
+        if (response.ok && this.options.persistCache) {
+          await AssetCache.setPersistent(url, response);
+        }
+      }
+
       if (!response.ok) {
         console.warn(
           `Failed to load sound ${soundName}: ${response.statusText}`,
@@ -165,6 +193,9 @@ export class AudioManager {
       }
 
       this.soundBuffers.set(soundName, audioBuffer);
+      if (this.options.useCache) {
+        AssetCache.setAudioBuffer(url, audioBuffer);
+      }
     } catch (error) {
       console.error(`Error loading sound ${soundName}:`, error);
     }
@@ -181,11 +212,30 @@ export class AudioManager {
       const ctx = this.getContext();
       const url = `${this.baseUrl}/agent.webm`;
 
+      if (this.options.useCache) {
+        const cached = AssetCache.getAudioBuffer(url);
+        if (cached) {
+          this.spritesheetBuffer = cached;
+          return;
+        }
+      }
+
       try {
-        const response = await fetchWithProgress(url, {
-          signal: this.options.signal,
-          onProgress: this.options.onProgress,
-        });
+        let response: Response | undefined;
+        if (this.options.persistCache) {
+          response = await AssetCache.getPersistent(url);
+        }
+
+        if (!response) {
+          response = await fetchWithProgress(url, {
+            signal: this.options.signal,
+            onProgress: this.options.onProgress,
+          });
+          if (response.ok && this.options.persistCache) {
+            await AssetCache.setPersistent(url, response);
+          }
+        }
+
         if (!response.ok) {
           console.warn(
             `Failed to load audio spritesheet: ${response.statusText}`,
@@ -194,6 +244,9 @@ export class AudioManager {
         }
         const arrayBuffer = await response.arrayBuffer();
         this.spritesheetBuffer = await ctx.decodeAudioData(arrayBuffer);
+        if (this.options.useCache) {
+          AssetCache.setAudioBuffer(url, this.spritesheetBuffer);
+        }
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") throw error;
         console.error("Error loading audio spritesheet:", error);

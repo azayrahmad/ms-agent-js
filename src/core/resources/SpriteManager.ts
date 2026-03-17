@@ -3,6 +3,7 @@ import {
   type AgentCharacterDefinition,
 } from "../base/types";
 import { fetchWithProgress } from "../../utils";
+import { AssetCache } from "./Cache";
 
 /**
  * SpriteManager class for loading, caching, and rendering agent sprites.
@@ -28,6 +29,8 @@ export class SpriteManager {
       total: number;
       filename: string;
     }) => void;
+    useCache?: boolean;
+    persistCache?: boolean;
   };
 
   /**
@@ -45,11 +48,17 @@ export class SpriteManager {
         total: number;
         filename: string;
       }) => void;
+      useCache?: boolean;
+      persistCache?: boolean;
     } = {},
   ) {
     this.agentRoot = agentRoot;
     this.definition = definition;
-    this.options = options;
+    this.options = {
+      useCache: true,
+      persistCache: false,
+      ...options,
+    };
   }
 
   /**
@@ -73,10 +82,34 @@ export class SpriteManager {
     for (const ext of extensions) {
       try {
         const url = `${this.agentRoot}/agent.${ext}`;
-        const response = await fetchWithProgress(url, {
-          signal: this.options.signal,
-          onProgress: this.options.onProgress,
-        });
+
+        if (this.options.useCache) {
+          const cached = AssetCache.getSprite(url);
+          if (cached) {
+            this.spriteSheet = cached as HTMLImageElement;
+            return;
+          }
+        }
+
+        let response: Response | undefined;
+        if (this.options.persistCache) {
+          response = await AssetCache.getPersistent(url);
+        }
+
+        if (!response) {
+          try {
+            response = await fetchWithProgress(url, {
+              signal: this.options.signal,
+              onProgress: this.options.onProgress,
+            });
+          } catch (e) {
+            response = { ok: false } as any as Response;
+          }
+
+          if (response.ok && this.options.persistCache) {
+            await AssetCache.setPersistent(url, response);
+          }
+        }
 
         if (!response.ok) continue;
 
@@ -86,6 +119,9 @@ export class SpriteManager {
           const img = new Image();
           img.onload = () => {
             this.spriteSheet = img;
+            if (this.options.useCache) {
+              AssetCache.setSprite(url, img);
+            }
             URL.revokeObjectURL(objectUrl);
             resolve();
           };
@@ -130,7 +166,18 @@ export class SpriteManager {
 
     for (const url of pathsToTry) {
       try {
-        const res = await fetch(url, { signal: this.options.signal });
+        let res: Response | undefined;
+        if (this.options.persistCache) {
+          res = await AssetCache.getPersistent(url);
+        }
+
+        if (!res) {
+          res = await fetch(url, { signal: this.options.signal });
+          if (res.ok && this.options.persistCache) {
+            await AssetCache.setPersistent(url, res);
+          }
+        }
+
         if (res.ok) {
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("text/html")) {
@@ -215,7 +262,26 @@ export class SpriteManager {
     let response: Response | null = null;
     for (const url of pathsToTry) {
       try {
-        const res = await fetch(url);
+        if (this.options.useCache) {
+          const cached = AssetCache.getSprite(url);
+          if (cached) {
+            this.sprites.set(filename, cached);
+            return;
+          }
+        }
+
+        let res: Response | undefined;
+        if (this.options.persistCache) {
+          res = await AssetCache.getPersistent(url);
+        }
+
+        if (!res) {
+          res = await fetch(url);
+          if (res.ok && this.options.persistCache) {
+            await AssetCache.setPersistent(url, res);
+          }
+        }
+
         if (res.ok) {
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("text/html")) {
@@ -237,6 +303,12 @@ export class SpriteManager {
     const buffer = await response.arrayBuffer();
     const canvas = this.bmpToCanvas(buffer);
     this.sprites.set(filename, canvas);
+
+    if (this.options.useCache) {
+      // Use the last successful URL as cache key for the processed canvas
+      const successUrl = response.url;
+      AssetCache.setSprite(successUrl, canvas);
+    }
   }
 
   /**
