@@ -26,8 +26,7 @@ const AGENTS = [
   {
     name: "F1",
     label: "F1",
-    description:
-      "F1 is the first of the 300/M series, built to serve. This robot is fully optimized for Office use.",
+    description: "F1 is the first of the 300/M series, built to serve. This robot is fully optimized for Office use.",
     greetings: [
       "GREETINGS! STATUS= READY FOR INSTRUCTION",
       "PROGRAMMED TO SERVE...  USER_COMMAND= ?",
@@ -36,8 +35,8 @@ const AGENTS = [
     ],
   },
   {
-    name: "GENIUS",
-    label: "The Genius",
+    name: "Genie",
+    label: "Genie",
     description:
       "The mind of the Genius works at the speed of light. Harness his power of thought to save yourself time and energy.",
     greetings: [
@@ -48,8 +47,7 @@ const AGENTS = [
   {
     name: "LOGO",
     label: "Office Logo",
-    description:
-      "The Office Logo gives you help accompanied by a simple spin of its colored pieces.",
+    description: "The Office Logo gives you help accompanied by a simple spin of its colored pieces.",
     greetings: ["Click the Office Logo whenever you need help."],
   },
   {
@@ -57,15 +55,12 @@ const AGENTS = [
     label: "Mother Nature",
     description:
       "Transforming into images from nature, such as the dove, the volcano, and the flower, Mother Nature provides gentle help and guidance.",
-    greetings: [
-      "Welcome. If you desire help on any aspect of this program, simply click me.",
-    ],
+    greetings: ["Welcome. If you desire help on any aspect of this program, simply click me."],
   },
   {
     name: "Monkey King",
     label: "Monkey King",
-    description:
-      "If you need help in Office, call Monkey King, he is an office expert.",
+    description: "If you need help in Office, call Monkey King, he is an office expert.",
     greetings: [
       "Any questions? Let me tell you the answer.",
       "Problem? Relax, just leave it to me.",
@@ -75,19 +70,13 @@ const AGENTS = [
   {
     name: "OFFCAT",
     label: "Links",
-    description:
-      "If you're on the prowl for answers in Office, Links can chase them down for you.",
-    greetings: [
-      "Did I hear a mouse click?",
-      "Did I see a mouse move?",
-      "Time to play cat and mouse?",
-    ],
+    description: "If you're on the prowl for answers in Office, Links can chase them down for you.",
+    greetings: ["Did I hear a mouse click?", "Did I see a mouse move?", "Time to play cat and mouse?"],
   },
   {
     name: "ROCKY",
     label: "Rocky",
-    description:
-      "If you fall into a ravine, call Lassie. If you need help in Office, call Rocky.",
+    description: "If you fall into a ravine, call Lassie. If you need help in Office, call Rocky.",
     greetings: [
       "Got a question? Put me to work.",
       "Problem? Relax, I'm on it.",
@@ -98,82 +87,42 @@ const AGENTS = [
 
 async function initDemo() {
   // DOM Elements
-  const previewContainer = document.getElementById(
-    "gallery-preview-container",
-  ) as HTMLDivElement;
-  const galleryAgentName = document.getElementById(
-    "gallery-agent-name",
-  ) as HTMLHeadingElement;
-  const galleryAgentDescription = document.getElementById(
-    "gallery-agent-description",
-  ) as HTMLParagraphElement;
-  const galleryAgentQuote = document.getElementById(
-    "gallery-agent-quote",
-  ) as HTMLDivElement;
-  const prevBtn = document.getElementById(
-    "prev-agent-btn",
-  ) as HTMLButtonElement;
-  const nextBtn = document.getElementById(
-    "next-agent-btn",
-  ) as HTMLButtonElement;
+  const previewContainer = document.getElementById("gallery-preview-container") as HTMLDivElement;
+  const galleryAgentName = document.getElementById("gallery-agent-name") as HTMLHeadingElement;
+  const galleryAgentDescription = document.getElementById("gallery-agent-description") as HTMLParagraphElement;
+  const galleryAgentQuote = document.getElementById("gallery-agent-quote") as HTMLDivElement;
+  const prevBtn = document.getElementById("prev-agent-btn") as HTMLButtonElement;
+  const nextBtn = document.getElementById("next-agent-btn") as HTMLButtonElement;
 
   const scaleRange = document.getElementById("scale-range") as HTMLInputElement;
   const scaleValue = document.getElementById("scale-value") as HTMLSpanElement;
-  const animationSelect = document.getElementById(
-    "animation-select",
-  ) as HTMLSelectElement;
-  const stateSelect = document.getElementById(
-    "state-select",
-  ) as HTMLSelectElement;
+  const animationSelect = document.getElementById("animation-select") as HTMLSelectElement;
+  const stateSelect = document.getElementById("state-select") as HTMLSelectElement;
   const playBtn = document.getElementById("play-btn") as HTMLButtonElement;
   const play5sBtn = document.getElementById("play-5s-btn") as HTMLButtonElement;
-  const playLoopedBtn = document.getElementById(
-    "play-looped-btn",
-  ) as HTMLButtonElement;
+  const playLoopedBtn = document.getElementById("play-looped-btn") as HTMLButtonElement;
   const randomBtn = document.getElementById("random-btn") as HTMLButtonElement;
-  const visibilityBtn = document.getElementById(
-    "visibility-btn",
-  ) as HTMLButtonElement;
-  const startStopBtn = document.getElementById(
-    "start-stop-btn",
-  ) as HTMLButtonElement;
+  const visibilityBtn = document.getElementById("visibility-btn") as HTMLButtonElement;
+  const startStopBtn = document.getElementById("start-stop-btn") as HTMLButtonElement;
   const selectBtn = document.getElementById("select-btn") as HTMLButtonElement;
   const speakBtn = document.getElementById("speak-btn") as HTMLButtonElement;
   const askBtn = document.getElementById("ask-btn") as HTMLButtonElement;
-  const speakTextInput = document.getElementById(
-    "speak-text",
-  ) as HTMLInputElement;
-  const skipTypingCheck = document.getElementById(
-    "skip-typing-check",
-  ) as HTMLInputElement;
+  const speakTextInput = document.getElementById("speak-text") as HTMLInputElement;
+  const skipTypingCheck = document.getElementById("skip-typing-check") as HTMLInputElement;
 
-  const voiceSelect = document.getElementById(
-    "voice-select",
-  ) as HTMLSelectElement;
-  const volumeRange = document.getElementById(
-    "volume-range",
-  ) as HTMLInputElement;
+  const voiceSelect = document.getElementById("voice-select") as HTMLSelectElement;
+  const volumeRange = document.getElementById("volume-range") as HTMLInputElement;
   const volumeValue = document.getElementById("volume-value") as HTMLSpanElement;
   const pitchRange = document.getElementById("pitch-range") as HTMLInputElement;
   const pitchValue = document.getElementById("pitch-value") as HTMLSpanElement;
   const rateRange = document.getElementById("rate-range") as HTMLInputElement;
   const rateValue = document.getElementById("rate-value") as HTMLSpanElement;
 
-  const gestureLeftBtn = document.getElementById(
-    "gesture-left-btn",
-  ) as HTMLButtonElement;
-  const gestureRightBtn = document.getElementById(
-    "gesture-right-btn",
-  ) as HTMLButtonElement;
-  const gestureUpBtn = document.getElementById(
-    "gesture-up-btn",
-  ) as HTMLButtonElement;
-  const gestureDownBtn = document.getElementById(
-    "gesture-down-btn",
-  ) as HTMLButtonElement;
-  const moveToMouseBtn = document.getElementById(
-    "move-to-mouse-btn",
-  ) as HTMLButtonElement;
+  const gestureLeftBtn = document.getElementById("gesture-left-btn") as HTMLButtonElement;
+  const gestureRightBtn = document.getElementById("gesture-right-btn") as HTMLButtonElement;
+  const gestureUpBtn = document.getElementById("gesture-up-btn") as HTMLButtonElement;
+  const gestureDownBtn = document.getElementById("gesture-down-btn") as HTMLButtonElement;
+  const moveToMouseBtn = document.getElementById("move-to-mouse-btn") as HTMLButtonElement;
 
   const dashState = document.getElementById("dash-state")!;
   const dashAnim = document.getElementById("dash-anim")!;
@@ -206,10 +155,7 @@ async function initDemo() {
     galleryAgentName.textContent = agentInfo.label;
     galleryAgentDescription.textContent = agentInfo.description;
 
-    const randomGreeting =
-      agentInfo.greetings[
-        Math.floor(Math.random() * agentInfo.greetings.length)
-      ];
+    const randomGreeting = agentInfo.greetings[Math.floor(Math.random() * agentInfo.greetings.length)];
     galleryAgentQuote.textContent = `${randomGreeting}`;
 
     const wrapper = document.createElement("div");
@@ -309,18 +255,10 @@ async function initDemo() {
     document.body.appendChild(overlay);
     document.body.appendChild(progressWindow);
 
-    const loadingStatus = progressWindow.querySelector(
-      "#loading-status",
-    ) as HTMLParagraphElement;
-    const loadingProgressContainer = progressWindow.querySelector(
-      "#loading-progress-container",
-    ) as HTMLDivElement;
-    const loadingProgressBar = progressWindow.querySelector(
-      "#loading-progress-bar",
-    ) as HTMLSpanElement;
-    const cancelBtn = progressWindow.querySelector(
-      "#cancel-load-btn",
-    ) as HTMLButtonElement;
+    const loadingStatus = progressWindow.querySelector("#loading-status") as HTMLParagraphElement;
+    const loadingProgressContainer = progressWindow.querySelector("#loading-progress-container") as HTMLDivElement;
+    const loadingProgressBar = progressWindow.querySelector("#loading-progress-bar") as HTMLSpanElement;
+    const cancelBtn = progressWindow.querySelector("#cancel-load-btn") as HTMLButtonElement;
 
     cancelBtn.onclick = () => {
       loadAbortController?.abort();
@@ -338,10 +276,7 @@ async function initDemo() {
           loadingStatus.textContent = `Downloading ${progress.filename}...`;
           if (progress.total > 0) {
             loadingProgressContainer.classList.remove("segmented");
-            const percent = Math.min(
-              100,
-              Math.round((progress.loaded / progress.total) * 100),
-            );
+            const percent = Math.min(100, Math.round((progress.loaded / progress.total) * 100));
             loadingProgressBar.style.width = `${percent}%`;
           } else {
             // Indeterminate if total is unknown
@@ -400,9 +335,7 @@ async function initDemo() {
       // Context menu event
       currentAgent.on("contextmenu", (data) => {
         console.log("Context menu triggered at", data.x, data.y);
-        currentAgent?.speak(
-          `Right-click or long-press at ${data.x}, ${data.y}`,
-        );
+        currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
       });
     } catch (error: any) {
       if (error.name === "AbortError") {
@@ -422,8 +355,7 @@ async function initDemo() {
 
   // Gallery Navigation
   prevBtn.addEventListener("click", () => {
-    currentGalleryIndex =
-      (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
+    currentGalleryIndex = (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
     loadPreviewAgent(currentGalleryIndex);
   });
 
@@ -456,12 +388,7 @@ async function initDemo() {
     }
 
     playLoopedBtn.textContent = "Stop";
-    const req = currentAgent.play(
-      animationSelect.value,
-      undefined,
-      false,
-      true,
-    );
+    const req = currentAgent.play(animationSelect.value, undefined, false, true);
 
     // Reset button text when animation ends
     try {
@@ -620,36 +547,24 @@ async function initDemo() {
 
   gestureLeftBtn.addEventListener("click", () => {
     if (!currentAgent) return;
-    currentAgent.gestureAt(
-      currentAgent.options.x - 100,
-      currentAgent.options.y + 50,
-    );
+    currentAgent.gestureAt(currentAgent.options.x - 100, currentAgent.options.y + 50);
   });
   gestureRightBtn.addEventListener("click", () => {
     if (!currentAgent) return;
     currentAgent.gestureAt(
-      currentAgent.options.x +
-        currentAgent.spriteManager.getSpriteWidth() *
-          currentAgent.options.scale +
-        100,
+      currentAgent.options.x + currentAgent.spriteManager.getSpriteWidth() * currentAgent.options.scale + 100,
       currentAgent.options.y + 50,
     );
   });
   gestureUpBtn.addEventListener("click", () => {
     if (!currentAgent) return;
-    currentAgent.gestureAt(
-      currentAgent.options.x + 50,
-      currentAgent.options.y - 100,
-    );
+    currentAgent.gestureAt(currentAgent.options.x + 50, currentAgent.options.y - 100);
   });
   gestureDownBtn.addEventListener("click", () => {
     if (!currentAgent) return;
     currentAgent.gestureAt(
       currentAgent.options.x + 50,
-      currentAgent.options.y +
-        currentAgent.spriteManager.getSpriteHeight() *
-          currentAgent.options.scale +
-        100,
+      currentAgent.options.y + currentAgent.spriteManager.getSpriteHeight() * currentAgent.options.scale + 100,
     );
   });
 
@@ -665,15 +580,8 @@ async function initDemo() {
 
     const onMouseDown = (e: MouseEvent) => {
       if (!currentAgent) return;
-      const targetX =
-        e.clientX -
-        (currentAgent.definition.character.width * currentAgent.options.scale) /
-          2;
-      const targetY =
-        e.clientY -
-        (currentAgent.definition.character.height *
-          currentAgent.options.scale) /
-          2;
+      const targetX = e.clientX - (currentAgent.definition.character.width * currentAgent.options.scale) / 2;
+      const targetY = e.clientY - (currentAgent.definition.character.height * currentAgent.options.scale) / 2;
 
       currentAgent.moveTo(targetX, targetY);
 
@@ -689,26 +597,16 @@ async function initDemo() {
 
   // Update Loop for Debug Info
   function updateDebug() {
-    if (
-      currentAgent &&
-      currentAgent.stateManager &&
-      currentAgent.animationManager
-    ) {
+    if (currentAgent && currentAgent.stateManager && currentAgent.animationManager) {
       dashState.textContent = currentAgent.stateManager.currentStateName;
-      dashAnim.textContent =
-        currentAgent.animationManager.currentAnimationName || "-";
-      dashFrame.textContent =
-        currentAgent.animationManager.currentFrameIndexValue.toString();
+      dashAnim.textContent = currentAgent.animationManager.currentAnimationName || "-";
+      dashFrame.textContent = currentAgent.animationManager.currentFrameIndexValue.toString();
       dashLevel.textContent = currentAgent.stateManager.idleLevel.toString();
-      dashNextTick.textContent = (
-        currentAgent.stateManager.timeUntilNextTick / 1000
-      ).toFixed(1);
+      dashNextTick.textContent = (currentAgent.stateManager.timeUntilNextTick / 1000).toFixed(1);
 
       const activeId = currentAgent.requestQueue.activeRequestId;
       const length = currentAgent.requestQueue.length;
-      dashQueue.textContent = activeId
-        ? `ID:${activeId} (+${length})`
-        : "Empty";
+      dashQueue.textContent = activeId ? `ID:${activeId} (+${length})` : "Empty";
 
       dashPos.textContent = `X:${Math.round(currentAgent.options.x)}, Y:${Math.round(currentAgent.options.y)}`;
     }

@@ -1,27 +1,68 @@
 /**
- * Represents the general configuration and metadata of an agent character.
+ * TTS voice gender (VOICEINFO).
+ */
+export const VoiceGender = {
+  /** Unknown or unspecified gender. */
+  Unknown: 0,
+  /** Female voice. */
+  Female: 1,
+  /** Male voice. */
+  Male: 2,
+} as const;
+
+export type VoiceGender = (typeof VoiceGender)[keyof typeof VoiceGender];
+
+/**
+ * Represents the general configuration and metadata of an agent character (ACSCHARACTERINFO).
  */
 export interface Character {
   /** A list of localized information about the character (name, description, etc.). */
   infos: Info[];
-  /** Unique identifier for the character. */
+  /** Unique identifier (GUID) for the character. */
   guid: string;
   /** Width of each animation frame in pixels. */
   width: number;
   /** Height of each animation frame in pixels. */
   height: number;
-  /** The index in the color table used for transparency. */
+  /** The 0-based index in the color table used for transparency. */
   transparency: number;
-  /** The default duration for frames in units of 10ms. */
+  /** The default duration for frames in units of 10ms (1/100 seconds). */
   defaultFrameDuration: number;
-  /** Bitmask of character styles (see CharacterStyle). */
+  /** Bitmask of character styles (see CharacterStyle). Maps to ACS Flags. */
   style: number;
-  /** Path to the bitmap file containing the color palette. */
+  /** Major version of the character. */
+  majorVersion?: number;
+  /** Minor version of the character. */
+  minorVersion?: number;
+  /** Major version of the animation set (Standard Animation Set). Usually 2. */
+  animationSetMajorVersion?: number;
+  /** Minor version of the animation set. Usually 0. */
+  animationSetMinorVersion?: number;
+  /** Path to the bitmap file containing the color palette (PALETTECOLOR). */
   colorTable: string;
+  /** Path to the icon file (TRAYICON). */
+  icon?: string;
+  /** TTS engine identifier (GUID). */
+  ttsEngineID?: string;
+  /** TTS mode identifier (GUID). */
+  ttsModeID?: string;
+  /** TTS language identifier (LANGID). */
+  ttsLangID?: string;
+  /** TTS gender (1 = female, 2 = male, etc.). See VoiceGender. */
+  ttsGender?: number;
+  /** TTS age in years. */
+  ttsAge?: number;
+  /** TTS style (e.g., "Normal", "Whisper"). */
+  ttsStyle?: string;
+  /** TTS speed in words per minute. */
+  ttsSpeed?: number;
+  /** TTS pitch in Hertz. */
+  ttsPitch?: number;
 }
 
 /**
  * Constants for the character style bitmask.
+ * These constants are based on the .acd file format (AXS_* flags) and mapped from ACS Flags.
  */
 export const CharacterStyle = {
   /** No specific style applied. */
@@ -36,10 +77,28 @@ export const CharacterStyle = {
   BalloonAutoHide: 0x0008,
   /** Balloon should automatically pace the text display. */
   BalloonAutoPace: 0x0010,
+  /** Character supports Text-To-Speech. */
+  VoiceTTS: 0x0020,
+  /** Character is a system character. */
+  SystemChar: 0x0040,
 } as const;
 
 /**
- * Configuration for the speech balloon.
+ * Balloon style bitmask (extracted from ACS Flags bits 16-18).
+ */
+export const BalloonStyle = {
+  /** Size the balloon to the text (bit 16). */
+  SizeToText: 0x01,
+  /** Do not automatically hide the balloon (bit 17). */
+  AutoHideDisabled: 0x02,
+  /** Do not automatically pace the text display (bit 18). */
+  AutoPaceDisabled: 0x04,
+} as const;
+
+export type BalloonStyle = (typeof BalloonStyle)[keyof typeof BalloonStyle];
+
+/**
+ * Configuration for the speech balloon (BALLOONINFO).
  */
 export interface Balloon {
   /** Number of lines of text to display in the balloon. */
@@ -48,14 +107,20 @@ export interface Balloon {
   charsPerLine: number;
   /** Font family name used in the balloon. */
   fontName: string;
-  /** Height of the font in points/pixels. */
+  /** Height of the font in points/pixels (Font Height in logical units). */
   fontHeight: number;
-  /** Foreground (text) color as a hex string or Win32 BGR color. */
+  /** Foreground (text) color as a hex string or Win32 BGR color (RGBQUAD). */
   foreColor: string;
-  /** Background color as a hex string or Win32 BGR color. */
+  /** Background color as a hex string or Win32 BGR color (RGBQUAD). */
   backColor: string;
-  /** Border color as a hex string or Win32 BGR color. */
+  /** Border color as a hex string or Win32 BGR color (RGBQUAD). */
   borderColor: string;
+  /** Font weight (range 0 - 1000). 400 = normal, 700 = bold. */
+  fontWeight?: number;
+  /** Whether the font is italicized. */
+  italicized?: boolean;
+  /** Whether the font is underlined. */
+  underline?: boolean;
 }
 
 /**
@@ -71,39 +136,94 @@ export interface ImageDefinition {
 }
 
 /**
- * Represents a probabilistic branch to another frame.
+ * Mouth overlay types for speech synchronization (ACSOVERLAYINFO).
+ */
+export const MouthType = {
+  /** Mouth closed. */
+  Closed: "closed",
+  /** Mouth wide open 1. */
+  WideOpen1: "wideopen1",
+  /** Mouth wide open 2. */
+  WideOpen2: "wideopen2",
+  /** Mouth wide open 3. */
+  WideOpen3: "wideopen3",
+  /** Mouth wide open 4. */
+  WideOpen4: "wideopen4",
+  /** Mouth medium open. */
+  Medium: "medium",
+  /** Mouth narrow open. */
+  Narrow: "narrow",
+} as const;
+
+export type MouthType = (typeof MouthType)[keyof typeof MouthType];
+
+/**
+ * Represents a specialized mouth shape overlay (ACSOVERLAYINFO).
+ */
+export interface MouthDefinition extends ImageDefinition {
+  /** Whether to replace the top-most image of the frame instead of overlaying. */
+  replaceTopImage?: boolean;
+  /** Explicit width of the mouth shape in pixels. Note: ACS spec uses halved values. */
+  width?: number;
+  /** Explicit height of the mouth shape in pixels. Note: ACS spec uses halved values. */
+  height?: number;
+}
+
+/**
+ * Represents a probabilistic branch to another frame (BRANCHINFO).
  */
 export interface BranchingDefinition {
-  /** The 1-based index of the frame to branch to. */
+  /** The 1-based index of the frame to jump to. */
   branchTo: number;
-  /** The probability (0-100) of taking this branch. */
+  /** The probability percentage (0-100) of taking this branch. */
   probability: number;
 }
 
 /**
- * Represents a single frame within an animation.
+ * Represents a single frame within an animation (ACSFRAMEINFO).
  */
 export interface FrameDefinition {
-  /** Duration of the frame in units of 10ms. A duration of 0 indicates a logic frame. */
+  /** Duration of the frame in units of 1/100 seconds (10ms). A duration of 0 indicates a logic frame. */
   duration: number;
-  /** Name of the sound effect file to play when this frame starts. */
+  /** Name of the sound effect file (RIFF AUDIO) to play when this frame starts. */
   soundEffect?: string;
-  /** The 1-based index of the frame to jump to if the animation is interrupted. */
+  /**
+   * The 1-based index of the frame to jump to if the animation is interrupted.
+   * An index of -2 indicates special end-of-animation behavior.
+   */
   exitBranch?: number;
-  /** A list of layers that compose this frame. */
+  /** A list of layers (ACSFRAMEIMAGE) that compose this frame. */
   images: ImageDefinition[];
-  /** A list of potential branches from this frame. */
+  /** Dictionary of mouth shapes (ACSOVERLAYINFO) indexed by type (MouthType). */
+  mouths?: Record<string, MouthDefinition>;
+  /** A list of potential branches (BRANCHINFO) from this frame. */
   branching?: BranchingDefinition[];
 }
 
 /**
- * Represents a collection of frames that form a specific animation.
+ * Transition types between animations (ACSANIMATIONINFO).
+ */
+export const TransitionType = {
+  /** Play the return animation specified in the animation definition. */
+  Return: 0,
+  /** Use the exit branches defined in the frames. */
+  Exit: 1,
+  /** No transition animation; just end or loop. */
+  None: 2,
+} as const;
+
+export type TransitionType = (typeof TransitionType)[keyof typeof TransitionType];
+
+/**
+ * Represents a collection of frames that form a specific animation (ACSANIMATIONINFO).
  */
 export interface Animation {
   /** The unique name of the animation. */
   name: string;
-  /** Type of transition between animations (legacy property). */
-  transitionType: number;
+  /** Type of transition between animations. See TransitionType. */
+  transitionType: TransitionType | number;
+  /** The name of the animation to return to (used when TransitionType is Return). */
+  returnAnimation?: string;
   /** Sequential list of frame definitions. */
   frames: FrameDefinition[];
 }
