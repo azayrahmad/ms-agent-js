@@ -22,6 +22,10 @@ export class AnimationManager extends EventEmitter<any> {
   private currentFrameIndex: number = 0;
   /** Timestamp (from performance.now()) when the current frame was first displayed. */
   private lastFrameTime: number = 0;
+  /** Whether the current frame's sound effect is still playing. */
+  private isWaitingForSound: boolean = false;
+  /** The index of the frame that most recently triggered a sound. */
+  private lastSoundFrameIndex: number = -1;
   /** A reference to the last valid (non-null) frame rendered, used as a buffer during logic frames. */
   private lastRenderedFrame: FrameDefinition | null = null;
   /** Whether the current animation is in the process of exiting via an exit branch. */
@@ -133,9 +137,7 @@ export class AnimationManager extends EventEmitter<any> {
       }
 
       this.isExitingFlag = useExitBranch;
-
-      // Play sound for the first frame if it has one
-      this.checkAndPlaySound(this.currentAnimation.frames[0]);
+      this.lastSoundFrameIndex = -1;
 
       // Use update(now) to handle potential null frames at the start
       this.update(this.lastFrameTime);
@@ -179,9 +181,18 @@ export class AnimationManager extends EventEmitter<any> {
     let safetyCounter = 0;
     const MAX_NULL_FRAMES = 100;
 
+    // Trigger sound if we haven't for the current frame
+    if (this.lastSoundFrameIndex !== this.currentFrameIndex) {
+        this.checkAndPlaySound(this.currentAnimation.frames[this.currentFrameIndex]);
+        this.lastSoundFrameIndex = this.currentFrameIndex;
+    }
+
     // We use a while loop to handle sequential null-duration (logic) frames instantly
     while (this.currentAnimation && safetyCounter <= MAX_NULL_FRAMES) {
       const currentFrame = this.currentAnimation.frames[this.currentFrameIndex];
+
+      // If waiting for sound, don't advance
+      if (this.isWaitingForSound) break;
 
       // If it's a null frame (duration 0), handle it immediately and move to next
       if (currentFrame.duration === 0) {
@@ -194,9 +205,9 @@ export class AnimationManager extends EventEmitter<any> {
         this.currentFrameIndex = nextIndex;
         this.lastFrameTime = currentTime;
         this.emit('frameChanged');
-        this.checkAndPlaySound(
-          this.currentAnimation.frames[this.currentFrameIndex],
-        );
+
+        this.checkAndPlaySound(this.currentAnimation.frames[this.currentFrameIndex]);
+        this.lastSoundFrameIndex = this.currentFrameIndex;
 
         safetyCounter++;
         if (safetyCounter > MAX_NULL_FRAMES) {
@@ -221,9 +232,9 @@ export class AnimationManager extends EventEmitter<any> {
         this.lastFrameTime = currentTime;
 
         this.emit('frameChanged');
-        this.checkAndPlaySound(
-          this.currentAnimation.frames[this.currentFrameIndex],
-        );
+
+        this.checkAndPlaySound(this.currentAnimation.frames[this.currentFrameIndex]);
+        this.lastSoundFrameIndex = this.currentFrameIndex;
 
         // Continue the loop to potentially handle a null frame that we just moved into
         safetyCounter++;
@@ -405,7 +416,10 @@ export class AnimationManager extends EventEmitter<any> {
       this.lastRenderedFrame = frame;
     }
     if (frame?.soundEffect) {
-      this.audioManager.playFrameSound(frame.soundEffect);
+      this.isWaitingForSound = true;
+      this.audioManager.playFrameSound(frame.soundEffect).then(() => {
+        this.isWaitingForSound = false;
+      });
     }
   }
 

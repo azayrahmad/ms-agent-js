@@ -25,7 +25,7 @@ describe('Audio Doubling Reproduction', () => {
       loadSprite: vi.fn().mockResolvedValue(undefined)
     };
     audioManager = {
-      playFrameSound: vi.fn(),
+      playFrameSound: vi.fn().mockResolvedValue(undefined),
       loadSounds: vi.fn().mockResolvedValue(undefined)
     };
     animationManager = new AnimationManager(spriteManager, audioManager, mockAnimations);

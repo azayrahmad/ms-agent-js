@@ -151,6 +151,8 @@ export class StateManager {
       this.currentState === "Hiding" ||
       this.currentState === "Moving" ||
       this.currentState === "Speaking" ||
+      this.currentState === "Listening" ||
+      this.currentState === "Hearing" ||
       hasRequests
     ) {
       this.elapsedSinceLastTick = 0;
@@ -328,6 +330,28 @@ export class StateManager {
   }
 
   /**
+   * Sets the agent into the Listening state.
+   */
+  public async setListening(listening: boolean): Promise<void> {
+    if (listening) {
+      await this.setState("Listening");
+    } else {
+      await this.handleAnimationCompleted();
+    }
+  }
+
+  /**
+   * Sets the agent into the Hearing state.
+   */
+  public async setHearing(hearing: boolean): Promise<void> {
+    if (hearing) {
+      await this.setState("Hearing");
+    } else {
+      await this.handleAnimationCompleted();
+    }
+  }
+
+  /**
    * Picks a random non-idle animation and plays it.
    */
   public async playRandomAnimation(timeoutMs: number = 5000): Promise<void> {
@@ -354,7 +378,9 @@ export class StateManager {
     if (
       this.currentState === "Playing" ||
       this.currentState === "Moving" ||
-      this.currentState === "Speaking"
+      this.currentState === "Speaking" ||
+      this.currentState === "Listening" ||
+      this.currentState === "Hearing"
     ) {
       await this.returnToIdle();
     }

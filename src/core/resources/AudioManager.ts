@@ -235,8 +235,10 @@ export class AudioManager {
    * Automatically attempts to load the sound if it's not already in the cache.
    *
    * @param soundPath - Filename or relative path to the sound.
+   * @returns A promise that resolves when the sound starts playing or fails to play.
+   *          Note: The original implementation waited for sound completion for animation events.
    */
-  public playFrameSound(soundPath: string): void {
+  public async playFrameSound(soundPath: string): Promise<void> {
     if (!this.enabled) return;
 
     const soundNameRaw = soundPath.split(/[\\/]/).pop() || "";
@@ -247,7 +249,7 @@ export class AudioManager {
     if (this.audioAtlas && this.spritesheetBuffer) {
       const entry = this.audioAtlas[soundName];
       if (entry) {
-        this.playFromSpritesheet(entry.start, entry.end);
+        return this.playFromSpritesheet(entry.start, entry.end);
       } else {
         console.warn(`Sound ${soundName} not found in audio atlas`);
       }
@@ -261,13 +263,16 @@ export class AudioManager {
     if (buffer) {
       const ctx = this.getContext();
       if (ctx.state === "suspended") {
-        ctx.resume();
+        await ctx.resume();
       }
 
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(ctx.destination);
-      source.start(0);
+      return new Promise((resolve) => {
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.onended = () => resolve();
+        source.start(0);
+      });
     } else {
       // Avoid duplicate playback for sounds already being loaded
       if (
@@ -278,18 +283,18 @@ export class AudioManager {
       }
 
       // Load on demand if not cached
-      this.loadSounds([soundNameRaw]).then(() => {
-        if (this.audioAtlas && this.spritesheetBuffer) {
-          this.playFrameSound(soundNameRaw);
-        } else {
-          const reloadedBuffer =
-            this.soundBuffers.get(soundNameRaw) ||
-            this.soundBuffers.get(`${soundNameRaw}.wav`);
-          if (reloadedBuffer) {
-            this.playFrameSound(soundNameRaw);
-          }
+      await this.loadSounds([soundNameRaw]);
+
+      if (this.audioAtlas && this.spritesheetBuffer) {
+        return this.playFrameSound(soundNameRaw);
+      } else {
+        const reloadedBuffer =
+          this.soundBuffers.get(soundNameRaw) ||
+          this.soundBuffers.get(`${soundNameRaw}.wav`);
+        if (reloadedBuffer) {
+          return this.playFrameSound(soundNameRaw);
         }
-      });
+      }
     }
   }
 
@@ -299,18 +304,21 @@ export class AudioManager {
    * @param start - Start time in seconds.
    * @param end - End time in seconds.
    */
-  private playFromSpritesheet(start: number, end: number): void {
+  private async playFromSpritesheet(start: number, end: number): Promise<void> {
     if (!this.spritesheetBuffer) return;
 
     const ctx = this.getContext();
     if (ctx.state === "suspended") {
-      ctx.resume();
+      await ctx.resume();
     }
 
-    const source = ctx.createBufferSource();
-    source.buffer = this.spritesheetBuffer;
-    source.connect(ctx.destination);
-    // source.start(when, offset, duration)
-    source.start(0, start, end - start);
+    return new Promise((resolve) => {
+      const source = ctx.createBufferSource();
+      source.buffer = this.spritesheetBuffer;
+      source.connect(ctx.destination);
+      source.onended = () => resolve();
+      // source.start(when, offset, duration)
+      source.start(0, start, end - start);
+    });
   }
 }

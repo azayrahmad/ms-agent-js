@@ -225,6 +225,8 @@ export interface Animation {
   transitionType: TransitionType | number;
   /** Sequential list of frame definitions. */
   frames: FrameDefinition[];
+  /** Optional name of the return animation. */
+  returnAnimation?: string;
 }
 
 /**
