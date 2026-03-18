@@ -183,6 +183,11 @@ export class AnimationManager extends EventEmitter<any> {
     while (this.currentAnimation && safetyCounter <= MAX_NULL_FRAMES) {
       const currentFrame = this.currentAnimation.frames[this.currentFrameIndex];
 
+      const isReversing =
+        this._isExiting &&
+        this.currentAnimation.transitionType === TransitionType.Exit &&
+        !currentFrame.exitBranch;
+
       // If it's a null frame (duration 0), handle it immediately and move to next
       if (currentFrame.duration === 0) {
         const { index: nextIndex, isBranch } =
@@ -196,6 +201,7 @@ export class AnimationManager extends EventEmitter<any> {
         this.emit('frameChanged');
         this.checkAndPlaySound(
           this.currentAnimation.frames[this.currentFrameIndex],
+          isReversing,
         );
 
         safetyCounter++;
@@ -223,6 +229,7 @@ export class AnimationManager extends EventEmitter<any> {
         this.emit('frameChanged');
         this.checkAndPlaySound(
           this.currentAnimation.frames[this.currentFrameIndex],
+          isReversing,
         );
 
         // Continue the loop to potentially handle a null frame that we just moved into
@@ -245,6 +252,15 @@ export class AnimationManager extends EventEmitter<any> {
     isBranch: boolean,
   ): boolean {
     if (this._isExiting) {
+      // For Transition Type 1 (Exit), we only complete when we reach and render frame 0
+      if (this.currentAnimation?.transitionType === TransitionType.Exit) {
+        if (this.currentFrameIndex === 0) {
+          this.completeAnimation();
+          return true;
+        }
+        return false;
+      }
+
       // If we are exiting and reached the end (either by natural end or exit branch loop back to frame 0)
       if (nextFrameIndex === 0) {
         this.completeAnimation();
@@ -252,7 +268,16 @@ export class AnimationManager extends EventEmitter<any> {
       }
     } else {
       // Normal completion when we loop back to the first frame sequentially
-      if (!isBranch && nextFrameIndex === 0 && this.animationPromise) {
+      const isType1Freeze =
+        this.currentAnimation?.transitionType === TransitionType.Exit &&
+        nextFrameIndex === this.currentFrameIndex;
+
+      if (
+        !isBranch &&
+        nextFrameIndex === 0 &&
+        !isType1Freeze &&
+        this.animationPromise
+      ) {
         if (this.isLooping) {
           const currentName = this.currentAnimation!.name;
           // If we are looping and there's a "Continued" version, switch to it after the first iteration
@@ -283,6 +308,26 @@ export class AnimationManager extends EventEmitter<any> {
     index: number;
     isBranch: boolean;
   } {
+    // Transition Type 1 (Exit) specific logic for reversal and freezing
+    if (this.currentAnimation?.transitionType === TransitionType.Exit) {
+      if (this._isExiting) {
+        // If exiting, prioritize the exit branch if it exists
+        if (currentFrame.exitBranch !== undefined) {
+          return { index: currentFrame.exitBranch - 1, isBranch: true };
+        }
+        // Reverse: move towards frame 0 (since we didn't have an exitBranch)
+        const next = Math.max(0, this.currentFrameIndex - 1);
+        return { index: next, isBranch: false };
+      }
+
+      // Not exiting: check for freeze on last frame if next is null
+      const nextSequential =
+        (this.currentFrameIndex + 1) % this.currentAnimation.frames.length;
+      if (this.currentAnimation.frames[nextSequential].duration === 0) {
+        return { index: this.currentFrameIndex, isBranch: false };
+      }
+    }
+
     // If exiting, prioritize the exit branch if it exists
     if (this._isExiting && currentFrame.exitBranch !== undefined) {
       return { index: currentFrame.exitBranch - 1, isBranch: true };
@@ -297,10 +342,7 @@ export class AnimationManager extends EventEmitter<any> {
         (b) => b.branchTo - 1 > this.currentFrameIndex || b.branchTo - 1 === 0,
       );
 
-    if (
-      branching.length > 0 &&
-      (!this._isExiting || useBranchingWhileExiting)
-    ) {
+    if (branching.length > 0 && (!this._isExiting || useBranchingWhileExiting)) {
       const randomValue = Math.floor(Math.random() * 100);
       let cumulative = 0;
 
@@ -400,11 +442,14 @@ export class AnimationManager extends EventEmitter<any> {
   /**
    * Checks if a frame has an associated sound effect and plays it if it does.
    */
-  private checkAndPlaySound(frame: FrameDefinition | null): void {
+  private checkAndPlaySound(
+    frame: FrameDefinition | null,
+    skipSound: boolean = false,
+  ): void {
     if (frame && frame.duration > 0) {
       this.lastRenderedFrame = frame;
     }
-    if (frame?.soundEffect) {
+    if (frame?.soundEffect && !skipSound) {
       this.audioManager.playFrameSound(frame.soundEffect);
     }
   }
