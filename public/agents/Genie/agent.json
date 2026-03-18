@@ -14,38 +14,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0001.bmp",
+            "Closed": {
+              "filename": "images/0001.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0002.bmp",
+            "OpenWide1": {
+              "filename": "images/0002.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0003.bmp",
+            "OpenWide2": {
+              "filename": "images/0003.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0004.bmp",
+            "OpenWide3": {
+              "filename": "images/0004.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0005.bmp",
+            "OpenWide4": {
+              "filename": "images/0005.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0006.bmp",
+            "OpenMedium": {
+              "filename": "images/0006.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0007.bmp",
+            "OpenNarrow": {
+              "filename": "images/0007.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -2324,38 +2324,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0112.bmp",
+            "Closed": {
+              "filename": "images/0112.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0113.bmp",
+            "OpenWide1": {
+              "filename": "images/0113.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0114.bmp",
+            "OpenWide2": {
+              "filename": "images/0114.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0115.bmp",
+            "OpenWide3": {
+              "filename": "images/0115.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0116.bmp",
+            "OpenWide4": {
+              "filename": "images/0116.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0117.bmp",
+            "OpenMedium": {
+              "filename": "images/0117.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0118.bmp",
+            "OpenNarrow": {
+              "filename": "images/0118.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -2437,38 +2437,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0124.bmp",
+            "Closed": {
+              "filename": "images/0124.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0125.bmp",
+            "OpenWide1": {
+              "filename": "images/0125.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0126.bmp",
+            "OpenWide2": {
+              "filename": "images/0126.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0127.bmp",
+            "OpenWide3": {
+              "filename": "images/0127.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0128.bmp",
+            "OpenWide4": {
+              "filename": "images/0128.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0129.bmp",
+            "OpenMedium": {
+              "filename": "images/0129.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0130.bmp",
+            "OpenNarrow": {
+              "filename": "images/0130.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -2550,38 +2550,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0136.bmp",
+            "Closed": {
+              "filename": "images/0136.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0137.bmp",
+            "OpenWide1": {
+              "filename": "images/0137.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0138.bmp",
+            "OpenWide2": {
+              "filename": "images/0138.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0139.bmp",
+            "OpenWide3": {
+              "filename": "images/0139.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0140.bmp",
+            "OpenWide4": {
+              "filename": "images/0140.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0141.bmp",
+            "OpenMedium": {
+              "filename": "images/0141.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0142.bmp",
+            "OpenNarrow": {
+              "filename": "images/0142.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -2795,38 +2795,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0154.bmp",
+            "Closed": {
+              "filename": "images/0154.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0155.bmp",
+            "OpenWide1": {
+              "filename": "images/0155.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0156.bmp",
+            "OpenWide2": {
+              "filename": "images/0156.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0157.bmp",
+            "OpenWide3": {
+              "filename": "images/0157.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0158.bmp",
+            "OpenWide4": {
+              "filename": "images/0158.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0159.bmp",
+            "OpenMedium": {
+              "filename": "images/0159.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0160.bmp",
+            "OpenNarrow": {
+              "filename": "images/0160.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -2914,38 +2914,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0166.bmp",
+            "Closed": {
+              "filename": "images/0166.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0167.bmp",
+            "OpenWide1": {
+              "filename": "images/0167.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0168.bmp",
+            "OpenWide2": {
+              "filename": "images/0168.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0169.bmp",
+            "OpenWide3": {
+              "filename": "images/0169.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0170.bmp",
+            "OpenWide4": {
+              "filename": "images/0170.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0171.bmp",
+            "OpenMedium": {
+              "filename": "images/0171.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0172.bmp",
+            "OpenNarrow": {
+              "filename": "images/0172.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -3231,38 +3231,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0188.bmp",
+            "Closed": {
+              "filename": "images/0188.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0189.bmp",
+            "OpenWide1": {
+              "filename": "images/0189.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0190.bmp",
+            "OpenWide2": {
+              "filename": "images/0190.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0191.bmp",
+            "OpenWide3": {
+              "filename": "images/0191.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0192.bmp",
+            "OpenWide4": {
+              "filename": "images/0192.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0193.bmp",
+            "OpenMedium": {
+              "filename": "images/0193.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0194.bmp",
+            "OpenNarrow": {
+              "filename": "images/0194.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -3476,38 +3476,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0208.bmp",
+            "Closed": {
+              "filename": "images/0208.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0209.bmp",
+            "OpenWide1": {
+              "filename": "images/0209.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0210.bmp",
+            "OpenWide2": {
+              "filename": "images/0210.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0211.bmp",
+            "OpenWide3": {
+              "filename": "images/0211.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0212.bmp",
+            "OpenWide4": {
+              "filename": "images/0212.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0213.bmp",
+            "OpenMedium": {
+              "filename": "images/0213.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0214.bmp",
+            "OpenNarrow": {
+              "filename": "images/0214.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -3697,38 +3697,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0221.bmp",
+            "Closed": {
+              "filename": "images/0221.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0222.bmp",
+            "OpenWide1": {
+              "filename": "images/0222.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0223.bmp",
+            "OpenWide2": {
+              "filename": "images/0223.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0224.bmp",
+            "OpenWide3": {
+              "filename": "images/0224.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0225.bmp",
+            "OpenWide4": {
+              "filename": "images/0225.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0226.bmp",
+            "OpenMedium": {
+              "filename": "images/0226.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0227.bmp",
+            "OpenNarrow": {
+              "filename": "images/0227.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -3810,38 +3810,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0233.bmp",
+            "Closed": {
+              "filename": "images/0233.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0234.bmp",
+            "OpenWide1": {
+              "filename": "images/0234.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0235.bmp",
+            "OpenWide2": {
+              "filename": "images/0235.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0236.bmp",
+            "OpenWide3": {
+              "filename": "images/0236.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0237.bmp",
+            "OpenWide4": {
+              "filename": "images/0237.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0238.bmp",
+            "OpenMedium": {
+              "filename": "images/0238.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0239.bmp",
+            "OpenNarrow": {
+              "filename": "images/0239.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -3929,38 +3929,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0245.bmp",
+            "Closed": {
+              "filename": "images/0245.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0246.bmp",
+            "OpenWide1": {
+              "filename": "images/0246.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0247.bmp",
+            "OpenWide2": {
+              "filename": "images/0247.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0248.bmp",
+            "OpenWide3": {
+              "filename": "images/0248.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0249.bmp",
+            "OpenWide4": {
+              "filename": "images/0249.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0250.bmp",
+            "OpenMedium": {
+              "filename": "images/0250.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0251.bmp",
+            "OpenNarrow": {
+              "filename": "images/0251.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4004,38 +4004,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0254.bmp",
+            "Closed": {
+              "filename": "images/0254.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0255.bmp",
+            "OpenWide1": {
+              "filename": "images/0255.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0256.bmp",
+            "OpenWide2": {
+              "filename": "images/0256.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0257.bmp",
+            "OpenWide3": {
+              "filename": "images/0257.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0258.bmp",
+            "OpenWide4": {
+              "filename": "images/0258.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0259.bmp",
+            "OpenMedium": {
+              "filename": "images/0259.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0260.bmp",
+            "OpenNarrow": {
+              "filename": "images/0260.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4108,38 +4108,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0264.bmp",
+            "Closed": {
+              "filename": "images/0264.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0265.bmp",
+            "OpenWide1": {
+              "filename": "images/0265.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0266.bmp",
+            "OpenWide2": {
+              "filename": "images/0266.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0267.bmp",
+            "OpenWide3": {
+              "filename": "images/0267.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0268.bmp",
+            "OpenWide4": {
+              "filename": "images/0268.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0269.bmp",
+            "OpenMedium": {
+              "filename": "images/0269.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0270.bmp",
+            "OpenNarrow": {
+              "filename": "images/0270.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4221,38 +4221,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0276.bmp",
+            "Closed": {
+              "filename": "images/0276.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0277.bmp",
+            "OpenWide1": {
+              "filename": "images/0277.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0278.bmp",
+            "OpenWide2": {
+              "filename": "images/0278.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0279.bmp",
+            "OpenWide3": {
+              "filename": "images/0279.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0280.bmp",
+            "OpenWide4": {
+              "filename": "images/0280.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0281.bmp",
+            "OpenMedium": {
+              "filename": "images/0281.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0282.bmp",
+            "OpenNarrow": {
+              "filename": "images/0282.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4473,38 +4473,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0291.bmp",
+            "Closed": {
+              "filename": "images/0291.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0292.bmp",
+            "OpenWide1": {
+              "filename": "images/0292.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0293.bmp",
+            "OpenWide2": {
+              "filename": "images/0293.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0294.bmp",
+            "OpenWide3": {
+              "filename": "images/0294.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0295.bmp",
+            "OpenWide4": {
+              "filename": "images/0295.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0296.bmp",
+            "OpenMedium": {
+              "filename": "images/0296.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0297.bmp",
+            "OpenNarrow": {
+              "filename": "images/0297.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4685,38 +4685,38 @@
           ],
           "exitBranch": 4,
           "mouths": {
-            "closed": {
-              "filename": "Images/0305.bmp",
+            "Closed": {
+              "filename": "images/0305.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0306.bmp",
+            "OpenWide1": {
+              "filename": "images/0306.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0307.bmp",
+            "OpenWide2": {
+              "filename": "images/0307.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0308.bmp",
+            "OpenWide3": {
+              "filename": "images/0308.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0309.bmp",
+            "OpenWide4": {
+              "filename": "images/0309.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0310.bmp",
+            "OpenMedium": {
+              "filename": "images/0310.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0311.bmp",
+            "OpenNarrow": {
+              "filename": "images/0311.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -4864,38 +4864,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0317.bmp",
+            "Closed": {
+              "filename": "images/0317.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0318.bmp",
+            "OpenWide1": {
+              "filename": "images/0318.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0319.bmp",
+            "OpenWide2": {
+              "filename": "images/0319.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0320.bmp",
+            "OpenWide3": {
+              "filename": "images/0320.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0321.bmp",
+            "OpenWide4": {
+              "filename": "images/0321.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0322.bmp",
+            "OpenMedium": {
+              "filename": "images/0322.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0323.bmp",
+            "OpenNarrow": {
+              "filename": "images/0323.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -5060,38 +5060,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0336.bmp",
+            "Closed": {
+              "filename": "images/0336.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0337.bmp",
+            "OpenWide1": {
+              "filename": "images/0337.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0338.bmp",
+            "OpenWide2": {
+              "filename": "images/0338.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0339.bmp",
+            "OpenWide3": {
+              "filename": "images/0339.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0340.bmp",
+            "OpenWide4": {
+              "filename": "images/0340.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0341.bmp",
+            "OpenMedium": {
+              "filename": "images/0341.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0342.bmp",
+            "OpenNarrow": {
+              "filename": "images/0342.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -5245,38 +5245,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0354.bmp",
+            "Closed": {
+              "filename": "images/0354.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0355.bmp",
+            "OpenWide1": {
+              "filename": "images/0355.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0356.bmp",
+            "OpenWide2": {
+              "filename": "images/0356.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0357.bmp",
+            "OpenWide3": {
+              "filename": "images/0357.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0358.bmp",
+            "OpenWide4": {
+              "filename": "images/0358.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0359.bmp",
+            "OpenMedium": {
+              "filename": "images/0359.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0360.bmp",
+            "OpenNarrow": {
+              "filename": "images/0360.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -5358,38 +5358,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0366.bmp",
+            "Closed": {
+              "filename": "images/0366.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0367.bmp",
+            "OpenWide1": {
+              "filename": "images/0367.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0368.bmp",
+            "OpenWide2": {
+              "filename": "images/0368.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0369.bmp",
+            "OpenWide3": {
+              "filename": "images/0369.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0370.bmp",
+            "OpenWide4": {
+              "filename": "images/0370.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0371.bmp",
+            "OpenMedium": {
+              "filename": "images/0371.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0372.bmp",
+            "OpenNarrow": {
+              "filename": "images/0372.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -5471,38 +5471,38 @@
           ],
           "exitBranch": 5,
           "mouths": {
-            "closed": {
-              "filename": "Images/0378.bmp",
+            "Closed": {
+              "filename": "images/0378.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0379.bmp",
+            "OpenWide1": {
+              "filename": "images/0379.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0380.bmp",
+            "OpenWide2": {
+              "filename": "images/0380.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0381.bmp",
+            "OpenWide3": {
+              "filename": "images/0381.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0382.bmp",
+            "OpenWide4": {
+              "filename": "images/0382.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0383.bmp",
+            "OpenMedium": {
+              "filename": "images/0383.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0384.bmp",
+            "OpenNarrow": {
+              "filename": "images/0384.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -6219,38 +6219,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0421.bmp",
+            "Closed": {
+              "filename": "images/0421.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0422.bmp",
+            "OpenWide1": {
+              "filename": "images/0422.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0423.bmp",
+            "OpenWide2": {
+              "filename": "images/0423.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0424.bmp",
+            "OpenWide3": {
+              "filename": "images/0424.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0425.bmp",
+            "OpenWide4": {
+              "filename": "images/0425.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0426.bmp",
+            "OpenMedium": {
+              "filename": "images/0426.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0427.bmp",
+            "OpenNarrow": {
+              "filename": "images/0427.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -7740,38 +7740,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0501.bmp",
+            "Closed": {
+              "filename": "images/0501.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0502.bmp",
+            "OpenWide1": {
+              "filename": "images/0502.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0503.bmp",
+            "OpenWide2": {
+              "filename": "images/0503.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0504.bmp",
+            "OpenWide3": {
+              "filename": "images/0504.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0505.bmp",
+            "OpenWide4": {
+              "filename": "images/0505.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0506.bmp",
+            "OpenMedium": {
+              "filename": "images/0506.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0507.bmp",
+            "OpenNarrow": {
+              "filename": "images/0507.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -8897,38 +8897,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0511.bmp",
+            "Closed": {
+              "filename": "images/0511.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0512.bmp",
+            "OpenWide1": {
+              "filename": "images/0512.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0513.bmp",
+            "OpenWide2": {
+              "filename": "images/0513.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0514.bmp",
+            "OpenWide3": {
+              "filename": "images/0514.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0515.bmp",
+            "OpenWide4": {
+              "filename": "images/0515.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0516.bmp",
+            "OpenMedium": {
+              "filename": "images/0516.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0517.bmp",
+            "OpenNarrow": {
+              "filename": "images/0517.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -9142,38 +9142,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0233.bmp",
+            "Closed": {
+              "filename": "images/0233.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0234.bmp",
+            "OpenWide1": {
+              "filename": "images/0234.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0235.bmp",
+            "OpenWide2": {
+              "filename": "images/0235.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0236.bmp",
+            "OpenWide3": {
+              "filename": "images/0236.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0237.bmp",
+            "OpenWide4": {
+              "filename": "images/0237.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0238.bmp",
+            "OpenMedium": {
+              "filename": "images/0238.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0239.bmp",
+            "OpenNarrow": {
+              "filename": "images/0239.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -10055,38 +10055,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0501.bmp",
+            "Closed": {
+              "filename": "images/0501.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0502.bmp",
+            "OpenWide1": {
+              "filename": "images/0502.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0503.bmp",
+            "OpenWide2": {
+              "filename": "images/0503.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0504.bmp",
+            "OpenWide3": {
+              "filename": "images/0504.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0505.bmp",
+            "OpenWide4": {
+              "filename": "images/0505.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0506.bmp",
+            "OpenMedium": {
+              "filename": "images/0506.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0507.bmp",
+            "OpenNarrow": {
+              "filename": "images/0507.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -10528,38 +10528,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0511.bmp",
+            "Closed": {
+              "filename": "images/0511.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0512.bmp",
+            "OpenWide1": {
+              "filename": "images/0512.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0513.bmp",
+            "OpenWide2": {
+              "filename": "images/0513.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0514.bmp",
+            "OpenWide3": {
+              "filename": "images/0514.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0515.bmp",
+            "OpenWide4": {
+              "filename": "images/0515.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0516.bmp",
+            "OpenMedium": {
+              "filename": "images/0516.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0517.bmp",
+            "OpenNarrow": {
+              "filename": "images/0517.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -11114,38 +11114,38 @@
             }
           ],
           "mouths": {
-            "closed": {
-              "filename": "Images/0305.bmp",
+            "Closed": {
+              "filename": "images/0305.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0306.bmp",
+            "OpenWide1": {
+              "filename": "images/0306.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0307.bmp",
+            "OpenWide2": {
+              "filename": "images/0307.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0308.bmp",
+            "OpenWide3": {
+              "filename": "images/0308.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0309.bmp",
+            "OpenWide4": {
+              "filename": "images/0309.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0310.bmp",
+            "OpenMedium": {
+              "filename": "images/0310.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0311.bmp",
+            "OpenNarrow": {
+              "filename": "images/0311.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -11377,38 +11377,38 @@
           ],
           "exitBranch": 16,
           "mouths": {
-            "closed": {
-              "filename": "Images/0565.bmp",
+            "Closed": {
+              "filename": "images/0565.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide1": {
-              "filename": "Images/0566.bmp",
+            "OpenWide1": {
+              "filename": "images/0566.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide2": {
-              "filename": "Images/0567.bmp",
+            "OpenWide2": {
+              "filename": "images/0567.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide3": {
-              "filename": "Images/0568.bmp",
+            "OpenWide3": {
+              "filename": "images/0568.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide4": {
-              "filename": "Images/0569.bmp",
+            "OpenWide4": {
+              "filename": "images/0569.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openmedium": {
-              "filename": "Images/0570.bmp",
+            "OpenMedium": {
+              "filename": "images/0570.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "opennarrow": {
-              "filename": "Images/0571.bmp",
+            "OpenNarrow": {
+              "filename": "images/0571.bmp",
               "offsetX": 0,
               "offsetY": -3
             }
@@ -11567,38 +11567,38 @@
           ],
           "exitBranch": 6,
           "mouths": {
-            "closed": {
-              "filename": "Images/0565.bmp",
+            "Closed": {
+              "filename": "images/0565.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide1": {
-              "filename": "Images/0566.bmp",
+            "OpenWide1": {
+              "filename": "images/0566.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide2": {
-              "filename": "Images/0567.bmp",
+            "OpenWide2": {
+              "filename": "images/0567.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide3": {
-              "filename": "Images/0568.bmp",
+            "OpenWide3": {
+              "filename": "images/0568.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openwide4": {
-              "filename": "Images/0569.bmp",
+            "OpenWide4": {
+              "filename": "images/0569.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "openmedium": {
-              "filename": "Images/0570.bmp",
+            "OpenMedium": {
+              "filename": "images/0570.bmp",
               "offsetX": 0,
               "offsetY": -3
             },
-            "opennarrow": {
-              "filename": "Images/0571.bmp",
+            "OpenNarrow": {
+              "filename": "images/0571.bmp",
               "offsetX": 0,
               "offsetY": -3
             }
@@ -12564,38 +12564,38 @@
           "soundEffect": "Audio\\0011.wav",
           "exitBranch": 2,
           "mouths": {
-            "closed": {
-              "filename": "Images/0582.bmp",
+            "Closed": {
+              "filename": "images/0582.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide1": {
-              "filename": "Images/0583.bmp",
+            "OpenWide1": {
+              "filename": "images/0583.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide2": {
-              "filename": "Images/0584.bmp",
+            "OpenWide2": {
+              "filename": "images/0584.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide3": {
-              "filename": "Images/0585.bmp",
+            "OpenWide3": {
+              "filename": "images/0585.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openwide4": {
-              "filename": "Images/0586.bmp",
+            "OpenWide4": {
+              "filename": "images/0586.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "openmedium": {
-              "filename": "Images/0587.bmp",
+            "OpenMedium": {
+              "filename": "images/0587.bmp",
               "offsetX": 0,
               "offsetY": 0
             },
-            "opennarrow": {
-              "filename": "Images/0588.bmp",
+            "OpenNarrow": {
+              "filename": "images/0588.bmp",
               "offsetX": 0,
               "offsetY": 0
             }
@@ -16331,289 +16331,1729 @@
       "trimX": 46,
       "trimY": 96
     },
-    "images/0101.bmp": {
+    "images/0586.bmp": {
       "x": 1067,
+      "y": 1777,
+      "w": 24,
+      "h": 26,
+      "trimX": 53,
+      "trimY": 30
+    },
+    "images/0321.bmp": {
+      "x": 1093,
+      "y": 1777,
+      "w": 23,
+      "h": 25,
+      "trimX": 54,
+      "trimY": 30
+    },
+    "images/0584.bmp": {
+      "x": 1118,
+      "y": 1777,
+      "w": 24,
+      "h": 25,
+      "trimX": 53,
+      "trimY": 28
+    },
+    "images/0118.bmp": {
+      "x": 1144,
+      "y": 1777,
+      "w": 24,
+      "h": 24,
+      "trimX": 73,
+      "trimY": 29
+    },
+    "images/0158.bmp": {
+      "x": 1170,
+      "y": 1777,
+      "w": 24,
+      "h": 24,
+      "trimX": 55,
+      "trimY": 30
+    },
+    "images/0358.bmp": {
+      "x": 1196,
+      "y": 1777,
+      "w": 23,
+      "h": 24,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0582.bmp": {
+      "x": 1221,
+      "y": 1777,
+      "w": 24,
+      "h": 24,
+      "trimX": 53,
+      "trimY": 29
+    },
+    "images/0585.bmp": {
+      "x": 1247,
+      "y": 1777,
+      "w": 24,
+      "h": 24,
+      "trimX": 53,
+      "trimY": 30
+    },
+    "images/0116.bmp": {
+      "x": 1273,
+      "y": 1777,
+      "w": 24,
+      "h": 23,
+      "trimX": 72,
+      "trimY": 31
+    },
+    "images/0117.bmp": {
+      "x": 1299,
+      "y": 1777,
+      "w": 25,
+      "h": 23,
+      "trimX": 72,
+      "trimY": 30
+    },
+    "images/0155.bmp": {
+      "x": 1326,
+      "y": 1777,
+      "w": 23,
+      "h": 23,
+      "trimX": 55,
+      "trimY": 30
+    },
+    "images/0168.bmp": {
+      "x": 1351,
+      "y": 1777,
+      "w": 21,
+      "h": 23,
+      "trimX": 56,
+      "trimY": 32
+    },
+    "images/0170.bmp": {
+      "x": 1374,
+      "y": 1777,
+      "w": 23,
+      "h": 23,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0190.bmp": {
+      "x": 1399,
+      "y": 1777,
+      "w": 21,
+      "h": 23,
+      "trimX": 56,
+      "trimY": 32
+    },
+    "images/0192.bmp": {
+      "x": 1422,
+      "y": 1777,
+      "w": 23,
+      "h": 23,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0212.bmp": {
+      "x": 1447,
+      "y": 1777,
+      "w": 22,
+      "h": 23,
+      "trimX": 54,
+      "trimY": 31
+    },
+    "images/0251.bmp": {
+      "x": 1471,
+      "y": 1777,
+      "w": 23,
+      "h": 23,
+      "trimX": 54,
+      "trimY": 34
+    },
+    "images/0295.bmp": {
+      "x": 1496,
+      "y": 1777,
+      "w": 23,
+      "h": 23,
+      "trimX": 51,
+      "trimY": 31
+    },
+    "images/0320.bmp": {
+      "x": 1521,
+      "y": 1777,
+      "w": 21,
+      "h": 23,
+      "trimX": 56,
+      "trimY": 32
+    },
+    "images/0370.bmp": {
+      "x": 1544,
+      "y": 1777,
+      "w": 26,
+      "h": 23,
+      "trimX": 71,
+      "trimY": 28
+    },
+    "images/0583.bmp": {
+      "x": 1572,
+      "y": 1777,
+      "w": 25,
+      "h": 23,
+      "trimX": 52,
+      "trimY": 29
+    },
+    "images/0587.bmp": {
+      "x": 1599,
+      "y": 1777,
+      "w": 24,
+      "h": 23,
+      "trimX": 53,
+      "trimY": 31
+    },
+    "images/0101.bmp": {
+      "x": 1625,
       "y": 1777,
       "w": 39,
       "h": 22,
       "trimX": 46,
       "trimY": 106
     },
-    "images/0157.bmp": {
-      "x": 1108,
+    "images/0115.bmp": {
+      "x": 1666,
       "y": 1777,
+      "w": 25,
+      "h": 22,
+      "trimX": 72,
+      "trimY": 30
+    },
+    "images/0126.bmp": {
+      "x": 1693,
+      "y": 1777,
+      "w": 22,
+      "h": 22,
+      "trimX": 55,
+      "trimY": 30
+    },
+    "images/0127.bmp": {
+      "x": 1717,
+      "y": 1777,
+      "w": 22,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0137.bmp": {
+      "x": 1741,
+      "y": 1777,
+      "w": 24,
+      "h": 22,
+      "trimX": 31,
+      "trimY": 30
+    },
+    "images/0139.bmp": {
+      "x": 1767,
+      "y": 1777,
+      "w": 25,
+      "h": 22,
+      "trimX": 30,
+      "trimY": 31
+    },
+    "images/0141.bmp": {
+      "x": 1794,
+      "y": 1777,
+      "w": 24,
+      "h": 22,
+      "trimX": 31,
+      "trimY": 30
+    },
+    "images/0156.bmp": {
+      "x": 1820,
+      "y": 1777,
+      "w": 22,
+      "h": 22,
+      "trimX": 55,
+      "trimY": 31
+    },
+    "images/0172.bmp": {
+      "x": 1844,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 31
+    },
+    "images/0194.bmp": {
+      "x": 1869,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 31
+    },
+    "images/0226.bmp": {
+      "x": 1894,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 53,
+      "trimY": 32
+    },
+    "images/0236.bmp": {
+      "x": 1919,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0237.bmp": {
+      "x": 1944,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0238.bmp": {
+      "x": 1969,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0239.bmp": {
+      "x": 1994,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0248.bmp": {
+      "x": 2019,
+      "y": 1777,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 36
+    },
+    "images/0250.bmp": {
+      "x": 0,
+      "y": 1829,
+      "w": 22,
+      "h": 22,
+      "trimX": 55,
+      "trimY": 34
+    },
+    "images/0359.bmp": {
+      "x": 24,
+      "y": 1829,
+      "w": 23,
+      "h": 22,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0588.bmp": {
+      "x": 49,
+      "y": 1829,
+      "w": 24,
+      "h": 22,
+      "trimX": 53,
+      "trimY": 31
+    },
+    "images/0005.bmp": {
+      "x": 75,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0112.bmp": {
+      "x": 100,
+      "y": 1829,
+      "w": 25,
+      "h": 21,
+      "trimX": 71,
+      "trimY": 29
+    },
+    "images/0114.bmp": {
+      "x": 127,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 72,
+      "trimY": 31
+    },
+    "images/0128.bmp": {
+      "x": 152,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 31
+    },
+    "images/0129.bmp": {
+      "x": 176,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0154.bmp": {
+      "x": 201,
+      "y": 1829,
+      "w": 24,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 30
+    },
+    "images/0157.bmp": {
+      "x": 227,
+      "y": 1829,
       "w": 22,
       "h": 21,
       "trimX": 56,
       "trimY": 31
     },
     "images/0160.bmp": {
-      "x": 1132,
-      "y": 1777,
+      "x": 251,
+      "y": 1829,
       "w": 24,
       "h": 21,
       "trimX": 55,
       "trimY": 31
     },
+    "images/0169.bmp": {
+      "x": 277,
+      "y": 1829,
+      "w": 21,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0191.bmp": {
+      "x": 300,
+      "y": 1829,
+      "w": 21,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0211.bmp": {
+      "x": 323,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0214.bmp": {
+      "x": 347,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0222.bmp": {
+      "x": 372,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 53,
+      "trimY": 32
+    },
+    "images/0223.bmp": {
+      "x": 397,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 53,
+      "trimY": 32
+    },
+    "images/0235.bmp": {
+      "x": 422,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0266.bmp": {
+      "x": 447,
+      "y": 1829,
+      "w": 24,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 34
+    },
+    "images/0268.bmp": {
+      "x": 473,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0280.bmp": {
+      "x": 498,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0281.bmp": {
+      "x": 522,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0291.bmp": {
+      "x": 546,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 50,
+      "trimY": 31
+    },
+    "images/0294.bmp": {
+      "x": 571,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 51,
+      "trimY": 33
+    },
+    "images/0296.bmp": {
+      "x": 596,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 51,
+      "trimY": 33
+    },
+    "images/0297.bmp": {
+      "x": 621,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 50,
+      "trimY": 32
+    },
+    "images/0308.bmp": {
+      "x": 646,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0309.bmp": {
+      "x": 671,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0310.bmp": {
+      "x": 696,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0322.bmp": {
+      "x": 721,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0340.bmp": {
+      "x": 745,
+      "y": 1829,
+      "w": 21,
+      "h": 21,
+      "trimX": 55,
+      "trimY": 48
+    },
+    "images/0354.bmp": {
+      "x": 768,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0357.bmp": {
+      "x": 793,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0360.bmp": {
+      "x": 818,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0367.bmp": {
+      "x": 843,
+      "y": 1829,
+      "w": 28,
+      "h": 21,
+      "trimX": 70,
+      "trimY": 28
+    },
+    "images/0369.bmp": {
+      "x": 873,
+      "y": 1829,
+      "w": 28,
+      "h": 21,
+      "trimX": 69,
+      "trimY": 29
+    },
+    "images/0371.bmp": {
+      "x": 903,
+      "y": 1829,
+      "w": 28,
+      "h": 21,
+      "trimX": 69,
+      "trimY": 29
+    },
+    "images/0381.bmp": {
+      "x": 933,
+      "y": 1829,
+      "w": 24,
+      "h": 21,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0382.bmp": {
+      "x": 959,
+      "y": 1829,
+      "w": 24,
+      "h": 21,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0503.bmp": {
+      "x": 985,
+      "y": 1829,
+      "w": 21,
+      "h": 21,
+      "trimX": 57,
+      "trimY": 37
+    },
+    "images/0504.bmp": {
+      "x": 1008,
+      "y": 1829,
+      "w": 21,
+      "h": 21,
+      "trimX": 57,
+      "trimY": 37
+    },
+    "images/0506.bmp": {
+      "x": 1031,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 36
+    },
+    "images/0507.bmp": {
+      "x": 1056,
+      "y": 1829,
+      "w": 23,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 36
+    },
+    "images/0511.bmp": {
+      "x": 1081,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0512.bmp": {
+      "x": 1105,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0513.bmp": {
+      "x": 1129,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0514.bmp": {
+      "x": 1153,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0515.bmp": {
+      "x": 1177,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0516.bmp": {
+      "x": 1201,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0517.bmp": {
+      "x": 1225,
+      "y": 1829,
+      "w": 22,
+      "h": 21,
+      "trimX": 56,
+      "trimY": 37
+    },
+    "images/0003.bmp": {
+      "x": 1249,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0004.bmp": {
+      "x": 1274,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0006.bmp": {
+      "x": 1299,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0007.bmp": {
+      "x": 1324,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
     "images/0104.bmp": {
-      "x": 1158,
-      "y": 1777,
+      "x": 1349,
+      "y": 1829,
       "w": 33,
       "h": 20,
       "trimX": 48,
       "trimY": 97
     },
+    "images/0113.bmp": {
+      "x": 1384,
+      "y": 1829,
+      "w": 24,
+      "h": 20,
+      "trimX": 72,
+      "trimY": 31
+    },
+    "images/0125.bmp": {
+      "x": 1410,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0130.bmp": {
+      "x": 1435,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0138.bmp": {
+      "x": 1460,
+      "y": 1829,
+      "w": 24,
+      "h": 20,
+      "trimX": 31,
+      "trimY": 31
+    },
+    "images/0140.bmp": {
+      "x": 1486,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 31,
+      "trimY": 32
+    },
+    "images/0159.bmp": {
+      "x": 1511,
+      "y": 1829,
+      "w": 24,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 30
+    },
+    "images/0166.bmp": {
+      "x": 1537,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 31
+    },
+    "images/0167.bmp": {
+      "x": 1561,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0188.bmp": {
+      "x": 1585,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 31
+    },
+    "images/0189.bmp": {
+      "x": 1609,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0210.bmp": {
+      "x": 1633,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0213.bmp": {
+      "x": 1656,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0233.bmp": {
+      "x": 1680,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0234.bmp": {
+      "x": 1703,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0246.bmp": {
+      "x": 1728,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 36
+    },
+    "images/0247.bmp": {
+      "x": 1751,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 35
+    },
+    "images/0249.bmp": {
+      "x": 1775,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 35
+    },
+    "images/0257.bmp": {
+      "x": 1799,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0258.bmp": {
+      "x": 1822,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0259.bmp": {
+      "x": 1845,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0264.bmp": {
+      "x": 1868,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0269.bmp": {
+      "x": 1892,
+      "y": 1829,
+      "w": 24,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 34
+    },
+    "images/0270.bmp": {
+      "x": 1918,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 34
+    },
+    "images/0277.bmp": {
+      "x": 1942,
+      "y": 1829,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0279.bmp": {
+      "x": 1967,
+      "y": 1829,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 34
+    },
+    "images/0282.bmp": {
+      "x": 1990,
+      "y": 1829,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0293.bmp": {
+      "x": 2014,
+      "y": 1829,
+      "w": 24,
+      "h": 20,
+      "trimX": 51,
+      "trimY": 32
+    },
+    "images/0307.bmp": {
+      "x": 0,
+      "y": 1853,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0311.bmp": {
+      "x": 25,
+      "y": 1853,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0317.bmp": {
+      "x": 50,
+      "y": 1853,
+      "w": 23,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0323.bmp": {
+      "x": 75,
+      "y": 1853,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0339.bmp": {
+      "x": 99,
+      "y": 1853,
+      "w": 22,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 48
+    },
+    "images/0356.bmp": {
+      "x": 123,
+      "y": 1853,
+      "w": 23,
+      "h": 20,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0368.bmp": {
+      "x": 148,
+      "y": 1853,
+      "w": 27,
+      "h": 20,
+      "trimX": 70,
+      "trimY": 29
+    },
+    "images/0372.bmp": {
+      "x": 177,
+      "y": 1853,
+      "w": 27,
+      "h": 20,
+      "trimX": 70,
+      "trimY": 29
+    },
+    "images/0380.bmp": {
+      "x": 206,
+      "y": 1853,
+      "w": 24,
+      "h": 20,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0383.bmp": {
+      "x": 232,
+      "y": 1853,
+      "w": 24,
+      "h": 20,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0384.bmp": {
+      "x": 258,
+      "y": 1853,
+      "w": 24,
+      "h": 20,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0425.bmp": {
+      "x": 284,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 35
+    },
+    "images/0426.bmp": {
+      "x": 307,
+      "y": 1853,
+      "w": 20,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 35
+    },
+    "images/0427.bmp": {
+      "x": 329,
+      "y": 1853,
+      "w": 20,
+      "h": 20,
+      "trimX": 55,
+      "trimY": 35
+    },
+    "images/0505.bmp": {
+      "x": 351,
+      "y": 1853,
+      "w": 22,
+      "h": 20,
+      "trimX": 57,
+      "trimY": 36
+    },
+    "images/0566.bmp": {
+      "x": 375,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0567.bmp": {
+      "x": 398,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0568.bmp": {
+      "x": 421,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0569.bmp": {
+      "x": 444,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0570.bmp": {
+      "x": 467,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0571.bmp": {
+      "x": 490,
+      "y": 1853,
+      "w": 21,
+      "h": 20,
+      "trimX": 88,
+      "trimY": 32
+    },
+    "images/0002.bmp": {
+      "x": 513,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0124.bmp": {
+      "x": 538,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0136.bmp": {
+      "x": 563,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 32,
+      "trimY": 30
+    },
+    "images/0142.bmp": {
+      "x": 588,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 31,
+      "trimY": 32
+    },
+    "images/0171.bmp": {
+      "x": 612,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0193.bmp": {
+      "x": 636,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0208.bmp": {
+      "x": 660,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0209.bmp": {
+      "x": 685,
+      "y": 1853,
+      "w": 25,
+      "h": 19,
+      "trimX": 53,
+      "trimY": 33
+    },
+    "images/0221.bmp": {
+      "x": 712,
+      "y": 1853,
+      "w": 24,
+      "h": 19,
+      "trimX": 52,
+      "trimY": 33
+    },
+    "images/0224.bmp": {
+      "x": 738,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 53,
+      "trimY": 33
+    },
+    "images/0227.bmp": {
+      "x": 763,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 53,
+      "trimY": 33
+    },
+    "images/0245.bmp": {
+      "x": 788,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 35
+    },
+    "images/0256.bmp": {
+      "x": 812,
+      "y": 1853,
+      "w": 21,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0260.bmp": {
+      "x": 835,
+      "y": 1853,
+      "w": 21,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0265.bmp": {
+      "x": 858,
+      "y": 1853,
+      "w": 24,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 34
+    },
+    "images/0267.bmp": {
+      "x": 884,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 34
+    },
+    "images/0278.bmp": {
+      "x": 908,
+      "y": 1853,
+      "w": 22,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0292.bmp": {
+      "x": 932,
+      "y": 1853,
+      "w": 25,
+      "h": 19,
+      "trimX": 50,
+      "trimY": 32
+    },
+    "images/0306.bmp": {
+      "x": 959,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0318.bmp": {
+      "x": 984,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 32
+    },
+    "images/0319.bmp": {
+      "x": 1009,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0338.bmp": {
+      "x": 1034,
+      "y": 1853,
+      "w": 21,
+      "h": 19,
+      "trimX": 55,
+      "trimY": 47
+    },
+    "images/0355.bmp": {
+      "x": 1057,
+      "y": 1853,
+      "w": 23,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0378.bmp": {
+      "x": 1082,
+      "y": 1853,
+      "w": 24,
+      "h": 19,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0379.bmp": {
+      "x": 1108,
+      "y": 1853,
+      "w": 24,
+      "h": 19,
+      "trimX": 49,
+      "trimY": 54
+    },
+    "images/0424.bmp": {
+      "x": 1134,
+      "y": 1853,
+      "w": 21,
+      "h": 19,
+      "trimX": 54,
+      "trimY": 35
+    },
+    "images/0001.bmp": {
+      "x": 1157,
+      "y": 1853,
+      "w": 23,
+      "h": 18,
+      "trimX": 54,
+      "trimY": 33
+    },
+    "images/0225.bmp": {
+      "x": 1182,
+      "y": 1853,
+      "w": 23,
+      "h": 18,
+      "trimX": 53,
+      "trimY": 34
+    },
+    "images/0255.bmp": {
+      "x": 1207,
+      "y": 1853,
+      "w": 21,
+      "h": 18,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0276.bmp": {
+      "x": 1230,
+      "y": 1853,
+      "w": 21,
+      "h": 18,
+      "trimX": 55,
+      "trimY": 34
+    },
+    "images/0305.bmp": {
+      "x": 1253,
+      "y": 1853,
+      "w": 23,
+      "h": 18,
+      "trimX": 54,
+      "trimY": 32
+    },
+    "images/0336.bmp": {
+      "x": 1278,
+      "y": 1853,
+      "w": 25,
+      "h": 18,
+      "trimX": 54,
+      "trimY": 47
+    },
+    "images/0341.bmp": {
+      "x": 1305,
+      "y": 1853,
+      "w": 20,
+      "h": 18,
+      "trimX": 55,
+      "trimY": 49
+    },
+    "images/0342.bmp": {
+      "x": 1327,
+      "y": 1853,
+      "w": 20,
+      "h": 18,
+      "trimX": 56,
+      "trimY": 48
+    },
+    "images/0366.bmp": {
+      "x": 1349,
+      "y": 1853,
+      "w": 23,
+      "h": 18,
+      "trimX": 70,
+      "trimY": 29
+    },
+    "images/0422.bmp": {
+      "x": 1374,
+      "y": 1853,
+      "w": 21,
+      "h": 18,
+      "trimX": 54,
+      "trimY": 36
+    },
+    "images/0423.bmp": {
+      "x": 1397,
+      "y": 1853,
+      "w": 21,
+      "h": 18,
+      "trimX": 54,
+      "trimY": 35
+    },
+    "images/0502.bmp": {
+      "x": 1420,
+      "y": 1853,
+      "w": 21,
+      "h": 18,
+      "trimX": 57,
+      "trimY": 38
+    },
+    "images/0254.bmp": {
+      "x": 1443,
+      "y": 1853,
+      "w": 21,
+      "h": 17,
+      "trimX": 55,
+      "trimY": 33
+    },
+    "images/0337.bmp": {
+      "x": 1466,
+      "y": 1853,
+      "w": 21,
+      "h": 17,
+      "trimX": 55,
+      "trimY": 48
+    },
+    "images/0421.bmp": {
+      "x": 1489,
+      "y": 1853,
+      "w": 20,
+      "h": 17,
+      "trimX": 54,
+      "trimY": 35
+    },
+    "images/0501.bmp": {
+      "x": 1511,
+      "y": 1853,
+      "w": 22,
+      "h": 17,
+      "trimX": 56,
+      "trimY": 38
+    },
+    "images/0565.bmp": {
+      "x": 1535,
+      "y": 1853,
+      "w": 21,
+      "h": 17,
+      "trimX": 88,
+      "trimY": 32
+    },
     "images/0086.bmp": {
-      "x": 1193,
-      "y": 1777,
+      "x": 1558,
+      "y": 1853,
       "w": 22,
       "h": 14,
       "trimX": 52,
       "trimY": 114
     },
     "images/0446.bmp": {
-      "x": 1217,
-      "y": 1777,
+      "x": 1582,
+      "y": 1853,
       "w": 31,
       "h": 14,
       "trimX": 49,
       "trimY": 18
     },
     "images/0447.bmp": {
-      "x": 1250,
-      "y": 1777,
+      "x": 1615,
+      "y": 1853,
       "w": 32,
       "h": 14,
       "trimX": 50,
       "trimY": 19
     },
     "images/0509.bmp": {
-      "x": 1284,
-      "y": 1777,
+      "x": 1649,
+      "y": 1853,
       "w": 24,
       "h": 12,
       "trimX": 56,
       "trimY": 23
     },
     "images/0510.bmp": {
-      "x": 1310,
-      "y": 1777,
+      "x": 1675,
+      "y": 1853,
       "w": 24,
       "h": 12,
       "trimX": 56,
       "trimY": 23
     },
     "images/0220.bmp": {
-      "x": 1336,
-      "y": 1777,
+      "x": 1701,
+      "y": 1853,
       "w": 14,
       "h": 11,
       "trimX": 40,
       "trimY": 17
     },
     "images/0417.bmp": {
-      "x": 1352,
-      "y": 1777,
+      "x": 1717,
+      "y": 1853,
       "w": 24,
       "h": 10,
       "trimX": 53,
       "trimY": 23
     },
     "images/0009.bmp": {
-      "x": 1378,
-      "y": 1777,
+      "x": 1743,
+      "y": 1853,
       "w": 21,
       "h": 9,
       "trimX": 55,
       "trimY": 22
     },
     "images/0589.bmp": {
-      "x": 1401,
-      "y": 1777,
+      "x": 1766,
+      "y": 1853,
       "w": 24,
       "h": 9,
       "trimX": 56,
       "trimY": 21
     },
     "images/0590.bmp": {
-      "x": 1427,
-      "y": 1777,
+      "x": 1792,
+      "y": 1853,
       "w": 26,
       "h": 9,
       "trimX": 54,
       "trimY": 21
     },
     "images/0008.bmp": {
-      "x": 1455,
-      "y": 1777,
+      "x": 1820,
+      "y": 1853,
       "w": 21,
       "h": 8,
       "trimX": 55,
       "trimY": 22
     },
     "images/0014.bmp": {
-      "x": 1478,
-      "y": 1777,
+      "x": 1843,
+      "y": 1853,
       "w": 21,
       "h": 8,
       "trimX": 54,
       "trimY": 21
     },
     "images/0066.bmp": {
-      "x": 1501,
-      "y": 1777,
+      "x": 1866,
+      "y": 1853,
       "w": 23,
       "h": 8,
       "trimX": 57,
       "trimY": 27
     },
     "images/0067.bmp": {
-      "x": 1526,
-      "y": 1777,
+      "x": 1891,
+      "y": 1853,
       "w": 22,
       "h": 8,
       "trimX": 57,
       "trimY": 26
     },
     "images/0418.bmp": {
-      "x": 1550,
-      "y": 1777,
+      "x": 1915,
+      "y": 1853,
       "w": 21,
       "h": 8,
       "trimX": 54,
       "trimY": 25
     },
     "images/0420.bmp": {
-      "x": 1573,
-      "y": 1777,
+      "x": 1938,
+      "y": 1853,
       "w": 22,
       "h": 8,
       "trimX": 54,
       "trimY": 24
     },
     "images/0436.bmp": {
-      "x": 1597,
-      "y": 1777,
+      "x": 1962,
+      "y": 1853,
       "w": 21,
       "h": 8,
       "trimX": 55,
       "trimY": 31
     },
     "images/0013.bmp": {
-      "x": 1620,
-      "y": 1777,
+      "x": 1985,
+      "y": 1853,
       "w": 21,
       "h": 7,
       "trimX": 54,
       "trimY": 21
     },
     "images/0019.bmp": {
-      "x": 1643,
-      "y": 1777,
+      "x": 2008,
+      "y": 1853,
       "w": 20,
       "h": 7,
       "trimX": 57,
       "trimY": 21
     },
     "images/0020.bmp": {
-      "x": 1665,
-      "y": 1777,
+      "x": 0,
+      "y": 1875,
       "w": 20,
       "h": 7,
       "trimX": 57,
       "trimY": 21
     },
     "images/0024.bmp": {
-      "x": 1687,
-      "y": 1777,
+      "x": 22,
+      "y": 1875,
       "w": 21,
       "h": 7,
       "trimX": 54,
       "trimY": 22
     },
     "images/0025.bmp": {
-      "x": 1710,
-      "y": 1777,
+      "x": 45,
+      "y": 1875,
       "w": 20,
       "h": 7,
       "trimX": 55,
       "trimY": 22
     },
     "images/0033.bmp": {
-      "x": 1732,
-      "y": 1777,
+      "x": 67,
+      "y": 1875,
       "w": 20,
       "h": 7,
       "trimX": 57,
       "trimY": 23
     },
     "images/0034.bmp": {
-      "x": 1754,
-      "y": 1777,
+      "x": 89,
+      "y": 1875,
       "w": 21,
       "h": 7,
       "trimX": 56,
       "trimY": 23
     },
     "images/0431.bmp": {
-      "x": 1777,
-      "y": 1777,
+      "x": 112,
+      "y": 1875,
       "w": 19,
       "h": 7,
       "trimX": 56,
       "trimY": 19
     },
     "images/0432.bmp": {
-      "x": 1798,
-      "y": 1777,
+      "x": 133,
+      "y": 1875,
       "w": 19,
       "h": 7,
       "trimX": 56,
       "trimY": 19
     },
     "images/0437.bmp": {
-      "x": 1819,
-      "y": 1777,
+      "x": 154,
+      "y": 1875,
       "w": 21,
       "h": 7,
       "trimX": 55,
       "trimY": 31
     },
     "images/0521.bmp": {
-      "x": 1842,
-      "y": 1777,
+      "x": 177,
+      "y": 1875,
       "w": 17,
       "h": 7,
       "trimX": 52,
       "trimY": 22
     },
     "images/0522.bmp": {
-      "x": 1861,
-      "y": 1777,
+      "x": 196,
+      "y": 1875,
       "w": 17,
       "h": 7,
       "trimX": 52,
       "trimY": 22
     },
     "images/0523.bmp": {
-      "x": 1880,
-      "y": 1777,
+      "x": 215,
+      "y": 1875,
       "w": 16,
       "h": 7,
       "trimX": 63,
       "trimY": 22
     },
     "images/0525.bmp": {
-      "x": 1898,
-      "y": 1777,
+      "x": 233,
+      "y": 1875,
       "w": 16,
       "h": 7,
       "trimX": 63,
       "trimY": 22
     },
     "images/0105.bmp": {
-      "x": 1916,
-      "y": 1777,
+      "x": 251,
+      "y": 1875,
       "w": 4,
       "h": 4,
       "trimX": 75,

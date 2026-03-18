@@ -248,6 +248,7 @@ export class Agent {
         "/",
       );
     }
+
     Object.values(definition.animations).forEach((animation) => {
       animation.frames.forEach((frame) => {
         frame.images.forEach((image) => {
@@ -259,7 +260,7 @@ export class Agent {
           });
         }
         if (frame.soundEffect) {
-          frame.soundEffect = frame.soundEffect.toLowerCase();
+          frame.soundEffect = frame.soundEffect.replace(/\\/g, "/").toLowerCase();
         }
       });
     });

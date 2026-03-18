@@ -216,6 +216,20 @@ export const TransitionType = {
 export type TransitionType = (typeof TransitionType)[keyof typeof TransitionType];
 
 /**
+ * Mouth type normalization map (lowercase -> PascalCase).
+ * Used to ensure consistency between character definitions and viseme estimation.
+ */
+export const MOUTH_TYPE_MAP: Record<string, string> = {
+  closed: "Closed",
+  openwide1: "OpenWide1",
+  openwide2: "OpenWide2",
+  openwide3: "OpenWide3",
+  openwide4: "OpenWide4",
+  openmedium: "OpenMedium",
+  opennarrow: "OpenNarrow",
+};
+
+/**
  * Represents a collection of frames that form a specific animation (ACSANIMATIONINFO).
  */
 export interface Animation {
