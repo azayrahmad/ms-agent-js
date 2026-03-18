@@ -1,16 +1,34 @@
-# 📎 MSAgentJS: The Modern Clippy for the Web
+<p align="center">
+  <img src="public/clippy-title.png" width="200" alt="MSAgentJS Clippy Icon">
+</p>
 
-[![npm version](https://img.shields.io/npm/v/ms-agent-js?style=plastic&color=blue)](https://www.npmjs.com/package/ms-agent-js)
-[![GitHub Deploy Status](https://img.shields.io/github/actions/workflow/status/azayrahmad/ms-agent-js/deploy-pages.yml?branch=main&label=deploy&style=plastic)](https://github.com/azayrahmad/ms-agent-js/actions/workflows/deploy-pages.yml)
-[![npm downloads](https://img.shields.io/npm/dm/ms-agent-js?style=plastic&color=brightgreen)](https://www.npmjs.com/package/ms-agent-js)
-[![License](https://img.shields.io/github/license/azayrahmad/ms-agent-js?style=plastic&color=orange)](./LICENSE)
-[![TypeScript Ready](https://img.shields.io/badge/TypeScript-Ready-blue?style=plastic)](https://www.typescriptlang.org/)
+<h1 align="center">MSAgentJS: The Modern Clippy for the Web</h1>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/ms-agent-js">
+    <img src="https://img.shields.io/npm/v/ms-agent-js?style=plastic&color=blue" alt="npm version">
+  </a>
+  <a href="https://github.com/azayrahmad/ms-agent-js/actions/workflows/deploy-pages.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/azayrahmad/ms-agent-js/deploy-pages.yml?branch=main&label=deploy&style=plastic" alt="GitHub Deploy Status">
+  </a>
+  <a href="https://www.npmjs.com/package/ms-agent-js">
+    <img src="https://img.shields.io/npm/dm/ms-agent-js?style=plastic&color=brightgreen" alt="npm downloads">
+  </a>
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/github/license/azayrahmad/ms-agent-js?style=plastic&color=orange" alt="License">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-Ready-blue?style=plastic" alt="TypeScript Ready">
+  </a>
+</p>
 
 A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy and the rest of the gang to your modern web applications with a simple, promise-based API. While this is inspired by [clippy.js](https://github.com/clippyjs/clippy.js) and borrows some logic, this is a reimplementation from scratch meant to be a modern, more faithful recreation of Microsoft Agent designed to work on any web page.
 
-[**Live Demo**](https://azayrahmad.github.io/ms-agent-js/) | [**Documentation**](./docs/getting-started.md) | [**Contributing**](./CONTRIBUTING.md)
-
----
+<p align="center">
+  <a href="https://azayrahmad.github.io/ms-agent-js/"><strong>Live Demo</strong></a> |
+  <a href="./docs/getting-started.md"><strong>Documentation</strong></a> |
+  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a>
+</p>
 
 ## 🚀 Why MSAgentJS?
 
@@ -30,6 +48,12 @@ If you're looking for the nostalgic feel of **clippy.js** but need something bui
 - **Optimized Assets**: Support for both original decompiled MS Agent assets and optimized WebP/WebM formats.
 - **Draggable**: Built-in support for repositioning agents via mouse or touch.
 - **TTS Support**: Built-in text-to-speech support using the browser's native Web Speech API.
+
+## 🎭 Available Agents
+
+| Clippit | The Dot | F1 | The Genius | Office Logo | Mother Nature | Monkey King | Links | Rocky |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| ![Clippit](public/agent_thumbs/Clippit_thumb.png) | ![The Dot](public/agent_thumbs/DOT_thumb.png) | ![F1](public/agent_thumbs/F1_thumb.png) | ![The Genius](public/agent_thumbs/GENIUS_thumb.png) | ![Office Logo](public/agent_thumbs/LOGO_thumb.png) | ![Mother Nature](public/agent_thumbs/MNATURE_thumb.png) | ![Monkey King](public/agent_thumbs/Monkey_King_thumb.png) | ![Links](public/agent_thumbs/OFFCAT_thumb.png) | ![Rocky](public/agent_thumbs/ROCKY_thumb.png) |
 
 ## 📦 Installation
 
