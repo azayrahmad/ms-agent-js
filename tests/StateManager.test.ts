@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StateManager } from '../src/core/behavior/StateManager';
-import { AnimationManager } from '../src/core/behavior/AnimationManager';
 
 describe('StateManager', () => {
   let stateManager: StateManager;
@@ -14,7 +13,9 @@ describe('StateManager', () => {
       interruptAndPlayAnimation: vi.fn().mockResolvedValue(true),
       playAnimation: vi.fn().mockResolvedValue(true),
       setAnimation: vi.fn(),
-      handleAnimationCompleted: vi.fn()
+      handleAnimationCompleted: vi.fn(),
+      on: vi.fn(),
+      emit: vi.fn()
     };
 
     mockStates = {
@@ -30,7 +31,7 @@ describe('StateManager', () => {
     });
   });
 
-  it('should progress idle tick even if update is called while an animation is starting (but not awaited)', async () => {
+  it('should progress idle tick when update is called', async () => {
     // Show the agent to unpause it
     await stateManager.handleVisibilityChange(true);
     await stateManager.setState('IdlingLevel1');
@@ -44,7 +45,27 @@ describe('StateManager', () => {
 
     // Call update with another 500ms
     await stateManager.update(500);
-    expect(stateManager.timeUntilNextTick).toBe(1000); // Should have ticked and reset
+    // Should have ticked and reset
+    expect(stateManager.timeUntilNextTick).toBe(1000);
+  });
+
+  it('should progress to next idle level after ticksPerLevel', async () => {
+    await stateManager.handleVisibilityChange(true);
+    await stateManager.setState('IdlingLevel1');
+    expect(stateManager.idleLevel).toBe(1);
+
+    // Tick 1
+    await stateManager.update(1000);
+    expect(stateManager.idleLevel).toBe(1);
+
+    // Tick 2
+    await stateManager.update(1000);
+    expect(stateManager.idleLevel).toBe(1);
+
+    // Tick 3 -> Progresses level
+    await stateManager.update(1000);
+    expect(stateManager.idleLevel).toBe(2);
+    expect(stateManager.currentStateName).toBe('IdlingLevel2');
   });
 
   it('should not be blocked by slow animation start', async () => {
@@ -58,8 +79,7 @@ describe('StateManager', () => {
     mockAnimationManager.playAnimation = () => new Promise(() => {});
     mockAnimationManager.isAnimating = false; // So it tries to start a new one
 
-    // This update should call updateStateAnimation -> playAnimation (which is slow)
-    // If it's awaited, this update will never resolve (or will take too long)
+    // This update should send a TICK event and return immediately
     const updatePromise = stateManager.update(500);
 
     // We check if it resolves quickly
@@ -73,13 +93,12 @@ describe('StateManager', () => {
   });
 
   it('should start ticking immediately after initialization and setState', async () => {
-    // Initial state is Hidden and Paused
+    // Initial state is Hidden
     expect(stateManager.currentStateName).toBe('Hidden');
 
     await stateManager.setState('IdlingLevel1');
     expect(stateManager.currentStateName).toBe('IdlingLevel1');
 
-    // Should not be paused anymore
     await stateManager.update(100);
     expect(stateManager.timeUntilNextTick).toBe(900);
   });
