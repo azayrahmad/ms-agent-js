@@ -9,12 +9,13 @@ export interface AgentContext {
   elapsedSinceLastTick: number;
   animationName: string;
   stateName: string;
+  isPersistent: boolean;
 }
 
 export type AgentEvent =
   | { type: 'SHOW'; animation?: string }
   | { type: 'HIDE'; animation?: string }
-  | { type: 'PLAY'; animation: string; state?: string }
+  | { type: 'PLAY'; animation: string; state?: string; persistent?: boolean }
   | { type: 'SET_STATE'; state: string }
   | { type: 'ANIMATION_END' }
   | { type: 'INTERRUPT' }
@@ -31,6 +32,7 @@ export const agentMachine = setup({
       idleLevel: 1,
       idleTickCount: 0,
       elapsedSinceLastTick: 0,
+      isPersistent: false,
     }),
     incrementTick: assign({
       idleTickCount: ({ context }) => context.idleTickCount + 1,
@@ -70,6 +72,7 @@ export const agentMachine = setup({
     elapsedSinceLastTick: 0,
     animationName: '',
     stateName: input?.stateName ?? 'Hidden',
+    isPersistent: false,
   }),
   initial: 'hidden',
   on: {
@@ -97,12 +100,16 @@ export const agentMachine = setup({
             animationName: '',
             idleLevel: 1,
             idleTickCount: 0,
-            elapsedSinceLastTick: 0
+            elapsedSinceLastTick: 0,
+            isPersistent: true
           })
         }
     ],
     INTERRUPT: {
       actions: 'resetIdle'
+    },
+    TICK: {
+        actions: 'updateTimer'
     }
   },
   states: {
@@ -123,9 +130,6 @@ export const agentMachine = setup({
         ANIMATION_END: 'idling',
         HIDE: 'hiding',
         PLAY: 'busy',
-        TICK: {
-            actions: 'updateTimer'
-        }
       },
     },
     idling: {
@@ -135,12 +139,9 @@ export const agentMachine = setup({
       initial: 'active',
       states: {
         active: {
-            on: {
-                TICK: {
-                    actions: ['updateTimer'],
-                    target: 'evaluating'
-                }
-            }
+            always: [
+                { guard: 'isTimeForTick', target: 'evaluating' }
+            ]
         },
         evaluating: {
             always: [
@@ -164,6 +165,7 @@ export const agentMachine = setup({
         }
       },
       on: {
+        ANIMATION_END: '.active',
         HIDE: 'hiding',
         PLAY: [
             { guard: ({ event }) => !!event.state, target: 'busy' },
@@ -174,19 +176,27 @@ export const agentMachine = setup({
     busy: {
       entry: assign({
         stateName: ({ event, context }) => {
-            if (event.type === 'PLAY') return event.state || 'Playing';
+            if (event.type === 'PLAY') return event.state || context.stateName || 'Playing';
             if (event.type === 'SET_STATE') return event.state;
             return context.stateName;
         },
         animationName: ({ event, context }) => (event.type === 'PLAY' ? event.animation : context.animationName),
+        isPersistent: ({ event, context }) => (event.type === 'PLAY' ? !!event.persistent : event.type === 'SET_STATE' ? true : context.isPersistent),
       }),
+      initial: 'active',
+      states: {
+        active: {},
+        retriggering: {
+            always: 'active'
+        }
+      },
       on: {
-        ANIMATION_END: 'idling',
+        ANIMATION_END: [
+            { guard: ({ context }) => context.isPersistent, target: '.retriggering' },
+            { target: 'idling' }
+        ],
         HIDE: 'hiding',
         PLAY: 'busy',
-        TICK: {
-            actions: 'updateTimer'
-        }
       },
     },
     hiding: {
@@ -197,9 +207,6 @@ export const agentMachine = setup({
       on: {
         ANIMATION_END: 'hidden',
         SHOW: 'showing',
-        TICK: {
-            actions: 'updateTimer'
-        }
       },
     },
   },

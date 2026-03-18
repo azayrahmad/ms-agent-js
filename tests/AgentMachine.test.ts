@@ -29,7 +29,7 @@ describe('AgentMachine', () => {
     actor.send({ type: 'SHOW' });
     actor.send({ type: 'ANIMATION_END' });
     actor.send({ type: 'PLAY', animation: 'Wave', state: 'Playing' });
-    expect(actor.getSnapshot().value).toBe('busy');
+    expect(actor.getSnapshot().matches('busy')).toBe(true);
     expect(actor.getSnapshot().context.stateName).toBe('Playing');
   });
 
@@ -37,7 +37,7 @@ describe('AgentMachine', () => {
     const actor = createActor(agentMachine).start();
     actor.send({ type: 'SHOW' });
     actor.send({ type: 'ANIMATION_END' });
-    actor.send({ type: 'PLAY', animation: 'Wave' });
+    actor.send({ type: 'PLAY', animation: 'Wave', state: 'Playing' });
     actor.send({ type: 'ANIMATION_END' });
     expect(actor.getSnapshot().matches('idling')).toBe(true);
   });
@@ -52,7 +52,8 @@ describe('AgentMachine', () => {
             maxIdleLevel: 3,
             elapsedSinceLastTick: 0,
             animationName: '',
-            stateName: 'IdlingLevel1'
+            stateName: 'IdlingLevel1',
+            isPersistent: false
         }
     }).start();
 
@@ -71,5 +72,37 @@ describe('AgentMachine', () => {
     expect(actor.getSnapshot().context.idleLevel).toBe(2);
     expect(actor.getSnapshot().context.idleTickCount).toBe(0);
     expect(actor.getSnapshot().context.stateName).toBe('IdlingLevel2');
+  });
+
+  it('should stay in custom busy state when isPersistent is true', () => {
+    const actor = createActor(agentMachine).start();
+    actor.send({ type: 'SHOW' });
+    actor.send({ type: 'ANIMATION_END' });
+
+    // Explicitly set a custom state (persistent)
+    actor.send({ type: 'SET_STATE', state: 'GesturingLeft' });
+    expect(actor.getSnapshot().matches('busy')).toBe(true);
+    expect(actor.getSnapshot().context.stateName).toBe('GesturingLeft');
+    expect(actor.getSnapshot().context.isPersistent).toBe(true);
+
+    // End animation -> should re-enter busy.active via retriggering
+    actor.send({ type: 'ANIMATION_END' });
+    expect(actor.getSnapshot().matches('busy')).toBe(true);
+    expect(actor.getSnapshot().context.stateName).toBe('GesturingLeft');
+  });
+
+  it('should return to idling from busy when isPersistent is false (via PLAY)', () => {
+    const actor = createActor(agentMachine).start();
+    actor.send({ type: 'SHOW' });
+    actor.send({ type: 'ANIMATION_END' });
+
+    // Play an animation (one-off)
+    actor.send({ type: 'PLAY', animation: 'Wave', state: 'Playing' });
+    expect(actor.getSnapshot().matches('busy')).toBe(true);
+    expect(actor.getSnapshot().context.isPersistent).toBe(false);
+
+    // End animation -> should return to idling
+    actor.send({ type: 'ANIMATION_END' });
+    expect(actor.getSnapshot().matches('idling')).toBe(true);
   });
 });

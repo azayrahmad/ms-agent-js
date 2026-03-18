@@ -48,8 +48,12 @@ export class StateManager {
 
     this.actor.subscribe((state) => {
       if (state.changed || state.status === 'active') {
-        // Trigger animations when entering specific states
-        if (state.matches({ idling: 'triggerAnimation' }) || state.matches({ idling: 'evaluatingIdle' })) {
+        // Trigger animations when entering specific states or retriggering persistent states
+        if (
+          state.matches({ idling: 'triggerAnimation' }) ||
+          state.matches({ idling: 'evaluatingIdle' }) ||
+          state.matches({ busy: 'retriggering' })
+        ) {
           this.updateStateAnimation().catch(console.error);
         }
       }
@@ -123,7 +127,15 @@ export class StateManager {
   ): Promise<boolean> {
     const currentAnimationId = ++this.lastAnimationId;
 
-    this.actor.send({ type: "PLAY", animation: animationName, state: stateName });
+    // Use loop to determine persistence if stateName is provided (persistent state)
+    const isPersistent = !!stateName && loop;
+
+    this.actor.send({
+      type: "PLAY",
+      animation: animationName,
+      state: stateName,
+      persistent: isPersistent,
+    });
 
     await this.animationManager.preloadAnimation(animationName);
 
