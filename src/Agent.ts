@@ -120,6 +120,82 @@ export class Agent {
   };
 
   /**
+   * Internal helper to load the agent definition from cache or remote source.
+   * It attempts to load an optimized JSON version first, then falls back to
+   * legacy .acd files with various naming conventions (uppercase/lowercase).
+   *
+   * @param name - The name of the agent to load.
+   * @param baseUrl - The base URL where agent assets are located.
+   * @param options - Configuration options, including signal for cancellation.
+   * @returns A promise resolving to the fully parsed and normalized definition.
+   * @throws Error if the definition cannot be loaded from any source.
+   */
+  private static async getDefinition(
+    name: string,
+    baseUrl: string,
+    options: AgentOptions,
+  ): Promise<AgentCharacterDefinition> {
+    const useCache = options.useCache !== false;
+
+    if (useCache) {
+      const cached = AssetCache.getDefinition(baseUrl);
+      if (cached) return cached;
+    }
+
+    let definition: AgentCharacterDefinition | undefined;
+
+    try {
+      // Prioritize optimized agent.json (atlas-based)
+      const agentJsonUrl = `${baseUrl}/agent.json`;
+      const response = await fetchWithProgress(agentJsonUrl, {
+        signal: options.signal,
+        onProgress: options.onProgress,
+      });
+
+      if (!response.ok) throw new Error("No agent.json");
+      definition = (await response.json()) as AgentCharacterDefinition;
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") throw e;
+
+      // Fallback to legacy .acd format
+      const acdPath = `${baseUrl}/${name.toUpperCase()}.acd`;
+      try {
+        definition = await CharacterParser.load(acdPath, options.signal);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") throw err;
+        // Fallback to lowercase acd filename
+        try {
+          definition = await CharacterParser.load(
+            `${baseUrl}/${name.toLowerCase()}.acd`,
+            options.signal,
+          );
+        } catch (innerErr) {
+          if (innerErr instanceof Error && innerErr.name === "AbortError")
+            throw innerErr;
+          console.error(
+            `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
+              `Please ensure the 'agents/' directory is correctly served and 'baseUrl' is correct.`,
+          );
+          throw err;
+        }
+      }
+    }
+
+    if (!definition) {
+      throw new Error(
+        `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}.`,
+      );
+    }
+
+    this.normalizeDefinition(definition);
+    if (useCache) {
+      AssetCache.setDefinition(baseUrl, definition);
+    }
+
+    return definition;
+  }
+
+  /**
    * Static factory method to asynchronously load and initialize an agent.
    * Searches for assets in the specified baseUrl, with fallbacks for naming conventions.
    *
@@ -133,57 +209,8 @@ export class Agent {
   ): Promise<Agent> {
     const defaultBaseUrl = `https://unpkg.com/ms-agent-js@latest/dist/agents/${name}`;
     const baseUrl = (options.baseUrl || defaultBaseUrl).replace(/\/$/, "");
-    const useCache = options.useCache !== false;
 
-    let definition: AgentCharacterDefinition | undefined;
-
-    if (useCache) {
-      definition = AssetCache.getDefinition(baseUrl);
-    }
-
-    if (!definition) {
-      try {
-        // Prioritize optimized agent.json (atlas-based)
-        const agentJsonUrl = `${baseUrl}/agent.json`;
-        const response = await fetchWithProgress(agentJsonUrl, {
-          signal: options.signal,
-          onProgress: options.onProgress,
-        });
-
-        if (!response.ok) throw new Error("No agent.json");
-        definition = await response.json();
-      } catch (e) {
-        if (e instanceof Error && e.name === "AbortError") throw e;
-
-        // Fallback to legacy .acd format
-        const acdPath = `${baseUrl}/${name.toUpperCase()}.acd`;
-        try {
-          definition = await CharacterParser.load(acdPath, options.signal);
-        } catch (err) {
-          if (err instanceof Error && err.name === "AbortError") throw err;
-          // Fallback to lowercase acd filename
-          try {
-            definition = await CharacterParser.load(
-              `${baseUrl}/${name.toLowerCase()}.acd`,
-              options.signal,
-            );
-          } catch (innerErr) {
-            if (innerErr instanceof Error && innerErr.name === "AbortError")
-              throw innerErr;
-            console.error(
-              `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
-                `Please ensure the 'agents/' directory is correctly served and 'baseUrl' is correct.`,
-            );
-            throw err;
-          }
-        }
-      }
-
-      this.normalizeDefinition(definition!);
-      if (useCache) {
-        AssetCache.setDefinition(baseUrl, definition!);
-      }
-    }
+    const definition = await this.getDefinition(name, baseUrl, options);
 
     // Resolve final options with defaults
     const fullOptions: Required<AgentOptions> = {
@@ -198,7 +225,7 @@ export class Agent {
       initialAnimation: options.initialAnimation || "",
       onProgress: options.onProgress || (() => {}),
       signal: options.signal || new AbortController().signal,
-      useCache,
+      useCache: options.useCache !== false,
       x:
         options.x ??
         window.innerWidth -
