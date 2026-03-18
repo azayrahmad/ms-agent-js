@@ -79,6 +79,7 @@ init();
 - **[API Reference](./docs/api-reference.md)**: Full list of methods, options, and events.
 - **[Request System](./docs/request-system.md)**: Understanding the asynchronous action queue.
 - **[Asset Management](./docs/assets.md)**: How to add and optimize new agents.
+- **[State Management](./docs/state-management.md)**: Deep dive into the XState-based behavioral logic.
 - **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
 - **[Internal Architecture](./docs/internals.md)**: Deep dive into the engine's core logic.
 - **[AI Onboarding](./AGENTS.md)**: Specific recipes and tips for AI agents.

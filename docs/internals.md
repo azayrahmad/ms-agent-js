@@ -51,7 +51,8 @@ graph TD
 | **`CharacterParser`** | Translates assets into `AgentCharacterDefinition`. | `src/core/resources/` |
 | **`SpriteManager`** | Handles bitmap loading and rendering logic. | `src/core/resources/` |
 | **`AnimationManager`** | Low-level frame-by-frame timing and branching. | `src/core/behavior/` |
-| **`StateManager`** | High-level behavioral state transitions. | `src/core/behavior/` |
+| **`StateManager`** | High-level behavioral state transitions (wrapper around XState). | `src/core/behavior/` |
+| **`AgentMachine`** | XState machine definition for behavioral logic. | `src/core/behavior/` |
 | **`AudioManager`** | Audio spritesheet and decoding management. | `src/core/resources/` |
 | **`MSADPCMDecoder`** | Decodes legacy Microsoft ADPCM WAV files into PCM. | `src/core/resources/` |
 | **`Balloon`** | Procedural SVG speech bubble rendering. | `src/ui/` |
@@ -68,9 +69,9 @@ The `Agent` maintains a `requestAnimationFrame` loop that drives the entire syst
     - Calculates if the current frame duration has elapsed.
     - Processes "null frames" (duration 0) immediately in a loop.
 2.  **`StateManager.update(deltaTime)`**:
-    - Monitors the `RequestQueue`. If empty, it progresses "Idle" logic.
-    - Increments "boredom" levels to trigger more complex idle animations.
-    - Note: `StateManager.update` is asynchronous to allow for non-blocking idle transitions.
+    - Forwards `TICK` events to the underlying **XState machine**.
+    - The machine manages "Idle" logic and boredom levels deterministically.
+    - See [State Management](./state-management.md) for more details.
 3.  **`AgentRenderer.draw()`**:
     - Clears the canvas.
     - Calls `AnimationManager.draw(ctx)`, which delegates to `SpriteManager.drawFrame()`.

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor } from 'xstate';
 import { agentMachine } from '../src/core/behavior/AgentMachine';
 
-describe('agentMachine', () => {
+describe('AgentMachine', () => {
   it('should start in hidden state', () => {
     const actor = createActor(agentMachine).start();
     expect(actor.getSnapshot().value).toBe('hidden');
