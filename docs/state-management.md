@@ -70,3 +70,21 @@ agent.stateManager.actor.subscribe((snapshot) => {
 ```
 
 This allows for deep integration, such as syncing external UI elements with the agent's internal "mood" or boredom level.
+
+---
+
+## ⚖️ Comparison with Manual State Management
+
+Before adopting XState, the agent's behavior was managed by manual conditional logic within a 60fps update loop.
+
+### Why XState is better:
+1.  **Atomicity**: Transitions are atomic. It is physically impossible for the agent to be in two high-level states at once or get "stuck" in a middle state.
+2.  **Declarative Hierarchy**: Managing "sub-states" (like the different levels of boredom within the Idling state) is handled via a clean tree structure rather than nested `if/else` statements.
+3.  **Determinism**: By feeding `TICK` events with `deltaTime`, the machine's internal clock is perfectly synced with the library's rendering engine, regardless of browser performance or frame-rate drops.
+4.  **Extensibility**: Adding complex behaviors like "Parallel States" (e.g., the agent speaking while moving) is a configuration change in XState, whereas it would require a massive refactor of manual update logic.
+
+### Manual Complexity
+To achieve the same robustness manually, a developer would have to:
+- Manually manage and clear multiple timers (`setTimeout`, `setInterval`) on every state change.
+- Implement a custom "event listener" for every possible valid/invalid transition to prevent race conditions.
+- Write deeply nested switch statements that become increasingly difficult to debug as more animations and states are added.
