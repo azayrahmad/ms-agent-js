@@ -82,13 +82,13 @@ await agent.play('Greeting');
 agent.moveTo(100, 100);
 
 // Ask for user input
-const name = await agent.ask({
+const result = await agent.ask({
   title: 'Welcome',
   placeholder: 'What is your name?'
 });
 
-if (name) {
-  await agent.speak(`Nice to meet you, ${name}!`);
+if (result && result.text) {
+  await agent.speak(`Nice to meet you, ${result.text}!`);
 }
 ```
 

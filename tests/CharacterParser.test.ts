@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
 
 describe('CharacterParser', () => {
@@ -93,5 +93,17 @@ EndAnimation
     expect(frame.branching).toBeDefined();
     expect(frame.branching![0].branchTo).toBe(2);
     expect(frame.branching![0].probability).toBe(50);
+  });
+
+  it('should not throw error even if GUID is missing (defaults to empty)', () => {
+    const content = ` DefineCharacter \n Width = 100 \n Height = 100 \n EndCharacter `;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.width).toBe(100);
+  });
+
+  it('should handle load error when all paths fail', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+    await expect(CharacterParser.load('fail.acd')).rejects.toThrow();
   });
 });

@@ -117,6 +117,85 @@ describe('SpriteManager', () => {
         expect(canvas.height).toBe(2);
     });
 
+    it('should handle BMP to canvas conversion for 32-bit BMP', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+
+        const width = 2;
+        const height = 2;
+        // 32-bit: 4 bytes per pixel, no padding needed for width=2 (8 bytes per row)
+        const rowSize = width * 4;
+        const buffer = new ArrayBuffer(14 + 40 + (rowSize * height));
+        const view = new DataView(buffer);
+
+        view.setUint16(0, 0x4d42, true); // BM
+        view.setUint32(2, buffer.byteLength, true); // Size
+        view.setUint32(10, 14 + 40, true); // Offset
+
+        view.setUint32(14, 40, true); // Info size
+        view.setInt32(18, width, true);
+        view.setInt32(22, height, true);
+        view.setUint16(26, 1, true); // Planes
+        view.setUint16(28, 32, true); // BitCount
+
+        const canvas = (sm as any).bmpToCanvas(buffer);
+        expect(canvas.width).toBe(2);
+        expect(canvas.height).toBe(2);
+    });
+
+    it('should apply transparency color correctly', () => {
+        const sm = new SpriteManager('/agent', {
+            ...mockDefinition,
+            character: { ...mockDefinition.character, transparency: 0 }
+        });
+
+        // Setup transparency color (red)
+        (sm as any).transparencyColor = { r: 255, g: 0, b: 0 };
+
+        const mockImageData = {
+            data: new Uint8ClampedArray(4)
+        };
+
+        // Red pixel should be transparent
+        (sm as any).setPixel(mockImageData, 0, 255, 0, 0);
+        expect(mockImageData.data[3]).toBe(0);
+
+        // Blue pixel should be opaque
+        (sm as any).setPixel(mockImageData, 0, 0, 0, 255);
+        expect(mockImageData.data[3]).toBe(255);
+    });
+
+    it('should handle top-down BMPs (negative height)', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+
+        const width = 2;
+        const height = 2;
+        const rowSize = Math.floor((24 * width + 31) / 32) * 4;
+        const buffer = new ArrayBuffer(14 + 40 + (rowSize * height));
+        const view = new DataView(buffer);
+
+        view.setUint16(0, 0x4d42, true); // BM
+        view.setUint32(10, 14 + 40, true); // Offset
+
+        view.setUint32(14, 40, true); // Info size
+        view.setInt32(18, width, true);
+        view.setInt32(22, -height, true); // Negative height = top-down
+        view.setUint16(28, 24, true); // BitCount
+
+        const canvas = (sm as any).bmpToCanvas(buffer);
+        expect(canvas.height).toBe(2);
+        expect(canvas.width).toBe(2);
+    });
+
+    it('should throw error for unsupported bit counts', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(14 + 40);
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x4d42, true);
+        view.setUint16(28, 16, true); // 16-bit not supported
+
+        expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Unsupported BMP bit count: 16-bit');
+    });
+
     it('should draw frame from atlas correctly', () => {
         const atlasDefinition = {
             ...mockDefinition,
