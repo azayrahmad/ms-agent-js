@@ -2,6 +2,8 @@
 
 This document provides a technical deep-dive into the internal workings of **MSAgentJS**. It is intended for developers who want to understand the engine's core logic or extend its capabilities.
 
+This project is a clean-room reimplementation based on [official Microsoft Agent documentation](https://learn.microsoft.com/en-us/windows/win32/lwef/microsoft-agent), practical observation from real usage, and references to existing open-source implementations like [ClippyJS](https://github.com/clippyjs/clippy.js) and [TripleAgent](https://github.com/calavera42/TripleAgent). Rather than reverse engineering the original binaries, it reconstructs the system’s behavior with a modern architecture for the web. Therefore, some deviations in design and behavior are expected.
+
 ---
 
 ## 🏗 System Architecture
