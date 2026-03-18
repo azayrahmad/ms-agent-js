@@ -22,7 +22,9 @@
   </a>
 </p>
 
-A high-performance, TypeScript-based implementation of Microsoft Agent. Bring back Clippy and the rest of the gang to your modern web applications with a simple, promise-based API. While this is inspired by [clippy.js](https://github.com/clippyjs/clippy.js) and borrows some logic, this is a reimplementation from scratch meant to be a modern, more faithful recreation of Microsoft Agent designed to work on any web page.
+A web reimplementation of Microsoft Agent. Bring back Clippy and classic Office assistants with authentic animations and speech support. Perfect for retro UIs and nostalgic web projects.
+
+Inspired by [clippy.js](https://github.com/clippyjs/clippy.js), this is a fully rewritten project focuses on a more faithful and modern recreation of Microsoft Agent with improved animation handling, richer features, extensibility, and a design that works seamlessly on any web page.
 
 <p align="center">
   <a href="https://azayrahmad.github.io/ms-agent-js/"><strong>Live Demo</strong></a> |
@@ -30,27 +32,19 @@ A high-performance, TypeScript-based implementation of Microsoft Agent. Bring ba
   <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a>
 </p>
 
-## 🚀 Why MSAgentJS?
-
-If you're looking for the nostalgic feel of **clippy.js** but need something built for the modern web, MSAgentJS is for you.
-
-- **Zero Dependencies**: No jQuery or heavy external libraries required.
-- **AI-Ready**: Perfect as a unique, interactive UI for LLM-powered assistants.
-- **Shadow DOM Isolation**: Prevents CSS leaks, making it safe to drop into any project.
-- **High Performance**: Uses HTML5 Canvas and optimized asset formats (WebP/WebM).
-- **TypeScript First**: Full type safety for a better developer experience.
-
 ## ✨ Features
 
+- **Zero Dependencies**: No jQuery or any other external libraries required to run.
 - **Modern API**: Simple, promise-based API for animations, state transitions, and speech.
-- **Shadow DOM**: Zero CSS leakage. The agent and its balloon are fully isolated.
-- **Speech Balloons**: Procedurally generated SVGs with support for text input and action buttons.
-- **Optimized Assets**: Support for both original decompiled MS Agent assets and optimized WebP/WebM formats.
-- **Draggable**: Built-in support for repositioning agents via mouse or touch.
-- **TTS Support**: Built-in text-to-speech support using the browser's native Web Speech API.
+- **Zero CSS leakage**: Shadow DOM isolates the Agent, making it safe to drop into any project.
+- **High Performance**: Uses HTML5 Canvas and optimized asset formats (WebP/WebM).
+- **Speech Support**: Support text input, selection list, and action buttons. TTS support with browser's native Web Speech API.
+- **Draggable**: Built-in support for repositioning agents via mouse/touch or programmatically. 
+- **Legacy Support**: Works with decompiled MS Agent's ACF files directly. Add your own Agents!
 
 ## 🎭 Available Agents
 
+Current iteration of MSAgentJS focuses on recreating early Microsoft Agent 2.0 featured in Office 2000. Support for later versions such as Genie and Merlin is in the works.
 | Clippit | The Dot | F1 | The Genius | Office Logo | Mother Nature | Monkey King | Links | Rocky |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | ![Clippit](public/agent_thumbs/Clippit_thumb.png) | ![The Dot](public/agent_thumbs/DOT_thumb.png) | ![F1](public/agent_thumbs/F1_thumb.png) | ![The Genius](public/agent_thumbs/GENIUS_thumb.png) | ![Office Logo](public/agent_thumbs/LOGO_thumb.png) | ![Mother Nature](public/agent_thumbs/MNATURE_thumb.png) | ![Monkey King](public/agent_thumbs/Monkey_King_thumb.png) | ![Links](public/agent_thumbs/OFFCAT_thumb.png) | ![Rocky](public/agent_thumbs/ROCKY_thumb.png) |
@@ -91,8 +85,11 @@ init();
 
 ## 🤝 Credits
 
-- Inspired by the original **Microsoft Agent** technology and [clippy.js](https://github.com/clippyjs/clippy.js).
-- Character assets are property of Microsoft Corporation.
+- The original [Microsoft Agent](https://learn.microsoft.com/en-us/windows/win32/lwef/microsoft-agent) for Microsoft Office 2000 by Microsoft Corporation.
+- Reimplementations and decompilers, including [Double Agent](https://doubleagent.sourceforge.net/), [MSAgent Decompiler by Remy Lebeau](http://www.lebeausoftware.org/software/decompile.aspx), and more recently [TripleAgent](https://github.com/calavera42/TripleAgent) by [calavera](https://github.com/calavera42).
+- The first JavaScript implementation who started it all, [clippy.js](https://github.com/clippyjs/clippy.js) by [smore](https://github.com/smore-inc), and some great forks like [ClippyJS_EasyAccess](https://github.com/djbritt/ClippyJS_EasyAccess) by [Daniel Britt](https://github.com/djbritt) and [Clippy](https://github.com/pi0/clippy) by [Pooya Parsa](https://github.com/pi0).
+- The demo page is styled using [98.css](https://jdan.github.io/98.css/) by [Jordan Scales](https://jordanscales.com/).
+- [TMAFE](https://tmafe.com/), the Microsoft Agent community that provides many Agent files and information.
 
 ## ⚖️ License
 
