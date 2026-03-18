@@ -2,6 +2,7 @@ import { AgentCore } from "../core/Core";
 import { Balloon } from "./Balloon";
 import bulletsUrl from "../assets/ui/ask-bullets.png";
 import bulbsUrl from "../assets/ui/ask-bulbs.png";
+import { formatColor } from "../utils";
 
 /**
  * The rendering layer of the Agent system.
@@ -24,10 +25,7 @@ export class AgentRenderer {
    */
   private readonly core: AgentCore;
 
-  constructor(
-    core: AgentCore,
-    container: HTMLElement,
-  ) {
+  constructor(core: AgentCore, container: HTMLElement) {
     this.core = core;
     this.shadowRoot = container.attachShadow({ mode: "open" });
 
@@ -66,12 +64,7 @@ export class AgentRenderer {
    */
   public draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.core.animationManager.draw(
-      this.ctx,
-      0,
-      0,
-      this.core.options.scale,
-    );
+    this.core.animationManager.draw(this.ctx, 0, 0, this.core.options.scale);
   }
 
   /**
@@ -101,6 +94,9 @@ export class AgentRenderer {
         pointer-events: auto;
       }
       .clippy-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         max-width: 250px;
         min-width: 100px;
         user-select: none;
@@ -108,8 +104,11 @@ export class AgentRenderer {
       .clippy-input {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         align-items: center;
         padding: 5px;
+        height: 100%;
+        box-sizing: border-box;
       }
       .clippy-input b {
         align-self: flex-start;
@@ -130,20 +129,79 @@ export class AgentRenderer {
         display: flex;
         justify-content: space-between;
         width: 100%;
+        border-top: 1px solid grey;
+        padding-top: 5px;
+      }
+      .clippy-input-buttons.single-button {
+        justify-content: center;
       }
       .clippy-input-buttons button {
-        background-color: transparent;
-        border: 1px solid grey;
+        display: flex;
+        align-items: center;
+        background-color: ${formatColor(this.core.definition.balloon.backColor)};
+        border: 1px solid lightgrey;
         border-radius: 4px;
-        width: 70px;
-        padding: 2px;
+        padding: 2px 8px;
         cursor: pointer;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+
+        position: relative;
+        top: 1px;
+        left: 1px;
       }
+
+      /* Hover = raised */
       .clippy-input-buttons button:hover {
-        background-color: #eee;
+        top: 0;
+        left: 0;
+        border-bottom-color: darkgrey;
+        border-right-color: darkgrey;
+        box-shadow: inset 1px 1px white, 1px 1px lightgrey;
       }
-      .clippy-input-buttons .ask-button {
+
+      /* Pressed = pushed in */
+      .clippy-input-buttons button:active {
+        top: 1px;
+        left: 1px;
+
+        /* invert the bevel */
+        border-top-color: grey;
+        border-left-color: grey;
+        border-bottom-color: lightgrey;
+        border-right-color: lightgrey;
+
+        box-shadow: inset 1px 1px darkgrey, inset -1px -1px white;
+      }
+      .clippy-input-buttons button .button-bullet {
+        display: inline-block;
         margin-right: 5px;
+        background-repeat: no-repeat;
+      }
+      .clippy-input-buttons button.style-bullet .button-bullet {
+        width: 10px;
+        height: 10px;
+        background-image: url('${bulletsUrl}');
+        background-position: 0 0;
+      }
+      .clippy-input-buttons button:hover.style-bullet .button-bullet {
+        background-position: -10px 0;
+      }
+      .clippy-input-buttons button:active.style-bullet .button-bullet {
+        background-position: -20px 0;
+      }
+      .clippy-input-buttons button.style-bulb .button-bullet {
+        width: 11px;
+        height: 15px;
+        background-image: url('${bulbsUrl}');
+        background-position: 0 0;
+      }
+      .clippy-input-buttons button:hover.style-bulb .button-bullet {
+        background-position: -11px 0;
+      }
+      .clippy-input-buttons button:active.style-bulb .button-bullet {
+        background-position: -22px 0;
       }
       .clippy-choices {
         width: 100%;

@@ -711,7 +711,7 @@ export class Agent {
       placeholder?: string;
       choices?: string[];
       choiceStyle?: "bullet" | "bulb";
-      buttons?: (string | { label: string; value: any })[];
+      buttons?: (string | { label: string; value: any; bullet?: "bullet" | "bulb" })[];
       askButtonText?: string;
       cancelButtonText?: string;
       timeout?: number;
@@ -763,10 +763,14 @@ export class Agent {
         balloonContent += `<textarea rows="2" placeholder="${placeholder}"></textarea>`;
       }
 
-      balloonContent += `<div class="clippy-input-buttons">`;
+      const isSingleButton = buttons.length === 1;
+      balloonContent += `<div class="clippy-input-buttons${isSingleButton ? " single-button" : ""}">`;
       buttons.forEach((btn, i) => {
         const label = typeof btn === "string" ? btn : btn.label;
-        balloonContent += `<button class="custom-button" data-index="${i}">${label}</button>`;
+        const bType = typeof btn === "string" ? null : btn.bullet;
+        const btnClass = bType ? `style-${bType}` : "";
+        const bulletSpan = bType ? '<span class="button-bullet"></span>' : "";
+        balloonContent += `<button class="custom-button ${btnClass}" data-index="${i}">${bulletSpan}${label}</button>`;
       });
       balloonContent += `</div></div>`;
 
