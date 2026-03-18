@@ -62,3 +62,34 @@ export async function fetchWithProgress(
     statusText: response.statusText,
   });
 }
+
+/**
+ * Formats a Win32 BGR color string or hex string into a standard CSS hex color.
+ */
+export function formatColor(color: string): string {
+  if (color.startsWith("#")) return color;
+  // MSAgent uses hex colors, usually BGR.
+  // Handle 0x prefix if present
+  let raw = color.replace(/^0x/, "");
+
+  // If it's a number, convert to hex
+  if (/^\d+$/.test(raw)) {
+    raw = parseInt(raw, 10).toString(16).padStart(6, "0");
+  }
+
+  if (raw.length === 8) {
+    // Assuming AABBGGRR (Alpha is usually ignored or 0x00 for opaque in this context)
+    const b = raw.substring(2, 4);
+    const g = raw.substring(4, 6);
+    const r = raw.substring(6, 8);
+    return `#${r}${g}${b}`;
+  }
+  if (raw.length === 6) {
+    // Assuming BBGGRR
+    const b = raw.substring(0, 2);
+    const g = raw.substring(2, 4);
+    const r = raw.substring(4, 6);
+    return `#${r}${g}${b}`;
+  }
+  return `#${raw}`;
+}

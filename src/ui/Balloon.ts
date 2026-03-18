@@ -1,4 +1,5 @@
 import { type AgentCharacterDefinition, CharacterStyle } from "../core/base/types";
+import { formatColor } from "../utils";
 
 /**
  * Options for Text-to-Speech (TTS) output.
@@ -125,8 +126,8 @@ export class Balloon {
       "http://www.w3.org/2000/svg",
       "path",
     );
-    this._pathEl.setAttribute("stroke", this._formatColor(definition.balloon.borderColor));
-    this._pathEl.setAttribute("fill", this._formatColor(definition.balloon.backColor));
+    this._pathEl.setAttribute("stroke", formatColor(definition.balloon.borderColor));
+    this._pathEl.setAttribute("fill", formatColor(definition.balloon.backColor));
     this._pathEl.setAttribute("stroke-width", "1");
     this._svgEl.appendChild(this._pathEl);
 
@@ -136,46 +137,16 @@ export class Balloon {
     this._contentEl.className = "clippy-content";
     this._contentEl.style.position = "relative";
     this._contentEl.style.zIndex = "1";
-    this._contentEl.style.color = this._formatColor(definition.balloon.foreColor);
+    this._contentEl.style.color = formatColor(definition.balloon.foreColor);
     this._contentEl.style.fontFamily = definition.balloon.fontName || "Arial";
     this._contentEl.style.fontSize = `${definition.balloon.fontHeight}px`;
     this._contentEl.style.boxSizing = "border-box";
     this._contentEl.style.display = "flex";
-    this._contentEl.style.alignItems = "center";
+    this._contentEl.style.flexDirection = "column";
+    this._contentEl.style.justifyContent = "space-between";
 
     this._balloonEl.appendChild(this._contentEl);
     container.appendChild(this._balloonEl);
-  }
-
-  /**
-   * Formats a Win32 BGR color string or hex string into a standard CSS hex color.
-   */
-  private _formatColor(color: string): string {
-    if (color.startsWith("#")) return color;
-    // MSAgent uses hex colors, usually BGR.
-    // Handle 0x prefix if present
-    let raw = color.replace(/^0x/, "");
-
-    // If it's a number, convert to hex
-    if (/^\d+$/.test(raw)) {
-      raw = parseInt(raw, 10).toString(16).padStart(6, "0");
-    }
-
-    if (raw.length === 8) {
-      // Assuming AABBGGRR (Alpha is usually ignored or 0x00 for opaque in this context)
-      const b = raw.substring(2, 4);
-      const g = raw.substring(4, 6);
-      const r = raw.substring(6, 8);
-      return `#${r}${g}${b}`;
-    }
-    if (raw.length === 6) {
-      // Assuming BBGGRR
-      const b = raw.substring(0, 2);
-      const g = raw.substring(2, 4);
-      const r = raw.substring(4, 6);
-      return `#${r}${g}${b}`;
-    }
-    return `#${raw}`;
   }
 
   /**
@@ -209,7 +180,8 @@ export class Balloon {
     const lineHeight = fontSize * 1.4;
 
     // First measurement pass: find required size
-    this._contentEl.style.display = "block";
+    this._contentEl.style.display = "flex";
+    this._contentEl.style.flexDirection = "column";
     this._contentEl.style.width = "max-content";
     this._contentEl.style.maxWidth = `${maxWidth}px`;
     this._contentEl.style.height = "auto";

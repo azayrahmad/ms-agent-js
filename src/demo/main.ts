@@ -21,23 +21,17 @@ function getBestMatchingInfo(infos: Info[]): Info {
     const normalizedUserLocale = userLocale.toLowerCase();
 
     // Exact match (e.g. en-US === en-us)
-    const exactMatch = infos.find(
-      (info) => info.locale?.baseName?.toLowerCase() === normalizedUserLocale,
-    );
+    const exactMatch = infos.find((info) => info.locale?.baseName?.toLowerCase() === normalizedUserLocale);
     if (exactMatch) return exactMatch;
 
     // Language-only match (e.g. "en" matches "en-US")
     const userLang = normalizedUserLocale.split("-")[0];
-    const langMatch = infos.find(
-      (info) => info.locale?.language?.toLowerCase() === userLang,
-    );
+    const langMatch = infos.find((info) => info.locale?.language?.toLowerCase() === userLang);
     if (langMatch) return langMatch;
   }
 
   // Fallback to English (0x0409 or 0x0009)
-  const englishMatch = infos.find(
-    (info) => info.languageCode === "0x0409" || info.languageCode === "0x0009",
-  );
+  const englishMatch = infos.find((info) => info.languageCode === "0x0409" || info.languageCode === "0x0009");
   if (englishMatch) return englishMatch;
 
   // Last resort: first available
@@ -46,88 +40,44 @@ function getBestMatchingInfo(infos: Info[]): Info {
 
 async function initDemo() {
   // DOM Elements
-  const previewContainer = document.getElementById(
-    "gallery-preview-container",
-  ) as HTMLDivElement;
-  const galleryAgentName = document.getElementById(
-    "gallery-agent-name",
-  ) as HTMLHeadingElement;
-  const galleryAgentDescription = document.getElementById(
-    "gallery-agent-description",
-  ) as HTMLParagraphElement;
-  const galleryAgentQuote = document.getElementById(
-    "gallery-agent-quote",
-  ) as HTMLDivElement;
-  const prevBtn = document.getElementById(
-    "prev-agent-btn",
-  ) as HTMLButtonElement;
-  const nextBtn = document.getElementById(
-    "next-agent-btn",
-  ) as HTMLButtonElement;
+  const previewContainer = document.getElementById("gallery-preview-container") as HTMLDivElement;
+  const galleryAgentName = document.getElementById("gallery-agent-name") as HTMLHeadingElement;
+  const galleryAgentDescription = document.getElementById("gallery-agent-description") as HTMLParagraphElement;
+  const galleryAgentQuote = document.getElementById("gallery-agent-quote") as HTMLDivElement;
+  const prevBtn = document.getElementById("prev-agent-btn") as HTMLButtonElement;
+  const nextBtn = document.getElementById("next-agent-btn") as HTMLButtonElement;
 
   const scaleRange = document.getElementById("scale-range") as HTMLInputElement;
   const scaleValue = document.getElementById("scale-value") as HTMLSpanElement;
-  const animationSelect = document.getElementById(
-    "animation-select",
-  ) as HTMLSelectElement;
-  const stateSelect = document.getElementById(
-    "state-select",
-  ) as HTMLSelectElement;
+  const animationSelect = document.getElementById("animation-select") as HTMLSelectElement;
+  const stateSelect = document.getElementById("state-select") as HTMLSelectElement;
   const playBtn = document.getElementById("play-btn") as HTMLButtonElement;
   const play5sBtn = document.getElementById("play-5s-btn") as HTMLButtonElement;
-  const playLoopedBtn = document.getElementById(
-    "play-looped-btn",
-  ) as HTMLButtonElement;
+  const playLoopedBtn = document.getElementById("play-looped-btn") as HTMLButtonElement;
   const randomBtn = document.getElementById("random-btn") as HTMLButtonElement;
-  const visibilityBtn = document.getElementById(
-    "visibility-btn",
-  ) as HTMLButtonElement;
-  const startStopBtn = document.getElementById(
-    "start-stop-btn",
-  ) as HTMLButtonElement;
+  const visibilityBtn = document.getElementById("visibility-btn") as HTMLButtonElement;
+  const startStopBtn = document.getElementById("start-stop-btn") as HTMLButtonElement;
   const selectBtn = document.getElementById("select-btn") as HTMLButtonElement;
   const speakBtn = document.getElementById("speak-btn") as HTMLButtonElement;
   const askBtn = document.getElementById("ask-btn") as HTMLButtonElement;
-  const askOptionsBtn = document.getElementById(
-    "ask-options-btn",
-  ) as HTMLButtonElement;
-  const askStyleSelect = document.getElementById(
-    "ask-style-select",
-  ) as HTMLSelectElement;
-  const speakTextInput = document.getElementById(
-    "speak-text",
-  ) as HTMLTextAreaElement;
-  const skipTypingCheck = document.getElementById(
-    "skip-typing-check",
-  ) as HTMLInputElement;
+  const askOptionsBtn = document.getElementById("ask-options-btn") as HTMLButtonElement;
+  const askStyleSelect = document.getElementById("ask-style-select") as HTMLSelectElement;
+  const speakTextInput = document.getElementById("speak-text") as HTMLTextAreaElement;
+  const skipTypingCheck = document.getElementById("skip-typing-check") as HTMLInputElement;
 
-  const voiceSelect = document.getElementById(
-    "voice-select",
-  ) as HTMLSelectElement;
-  const volumeRange = document.getElementById(
-    "volume-range",
-  ) as HTMLInputElement;
+  const voiceSelect = document.getElementById("voice-select") as HTMLSelectElement;
+  const volumeRange = document.getElementById("volume-range") as HTMLInputElement;
   const volumeValue = document.getElementById("volume-value") as HTMLSpanElement;
   const pitchRange = document.getElementById("pitch-range") as HTMLInputElement;
   const pitchValue = document.getElementById("pitch-value") as HTMLSpanElement;
   const rateRange = document.getElementById("rate-range") as HTMLInputElement;
   const rateValue = document.getElementById("rate-value") as HTMLSpanElement;
 
-  const gestureLeftBtn = document.getElementById(
-    "gesture-left-btn",
-  ) as HTMLButtonElement;
-  const gestureRightBtn = document.getElementById(
-    "gesture-right-btn",
-  ) as HTMLButtonElement;
-  const gestureUpBtn = document.getElementById(
-    "gesture-up-btn",
-  ) as HTMLButtonElement;
-  const gestureDownBtn = document.getElementById(
-    "gesture-down-btn",
-  ) as HTMLButtonElement;
-  const moveToMouseBtn = document.getElementById(
-    "move-to-mouse-btn",
-  ) as HTMLButtonElement;
+  const gestureLeftBtn = document.getElementById("gesture-left-btn") as HTMLButtonElement;
+  const gestureRightBtn = document.getElementById("gesture-right-btn") as HTMLButtonElement;
+  const gestureUpBtn = document.getElementById("gesture-up-btn") as HTMLButtonElement;
+  const gestureDownBtn = document.getElementById("gesture-down-btn") as HTMLButtonElement;
+  const moveToMouseBtn = document.getElementById("move-to-mouse-btn") as HTMLButtonElement;
 
   const dashState = document.getElementById("dash-state")!;
   const dashAnim = document.getElementById("dash-anim")!;
@@ -179,18 +129,10 @@ async function initDemo() {
     document.body.appendChild(overlay);
     document.body.appendChild(progressWindow);
 
-    const loadingStatus = progressWindow.querySelector(
-      "#loading-status",
-    ) as HTMLParagraphElement;
-    const loadingProgressContainer = progressWindow.querySelector(
-      "#loading-progress-container",
-    ) as HTMLDivElement;
-    const loadingProgressBar = progressWindow.querySelector(
-      "#loading-progress-bar",
-    ) as HTMLSpanElement;
-    const cancelBtn = progressWindow.querySelector(
-      "#cancel-load-btn",
-    ) as HTMLButtonElement;
+    const loadingStatus = progressWindow.querySelector("#loading-status") as HTMLParagraphElement;
+    const loadingProgressContainer = progressWindow.querySelector("#loading-progress-container") as HTMLDivElement;
+    const loadingProgressBar = progressWindow.querySelector("#loading-progress-bar") as HTMLSpanElement;
+    const cancelBtn = progressWindow.querySelector("#cancel-load-btn") as HTMLButtonElement;
 
     cancelBtn.onclick = () => {
       abortController.abort();
@@ -201,10 +143,7 @@ async function initDemo() {
         loadingStatus.textContent = `Downloading ${progress.filename}...`;
         if (progress.total > 0) {
           loadingProgressContainer.classList.remove("segmented");
-          const percent = Math.min(
-            100,
-            Math.round((progress.loaded / progress.total) * 100),
-          );
+          const percent = Math.min(100, Math.round((progress.loaded / progress.total) * 100));
           loadingProgressBar.style.width = `${percent}%`;
         } else {
           loadingProgressContainer.classList.add("segmented");
@@ -235,10 +174,7 @@ async function initDemo() {
     galleryAgentDescription.textContent = "Please wait while the agent loads.";
     galleryAgentQuote.textContent = "...";
 
-    const loadingUI = createLoadingWindow(
-      agentMeta.name,
-      previewAbortController,
-    );
+    const loadingUI = createLoadingWindow(agentMeta.name, previewAbortController);
 
     const wrapper = document.createElement("div");
     previewContainer.appendChild(wrapper);
@@ -263,8 +199,7 @@ async function initDemo() {
       galleryAgentDescription.textContent = info.description;
 
       if (info.greetings && info.greetings.length > 0) {
-        const randomGreeting =
-          info.greetings[Math.floor(Math.random() * info.greetings.length)];
+        const randomGreeting = info.greetings[Math.floor(Math.random() * info.greetings.length)];
         galleryAgentQuote.textContent = randomGreeting;
       } else {
         galleryAgentQuote.textContent = "Hello!";
@@ -389,9 +324,7 @@ async function initDemo() {
       // Context menu event
       currentAgent.on("contextmenu", (data) => {
         console.log("Context menu triggered at", data.x, data.y);
-        currentAgent?.speak(
-          `Right-click or long-press at ${data.x}, ${data.y}`,
-        );
+        currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
       });
     } catch (error: any) {
       if (error.name === "AbortError") {
@@ -410,8 +343,7 @@ async function initDemo() {
 
   // Gallery Navigation
   prevBtn.addEventListener("click", () => {
-    currentGalleryIndex =
-      (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
+    currentGalleryIndex = (currentGalleryIndex - 1 + AGENTS.length) % AGENTS.length;
     loadPreviewAgent(currentGalleryIndex);
   });
 
@@ -444,12 +376,7 @@ async function initDemo() {
     }
 
     playLoopedBtn.textContent = "Stop";
-    const req = currentAgent.play(
-      animationSelect.value,
-      undefined,
-      false,
-      true,
-    );
+    const req = currentAgent.play(animationSelect.value, undefined, false, true);
 
     // Reset button text when animation ends
     try {
@@ -595,7 +522,10 @@ async function initDemo() {
     const result = await currentAgent.ask({
       title: "What is your next move?",
       placeholder: "Type a reason...",
-      buttons: ["Ask", "Cancel"],
+      buttons: [
+        { label: "Ask", value: "Ask", bullet: "bullet" },
+        { label: "Cancel", value: "Cancel" },
+      ],
     });
 
     if (result !== null) {
@@ -640,36 +570,24 @@ async function initDemo() {
 
   gestureLeftBtn.addEventListener("click", () => {
     if (!currentAgent) return;
-    currentAgent.gestureAt(
-      currentAgent.options.x - 100,
-      currentAgent.options.y + 50,
-    );
+    currentAgent.gestureAt(currentAgent.options.x - 100, currentAgent.options.y + 50);
   });
   gestureRightBtn.addEventListener("click", () => {
     if (!currentAgent) return;
     currentAgent.gestureAt(
-      currentAgent.options.x +
-        currentAgent.spriteManager.getSpriteWidth() *
-          currentAgent.options.scale +
-        100,
+      currentAgent.options.x + currentAgent.spriteManager.getSpriteWidth() * currentAgent.options.scale + 100,
       currentAgent.options.y + 50,
     );
   });
   gestureUpBtn.addEventListener("click", () => {
     if (!currentAgent) return;
-    currentAgent.gestureAt(
-      currentAgent.options.x + 50,
-      currentAgent.options.y - 100,
-    );
+    currentAgent.gestureAt(currentAgent.options.x + 50, currentAgent.options.y - 100);
   });
   gestureDownBtn.addEventListener("click", () => {
     if (!currentAgent) return;
     currentAgent.gestureAt(
       currentAgent.options.x + 50,
-      currentAgent.options.y +
-        currentAgent.spriteManager.getSpriteHeight() *
-          currentAgent.options.scale +
-        100,
+      currentAgent.options.y + currentAgent.spriteManager.getSpriteHeight() * currentAgent.options.scale + 100,
     );
   });
 
@@ -685,15 +603,8 @@ async function initDemo() {
 
     const onMouseDown = (e: MouseEvent) => {
       if (!currentAgent) return;
-      const targetX =
-        e.clientX -
-        (currentAgent.definition.character.width * currentAgent.options.scale) /
-          2;
-      const targetY =
-        e.clientY -
-        (currentAgent.definition.character.height *
-          currentAgent.options.scale) /
-          2;
+      const targetX = e.clientX - (currentAgent.definition.character.width * currentAgent.options.scale) / 2;
+      const targetY = e.clientY - (currentAgent.definition.character.height * currentAgent.options.scale) / 2;
 
       currentAgent.moveTo(targetX, targetY);
 
@@ -709,26 +620,16 @@ async function initDemo() {
 
   // Update Loop for Debug Info
   function updateDebug() {
-    if (
-      currentAgent &&
-      currentAgent.stateManager &&
-      currentAgent.animationManager
-    ) {
+    if (currentAgent && currentAgent.stateManager && currentAgent.animationManager) {
       dashState.textContent = currentAgent.stateManager.currentStateName;
-      dashAnim.textContent =
-        currentAgent.animationManager.currentAnimationName || "-";
-      dashFrame.textContent =
-        currentAgent.animationManager.currentFrameIndexValue.toString();
+      dashAnim.textContent = currentAgent.animationManager.currentAnimationName || "-";
+      dashFrame.textContent = currentAgent.animationManager.currentFrameIndexValue.toString();
       dashLevel.textContent = currentAgent.stateManager.idleLevel.toString();
-      dashNextTick.textContent = (
-        currentAgent.stateManager.timeUntilNextTick / 1000
-      ).toFixed(1);
+      dashNextTick.textContent = (currentAgent.stateManager.timeUntilNextTick / 1000).toFixed(1);
 
       const activeId = currentAgent.requestQueue.activeRequestId;
       const length = currentAgent.requestQueue.length;
-      dashQueue.textContent = activeId
-        ? `ID:${activeId} (+${length})`
-        : "Empty";
+      dashQueue.textContent = activeId ? `ID:${activeId} (+${length})` : "Empty";
 
       dashPos.textContent = `X:${Math.round(currentAgent.options.x)}, Y:${Math.round(currentAgent.options.y)}`;
     }
