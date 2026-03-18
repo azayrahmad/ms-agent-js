@@ -279,4 +279,73 @@ describe('Agent Core Methods', () => {
         agent.stop();
         expect(agent.animationManager.isExitingFlag).toBe(true);
     });
+
+    it('destroy should cleanup resources', async () => {
+        const removeListenerSpy = vi.spyOn(window, 'removeEventListener');
+        const container = (agent as any).container;
+        const parent = document.createElement('div');
+        // Manually mock parentNode behavior since our mock document doesn't handle it well
+        Object.defineProperty(container, 'parentNode', { value: parent, writable: true });
+        parent.appendChild(container);
+        parent.removeChild = vi.fn().mockImplementation((child) => {
+           const idx = (parent.childNodes as any[]).indexOf(child);
+           if (idx !== -1) (parent.childNodes as any[]).splice(idx, 1);
+        });
+
+        agent.destroy();
+
+        expect((agent as any).isDestroyed).toBe(true);
+        expect(removeListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
+        expect(parent.removeChild).toHaveBeenCalledWith(container);
+    });
+});
+
+describe('Agent Fallbacks and Edge Cases', () => {
+    let agent: Agent;
+    const fallbackMockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
+        balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
+        animations: {
+            'GestureRight': { frames: [] },
+            'LookRight': { frames: [] }
+        },
+        states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
+    };
+
+    beforeEach(async () => {
+        vi.clearAllMocks();
+        setupGlobals(fallbackMockDefinition);
+        (CharacterParser.load as any).mockResolvedValue(fallbackMockDefinition);
+        agent = await Agent.load('Clippit', { x: 500, y: 500 });
+        vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+        vi.spyOn(agent.stateManager, 'setState').mockResolvedValue(undefined);
+    });
+
+    it('gestureAt should fallback to direct animation if state is missing', async () => {
+        // Agent Center (550, 550), Target (900, 550) is screen-right -> Agent-Left
+        // 'GesturingLeft' state is missing, but 'GestureLeft' animation exists
+        (agent.definition.animations as any)['GestureLeft'] = { frames: [] };
+        // Force the check for missing state
+        delete agent.definition.states['GesturingLeft'];
+
+        await agent.gestureAt(900, 550);
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('GestureLeft', 'Gesturing');
+    });
+
+    it('lookAt should avoid redundant calls if same animation is already playing', async () => {
+        vi.spyOn(agent.animationManager, 'currentAnimationName', 'get').mockReturnValue('LookLeft');
+        vi.spyOn(agent.animationManager, 'isAnimating', 'get').mockReturnValue(true);
+        const playSpy = vi.spyOn(agent.stateManager, 'playAnimation');
+
+        await agent.lookAt(900, 550); // Target is screen-right -> Agent-Left
+        expect(playSpy).not.toHaveBeenCalled();
+    });
+
+    it('moveTo should fallback to Look animation if Moving is missing', async () => {
+        // Agent Center (550, 550), Target (900, 550) is screen-right -> Agent-Left
+        // 'MovingLeft' is missing, but 'LookLeft' exists
+        (agent.definition.animations as any)['LookLeft'] = { frames: [] };
+        await agent.moveTo(900, 550, 10000);
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookLeft', 'Moving');
+    });
 });

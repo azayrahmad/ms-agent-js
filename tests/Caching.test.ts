@@ -60,14 +60,20 @@ describe('Asset Caching', () => {
         expect(fetchCalls.length).toBe(1);
 
         expect(agent1.definition).toBe(agent2.definition);
+
+        agent1.destroy();
+        agent2.destroy();
     });
 
     it('should not share agent definitions if useCache is false', async () => {
-        await Agent.load(agentName, { useCache: false });
-        await Agent.load(agentName, { useCache: false });
+        const agent1 = await Agent.load(agentName, { useCache: false });
+        const agent2 = await Agent.load(agentName, { useCache: false });
 
         const fetchCalls = (global.fetch as any).mock.calls.filter((call: any) => call[0].endsWith('agent.json'));
         expect(fetchCalls.length).toBe(2);
+
+        agent1.destroy();
+        agent2.destroy();
     });
 
     it('should share sprites across instances', async () => {
@@ -143,5 +149,8 @@ describe('Asset Caching', () => {
         const spriteSheetCalls = fetchSpy.mock.calls.filter((call: any) => call[0].endsWith('agent.webp') || call[0].endsWith('agent.png'));
         // It should only fetch once due to caching
         expect(spriteSheetCalls.length).toBe(1);
+
+        agent1.destroy();
+        agent2.destroy();
     });
 });

@@ -14,7 +14,15 @@ describe('StateManager', () => {
       interruptAndPlayAnimation: vi.fn().mockResolvedValue(true),
       playAnimation: vi.fn().mockResolvedValue(true),
       setAnimation: vi.fn(),
-      handleAnimationCompleted: vi.fn()
+      handleAnimationCompleted: vi.fn(),
+      animations: {
+        'idle1': {},
+        'idle2': {},
+        'show': {},
+        'hide': {},
+        'CustomShow': {},
+        'CustomHide': {}
+      }
     };
 
     mockStates = {
@@ -82,5 +90,45 @@ describe('StateManager', () => {
     // Should not be paused anymore
     await stateManager.update(100);
     expect(stateManager.timeUntilNextTick).toBe(900);
+  });
+
+  it('should handle visibility change with custom animation', async () => {
+    mockStates['Showing'] = { name: 'Showing', animations: ['CustomShow'] };
+
+    await stateManager.handleVisibilityChange(true, 'CustomShow');
+
+    expect(mockAnimationManager.playAnimation).toHaveBeenCalledWith('CustomShow', true);
+    expect(stateManager.currentStateName).toBe('IdlingLevel1');
+  });
+
+  it('should handle visibility change to Hidden with custom animation', async () => {
+    mockStates['Hiding'] = { name: 'Hiding', animations: ['CustomHide'] };
+
+    await stateManager.handleVisibilityChange(false, 'CustomHide');
+
+    expect(mockAnimationManager.playAnimation).toHaveBeenCalledWith('CustomHide', true);
+    expect(stateManager.currentStateName).toBe('Hidden');
+  });
+
+  it('should throw error if requested state is missing and not special', async () => {
+    await expect(stateManager.setState('NonExistentState')).rejects.toThrow('Invalid state name: NonExistentState');
+  });
+
+  it('should return correct idle level info', () => {
+    expect(stateManager.idleLevel).toBe(1);
+    expect(stateManager.ticksToNextLevel).toBe(3);
+  });
+
+  it('should play random animation', async () => {
+    mockAnimationManager.animations = {
+        'random1': {}
+    };
+
+    await stateManager.playRandomAnimation();
+
+    // StateManager.playAnimation calls animationManager.interruptAndPlayAnimation
+    expect(mockAnimationManager.interruptAndPlayAnimation).toHaveBeenCalledWith(
+        'random1', false, true
+    );
   });
 });

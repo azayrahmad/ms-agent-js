@@ -173,4 +173,115 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should support skipContentUpdate in speak method', () => {
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+
+        content.textContent = 'Existing Content';
+
+        // speak with skipContentUpdate=true
+        balloon.speak(() => {}, 'New Content', true, false, true, true);
+
+        expect(content.textContent).toBe('Existing Content');
+    });
+
+    it('should handle pause and resume correctly', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        const complete = vi.fn();
+
+        balloon.speak(complete, 'ABC', false, false, false);
+        // 'A' is shown immediately because _addChar is called once synchronously
+
+        balloon.pause();
+        // Clear all timers including the one scheduled by the synchronous _addChar
+        vi.runOnlyPendingTimers();
+
+        balloon.resume();
+        // Resume calls _addChar() which adds 'B' and schedules 'C'
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('AB');
+
+        vi.advanceTimersByTime(balloon.CHAR_SPEAK_TIME);
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('ABC');
+
+        vi.useRealTimers();
+    });
+
+    it('should position balloon in TipQuadrant.Right when space is tight on right', () => {
+        const tightTarget = document.createElement('div');
+        // Place agent on the right side of screen
+        vi.spyOn(tightTarget, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 200, left: 900, bottom: 300, right: 1000
+        } as DOMRect);
+
+        // Mock viewport to be tight on top and bottom
+        vi.stubGlobal('window', {
+            ...window,
+            innerWidth: 1024,
+            innerHeight: 500,
+            speechSynthesis: window.speechSynthesis
+        });
+
+        const balloon = new Balloon(tightTarget, container, mockDefinition);
+        // Force a large height to make it tight
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+        vi.spyOn(content, 'getBoundingClientRect').mockReturnValue({
+            width: 200, height: 300, top: 0, left: 0, bottom: 300, right: 200
+        } as DOMRect);
+
+        balloon.reposition();
+
+        // When top and bottom space are tight, and left space > right space
+        expect((balloon as any)._tipType).toBe(1); // TipQuadrant.Right (balloon is on the left)
+    });
+
+    it('should position balloon in TipQuadrant.Left when space is tight on left', () => {
+        const tightTarget = document.createElement('div');
+        // Place agent on the left side of screen
+        vi.spyOn(tightTarget, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 200, left: 50, bottom: 300, right: 150
+        } as DOMRect);
+
+        // Mock viewport to be tight on top and bottom
+        vi.stubGlobal('window', {
+            ...window,
+            innerWidth: 1024,
+            innerHeight: 500,
+            speechSynthesis: window.speechSynthesis
+        });
+
+        const balloon = new Balloon(tightTarget, container, mockDefinition);
+        // Force a large height to make it tight
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+        vi.spyOn(content, 'getBoundingClientRect').mockReturnValue({
+            width: 200, height: 300, top: 0, left: 0, bottom: 300, right: 200
+        } as DOMRect);
+
+        balloon.reposition();
+
+        // When top and bottom space are tight, and right space > left space
+        expect((balloon as any)._tipType).toBe(3); // TipQuadrant.Left (balloon is on the right)
+    });
+
+    it('should position balloon in TipQuadrant.Top when space is tight on top', () => {
+        const tightTarget = document.createElement('div');
+        // Place agent near top of screen
+        vi.spyOn(tightTarget, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 20, left: 500, bottom: 120, right: 600
+        } as DOMRect);
+
+        vi.stubGlobal('window', {
+            ...window,
+            innerWidth: 1024,
+            innerHeight: 768,
+            speechSynthesis: window.speechSynthesis
+        });
+
+        const balloon = new Balloon(tightTarget, container, mockDefinition);
+        balloon.reposition();
+
+        // When top space < balloon height + tip depth
+        expect((balloon as any)._tipType).toBe(0); // TipQuadrant.Top (balloon is below)
+    });
 });
