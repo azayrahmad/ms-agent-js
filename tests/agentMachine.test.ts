@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor } from 'xstate';
-import { agentMachine } from '../src/core/behavior/agentMachine';
+import { agentMachine } from '../src/core/behavior/AgentMachine';
 
 describe('agentMachine', () => {
   it('should start in hidden state', () => {

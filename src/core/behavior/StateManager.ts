@@ -2,7 +2,7 @@ import { type State } from "../base/types";
 import { AnimationManager } from "./AnimationManager";
 import { RequestQueue } from "./RequestQueue";
 import { createActor, type Actor } from "xstate";
-import { agentMachine, type AgentContext } from "./agentMachine";
+import { agentMachine, type AgentContext } from "./AgentMachine";
 
 /**
  * Configuration for the StateManager, controlling idle level progression.
