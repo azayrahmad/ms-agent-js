@@ -144,3 +144,32 @@ describe('fetchWithProgress', () => {
     await expect(promise).rejects.toThrow('AbortError');
   });
 });
+
+import { formatColor } from '../src/utils';
+
+describe('formatColor', () => {
+    it('should return hex as is if starts with #', () => {
+        expect(formatColor('#ff0000')).toBe('#ff0000');
+    });
+
+    it('should handle numeric input strings', () => {
+        // 0xFF0000 = 16711680
+        expect(formatColor('16711680')).toBe('#0000ff'); // MSAgent BGR
+    });
+
+    it('should handle 8-character hex (AABBGGRR)', () => {
+        expect(formatColor('00ff0000')).toBe('#0000ff');
+    });
+
+    it('should handle 6-character hex (BBGGRR)', () => {
+        expect(formatColor('ff0000')).toBe('#0000ff');
+    });
+
+    it('should handle 0x prefix', () => {
+        expect(formatColor('0xff0000')).toBe('#0000ff');
+    });
+
+    it('should fallback to #raw if no conditions match', () => {
+        expect(formatColor('abc')).toBe('#abc');
+    });
+});

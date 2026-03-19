@@ -349,3 +349,105 @@ describe('Agent Fallbacks and Edge Cases', () => {
         expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookLeft', 'Moving');
     });
 });
+
+describe('Agent Additional Coverage', () => {
+    let agent: Agent;
+    const coverageMockDefinition = {
+        character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
+        balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
+        animations: {
+            'LookUp': { frames: [] },
+            'LookUpRight': { frames: [] },
+            'LookRight': { frames: [] },
+            'LookDownRight': { frames: [] },
+            'LookDown': { frames: [] },
+            'LookDownLeft': { frames: [] },
+            'LookLeft': { frames: [] },
+            'LookUpLeft': { frames: [] }
+        },
+        states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
+    };
+
+    beforeEach(async () => {
+        vi.clearAllMocks();
+        setupGlobals(coverageMockDefinition);
+        (CharacterParser.load as any).mockResolvedValue(coverageMockDefinition);
+        agent = await Agent.load('Clippit', { x: 500, y: 500 });
+        vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
+    });
+
+    it('should cover all 8 directions in lookAt', async () => {
+        const playSpy = agent.stateManager.playAnimation;
+        const getDir = (x: number, y: number) => (agent as any).getDirection(x, y, 8);
+
+        // Center is (550, 550)
+        // dx=1, dy=0 -> Right
+        expect(getDir(600, 550)).toBe('Right');
+        // dx=0, dy=1 -> Down
+        expect(getDir(550, 600)).toBe('Down');
+        // dx=-1, dy=0 -> Left
+        expect(getDir(500, 550)).toBe('Left');
+        // dx=0, dy=-1 -> Up
+        expect(getDir(550, 500)).toBe('Up');
+        // dx=1, dy=1 -> DownRight
+        expect(getDir(600, 600)).toBe('DownRight');
+        // dx=-1, dy=1 -> DownLeft
+        expect(getDir(500, 600)).toBe('DownLeft');
+        // dx=-1, dy=-1 -> UpLeft
+        expect(getDir(500, 500)).toBe('UpLeft');
+        // dx=1, dy=-1 -> UpRight
+        expect(getDir(600, 500)).toBe('UpRight');
+
+        await agent.lookAt(600, 550);
+        expect(playSpy).toHaveBeenLastCalledWith('LookLeft', 'Looking');
+    });
+
+    it('on and off should delegate to core', () => {
+        const onSpy = vi.spyOn((agent as any).core, 'on');
+        const offSpy = vi.spyOn((agent as any).core, 'off');
+        const cb = () => {};
+
+        agent.on('test', cb);
+        expect(onSpy).toHaveBeenCalledWith('test', cb);
+
+        agent.off('test', cb);
+        expect(offSpy).toHaveBeenCalledWith('test', cb);
+    });
+
+    it('setScale should respect viewport boundaries', () => {
+        // Mock window size
+        vi.stubGlobal('innerWidth', 1000);
+        vi.stubGlobal('innerHeight', 1000);
+
+        // Center (550, 550)
+        vi.spyOn(agent.spriteManager, 'getSpriteWidth').mockReturnValue(100);
+        vi.spyOn(agent.spriteManager, 'getSpriteHeight').mockReturnValue(100);
+
+        // Scale to 20 (2000x2000) - should be clamped to 0,0 (since it exceeds viewport)
+        agent.setScale(20);
+        expect(agent.options.x).toBe(0);
+        expect(agent.options.y).toBe(0);
+    });
+
+    it('handleResize should reposition agent if it goes out of bounds', async () => {
+        // window.innerWidth/innerHeight are getters/setters in setup.ts
+        (window as any).innerWidth = 1000;
+        (window as any).innerHeight = 1000;
+
+        // Move agent instantly to ensure starting position
+        (agent as any).setInstantPosition(950, 950);
+
+        // Resize window to 800x800
+        (window as any).innerWidth = 800;
+        (window as any).innerHeight = 800;
+
+        // Trigger resize
+        const resizeHandler = (window.addEventListener as any).mock.calls.find((c: any) => c[0] === 'resize')[1];
+        resizeHandler();
+
+        // Max X = 800 - 100 = 700
+        // Max Y = 800 - 100 = 700
+        expect(agent.options.x).toBe(700);
+        expect(agent.options.y).toBe(700);
+    });
+});
