@@ -85,13 +85,14 @@ Displays raw HTML inside the speech balloon.
 - **`hold`**: If true, the balloon stays open until manually closed.
 
 ### `agent.ask(options?)`
-Opens an interactive dialog with a text input or a list of choices. Returns a `Promise<{ value: any, text: string | null } | null>`.
+Opens an interactive dialog with a title, a content array (text, choices, and inputs), and custom buttons. Returns a `Promise<{ value: any, text: string | null } | null>`.
 - **`title`**: Header text for the dialog.
-- **`placeholder`**: Hint text for the input area (if no choices).
-- **`choices`**: An optional array of strings. If provided, renders a list instead of a text area.
-- **`choiceStyle`**: Either `'bullet'` or `'bulb'` (default: `'bullet'`).
+- **`content`**: An array of `AskContentItem`.
+  - `string`: Renders a block of text.
+  - `{ type: 'choices', items: string[], style?: 'bullet' | 'bulb' }`: Renders a list of clickable choices.
+  - `{ type: 'input', placeholder?: string, rows?: number }`: Renders a text area input.
+  - `{ type: 'checkbox', label: string, checked?: boolean }`: Renders a labeled checkbox.
 - **`buttons`**: An array of button definitions. Each can be a string or an object `{ label: string, value: any, bullet?: 'bullet' | 'bulb' }`.
-- **`askButtonText` / `cancelButtonText`**: Custom button labels (if no choices and no `buttons` provided).
 - **`timeout`**: Auto-cancel after milliseconds (default: 60000).
 
 ### `agent.stop(request?)`
