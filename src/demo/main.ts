@@ -1,6 +1,6 @@
 import "./style.css";
 import { Agent } from "../Agent";
-import type { Info } from "../core/base/types";
+import { type Info, StateType } from "../core/base/types";
 
 const AGENTS = [
   { name: "Clippit" },
@@ -269,6 +269,34 @@ async function initDemo() {
         signal: loadAbortController.signal,
         onProgress: (progress) => loadingUI.update(progress),
         initialAnimation: "Greeting",
+        customStates: {
+          Processing: {
+            name: "Processing",
+            animations: ["Thinking", "Search", "Processing"],
+            type: StateType.Persistent,
+          },
+          Greeting: {
+            name: "Greeting",
+            animations: ["Wave", "Greet", "Hello"],
+            type: StateType.Transient,
+            nextState: "IdlingLevel1",
+          },
+        },
+      });
+
+      // Filter non-existent animations for custom states
+      const allAnims = currentAgent.animations();
+      ["Processing", "Greeting"].forEach((stateName) => {
+        const state = currentAgent!.definition.states[stateName];
+        if (state) {
+          state.animations = state.animations.filter((a) =>
+            allAnims.includes(a),
+          );
+          // If no animations left, add a fallback if available
+          if (state.animations.length === 0) {
+            if (allAnims.includes("Explain")) state.animations.push("Explain");
+          }
+        }
       });
 
       // Populate animations
@@ -319,6 +347,14 @@ async function initDemo() {
       // Click to play random animation
       currentAgent.on("click", () => {
         currentAgent?.animate();
+      });
+
+      currentAgent.on("stateEnter", (data) => {
+        console.log(`State Entered: ${data.state} (${data.type})`);
+      });
+
+      currentAgent.on("stateExit", (data) => {
+        console.log(`State Exited: ${data.state} (${data.type})`);
       });
 
       // Context menu event

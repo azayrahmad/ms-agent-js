@@ -68,8 +68,10 @@ The `Agent` maintains a `requestAnimationFrame` loop that drives the entire syst
     - Calculates if the current frame duration has elapsed.
     - Processes "null frames" (duration 0) immediately in a loop.
 2.  **`StateManager.update(deltaTime)`**:
-    - Monitors the `RequestQueue`. If empty, it progresses "Idle" logic.
-    - Increments "boredom" levels to trigger more complex idle animations.
+    - Monitors the `RequestQueue`.
+    - If the current state is `Idle`, it progresses boredom levels and triggers random animations from the idle pool.
+    - If the current state is `Persistent`, it loops random animations from that state's pool indefinitely while no requests are pending.
+    - If the current state is `Transient`, it plays its animation once and then transitions to its `nextState`.
     - Note: `StateManager.update` is asynchronous to allow for non-blocking idle transitions.
 3.  **`AgentRenderer.draw()`**:
     - Clears the canvas.

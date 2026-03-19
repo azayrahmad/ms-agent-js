@@ -66,11 +66,22 @@ export class AgentCore extends EventEmitter<AgentEvents> {
     this.stateManager = new StateManager(
       definition.states,
       this.animationManager,
+      this,
       {
         idleIntervalMs: options.idleIntervalMs,
         ticksPerLevel: 3,
       },
     );
+
+    if (options.customStates) {
+      Object.values(options.customStates).forEach((state) => {
+        // Create a deep copy to avoid modifying the original options
+        const stateCopy = { ...state, animations: [...state.animations] };
+        this.stateManager.registerState(stateCopy);
+        // Also add to definition for external visibility
+        this.definition.states[state.name] = stateCopy;
+      });
+    }
 
     this.requestQueue = new RequestQueue();
     this.stateManager.setRequestQueue(this.requestQueue);

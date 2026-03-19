@@ -92,6 +92,30 @@ if (result && result.text) {
 }
 ```
 
+### 3. Using as an Avatar (API Reflection)
+
+You can define custom states to make the agent act as an avatar for your API or application logic. For example, a `Processing` state that loops thinking animations:
+
+```javascript
+const agent = await Agent.load('Clippit', {
+  customStates: {
+    Processing: {
+      name: 'Processing',
+      animations: ['Thinking', 'Searching'],
+      type: 'persistent'
+    }
+  }
+});
+
+// When your API starts working:
+agent.setState('Processing');
+
+const data = await myApi.fetch();
+
+// Return to idle when done:
+agent.setState('IdlingLevel1');
+```
+
 ## Next Steps
 
 - **[API Reference](./api-reference.md)**: Explore all available commands and configuration options.

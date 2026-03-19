@@ -8,6 +8,8 @@ export type AgentEvents =
   | "animationStart"
   | "animationEnd"
   | "stateChange"
+  | "stateEnter"
+  | "stateExit"
   | "show"
   | "hide"
   | "dragstart"
@@ -32,6 +34,10 @@ export interface AgentEventPayloads {
   animationEnd: string;
   /** Emitted when the high-level behavioral state changes. [newState, oldState] */
   stateChange: [string, string];
+  /** Emitted when a new state is entered. */
+  stateEnter: { state: string; type: string };
+  /** Emitted when a state is exited. */
+  stateExit: { state: string; type: string };
   /** Emitted when the agent becomes visible. */
   show: undefined;
   /** Emitted when the agent becomes hidden. */
