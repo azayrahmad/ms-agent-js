@@ -91,6 +91,7 @@ Opens an interactive dialog with a title, a content array (text, choices, and in
   - `string`: Renders a block of text.
   - `{ type: 'choices', items: string[], style?: 'bullet' | 'bulb' }`: Renders a list of clickable choices.
   - `{ type: 'input', placeholder?: string, rows?: number }`: Renders a text area input.
+  - `{ type: 'checkbox', label: string, checked?: boolean }`: Renders a labeled checkbox.
 - **`buttons`**: An array of button definitions. Each can be a string or an object `{ label: string, value: any, bullet?: 'bullet' | 'bulb' }`.
 - **`timeout`**: Auto-cancel after milliseconds (default: 60000).
 

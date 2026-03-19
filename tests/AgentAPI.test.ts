@@ -142,7 +142,7 @@ describe('Agent Public API', () => {
             customButtons[0].click(); // Click "Submit"
 
             const result = await askPromise;
-            expect(result).toEqual({ value: 'submit_val', text: 'User Answer' });
+            expect(result).toEqual({ value: 'submit_val', text: 'User Answer', checked: false });
         });
 
         it('should resolve with null when cancel button (value: null) is clicked', async () => {
@@ -220,7 +220,7 @@ describe('Agent Public API', () => {
           clickListener(event);
 
           const result = await askPromise;
-          expect(result).toEqual({ value: 1, text: "Some input" });
+          expect(result).toEqual({ value: 1, text: "Some input", checked: false });
       });
 
       it("should handle multiple content items in order", async () => {
@@ -252,6 +252,32 @@ describe('Agent Public API', () => {
           (choicesList as any).listeners["click"][0]({ target: li });
 
           await askPromise;
+      });
+
+      it("should resolve with checkbox state", async () => {
+          const agent = await Agent.load("Clippit");
+          const askPromise = agent.ask({
+            content: [
+                { type: "checkbox", label: "Check me", checked: true }
+            ],
+            buttons: ["OK"]
+          });
+
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          const balloonEl = agent.balloon.balloonEl;
+
+          const checkbox = balloonEl.querySelector('.ask-checkbox') as HTMLInputElement;
+          const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
+
+          expect(checkbox).toBeDefined();
+          expect(checkbox).not.toBeNull();
+          checkbox.checked = true; // Setup state manually for mock
+          expect(checkbox.checked).toBe(true);
+          checkbox.checked = false;
+          customButtons[0].click();
+
+          const result = await askPromise;
+          expect(result).toEqual({ value: "OK", text: null, checked: false });
       });
     });
 });

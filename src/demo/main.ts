@@ -524,6 +524,7 @@ async function initDemo() {
       content: [
         "Please provide a reason for your action:",
         { type: "input", placeholder: "Type a reason..." },
+        { type: "checkbox", label: "Save to history", checked: true },
       ],
       buttons: [
         { label: "Ask", value: "Ask", bullet: "bullet" },
@@ -534,6 +535,7 @@ async function initDemo() {
     if (result !== null) {
       let msg = `Button: ${result.value}`;
       if (result.text) msg += `, Input: ${result.text}`;
+      if (result.checked !== null) msg += `, Checked: ${result.checked}`;
       currentAgent.speak(msg, {
         skipTyping: skipTypingCheck.checked,
       });

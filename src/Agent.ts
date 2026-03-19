@@ -19,7 +19,8 @@ type AgentEventListener = (...args: any[]) => void;
 export type AskContentItem =
   | string
   | { type: "choices"; items: string[]; style?: "bullet" | "bulb" }
-  | { type: "input"; placeholder?: string; rows?: number };
+  | { type: "input"; placeholder?: string; rows?: number }
+  | { type: "checkbox"; label: string; checked?: boolean };
 
 /**
  * Configuration for the interactive 'ask' dialog.
@@ -732,18 +733,30 @@ export class Agent {
    */
   public ask(
     options: AskOptions = {},
-  ): Promise<{ value: any; text: string | null } | null> {
+  ): Promise<{
+    value: any;
+    text: string | null;
+    checked: boolean | null;
+  } | null> {
     const title = options.title || "";
     const content = options.content || [];
     const buttons = options.buttons || [];
     const timeout = options.timeout || 60000;
 
-    let resolveAsk: (value: { value: any; text: string | null } | null) => void;
-    const askPromise = new Promise<{ value: any; text: string | null } | null>(
-      (res) => {
-        resolveAsk = res;
-      },
-    );
+    let resolveAsk: (
+      value: {
+        value: any;
+        text: string | null;
+        checked: boolean | null;
+      } | null,
+    ) => void;
+    const askPromise = new Promise<{
+      value: any;
+      text: string | null;
+      checked: boolean | null;
+    } | null>((res) => {
+      resolveAsk = res;
+    });
 
     this.enqueueRequest(async (request) => {
       if (request.isCancelled) {
@@ -776,6 +789,9 @@ export class Agent {
           const placeholder = item.placeholder || "";
           const rows = item.rows || 2;
           balloonContent += `<textarea rows="${rows}" placeholder="${placeholder}"></textarea>`;
+        } else if (item.type === "checkbox") {
+          const checked = item.checked ? "checked" : "";
+          balloonContent += `<div class="clippy-checkbox"><input type="checkbox" class="ask-checkbox" ${checked}><label>${item.label}</label></div>`;
         }
       });
 
@@ -796,7 +812,13 @@ export class Agent {
       this.startTalkingAnimation();
 
       return new Promise<void>((resolveQueue) => {
-        const finish = (value: { value: any; text: string | null } | null) => {
+        const finish = (
+          value: {
+            value: any;
+            text: string | null;
+            checked: boolean | null;
+          } | null,
+        ) => {
           if (resolved) return;
           resolved = true;
           this.renderer.balloon.onHide = null;
@@ -846,6 +868,9 @@ export class Agent {
         const customButtons = Array.from(
           balloonEl.querySelectorAll(".custom-button"),
         ) as HTMLButtonElement[];
+        const checkbox = balloonEl.querySelector(
+          ".ask-checkbox",
+        ) as HTMLInputElement | null;
 
         const handleKeypress = (e: KeyboardEvent) => {
           resetBalloonTimeout();
@@ -867,8 +892,9 @@ export class Agent {
           const li = target.closest("li");
           if (li && li.hasAttribute("data-index")) {
             const index = parseInt(li.getAttribute("data-index") || "0");
-            const text = input ? (input.value || null) : null;
-            finish({ value: index, text });
+            const text = input ? input.value || null : null;
+            const checked = checkbox ? !!checkbox.checked : null;
+            finish({ value: index, text, checked });
             this.renderer.balloon.close();
           }
         };
@@ -879,12 +905,13 @@ export class Agent {
           const buttonDef = buttons[index];
           const value =
             typeof buttonDef === "string" ? buttonDef : buttonDef.value;
-          const text = input ? (input.value || null) : null;
+          const text = input ? input.value || null : null;
+          const checked = checkbox ? !!checkbox.checked : null;
 
           if (value === null) {
             finish(null);
           } else {
-            finish({ value, text });
+            finish({ value, text, checked });
           }
           this.renderer.balloon.close();
         };

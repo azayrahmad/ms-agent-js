@@ -181,6 +181,10 @@ export const setupGlobals = (mockDefinition?: any) => {
           return null;
         }),
         querySelector: vi.fn().mockImplementation(function(this: any, selector: string) {
+          if (selector === '.ask-checkbox' && this.lastQueriedCheckbox) {
+              if (this.lastQueriedCheckbox.checked === undefined) this.lastQueriedCheckbox.checked = false;
+              return this.lastQueriedCheckbox;
+          }
           // In the mock environment, we might be querying from the balloon container,
           // but our showHtml/speak logic puts content into _contentEl.
           // Since we don't have a real DOM/Shadow DOM, we'll check if the target has shadowNodes or childNodes
@@ -189,6 +193,9 @@ export const setupGlobals = (mockDefinition?: any) => {
           const findInNodes = (nodes: any[]): any => {
               for (const node of nodes) {
                   if (selector === 'textarea' && node.nodeName === 'TEXTAREA') return node;
+                  if (selector === '.ask-checkbox' && node.className && typeof node.className === 'string' && node.className.includes('ask-checkbox')) return node;
+                  if (node.nodeName === 'INPUT' && node.attributes?.type === 'checkbox') return node;
+                  if (selector === 'input[type="checkbox"]' && node.nodeName === 'INPUT' && node.attributes?.type === 'checkbox') return node;
                   if (selector === '.clippy-choices' && node.className.includes('clippy-choices')) return node;
                   if (selector === '.clippy-input' && node.className.includes('clippy-input')) return node;
                   const found = findInNodes(node.childNodes || []);
@@ -207,12 +214,17 @@ export const setupGlobals = (mockDefinition?: any) => {
           }
 
           // Fallback to legacy mock behavior if not found in nodes (for cases where nodes aren't properly linked)
-          if (selector === 'textarea' || selector === '.clippy-choices' || selector === '.clippy-input') {
-            const tag = selector === 'textarea' ? 'textarea' : (selector === '.clippy-choices' ? 'ul' : 'div');
+          if (selector === 'textarea' || selector === '.clippy-choices' || selector === '.clippy-input' || selector === '.ask-checkbox') {
+            const tag = selector === 'textarea' ? 'textarea' : (selector === '.clippy-choices' ? 'ul' : (selector === '.ask-checkbox' ? 'input' : 'div'));
             const el = document.createElement(tag);
             if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
+            if (selector === '.ask-checkbox') {
+                el.setAttribute('type', 'checkbox');
+                el.checked = false;
+            }
             if (selector === 'textarea') this.lastQueriedTextarea = el;
             if (selector === '.clippy-choices') this.lastQueriedChoicesList = el;
+            if (selector === '.ask-checkbox') this.lastQueriedCheckbox = el;
             if (!(el as any).listeners) (el as any).listeners = {};
             return el;
           }
