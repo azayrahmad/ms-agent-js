@@ -21,6 +21,7 @@ Asynchronously loads and initializes an agent.
 | `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 | `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
 | `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
+| `customStates` | `Record<string, State>` | `undefined` | Developer-defined custom states to extend or override agent definitions. |
 
 ---
 
@@ -68,6 +69,26 @@ Turns to look at a specific screen coordinate.
 
 ### `agent.setState(stateName)`
 Manually sets the high-level state (e.g., "IdlingLevel3").
+
+### State Management & Types
+The library uses a category-based system to drive agent behavior.
+
+#### `StateType` Enum
+Defines how a state behaves:
+- **`Idle`**: Represents a level of boredom. Automatically progresses to the next level over time.
+- **`Persistent`**: Loops random animations from its pool indefinitely.
+- **`Transient`**: Plays its animations once and then transitions to another state (specified by `nextState`).
+- **`System`**: Managed by the system (e.g., `Showing`, `Speaking`).
+
+#### `State` Interface
+```typescript
+interface State {
+  name: string;
+  animations: string[];
+  type?: StateType;     // Default: Persistent (or Idle if "IdlingLevel" prefix)
+  nextState?: string;   // For Transient states
+}
+```
 
 ---
 
@@ -119,6 +140,8 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `contextmenu`: User right-clicked or long-pressed the agent. Payload: `{ x, y, originalEvent }`.
 - `animationStart` / `animationEnd`: Triggered when an animation begins/finishes. Payload: `animationName`.
 - `stateChange`: Triggered when the high-level behavior state changes. Payload: `(newState, oldState)`.
+- `stateEnter`: Triggered when a new state is entered. Payload: `{ state: string, type: string }`.
+- `stateExit`: Triggered when a state is exited. Payload: `{ state: string, type: string }`.
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions. Payload: `{ x, y }` for `drag`.
 - `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x, y }`.
