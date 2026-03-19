@@ -22,6 +22,21 @@ Asynchronously loads and initializes an agent.
 | `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
 | `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
 
+## Properties
+
+The `Agent` instance provides several read-only properties to access internal managers and state:
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `definition` | `AgentCharacterDefinition` | The full parsed character definition for this agent. |
+| `spriteManager` | `SpriteManager` | Manager responsible for loading and rendering sprites. |
+| `audioManager` | `AudioManager` | Manager responsible for playing sound effects. |
+| `animationManager` | `AnimationManager` | Manager responsible for low-level animation sequences. |
+| `stateManager` | `StateManager` | Manager responsible for high-level behavioral states and idles. |
+| `balloon` | `Balloon` | Manager responsible for the speech balloon UI. |
+| `requestQueue` | `RequestQueue` | Manager responsible for queuing character actions. |
+| `options` | `AgentOptions` | The resolved options used to initialize the agent. |
+
 ---
 
 ## Positioning & Visibility
@@ -85,7 +100,7 @@ Displays raw HTML inside the speech balloon.
 - **`hold`**: If true, the balloon stays open until manually closed.
 
 ### `agent.ask(options?)`
-Opens an interactive dialog with a title, a content array (text, choices, and inputs), and custom buttons. Returns a `Promise<{ value: any, text: string | null } | null>`.
+Opens an interactive dialog with a title, a content array (text, choices, and inputs), and custom buttons. Returns a `Promise<{ value: any, text: string | null, checked: boolean | null } | null>`.
 - **`title`**: Header text for the dialog.
 - **`content`**: An array of `AskContentItem`.
   - `string`: Renders a block of text.
@@ -114,7 +129,15 @@ Queues a silent delay for the specified number of milliseconds.
 
 ## Events
 
-Subscribe to events using `agent.on(eventName, callback)`:
+MSAgentJS uses an internal event emitter to notify you of various agent activities.
+
+### `agent.on(eventName, callback)`
+Subscribes to an agent event.
+
+### `agent.off(eventName, callback)`
+Unsubscribes from an agent event.
+
+### Available Events
 
 - `click`: User clicked the agent canvas.
 - `contextmenu`: User right-clicked or long-pressed the agent. Payload: `{ x, y, originalEvent }`.
@@ -123,8 +146,6 @@ Subscribe to events using `agent.on(eventName, callback)`:
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions. Payload: `{ x, y }` for `drag`.
 - `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x, y }`.
-
-Subscribe using `agent.on(eventName, callback)` and unsubscribe using `agent.off(eventName, callback)`.
 
 ### `agent.destroy()`
 Performs full cleanup: cancels animations, stops speech, and removes the agent from the DOM.
