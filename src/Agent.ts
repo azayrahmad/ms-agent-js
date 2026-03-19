@@ -741,7 +741,7 @@ export class Agent {
     const title = options.title || "";
     const content = options.content || [];
     const buttons = options.buttons || [];
-    const timeout = options.timeout || 60000;
+    const timeout = options.timeout !== undefined ? options.timeout : 60000;
 
     let resolveAsk: (
       value: {
@@ -926,9 +926,11 @@ export class Agent {
 
         const resetBalloonTimeout = () => {
           clearBalloonTimeout();
-          inputBalloonTimeout = window.setTimeout(() => {
-            handleCancel();
-          }, timeout);
+          if (timeout > 0) {
+            inputBalloonTimeout = window.setTimeout(() => {
+              handleCancel();
+            }, timeout);
+          }
         };
 
         const clearBalloonTimeout = () => {

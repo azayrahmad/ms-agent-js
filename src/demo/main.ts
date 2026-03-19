@@ -93,6 +93,7 @@ async function initDemo() {
   let loadAbortController: AbortController | null = null;
   let previewAbortController: AbortController | null = null;
   let currentGalleryIndex = 0;
+  let tourWelcomeShown = false;
 
   function createLoadingWindow(name: string, abortController: AbortController) {
     const progressWindow = document.createElement("div");
@@ -326,6 +327,38 @@ async function initDemo() {
         console.log("Context menu triggered at", data.x, data.y);
         currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
       });
+
+      // Show tour welcome message
+      const skipTourWelcome = localStorage.getItem("msagentjs_skip_tour_welcome") === "true";
+      if (!skipTourWelcome && !tourWelcomeShown && currentAgent) {
+        tourWelcomeShown = true;
+        const result = await currentAgent.ask({
+          title: "Welcome to MS Agent JS!",
+          content: [
+            "Would you like a quick tour of the features?",
+            { type: "choices", items: ["I want the tour", "I don't want the tour"] },
+            { type: "checkbox", label: "Show this every start", checked: true },
+          ],
+          timeout: 0, // No timeout for welcome
+        });
+
+        if (result) {
+          // "Show this every start" means skipTourWelcome should be false if checked.
+          // If checked is false, it means user UNCHECKED "Show this every start", so we skip next time.
+          localStorage.setItem("msagentjs_skip_tour_welcome", (!result.checked).toString());
+
+          if (result.value === 0) {
+            const introResult = await currentAgent.ask({
+              content: ["Alright! MS Agent JS is a modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web. Let me show you around!"],
+              buttons: ["OK"],
+              timeout: 0,
+            });
+            if (introResult) {
+              await runTour(currentAgent);
+            }
+          }
+        }
+      }
     } catch (error: any) {
       if (error.name === "AbortError") {
         console.log("Agent loading cancelled");
@@ -667,6 +700,67 @@ async function initDemo() {
       }
     });
   });
+
+  async function runTour(agent: Agent) {
+    const tabs = [
+      { id: "tab-assistant", text: "In the Assistant tab, you can browse and select different characters from the gallery. Each agent has its own unique personality and animations!" },
+      { id: "tab-animation", text: "The Animation tab allows you to control the agent's actions. You can change its scale, play specific animations, or switch between different behavioral states." },
+      { id: "tab-speech", text: "The Speech tab is where you can make the agent talk! You can use Text-to-Speech with various voice settings, or use interactive 'Ask' dialogs." },
+    ];
+
+    const controlPanel = document.querySelector(".control-panel") as HTMLElement;
+    const debugWindow = document.querySelector(".debug-window") as HTMLElement;
+
+    const agentW = agent.definition.character.width * agent.options.scale;
+    const agentH = agent.definition.character.height * agent.options.scale;
+
+    const moveToBottomRight = async (el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      // Center of agent at bottom right corner
+      await agent.moveTo(rect.right + scrollX - agentW / 2, rect.bottom + scrollY - agentH / 2);
+    };
+
+    for (const tabInfo of tabs) {
+      const tabEl = document.getElementById(tabInfo.id);
+      if (tabEl) {
+        const rect = tabEl.getBoundingClientRect();
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
+        // On the right side of the tab (agent's center aligned to tab's right edge)
+        const targetX = rect.right + scrollX - agentW / 2;
+        const targetY = rect.top + scrollY + rect.height / 2 - agentH / 2;
+
+        await agent.moveTo(targetX, targetY);
+        tabEl.click();
+        await agent.delay(500);
+
+        await moveToBottomRight(controlPanel);
+        const result = await agent.ask({
+          content: [tabInfo.text],
+          buttons: ["OK"],
+          timeout: 0,
+        });
+        if (!result) return;
+      }
+    }
+
+    // Debug window
+    const dwRect = debugWindow.getBoundingClientRect();
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+    // On the right of the window, not obscuring it
+    await agent.moveTo(dwRect.right + scrollX + 20, dwRect.top + scrollY + dwRect.height / 2 - agentH / 2);
+
+    await agent.ask({
+      content: ["Finally, the Debug Info window shows real-time data about the agent's internal state, current animation, and position."],
+      buttons: ["OK"],
+      timeout: 0,
+    });
+
+    agent.speak("That's the end of the tour! Have fun exploring!");
+  }
 
   // Start
   updateDebug();
