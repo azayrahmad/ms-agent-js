@@ -1,4 +1,4 @@
-import { type State } from "../base/types";
+import { type State, StateType } from "../base/types";
 import { AnimationManager } from "./AnimationManager";
 import { RequestQueue } from "./RequestQueue";
 
@@ -22,6 +22,8 @@ export interface StateManagerConfig {
 export class StateManager {
   /** Record of state definitions (each containing a set of animations). */
   private states: Record<string, State>;
+  /** External event emitter (AgentCore). */
+  private eventEmitter: any;
   /** Reference to the animation manager for frame playback. */
   private animationManager: AnimationManager;
   /** Reference to the request queue to suppress idles when busy. */
@@ -51,15 +53,23 @@ export class StateManager {
   /**
    * @param states - Record of states indexed by name.
    * @param animationManager - Animation manager for sprite/frame control.
+   * @param eventEmitter - Core event emitter for state change events.
    * @param config - Optional configuration for idle behaviors.
    */
   constructor(
     states: Record<string, State>,
     animationManager: AnimationManager,
+    eventEmitter: any,
     config?: StateManagerConfig,
   ) {
-    this.states = states;
+    this.states = {};
     this.animationManager = animationManager;
+    this.eventEmitter = eventEmitter;
+
+    // Initialize states with proper types
+    Object.keys(states).forEach((name) => {
+      this.registerState(states[name]);
+    });
 
     if (config) {
       if (config.idleIntervalMs !== undefined)
@@ -100,6 +110,23 @@ export class StateManager {
   }
 
   /**
+   * Dynamically registers or overrides a state definition.
+   *
+   * @param state - The state definition to register.
+   */
+  public registerState(state: State) {
+    const name = state.name;
+    const type =
+      state.type ||
+      (this.isIdleState(name) ? StateType.Idle : StateType.Persistent);
+
+    this.states[name] = {
+      ...state,
+      type,
+    };
+  }
+
+  /**
    * Sets the request queue reference.
    */
   public setRequestQueue(queue: RequestQueue) {
@@ -117,42 +144,44 @@ export class StateManager {
 
     const hasRequests = this.requestQueue && !this.requestQueue.isEmpty;
 
+    const stateDef = this.states[this.currentState];
+
     // Check if the current animation sequence has finished
     if (!this.animationManager.isAnimating) {
-      if (this.currentState === "Playing" || this.currentState === "Moving") {
-        // After an explicit action finishes, we return to the base idling state.
-        if (!hasRequests) {
-          this.handleAnimationCompleted().catch(console.error);
+      if (stateDef?.type === StateType.System) {
+        if (this.currentState === "Playing" || this.currentState === "Moving") {
+          // After an explicit action finishes, we return to the base idling state.
+          if (!hasRequests) {
+            this.handleAnimationCompleted().catch(console.error);
+          }
+        } else if (this.currentState === "Showing") {
+          // After the intro animation completes, we transition to idling.
+          if (!hasRequests) {
+            this.returnToIdle().catch(console.error);
+          }
+        } else if (this.currentState === "Hiding") {
+          // After the outro animation completes, the agent is hidden and paused.
+          this.currentState = "Hidden";
+          this.isPaused = true;
+          return;
         }
-      } else if (this.currentState === "Showing") {
-        // After the intro animation completes, we transition to idling.
+      } else if (stateDef?.type === StateType.Transient) {
         if (!hasRequests) {
-          this.returnToIdle().catch(console.error);
+          const next = stateDef.nextState || "IdlingLevel1";
+          this.setState(next).catch(console.error);
         }
-      } else if (this.currentState === "Hiding") {
-        // After the outro animation completes, the agent is hidden and paused.
-        this.currentState = "Hidden";
-        this.isPaused = true;
-        return;
       } else if (this.currentState !== "Hidden") {
         // For other persistent states (e.g. "GesturingLeft"),
         // we loop or pick a new random animation immediately to ensure no visual gaps.
         // For Idling states, we let the onTick handler manage the frequency of animations.
-        if (!hasRequests && !this.isIdleState(this.currentState)) {
+        if (!hasRequests && stateDef?.type === StateType.Persistent) {
           this.updateStateAnimation().catch(console.error);
         }
       }
     }
 
-    // Skip idle progression for transient/busy states or if requests are pending
-    if (
-      this.currentState === "Playing" ||
-      this.currentState === "Showing" ||
-      this.currentState === "Hiding" ||
-      this.currentState === "Moving" ||
-      this.currentState === "Speaking" ||
-      hasRequests
-    ) {
+    // Skip idle progression for non-idle states or if requests are pending
+    if (stateDef?.type !== StateType.Idle || hasRequests) {
       this.elapsedSinceLastTick = 0;
       return;
     }
@@ -171,7 +200,8 @@ export class StateManager {
    * Otherwise, pick a new animation for the current persistent state.
    */
   private async onTick(): Promise<void> {
-    if (this.isIdleState(this.currentState)) {
+    const stateDef = this.states[this.currentState];
+    if (stateDef?.type === StateType.Idle) {
       this.idleTickCount++;
 
       if (
@@ -221,20 +251,44 @@ export class StateManager {
    * @throws Error if the state name is invalid.
    */
   public async setState(stateName: string): Promise<void> {
-    if (
-      !this.states[stateName] &&
-      stateName !== "Playing" &&
-      stateName !== "Speaking" &&
-      stateName !== "Moving"
-    ) {
+    const isSystemState = [
+      "Playing",
+      "Speaking",
+      "Moving",
+      "Showing",
+      "Hiding",
+    ].includes(stateName);
+
+    if (!this.states[stateName] && !isSystemState && stateName !== "Hidden") {
       throw new Error(`Invalid state name: ${stateName}`);
     }
 
-    if (!this.isIdleState(stateName)) {
+    const oldState = this.currentState;
+    const oldStateDef = this.states[oldState];
+
+    if (oldStateDef) {
+      this.eventEmitter.emit("stateExit", {
+        state: oldState,
+        type: oldStateDef.type,
+      });
+    }
+
+    const stateDef = this.states[stateName] || {
+      name: stateName,
+      animations: [],
+      type: StateType.System,
+    };
+
+    if (stateDef.type !== StateType.Idle) {
       this.resetIdleProgression();
     }
 
     this.currentState = stateName;
+
+    this.eventEmitter.emit("stateEnter", {
+      state: stateName,
+      type: stateDef.type,
+    });
 
     if (stateName !== "Hidden") {
       this.isPaused = false;
@@ -272,14 +326,13 @@ export class StateManager {
     const currentAnimationId = ++this.lastAnimationId;
 
     if (stateName) {
-      this.currentState = stateName;
+      await this.setState(stateName);
     }
 
+    const stateDef = this.states[this.currentState];
+
     // Reset idle timers if we are no longer idling
-    if (
-      this.currentState !== "Playing" &&
-      !this.isIdleState(this.currentState)
-    ) {
+    if (stateDef?.type !== StateType.Idle && stateName !== "Playing") {
       this.resetIdleProgression();
     }
 
@@ -351,7 +404,9 @@ export class StateManager {
    * Fired when an explicit "Playing", "Moving" or "Speaking" animation completes.
    */
   public async handleAnimationCompleted(): Promise<void> {
+    const stateDef = this.states[this.currentState];
     if (
+      stateDef?.type === StateType.System ||
       this.currentState === "Playing" ||
       this.currentState === "Moving" ||
       this.currentState === "Speaking"

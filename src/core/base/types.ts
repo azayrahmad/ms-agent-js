@@ -109,6 +109,31 @@ export interface Animation {
 }
 
 /**
+ * Defines the behavioral type of a state.
+ */
+export enum StateType {
+  /**
+   * The state represents a level of boredom.
+   * Progresses automatically to the next idle level over time.
+   */
+  Idle = "idle",
+  /**
+   * The state is persistent and loops random animations from its pool indefinitely.
+   * Useful for API-driven states like "Processing" or "Thinking".
+   */
+  Persistent = "persistent",
+  /**
+   * The state is temporary and plays its animations once before transitioning
+   * to another state (specified by nextState).
+   */
+  Transient = "transient",
+  /**
+   * The state is managed by the system (e.g., Showing, Hiding, Speaking).
+   */
+  System = "system",
+}
+
+/**
  * Represents a logical state that groups several animations (e.g., "IdlingLevel1").
  */
 export interface State {
@@ -116,6 +141,10 @@ export interface State {
   name: string;
   /** A list of animation names associated with this state. */
   animations: string[];
+  /** The behavioral type of the state (default: Persistent, or Idle if prefixed with "IdlingLevel"). */
+  type?: StateType;
+  /** The name of the state to transition to after this one completes (for Transient states). */
+  nextState?: string;
 }
 
 /**
@@ -203,6 +232,8 @@ export interface AgentOptions {
   signal?: AbortSignal;
   /** Whether to use the in-memory cache (default: true). */
   useCache?: boolean;
+  /** Developer-defined custom states to extend or override agent definitions. */
+  customStates?: Record<string, State>;
 }
 
 export interface AgentCharacterDefinition {

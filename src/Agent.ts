@@ -236,6 +236,7 @@ export class Agent {
         window.innerHeight -
           definition.character.height * (options.scale ?? 1) -
           50,
+      customStates: options.customStates || {},
     };
 
     const container = fullOptions.container || document.createElement("div");
@@ -264,7 +265,11 @@ export class Agent {
     } else if (agent.definition.states["Showing"]) {
       agent.show();
     } else {
-      core.stateManager.setState("IdlingLevel1");
+      const firstIdle =
+        Object.keys(agent.definition.states).find(
+          (s) => agent.definition.states[s].type === "idle",
+        ) || "IdlingLevel1";
+      await core.stateManager.setState(firstIdle);
     }
 
     return agent;

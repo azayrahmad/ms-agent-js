@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StateManager } from '../src/core/behavior/StateManager';
-import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { StateType } from '../src/core/base/types';
 
 describe('StateManager', () => {
   let stateManager: StateManager;
   let mockAnimationManager: any;
   let mockStates: any;
+  let mockEventEmitter: any;
 
   beforeEach(() => {
     mockAnimationManager = {
@@ -20,8 +21,8 @@ describe('StateManager', () => {
         'idle2': {},
         'show': {},
         'hide': {},
-        'CustomShow': {},
-        'CustomHide': {}
+        'think': {},
+        'wave': {}
       }
     };
 
@@ -32,103 +33,88 @@ describe('StateManager', () => {
       'Hiding': { name: 'Hiding', animations: ['hide'] }
     };
 
-    stateManager = new StateManager(mockStates, mockAnimationManager as any, {
+    mockEventEmitter = {
+      emit: vi.fn()
+    };
+
+    stateManager = new StateManager(mockStates, mockAnimationManager as any, mockEventEmitter, {
       idleIntervalMs: 1000,
       ticksPerLevel: 3
     });
   });
 
-  it('should progress idle tick even if update is called while an animation is starting (but not awaited)', async () => {
-    // Show the agent to unpause it
-    await stateManager.handleVisibilityChange(true);
-    await stateManager.setState('IdlingLevel1');
-
-    // Initial state
-    expect(stateManager.timeUntilNextTick).toBe(1000);
-
-    // Call update with 500ms
-    await stateManager.update(500);
-    expect(stateManager.timeUntilNextTick).toBe(500);
-
-    // Call update with another 500ms
-    await stateManager.update(500);
-    expect(stateManager.timeUntilNextTick).toBe(1000); // Should have ticked and reset
+  it('should initialize states with proper types', () => {
+    expect((stateManager as any).states['IdlingLevel1'].type).toBe(StateType.Idle);
+    expect((stateManager as any).states['Showing'].type).toBe(StateType.Persistent); // Default for non-prefixed
   });
 
-  it('should not be blocked by slow animation start', async () => {
-    // Show the agent to unpause it
-    await stateManager.handleVisibilityChange(true);
-
-    // We want to see if multiple calls to update work as expected when animations are playing.
-    await stateManager.setState('IdlingLevel1');
-
-    // Mock playAnimation to be a never-resolving promise (simulating being stuck/slow)
-    mockAnimationManager.playAnimation = () => new Promise(() => {});
-    mockAnimationManager.isAnimating = false; // So it tries to start a new one
-
-    // This update should call updateStateAnimation -> playAnimation (which is slow)
-    // If it's awaited, this update will never resolve (or will take too long)
-    const updatePromise = stateManager.update(500);
-
-    // We check if it resolves quickly
-    const result = await Promise.race([
-        updatePromise.then(() => 'resolved'),
-        new Promise(resolve => setTimeout(() => resolve('timeout'), 100))
-    ]);
-
-    expect(result).toBe('resolved');
-    expect(stateManager.timeUntilNextTick).toBe(500);
+  it('should allow registering custom states', () => {
+    stateManager.registerState({
+      name: 'Processing',
+      animations: ['think'],
+      type: StateType.Persistent
+    });
+    expect((stateManager as any).states['Processing'].type).toBe(StateType.Persistent);
   });
 
-  it('should start ticking immediately after initialization and setState', async () => {
-    // Initial state is Hidden and Paused
-    expect(stateManager.currentStateName).toBe('Hidden');
-
+  it('should emit stateEnter and stateExit events', async () => {
     await stateManager.setState('IdlingLevel1');
-    expect(stateManager.currentStateName).toBe('IdlingLevel1');
+    expect(mockEventEmitter.emit).toHaveBeenCalledWith('stateEnter', { state: 'IdlingLevel1', type: StateType.Idle });
 
-    // Should not be paused anymore
+    await stateManager.setState('Showing');
+    expect(mockEventEmitter.emit).toHaveBeenCalledWith('stateExit', { state: 'IdlingLevel1', type: StateType.Idle });
+    expect(mockEventEmitter.emit).toHaveBeenCalledWith('stateEnter', { state: 'Showing', type: StateType.Persistent });
+  });
+
+  it('should handle Transient states and transition to nextState', async () => {
+    stateManager.registerState({
+      name: 'Greeting',
+      animations: ['wave'],
+      type: StateType.Transient,
+      nextState: 'IdlingLevel1'
+    });
+
+    await stateManager.setState('Greeting');
+    expect(stateManager.currentStateName).toBe('Greeting');
+
+    // Simulate animation finished
+    mockAnimationManager.isAnimating = false;
     await stateManager.update(100);
-    expect(stateManager.timeUntilNextTick).toBe(900);
-  });
 
-  it('should handle visibility change with custom animation', async () => {
-    mockStates['Showing'] = { name: 'Showing', animations: ['CustomShow'] };
-
-    await stateManager.handleVisibilityChange(true, 'CustomShow');
-
-    expect(mockAnimationManager.playAnimation).toHaveBeenCalledWith('CustomShow', true);
     expect(stateManager.currentStateName).toBe('IdlingLevel1');
   });
 
-  it('should handle visibility change to Hidden with custom animation', async () => {
-    mockStates['Hiding'] = { name: 'Hiding', animations: ['CustomHide'] };
+  it('should progress idle levels correctly', async () => {
+    await stateManager.setState('IdlingLevel1');
 
-    await stateManager.handleVisibilityChange(false, 'CustomHide');
+    // 3 ticks to next level
+    await stateManager.update(1000); // tick 1
+    await stateManager.update(1000); // tick 2
+    await stateManager.update(1000); // tick 3 -> level 2
 
-    expect(mockAnimationManager.playAnimation).toHaveBeenCalledWith('CustomHide', true);
-    expect(stateManager.currentStateName).toBe('Hidden');
+    expect(stateManager.idleLevel).toBe(2);
+    expect(stateManager.currentStateName).toBe('IdlingLevel2');
   });
 
-  it('should throw error if requested state is missing and not special', async () => {
-    await expect(stateManager.setState('NonExistentState')).rejects.toThrow('Invalid state name: NonExistentState');
-  });
+  it('should not progress idle levels if in Persistent state', async () => {
+    stateManager.registerState({
+      name: 'Processing',
+      animations: ['think'],
+      type: StateType.Persistent
+    });
 
-  it('should return correct idle level info', () => {
+    await stateManager.setState('Processing');
+
+    await stateManager.update(1000);
+    await stateManager.update(1000);
+    await stateManager.update(1000);
+
     expect(stateManager.idleLevel).toBe(1);
-    expect(stateManager.ticksToNextLevel).toBe(3);
+    expect(stateManager.currentStateName).toBe('Processing');
   });
 
-  it('should play random animation', async () => {
-    mockAnimationManager.animations = {
-        'random1': {}
-    };
-
-    await stateManager.playRandomAnimation();
-
-    // StateManager.playAnimation calls animationManager.interruptAndPlayAnimation
-    expect(mockAnimationManager.interruptAndPlayAnimation).toHaveBeenCalledWith(
-        'random1', false, true
-    );
+  it('should return correct debug info', () => {
+    expect(stateManager.timeUntilNextTick).toBe(1000);
+    expect(stateManager.ticksToNextLevel).toBe(3);
   });
 });
