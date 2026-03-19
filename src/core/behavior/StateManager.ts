@@ -148,24 +148,7 @@ export class StateManager {
 
     // Check if the current animation sequence has finished
     if (!this.animationManager.isAnimating) {
-      if (stateDef?.type === StateType.System) {
-        if (this.currentState === "Playing" || this.currentState === "Moving") {
-          // After an explicit action finishes, we return to the base idling state.
-          if (!hasRequests) {
-            this.handleAnimationCompleted().catch(console.error);
-          }
-        } else if (this.currentState === "Showing") {
-          // After the intro animation completes, we transition to idling.
-          if (!hasRequests) {
-            this.returnToIdle().catch(console.error);
-          }
-        } else if (this.currentState === "Hiding") {
-          // After the outro animation completes, the agent is hidden and paused.
-          this.currentState = "Hidden";
-          this.isPaused = true;
-          return;
-        }
-      } else if (stateDef?.type === StateType.Transient) {
+      if (stateDef?.type === StateType.Transient) {
         if (!hasRequests) {
           const next = stateDef.nextState || "IdlingLevel1";
           this.setState(next).catch(console.error);
@@ -251,15 +234,7 @@ export class StateManager {
    * @throws Error if the state name is invalid.
    */
   public async setState(stateName: string): Promise<void> {
-    const isSystemState = [
-      "Playing",
-      "Speaking",
-      "Moving",
-      "Showing",
-      "Hiding",
-    ].includes(stateName);
-
-    if (!this.states[stateName] && !isSystemState && stateName !== "Hidden") {
+    if (!this.states[stateName] && stateName !== "Hidden") {
       throw new Error(`Invalid state name: ${stateName}`);
     }
 
@@ -285,12 +260,16 @@ export class StateManager {
 
     this.currentState = stateName;
 
-    this.eventEmitter.emit("stateEnter", {
-      state: stateName,
-      type: stateDef.type,
-    });
+    if (stateDef) {
+      this.eventEmitter.emit("stateEnter", {
+        state: stateName,
+        type: stateDef.type,
+      });
+    }
 
-    if (stateName !== "Hidden") {
+    if (stateName === "Hidden") {
+      this.isPaused = true;
+    } else {
       this.isPaused = false;
     }
 
@@ -401,18 +380,10 @@ export class StateManager {
   }
 
   /**
-   * Fired when an explicit "Playing", "Moving" or "Speaking" animation completes.
+   * Fired when an explicit action animation completes.
    */
   public async handleAnimationCompleted(): Promise<void> {
-    const stateDef = this.states[this.currentState];
-    if (
-      stateDef?.type === StateType.System ||
-      this.currentState === "Playing" ||
-      this.currentState === "Moving" ||
-      this.currentState === "Speaking"
-    ) {
-      await this.returnToIdle();
-    }
+    await this.returnToIdle();
   }
 
   /**
