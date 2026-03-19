@@ -181,17 +181,64 @@ export const setupGlobals = (mockDefinition?: any) => {
           return null;
         }),
         querySelector: vi.fn().mockImplementation(function(this: any, selector: string) {
-          // Return a mock element for common selectors in tests
-          if (selector === 'textarea' || selector === '.clippy-choices') {
-            const el = document.createElement(selector === 'textarea' ? 'textarea' : 'ul');
+          // In the mock environment, we might be querying from the balloon container,
+          // but our showHtml/speak logic puts content into _contentEl.
+          // Since we don't have a real DOM/Shadow DOM, we'll check if the target has shadowNodes or childNodes
+          // and also check any last queried elements we've stored.
+
+          const findInNodes = (nodes: any[]): any => {
+              for (const node of nodes) {
+                  if (selector === 'textarea' && node.nodeName === 'TEXTAREA') return node;
+                  if (selector === '.clippy-choices' && node.className.includes('clippy-choices')) return node;
+                  if (selector === '.clippy-input' && node.className.includes('clippy-input')) return node;
+                  const found = findInNodes(node.childNodes || []);
+                  if (found) return found;
+                  const foundShadow = findInNodes(node.shadowNodes || []);
+                  if (foundShadow) return foundShadow;
+              }
+              return null;
+          };
+
+          const fromNodes = findInNodes(this.childNodes || []) || findInNodes(this.shadowNodes || []);
+          if (fromNodes) {
+              if (selector === 'textarea') this.lastQueriedTextarea = fromNodes;
+              if (selector === '.clippy-choices') this.lastQueriedChoicesList = fromNodes;
+              return fromNodes;
+          }
+
+          // Fallback to legacy mock behavior if not found in nodes (for cases where nodes aren't properly linked)
+          if (selector === 'textarea' || selector === '.clippy-choices' || selector === '.clippy-input') {
+            const tag = selector === 'textarea' ? 'textarea' : (selector === '.clippy-choices' ? 'ul' : 'div');
+            const el = document.createElement(tag);
             if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
             if (selector === 'textarea') this.lastQueriedTextarea = el;
             if (selector === '.clippy-choices') this.lastQueriedChoicesList = el;
+            if (!(el as any).listeners) (el as any).listeners = {};
             return el;
           }
           return null;
         }),
         querySelectorAll: vi.fn().mockImplementation(function(this: any, selector: string) {
+          const findAllInNodes = (nodes: any[], results: any[]) => {
+              for (const node of nodes) {
+                  if (selector === '.custom-button' && node.className.includes('custom-button')) results.push(node);
+                  if (selector === '.clippy-choices' && node.className.includes('clippy-choices')) results.push(node);
+                  findAllInNodes(node.childNodes || [], results);
+                  findAllInNodes(node.shadowNodes || [], results);
+              }
+          };
+
+          const results: any[] = [];
+          findAllInNodes(this.childNodes || [], results);
+          findAllInNodes(this.shadowNodes || [], results);
+
+          if (results.length > 0) {
+              if (selector === '.custom-button') this.lastQueriedCustomButtons = results;
+              if (selector === '.clippy-choices' && results.length > 0) this.lastQueriedChoicesList = results[0];
+              return results;
+          }
+
+          // Fallback to legacy mock behavior
            if (selector === '.custom-button') {
             const el1 = document.createElement('button');
             el1.className = 'custom-button';
@@ -202,6 +249,13 @@ export const setupGlobals = (mockDefinition?: any) => {
             const res = [el1, el2];
             this.lastQueriedCustomButtons = res;
             return res;
+          }
+          if (selector === '.clippy-choices') {
+            const el = document.createElement('ul');
+            el.className = 'clippy-choices';
+            if (!(el as any).listeners) (el as any).listeners = {};
+            this.lastQueriedChoicesList = el;
+            return [el];
           }
           return [];
         }),

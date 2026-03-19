@@ -124,9 +124,13 @@ describe('Agent Public API', () => {
     });
 
     describe('agent.ask()', () => {
-        it('should resolve with default Ask button value when clicked', async () => {
+        it('should resolve with custom button value when clicked', async () => {
             const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask({ title: 'Test Question' });
+            const askPromise = agent.ask({
+                title: 'Test Question',
+                content: [{ type: 'input', placeholder: 'Type here...' }],
+                buttons: [{ label: 'Submit', value: 'submit_val' }]
+            });
 
             // Small delay for task to start
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -135,21 +139,23 @@ describe('Agent Public API', () => {
             const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
 
             textarea.value = 'User Answer';
-            customButtons[0].click(); // Click "Ask"
+            customButtons[0].click(); // Click "Submit"
 
             const result = await askPromise;
-            expect(result).toEqual({ value: 'Ask', text: 'User Answer' });
+            expect(result).toEqual({ value: 'submit_val', text: 'User Answer' });
         });
 
-        it('should resolve with null when default Cancel button is clicked', async () => {
+        it('should resolve with null when cancel button (value: null) is clicked', async () => {
             const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask();
+            const askPromise = agent.ask({
+                buttons: [{ label: 'Cancel', value: null }]
+            });
 
             await new Promise(resolve => setTimeout(resolve, 50));
 
             const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
 
-            customButtons[1].click(); // Click "Cancel"
+            customButtons[0].click(); // Click "Cancel"
 
             const result = await askPromise;
             expect(result).toBe(null);
@@ -159,7 +165,9 @@ describe('Agent Public API', () => {
             const agent = await Agent.load('Clippit');
             const playAnimationSpy = vi.spyOn(agent.stateManager, 'playAnimation');
 
-            agent.ask();
+            agent.ask({
+                content: [{ type: 'input' }]
+            });
 
             await new Promise(resolve => setTimeout(resolve, 50));
 
@@ -186,44 +194,25 @@ describe('Agent Public API', () => {
             expect(result).toBe(null);
         });
 
-        it('should resolve with custom button value and text input', async () => {
+        it('should resolve with choice index and text input from content array', async () => {
           const agent = await Agent.load('Clippit');
           const askPromise = agent.ask({
             title: "Choice",
-            placeholder: "Reason",
-            buttons: [{ label: "Yes", value: "yes_val" }, "No"],
+            content: [
+                { type: "choices", items: ["Option 1", "Option 2"] },
+                { type: "input" }
+            ]
           });
 
-          await new Promise((resolve) => setTimeout(resolve, 50));
+          await new Promise((resolve) => setTimeout(resolve, 100));
 
-          const customButtons = (agent.balloon.balloonEl as any)
-            .lastQueriedCustomButtons as HTMLButtonElement[];
-          const textarea = (agent.balloon.balloonEl as any)
-            .lastQueriedTextarea as HTMLTextAreaElement;
+          const balloonEl = agent.balloon.balloonEl;
+          const choicesList = (balloonEl as any).lastQueriedChoicesList;
+          const textarea = (balloonEl as any).lastQueriedTextarea;
 
-          textarea.value = "Because I want to";
-          customButtons[0].click(); // Click "Yes"
+          textarea.value = "Some input";
 
-          const result = await askPromise;
-          expect(result).toEqual({
-            value: "yes_val",
-            text: "Because I want to",
-          });
-      });
-
-      it("should resolve with choice index and text input", async () => {
-          const agent = await Agent.load("Clippit");
-          const askPromise = agent.ask({
-            title: "Choice",
-            choices: ["Option 1", "Option 2"],
-          });
-
-          await new Promise((resolve) => setTimeout(resolve, 50));
-
-          const choicesList = (agent.balloon.balloonEl as any)
-            .lastQueriedChoicesList as HTMLUListElement;
-
-          // Mock clicking the first li
+          // Mock clicking the second choice
           const li = document.createElement("li");
           li.setAttribute("data-index", "1");
           const event = { target: li };
@@ -231,7 +220,38 @@ describe('Agent Public API', () => {
           clickListener(event);
 
           const result = await askPromise;
-          expect(result).toEqual({ value: 1, text: undefined });
+          expect(result).toEqual({ value: 1, text: "Some input" });
+      });
+
+      it("should handle multiple content items in order", async () => {
+          const agent = await Agent.load("Clippit");
+          const askPromise = agent.ask({
+            title: "Order Test",
+            content: [
+                "Text 1",
+                { type: "input" },
+                "Text 2",
+                { type: "choices", items: ["Choice 1"] }
+            ]
+          });
+
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          const contentEl = (agent.balloon as any)._contentEl;
+          const content = contentEl.innerHTML;
+
+          expect(content).toContain('Text 1');
+          expect(content).toContain('Text 2');
+          expect(content).toContain('<textarea');
+          expect(content).toContain('clippy-choices');
+
+          // Complete it
+          const balloonEl = agent.balloon.balloonEl;
+          const choicesList = (balloonEl as any).lastQueriedChoicesList;
+          const li = document.createElement("li");
+          li.setAttribute("data-index", "0");
+          (choicesList as any).listeners["click"][0]({ target: li });
+
+          await askPromise;
       });
     });
 });

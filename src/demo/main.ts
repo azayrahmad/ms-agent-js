@@ -521,10 +521,13 @@ async function initDemo() {
     if (!currentAgent) return;
     const result = await currentAgent.ask({
       title: "What is your next move?",
-      placeholder: "Type a reason...",
+      content: [
+        "Please provide a reason for your action:",
+        { type: "input", placeholder: "Type a reason..." },
+      ],
       buttons: [
         { label: "Ask", value: "Ask", bullet: "bullet" },
-        { label: "Cancel", value: "Cancel" },
+        { label: "Cancel", value: null },
       ],
     });
 
@@ -546,9 +549,14 @@ async function initDemo() {
     const choices = ["I'm doing great!", "Not too bad.", "Could be better."];
     const result = await currentAgent.ask({
       title: "How are you today?",
-      choices: choices,
-      choiceStyle: askStyleSelect.value as "bullet" | "bulb",
-      buttons: ["Cancel"],
+      content: [
+        {
+          type: "choices",
+          items: choices,
+          style: askStyleSelect.value as "bullet" | "bulb",
+        },
+      ],
+      buttons: [{ label: "Cancel", value: null }],
     });
 
     if (result !== null) {
