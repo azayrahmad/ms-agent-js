@@ -194,21 +194,6 @@ async function initDemo() {
         signal: previewAbortController.signal,
         onProgress: (progress) => loadingUI.update(progress),
       });
-
-      const info = getBestMatchingInfo(previewAgent.definition.character.infos);
-      galleryAgentName.textContent = info.name;
-      galleryAgentDescription.textContent = info.description;
-
-      if (info.greetings && info.greetings.length > 0) {
-        const randomGreeting = info.greetings[Math.floor(Math.random() * info.greetings.length)];
-        galleryAgentQuote.textContent = randomGreeting;
-      } else {
-        galleryAgentQuote.textContent = "Hello!";
-      }
-
-      if (previewAgent.hasAnimation("Wave")) {
-        previewAgent.play("Wave", undefined, false, true);
-      }
     } catch (error: any) {
       if (error.name !== "AbortError") {
         console.error("Failed to load preview agent:", error);
@@ -217,6 +202,23 @@ async function initDemo() {
       }
     } finally {
       loadingUI.destroy();
+    }
+
+    if (!previewAgent) return;
+
+    const info = getBestMatchingInfo(previewAgent.definition.character.infos);
+    galleryAgentName.textContent = info.name;
+    galleryAgentDescription.textContent = info.description;
+
+    if (info.greetings && info.greetings.length > 0) {
+      const randomGreeting = info.greetings[Math.floor(Math.random() * info.greetings.length)];
+      galleryAgentQuote.textContent = randomGreeting;
+    } else {
+      galleryAgentQuote.textContent = "Hello!";
+    }
+
+    if (previewAgent.hasAnimation("Wave")) {
+      previewAgent.play("Wave", undefined, false, true);
     }
   }
 
@@ -271,94 +273,6 @@ async function initDemo() {
         onProgress: (progress) => loadingUI.update(progress),
         initialAnimation: "Greeting",
       });
-
-      // Populate animations
-      const animNames = currentAgent.animations().sort();
-      animNames.forEach((animName) => {
-        const option = document.createElement("option");
-        option.value = animName;
-        option.textContent = animName;
-        animationSelect.appendChild(option);
-      });
-
-      // Populate states
-      const stateNames = Object.keys(currentAgent.definition.states).sort();
-      stateNames.forEach((stateName) => {
-        const option = document.createElement("option");
-        option.value = stateName;
-        option.textContent = stateName;
-        if (stateName === "IdlingLevel1") option.selected = true;
-        stateSelect.appendChild(option);
-      });
-
-      updateVoiceList();
-      updateTTSOptions();
-
-      const info = getBestMatchingInfo(currentAgent.definition.character.infos);
-      galleryAgentName.textContent = info.name;
-      galleryAgentDescription.textContent = info.description;
-
-      isVisible = true;
-      visibilityBtn.textContent = "Hide";
-      startStopBtn.textContent = "Stop";
-      (window as any).agent = currentAgent;
-
-      playBtn.disabled = false;
-      play5sBtn.disabled = false;
-      playLoopedBtn.disabled = false;
-      randomBtn.disabled = false;
-      visibilityBtn.disabled = false;
-      speakBtn.disabled = false;
-      askBtn.disabled = false;
-      askOptionsBtn.disabled = false;
-      gestureLeftBtn.disabled = false;
-      gestureRightBtn.disabled = false;
-      gestureUpBtn.disabled = false;
-      gestureDownBtn.disabled = false;
-      moveToMouseBtn.disabled = false;
-
-      // Click to play random animation
-      currentAgent.on("click", () => {
-        currentAgent?.animate();
-      });
-
-      // Context menu event
-      currentAgent.on("contextmenu", (data) => {
-        console.log("Context menu triggered at", data.x, data.y);
-        currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
-      });
-
-      // Show tour welcome message
-      const skipTourWelcome = localStorage.getItem("msagentjs_skip_tour_welcome") === "true";
-      if (!skipTourWelcome && !tourWelcomeShown && currentAgent) {
-        tourWelcomeShown = true;
-        const result = await currentAgent.ask({
-          title: "Welcome to MS Agent JS!",
-          content: [
-            "Would you like a quick tour of the features?",
-            { type: "choices", items: ["I want the tour", "I don't want the tour"] },
-            { type: "checkbox", label: "Show this every start", checked: true },
-          ],
-          timeout: 0, // No timeout for welcome
-        });
-
-        if (result) {
-          // "Show this every start" means skipTourWelcome should be false if checked.
-          // If checked is false, it means user UNCHECKED "Show this every start", so we skip next time.
-          localStorage.setItem("msagentjs_skip_tour_welcome", (!result.checked).toString());
-
-          if (result.value === 0) {
-            const introResult = await currentAgent.ask({
-              content: ["Alright! MS Agent JS is a modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web. Let me show you around!"],
-              buttons: ["OK"],
-              timeout: 0,
-            });
-            if (introResult) {
-              await runTour(currentAgent);
-            }
-          }
-        }
-      }
     } catch (error: any) {
       if (error.name === "AbortError") {
         console.log("Agent loading cancelled");
@@ -371,6 +285,96 @@ async function initDemo() {
     } finally {
       loadingUI.destroy();
       loadAbortController = null;
+    }
+
+    if (!currentAgent) return;
+
+    // Populate animations
+    const animNames = currentAgent.animations().sort();
+    animNames.forEach((animName) => {
+      const option = document.createElement("option");
+      option.value = animName;
+      option.textContent = animName;
+      animationSelect.appendChild(option);
+    });
+
+    // Populate states
+    const stateNames = Object.keys(currentAgent.definition.states).sort();
+    stateNames.forEach((stateName) => {
+      const option = document.createElement("option");
+      option.value = stateName;
+      option.textContent = stateName;
+      if (stateName === "IdlingLevel1") option.selected = true;
+      stateSelect.appendChild(option);
+    });
+
+    updateVoiceList();
+    updateTTSOptions();
+
+    const info = getBestMatchingInfo(currentAgent.definition.character.infos);
+    galleryAgentName.textContent = info.name;
+    galleryAgentDescription.textContent = info.description;
+
+    isVisible = true;
+    visibilityBtn.textContent = "Hide";
+    startStopBtn.textContent = "Stop";
+    (window as any).agent = currentAgent;
+
+    playBtn.disabled = false;
+    play5sBtn.disabled = false;
+    playLoopedBtn.disabled = false;
+    randomBtn.disabled = false;
+    visibilityBtn.disabled = false;
+    speakBtn.disabled = false;
+    askBtn.disabled = false;
+    askOptionsBtn.disabled = false;
+    gestureLeftBtn.disabled = false;
+    gestureRightBtn.disabled = false;
+    gestureUpBtn.disabled = false;
+    gestureDownBtn.disabled = false;
+    moveToMouseBtn.disabled = false;
+
+    // Click to play random animation
+    currentAgent.on("click", () => {
+      currentAgent?.animate();
+    });
+
+    // Context menu event
+    currentAgent.on("contextmenu", (data) => {
+      console.log("Context menu triggered at", data.x, data.y);
+      currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
+    });
+
+    // Show tour welcome message
+    const skipTourWelcome = localStorage.getItem("msagentjs_skip_tour_welcome") === "true";
+    if (!skipTourWelcome && !tourWelcomeShown && currentAgent) {
+      tourWelcomeShown = true;
+      const result = await currentAgent.ask({
+        title: "Welcome to MS Agent JS!",
+        content: [
+          "Would you like a quick tour of the features?",
+          { type: "choices", items: ["I want the tour", "I don't want the tour"] },
+          { type: "checkbox", label: "Show this every start", checked: true },
+        ],
+        timeout: 0, // No timeout for welcome
+      });
+
+      if (result) {
+        // "Show this every start" means skipTourWelcome should be false if checked.
+        // If checked is false, it means user UNCHECKED "Show this every start", so we skip next time.
+        localStorage.setItem("msagentjs_skip_tour_welcome", (!result.checked).toString());
+
+        if (result.value === 0) {
+          const introResult = await currentAgent.ask({
+            content: ["Alright! MS Agent JS is a modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web. Let me show you around!"],
+            buttons: ["OK"],
+            timeout: 0,
+          });
+          if (introResult) {
+            await runTour(currentAgent);
+          }
+        }
+      }
     }
   }
 
