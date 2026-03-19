@@ -308,8 +308,43 @@ export class AnimationManager extends EventEmitter<any> {
     }
 
     // Default to sequential playback (wrapping around to 0)
-    const next =
+    let next =
       (this.currentFrameIndex + 1) % this.currentAnimation!.frames.length;
+
+    // For TransitionType 2 (looping animations with an exit branch),
+    // if we are NOT currently exiting, we should NOT "leak" into frames that are
+    // only meant to be reached via the exit branch or that lead to the natural end.
+    if (!this._isExiting && this.currentAnimation!.transitionType === 2) {
+      const nextFrameInfo = this.currentAnimation!.frames[next];
+
+      // If the next frame would be frame 0 (end) or has an exit branch (start of exit sequence),
+      // it means we are about to leave the looping section.
+      if (next === 0 || nextFrameInfo.exitBranch !== undefined) {
+        // Find the most recent frame (up to current) that defines a loop (via branching).
+        // This is typically the end of the loop that we want to repeat.
+        let loopStartIndex = -1;
+        for (let j = this.currentFrameIndex; j >= 0; j--) {
+          const frame = this.currentAnimation!.frames[j];
+          if (frame.branching && frame.branching.length > 0) {
+            loopStartIndex = j;
+            break;
+          }
+        }
+
+        // If no branching found yet, fallback to the first frame that has an exit branch.
+        // This defines the start of the looping section for animations without internal branching loops.
+        if (loopStartIndex === -1) {
+          loopStartIndex = this.currentAnimation!.frames.findIndex(
+            (f) => f.exitBranch !== undefined,
+          );
+        }
+
+        if (loopStartIndex !== -1 && loopStartIndex <= this.currentFrameIndex) {
+          return { index: loopStartIndex, isBranch: true };
+        }
+      }
+    }
+
     return { index: next, isBranch: false };
   }
 
