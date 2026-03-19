@@ -708,6 +708,7 @@ export class Agent {
   public ask(
     options: {
       title?: string;
+      bodyHtml?: string;
       placeholder?: string;
       choices?: string[];
       choiceStyle?: "bullet" | "bulb";
@@ -716,8 +717,14 @@ export class Agent {
       cancelButtonText?: string;
       timeout?: number;
     } = {},
-  ): Promise<{ value: any; text: string | null } | null> {
-    const title = options.title || "What would you like to do?";
+  ): Promise<{ value: any; text: string | null; inputs: Record<string, any> } | null> {
+    const title =
+      options.title ?? (options.choices || options.bodyHtml ? "" : "What would you like to do?");
+    const bodyHtml = options.bodyHtml || "";
+    const hasTextarea =
+      options.placeholder !== undefined
+        ? !!options.placeholder
+        : !options.choices && !options.bodyHtml;
     const placeholder = options.placeholder || "Ask me anything...";
     const askButtonText = options.askButtonText || "Ask";
     const cancelButtonText = options.cancelButtonText || "Cancel";
@@ -729,12 +736,16 @@ export class Agent {
       { label: cancelButtonText, value: null },
     ];
 
-    let resolveAsk: (value: { value: any; text: string | null } | null) => void;
-    const askPromise = new Promise<{ value: any; text: string | null } | null>(
-      (res) => {
-        resolveAsk = res;
-      },
-    );
+    let resolveAsk: (
+      value: { value: any; text: string | null; inputs: Record<string, any> } | null,
+    ) => void;
+    const askPromise = new Promise<{
+      value: any;
+      text: string | null;
+      inputs: Record<string, any>;
+    } | null>((res) => {
+      resolveAsk = res;
+    });
 
     this.enqueueRequest(async (request) => {
       if (request.isCancelled) {
@@ -745,16 +756,13 @@ export class Agent {
       let inputBalloonTimeout: number | null = null;
       let resolved = false;
 
-      const hasTextarea = !choices || !!options.placeholder;
-
       let balloonContent = `<div class="clippy-input">`;
       if (title) balloonContent += `<b>${title}</b>`;
+      if (bodyHtml) balloonContent += `<div>${bodyHtml}</div>`;
 
       if (choices) {
         const choicesHtml = choices
-          .map(
-            (choice, i) => `<li data-index="${i}"><span>${choice}</span></li>`,
-          )
+          .map((choice, i) => `<li data-index="${i}"><span>${choice}</span></li>`)
           .join("");
         balloonContent += `<ul class="clippy-choices style-${choiceStyle}">${choicesHtml}</ul>`;
       }
@@ -777,7 +785,29 @@ export class Agent {
       this.startTalkingAnimation();
 
       return new Promise<void>((resolveQueue) => {
-        const finish = (value: { value: any; text: string | null } | null) => {
+        const getInputs = (): Record<string, any> => {
+          const inputs: Record<string, any> = {};
+          const els = this.renderer.balloon.balloonEl.querySelectorAll("input, select, textarea");
+          els.forEach((el) => {
+            const inputEl = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+            if (!inputEl.id && !inputEl.name) return;
+            const key = inputEl.id || inputEl.name;
+            if (inputEl instanceof HTMLInputElement && inputEl.type === "checkbox") {
+              inputs[key] = inputEl.checked;
+            } else if (inputEl instanceof HTMLInputElement && inputEl.type === "radio") {
+              if (inputEl.checked) inputs[key] = inputEl.value;
+            } else {
+              inputs[key] = inputEl.value;
+            }
+          });
+          return inputs;
+        };
+
+        const finish = (value: {
+          value: any;
+          text: string | null;
+          inputs: Record<string, any>;
+        } | null) => {
           if (resolved) return;
           resolved = true;
           this.renderer.balloon.onHide = null;
@@ -818,12 +848,8 @@ export class Agent {
         }
 
         const balloonEl = this.renderer.balloon.balloonEl;
-        const input = balloonEl.querySelector(
-          "textarea",
-        ) as HTMLTextAreaElement;
-        const choicesList = balloonEl.querySelector(
-          ".clippy-choices",
-        ) as HTMLUListElement;
+        const input = balloonEl.querySelector("textarea") as HTMLTextAreaElement;
+        const choicesList = balloonEl.querySelector(".clippy-choices") as HTMLUListElement;
         const customButtons = balloonEl.querySelectorAll(
           ".custom-button",
         ) as NodeListOf<HTMLButtonElement>;
@@ -849,7 +875,7 @@ export class Agent {
           if (li && li.hasAttribute("data-index")) {
             const index = parseInt(li.getAttribute("data-index") || "0");
             const text = input ? input.value : null;
-            finish({ value: index, text });
+            finish({ value: index, text, inputs: getInputs() });
             this.renderer.balloon.close();
           }
         };
@@ -858,14 +884,13 @@ export class Agent {
           const btn = e.currentTarget as HTMLButtonElement;
           const index = parseInt(btn.getAttribute("data-index") || "0");
           const buttonDef = buttons[index];
-          const value =
-            typeof buttonDef === "string" ? buttonDef : buttonDef.value;
+          const value = typeof buttonDef === "string" ? buttonDef : buttonDef.value;
           const text = input ? input.value : null;
 
           if (value === null) {
             finish(null);
           } else {
-            finish({ value, text });
+            finish({ value, text, inputs: getInputs() });
           }
           this.renderer.balloon.close();
         };

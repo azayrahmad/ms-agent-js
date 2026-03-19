@@ -326,6 +326,40 @@ async function initDemo() {
         console.log("Context menu triggered at", data.x, data.y);
         currentAgent?.speak(`Right-click or long-press at ${data.x}, ${data.y}`);
       });
+
+      // Show welcome tour if enabled
+      const showWelcome = localStorage.getItem("msagent_show_welcome") !== "false";
+      if (showWelcome) {
+        const title = `Welcome to MSAgentJS!`;
+        const intro = `It looks like this is your first time here (or you kept the welcome message enabled). Would you like a quick tour of the features?`;
+
+        // Custom HTML for the checkbox
+        const welcomeHtml = `
+          <div style="margin-bottom: 10px;">${intro}</div>
+          <div class="field-row">
+            <input type="checkbox" id="show-welcome-check" checked />
+            <label for="show-welcome-check">Show this every start</label>
+          </div>
+        `;
+
+        const result = await currentAgent.ask({
+          title: title,
+          bodyHtml: welcomeHtml,
+          placeholder: "",
+          buttons: [
+            { label: "Yes, start tour", value: "yes" },
+            { label: "No thanks", value: "no" },
+          ],
+        });
+
+        if (result && result.inputs["show-welcome-check"] !== undefined) {
+          localStorage.setItem("msagent_show_welcome", result.inputs["show-welcome-check"].toString());
+        }
+
+        if (result?.value === "yes") {
+          runTour(currentAgent);
+        }
+      }
     } catch (error: any) {
       if (error.name === "AbortError") {
         console.log("Agent loading cancelled");
@@ -657,6 +691,62 @@ async function initDemo() {
       }
     });
   });
+
+  async function runTour(agent: Agent) {
+    const cp = document.querySelector(".control-panel") as HTMLElement;
+    const debugWin = document.querySelector(".debug-window") as HTMLElement;
+
+    const getBottomRight = (el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      const scale = agent.options.scale;
+      const w = agent.definition.character.width * scale;
+      const h = agent.definition.character.height * scale;
+      return {
+        x: rect.right - w,
+        y: rect.bottom - h,
+      };
+    };
+
+    const steps = [
+      { tabId: "tab-about", text: "Welcome to MS Agent JS!", body: "This tab provides information about the project and links to the source code." },
+      { tabId: "tab-assistant", text: "Assistant Gallery", body: "In this tab, you can choose from various classic Microsoft Agent characters like Clippit, DOT, and more!" },
+      { tabId: "tab-behavior", text: "Character Behavior", body: "Here, you can control my actions, scale, and specific animations. Try playing different ones or moving me around!" },
+      { tabId: "tab-speech", text: "Speech & Interaction", body: "This tab allows you to type messages for me to speak, adjust voice settings, and try interactive 'Ask' dialogs." },
+    ];
+
+    for (const step of steps) {
+      const tab = document.getElementById(step.tabId);
+      if (tab) {
+        const tabRect = tab.getBoundingClientRect();
+        // Move to tab to "click" it
+        await agent.moveTo(tabRect.left, tabRect.top);
+        tab.click();
+        // Move to bottom right of control panel to describe
+        const pos = getBottomRight(cp);
+        await agent.moveTo(pos.x, pos.y);
+        await agent.ask({
+          title: step.text,
+          bodyHtml: step.body,
+          placeholder: "",
+          buttons: [{ label: "OK", value: "ok" }],
+        });
+      }
+    }
+
+    // Debug window
+    if (debugWin) {
+      const pos = getBottomRight(debugWin);
+      await agent.moveTo(pos.x, pos.y);
+      await agent.ask({
+        title: "Debug Window",
+        bodyHtml: "Finally, this window shows real-time debug information about my current state, animation frame, and position.",
+        placeholder: "",
+        buttons: [{ label: "Finish", value: "ok" }],
+      });
+    }
+
+    agent.speak("That's it for the tour! Have fun exploring.");
+  }
 
   // Start
   updateDebug();
