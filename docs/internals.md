@@ -24,6 +24,7 @@ graph TD
     B[CharacterParser]
     M[MSADPCMDecoder]
     S[SpriteManager]
+    SM[StateMachine]
     end
 
     subgraph "UI Layer (AgentRenderer)"
@@ -39,6 +40,7 @@ graph TD
     AgentCore --> F
     AgentCore --> H
     AgentCore --> S
+    F --> SM
     E --> M
 ```
 
@@ -52,6 +54,7 @@ graph TD
 | **`SpriteManager`** | Handles bitmap loading and rendering logic. | `src/core/resources/` |
 | **`AnimationManager`** | Low-level frame-by-frame timing and branching. | `src/core/behavior/` |
 | **`StateManager`** | High-level behavioral state transitions. | `src/core/behavior/` |
+| **`StateMachine`** | Lightweight XState-inspired engine for behavioral logic. | `src/core/behavior/` |
 | **`AudioManager`** | Audio spritesheet and decoding management. | `src/core/resources/` |
 | **`MSADPCMDecoder`** | Decodes legacy Microsoft ADPCM WAV files into PCM. | `src/core/resources/` |
 | **`Balloon`** | Procedural SVG speech bubble rendering. | `src/ui/` |
@@ -68,14 +71,24 @@ The `Agent` maintains a `requestAnimationFrame` loop that drives the entire syst
     - Calculates if the current frame duration has elapsed.
     - Processes "null frames" (duration 0) immediately in a loop.
 2.  **`StateManager.update(deltaTime)`**:
-    - Monitors the `RequestQueue`. If empty, it progresses "Idle" logic.
-    - Increments "boredom" levels to trigger more complex idle animations.
-    - Note: `StateManager.update` is asynchronous to allow for non-blocking idle transitions.
+    - Sends a `TICK` event to the internal behavioral state machine.
+    - Detects when an animation has finished and sends an `ANIMATION_END` event.
+    - Manages "boredom" levels through the machine's context to trigger more complex idle animations.
 3.  **`AgentRenderer.draw()`**:
     - Clears the canvas.
     - Calls `AnimationManager.draw(ctx)`, which delegates to `SpriteManager.drawFrame()`.
 
-### 2. Request Processing & Interruption
+### 2. Behavioral State Machine
+The `StateManager` uses a declarative state machine to manage the agent's high-level transitions.
+
+- **States**: `Hidden`, `Showing`, `Hiding`, `Playing`, `Persistent` (for Idles and custom states).
+- **Events**: `TICK`, `ANIMATION_END`, `SHOW`, `HIDE`, `PLAY`, `STATE_SET`.
+- **Guards**: `hasRequests`, `isNotAnimating`, `shouldLoopPersistent`.
+- **Actions**: `playShowAnimation`, `updateStateAnimation`, `resetIdle`, etc.
+
+This structured approach makes it easy to add new behavioral modes or customize the agent's reaction to user interaction without modifying the core rendering loop.
+
+### 3. Request Processing & Interruption
 MSAgentJS uses a "Chore" system inspired by the original Microsoft Agent.
 
 ```mermaid
