@@ -61,6 +61,8 @@ This project uses **Conventional Commits** for automated releases and changelog 
 - `refactor:` for code changes that neither fix a bug nor add a feature.
 - `chore:` for updating build tasks, package manager configs, etc.
 
+AI agents should also use specific scopes like `core`, `ui`, `balloon`, `audio`, `sprite`, `anim`, `state`, `parser`, `demo`, `docs`, `scripts`, or `deps`. See **[AGENTS.md](./AGENTS.md)** for the full list of agent standards.
+
 ---
 
 ## 🎨 Asset Optimization Tooling
