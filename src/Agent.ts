@@ -791,7 +791,8 @@ export class Agent {
           balloonContent += `<textarea rows="${rows}" placeholder="${placeholder}"></textarea>`;
         } else if (item.type === "checkbox") {
           const checked = item.checked ? "checked" : "";
-          balloonContent += `<div class="clippy-checkbox"><input type="checkbox" class="ask-checkbox" ${checked}><label>${item.label}</label></div>`;
+          const id = `clippy-checkbox-${Math.random().toString(36).substring(2, 11)}`;
+          balloonContent += `<div class="clippy-checkbox"><input type="checkbox" id="${id}" class="ask-checkbox" ${checked}><label for="${id}">${item.label}</label></div>`;
         }
       });
 

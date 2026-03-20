@@ -45,7 +45,25 @@ export const setupGlobals = (mockDefinition?: any) => {
         json: () => Promise.resolve(result),
         text: () => Promise.resolve(JSON.stringify(result)),
         headers: new Map(),
-        body: null
+        body: null,
+        blob: () => Promise.resolve(new Blob([''], { type: 'image/png' })),
+        url: url
+      });
+    } else if (url.endsWith('.webp') || url.endsWith('.png') || url.endsWith('.bmp')) {
+      const buffer = new ArrayBuffer(54);
+      const view = new DataView(buffer);
+      view.setUint16(0, 0x4D42, true); // BM
+      view.setUint32(14, 40, true); // infoHeaderSize
+      view.setInt32(18, 1, true); // width
+      view.setInt32(22, 1, true); // height
+      view.setUint16(28, 24, true); // bitCount
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        blob: () => Promise.resolve(new Blob([buffer], { type: 'image/bmp' })),
+        arrayBuffer: () => Promise.resolve(buffer),
+        headers: new Map([['content-type', 'image/bmp']]),
+        url: url
       });
     } else if (url.endsWith('.acd')) {
       // Return 404 for agent.json to trigger fallback to ACD in Agent.load tests that check this
@@ -107,6 +125,21 @@ export const setupGlobals = (mockDefinition?: any) => {
   };
 
   vi.stubGlobal('window', mockWindow);
+  vi.stubGlobal('Image', vi.fn().mockImplementation(() => {
+    const img: any = {
+      onload: null,
+      onerror: null,
+      src: '',
+    };
+    setTimeout(() => {
+      if (img.onload) img.onload();
+    }, 10);
+    return img;
+  }));
+  vi.stubGlobal('URL', {
+    createObjectURL: vi.fn().mockReturnValue('mock-url'),
+    revokeObjectURL: vi.fn(),
+  });
   vi.stubGlobal('SpeechSynthesisUtterance', vi.fn().mockImplementation(function (this: any, text) {
     this.text = text;
     this.onend = null;
@@ -185,6 +218,7 @@ export const setupGlobals = (mockDefinition?: any) => {
               if (this.lastQueriedCheckbox.checked === undefined) this.lastQueriedCheckbox.checked = false;
               return this.lastQueriedCheckbox;
           }
+          if (selector === 'label' && this.lastQueriedLabel) return this.lastQueriedLabel;
           // In the mock environment, we might be querying from the balloon container,
           // but our showHtml/speak logic puts content into _contentEl.
           // Since we don't have a real DOM/Shadow DOM, we'll check if the target has shadowNodes or childNodes
@@ -196,6 +230,8 @@ export const setupGlobals = (mockDefinition?: any) => {
                   if (selector === '.ask-checkbox' && node.className && typeof node.className === 'string' && node.className.includes('ask-checkbox')) return node;
                   if (node.nodeName === 'INPUT' && node.attributes?.type === 'checkbox') return node;
                   if (selector === 'input[type="checkbox"]' && node.nodeName === 'INPUT' && node.attributes?.type === 'checkbox') return node;
+                  if (selector === '.clippy-checkbox label' && node.nodeName === 'LABEL') return node;
+                  if (selector === 'label' && node.nodeName === 'LABEL') return node;
                   if (selector === '.clippy-choices' && node.className.includes('clippy-choices')) return node;
                   if (selector === '.clippy-input' && node.className.includes('clippy-input')) return node;
                   const found = findInNodes(node.childNodes || []);
@@ -214,8 +250,8 @@ export const setupGlobals = (mockDefinition?: any) => {
           }
 
           // Fallback to legacy mock behavior if not found in nodes (for cases where nodes aren't properly linked)
-          if (selector === 'textarea' || selector === '.clippy-choices' || selector === '.clippy-input' || selector === '.ask-checkbox') {
-            const tag = selector === 'textarea' ? 'textarea' : (selector === '.clippy-choices' ? 'ul' : (selector === '.ask-checkbox' ? 'input' : 'div'));
+          if (selector === 'textarea' || selector === '.clippy-choices' || selector === '.clippy-input' || selector === '.ask-checkbox' || selector === 'label') {
+            const tag = selector === 'textarea' ? 'textarea' : (selector === '.clippy-choices' ? 'ul' : (selector === '.ask-checkbox' ? 'input' : (selector === 'label' ? 'label' : 'div')));
             const el = document.createElement(tag);
             if (selector.startsWith('.')) el.className = selector.substring(1).split(' ')[0];
             if (selector === '.ask-checkbox') {
@@ -225,6 +261,7 @@ export const setupGlobals = (mockDefinition?: any) => {
             if (selector === 'textarea') this.lastQueriedTextarea = el;
             if (selector === '.clippy-choices') this.lastQueriedChoicesList = el;
             if (selector === '.ask-checkbox') this.lastQueriedCheckbox = el;
+            if (selector === 'label') this.lastQueriedLabel = el;
             if (!(el as any).listeners) (el as any).listeners = {};
             return el;
           }
@@ -297,7 +334,9 @@ export const setupGlobals = (mockDefinition?: any) => {
             if (el.shadowNodes) el.shadowNodes.push(child);
           }),
           host: el,
-          get childNodes() { return el.shadowNodes || []; }
+          get childNodes() { return el.shadowNodes || []; },
+          querySelector: el.querySelector,
+          querySelectorAll: el.querySelectorAll,
         });
         el.shadowNodes = [];
       }
