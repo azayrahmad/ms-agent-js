@@ -252,6 +252,66 @@ export class AgentRenderer {
       .clippy-choices.style-bulb li:active::before {
         background-position: -22px 0;
       }
+
+      .clippy-checkbox {
+        align-self: flex-start;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+      }
+      .clippy-checkbox input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: 0;
+        border: none;
+        margin: 0;
+        opacity: 0;
+        position: fixed;
+      }
+      .clippy-checkbox label {
+        margin-left: 19px;
+        position: relative;
+        line-height: 13px;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .clippy-checkbox label:before {
+        background: #fff;
+        box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+        content: "";
+        display: inline-block;
+        height: 13px;
+        left: -19px;
+        margin-right: 6px;
+        position: absolute;
+        width: 13px;
+      }
+      .clippy-checkbox input[type="checkbox"]:active + label:before {
+        background: silver;
+      }
+      .clippy-checkbox input[type="checkbox"]:checked + label:after {
+        background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='7' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0H6v1H5v1H4v1H3v1H2V3H1V2H0v3h1v1h1v1h1V6h1V5h1V4h1V3h1V0z' fill='%23000'/%3E%3C/svg%3E");
+        content: "";
+        display: block;
+        height: 7px;
+        left: -16px;
+        position: absolute;
+        top: 3px;
+        width: 7px;
+      }
+      .clippy-checkbox input[type="checkbox"][disabled] + label {
+        color: grey;
+        text-shadow: 1px 1px 0 #fff;
+        cursor: default;
+      }
+      .clippy-checkbox input[type="checkbox"][disabled] + label:before {
+        background: silver;
+      }
+      .clippy-checkbox input[type="checkbox"][disabled]:checked + label:after {
+        background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='7' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0H6v1H5v1H4v1H3v1H2V3H1V2H0v3h1v1h1v1h1V6h1V5h1V4h1V3h1V0z' fill='gray'/%3E%3C/svg%3E");
+      }
     `;
   }
 }
