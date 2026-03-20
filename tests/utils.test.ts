@@ -143,6 +143,29 @@ describe('fetchWithProgress', () => {
 
     await expect(promise).rejects.toThrow('AbortError');
   });
+
+  it('should fallback to url as filename if no slashes', async () => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode('{}');
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(data);
+        controller.close();
+      }
+    });
+    const mockResponse = new Response(stream, {
+      headers: { 'content-length': '2' }
+    });
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
+
+    const onProgress = vi.fn();
+    const response = await fetchWithProgress('test.json', { onProgress });
+    await response.text();
+
+    expect(onProgress).toHaveBeenCalledWith(expect.objectContaining({
+      filename: 'test.json'
+    }));
+  });
 });
 
 import { formatColor } from '../src/utils';

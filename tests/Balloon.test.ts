@@ -341,4 +341,17 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should handle resume correctly by restarting timers', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+
+        // Mock _addChar to see if it gets called
+        (balloon as any)._addChar = vi.fn();
+
+        balloon.resume();
+        expect((balloon as any)._addChar).toHaveBeenCalled();
+
+        vi.useRealTimers();
+    });
 });
