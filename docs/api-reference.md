@@ -93,6 +93,7 @@ Displays text in a speech balloon.
 - **`hold`**: If true, the balloon stays open after speech finishes (default: false).
 - **`useTTS`**: Enable/disable system speech for this request (default: true).
 - **`skipTyping`**: Show all text instantly (default: false).
+- **`animation`**: Optional looping animation name to play while speaking (e.g., 'Explain').
 - **`skipContentUpdate`**: (Internal/Expert) If true, does not overwrite the current content of the balloon. Useful for persistent interactive elements.
 
 ### `agent.showHtml(html, hold?)`
@@ -109,6 +110,7 @@ Opens an interactive dialog with a title, a content array (text, choices, and in
   - `{ type: 'checkbox', label: string, checked?: boolean }`: Renders a labeled checkbox.
 - **`buttons`**: An array of button definitions. Each can be a string or an object `{ label: string, value: any, bullet?: 'bullet' | 'bulb' }`.
 - **`timeout`**: Auto-cancel after milliseconds (default: 60000).
+- **`animation`**: Optional looping animation name to play while the dialog is active (e.g., 'Explain').
 
 ### `agent.stop(request?)`
 Stops the specified request or all requests in the queue. If the active request is stopped, the agent moves to the next one.
