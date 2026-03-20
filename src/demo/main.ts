@@ -352,8 +352,11 @@ async function initDemo() {
       const result = await currentAgent.ask({
         title: "Welcome to MS Agent JS!",
         content: [
-          "Would you like a quick tour of the features?",
-          { type: "choices", items: ["I want the tour", "I don't want the tour"] },
+          "Would you like a quick tour of the features, or do you have specific questions about using the library?",
+          {
+            type: "choices",
+            items: ["I want the tour", "I have questions (Help)", "I'm fine, thanks"],
+          },
           { type: "checkbox", label: "Show this every start", checked: true },
         ],
         timeout: 0, // No timeout for welcome
@@ -366,13 +369,17 @@ async function initDemo() {
 
         if (result.value === 0) {
           const introResult = await currentAgent.ask({
-            content: ["Alright! MS Agent JS is a modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web. Let me show you around!"],
+            content: [
+              "Alright! MS Agent JS is a modern, TypeScript-based implementation of Microsoft Agent, bringing the charm of Clippy and friends back to the web. Let me show you around!",
+            ],
             buttons: ["OK"],
             timeout: 0,
           });
           if (introResult) {
             await runTour(currentAgent);
           }
+        } else if (result.value === 1) {
+          await runHelp(currentAgent);
         }
       }
     }
@@ -704,6 +711,100 @@ async function initDemo() {
       }
     });
   });
+
+  async function runHelp(agent: Agent) {
+    const topics = [
+      {
+        title: "How do I get started?",
+        keywords: ["install", "setup", "npm", "start", "get started"],
+        answer:
+          "To get started, install via npm: <code>npm install ms-agent-js</code>. Then use <code>Agent.load('Clippit')</code> to initialize your first agent.",
+        link: "./docs/getting-started.md",
+      },
+      {
+        title: "How do I control animations/speech?",
+        keywords: ["animation", "play", "move", "gesture", "look", "speak", "talk", "tts", "voice", "ask"],
+        answer:
+          "Use <code>agent.play('AnimationName')</code> for animations, and <code>agent.speak('Hello')</code> or <code>agent.ask()</code> for speech. All actions are queued automatically!",
+        link: "./docs/api-reference.md",
+      },
+      {
+        title: "How do I add custom agents?",
+        keywords: ["custom", "acd", "asset", "own", "build", "optimize"],
+        answer:
+          "You can load custom agents using their folder path. We recommend using our <code>optimize-agent.ts</code> script to convert legacy .acd files into optimized JSON/WebP formats.",
+        link: "./docs/assets.md",
+      },
+    ];
+
+    const fallbackKeywords = [
+      {
+        keywords: ["contribute", "develop", "source", "github"],
+        answer:
+          "We love contributors! Check out our GitHub repository and read the <code>CONTRIBUTING.md</code> file to learn how to set up your environment.",
+        link: "./CONTRIBUTING.md",
+      },
+      {
+        keywords: ["docs", "help", "reference", "api"],
+        answer:
+          "Our documentation covers everything from basic usage to internal architecture. Check the Documentation Map in the README for all available guides.",
+        link: "./README.md#📖-documentation-map",
+      },
+    ];
+
+    let currentHelpContent: string[] = ["What can I help you with? You can pick a topic or type a question below."];
+
+    while (true) {
+      const result = await agent.ask({
+        title: "Interactive Help",
+        content: [
+          ...currentHelpContent,
+          { type: "choices", items: topics.map((t) => t.title), style: "bulb" },
+          { type: "input", placeholder: "Type a keyword (e.g. 'npm', 'tts')..." },
+        ],
+        buttons: [
+          { label: "Ask", value: "ask" },
+          { label: "Back", value: "back" },
+        ],
+        timeout: 0,
+      });
+
+      if (!result || result.value === "back") break;
+
+      let answer = "";
+      let link = "";
+
+      if (typeof result.value === "number") {
+        // Topic selected
+        const topic = topics[result.value];
+        answer = topic.answer;
+        link = topic.link;
+      } else if (result.value === "ask" && result.text) {
+        // Keyword search
+        const query = result.text.toLowerCase();
+        const allEntries = [...topics, ...fallbackKeywords];
+        const match = allEntries.find((entry) => entry.keywords.some((kw) => query.includes(kw)));
+
+        if (match) {
+          answer = match.answer;
+          link = match.link;
+        } else {
+          answer = "I'm sorry, I don't have information on that specific topic yet. Try keywords like 'install', 'animation', or 'custom'.";
+        }
+      }
+
+      if (answer) {
+        currentHelpContent = [
+          `<div>${answer}</div>`,
+          link ? `<div style="margin-top: 5px;"><a href="${link}" target="_blank" style="color: blue; text-decoration: underline;">Read more in the docs</a></div>` : "",
+          `<hr style="margin: 10px 0; border: 0; border-top: 1px solid #ccc;">`,
+          "Anything else you'd like to know?",
+        ];
+      }
+    }
+
+    agent.speak("I hope that helps! Let me know if you need anything else.");
+  }
 
   async function runTour(agent: Agent) {
     const tabs = [
