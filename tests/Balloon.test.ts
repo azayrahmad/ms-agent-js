@@ -284,4 +284,61 @@ describe('Balloon', () => {
         // When top space < balloon height + tip depth
         expect((balloon as any)._tipType).toBe(0); // TipQuadrant.Top (balloon is below)
     });
+
+    it('should use TTS fallback timer if onboundary does not fire', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        const text = 'Hello world';
+        balloon.speak(complete, text, false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Initially empty
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('');
+
+        // Simulate onstart
+        utterance.onstart();
+
+        // Advance past the 200ms fallback threshold
+        vi.advanceTimersByTime(250);
+
+        // Fallback should have started and processed the first word "Hello"
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+
+        // Advance to next word "world" (default 400ms per word)
+        vi.advanceTimersByTime(400);
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello world');
+
+        vi.useRealTimers();
+    });
+
+    it('should NOT use TTS fallback if onboundary fires', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        const text = 'Hello world';
+        balloon.speak(complete, text, false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Simulate onboundary firing immediately
+        utterance.onboundary({ charIndex: 0, charLength: 5 });
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+
+        // Advance past the 200ms threshold
+        vi.advanceTimersByTime(250);
+
+        // content should still only have "Hello" (assuming next boundary hasn't arrived)
+        // and importantly, the fallback timer shouldn't have overridden it.
+        // Actually, since we simulate it after 200ms, if it was running, it would have moved to word 0 ("Hello") then word 1 ("world") by now.
+        // But wordIdx 0 was already reached.
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+
+        vi.useRealTimers();
+    });
 });

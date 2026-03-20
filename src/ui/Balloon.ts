@@ -539,17 +539,81 @@ export class Balloon {
       utterance.voice = this._ttsOptions.voice;
     }
 
+    let receivedBoundary = false;
+
     utterance.onboundary = (event) => {
+      receivedBoundary = true;
+      if (this._mobileTTSTimer) {
+        clearTimeout(this._mobileTTSTimer);
+        this._mobileTTSTimer = null;
+      }
       if (onBoundary) {
         onBoundary(event.charIndex, event.charLength);
       }
       this.onSpeak?.(text, event.charIndex);
     };
-    utterance.onend = () => onEnd();
-    utterance.onerror = () => onEnd();
+
+    const cleanupAndEnd = () => {
+      if (this._mobileTTSTimer) {
+        clearTimeout(this._mobileTTSTimer);
+        this._mobileTTSTimer = null;
+      }
+      onEnd();
+    };
+
+    utterance.onend = cleanupAndEnd;
+    utterance.onerror = cleanupAndEnd;
+    utterance.onstart = () => {
+      // Fallback logic for browsers where onboundary doesn't fire (e.g. Chrome Android)
+      if (onBoundary) {
+        if (this._mobileTTSTimer) {
+          clearTimeout(this._mobileTTSTimer);
+        }
+        this._mobileTTSTimer = setTimeout(() => {
+          if (!receivedBoundary) {
+            this._startTTSFallback(text, onBoundary);
+          }
+        }, 200) as any;
+      }
+    };
 
     this._currentUtterance = utterance;
     window.speechSynthesis.speak(utterance);
+  }
+
+  /**
+   * Manually simulates word boundaries for browsers that don't support the onboundary event.
+   */
+  private _startTTSFallback(
+    text: string,
+    onBoundary: (charIndex: number, charLength?: number) => void,
+  ) {
+    const words: { word: string; index: number }[] = [];
+    const regex = /\S+/g;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      words.push({ word: match[0], index: match.index });
+    }
+
+    let wordIdx = 0;
+    // Estimate: 150 words per minute at rate 1.0 (approx 400ms per word)
+    const wordDuration = 400 / this._ttsOptions.rate;
+
+    const nextStep = () => {
+      if (wordIdx >= words.length) return;
+
+      const { word, index } = words[wordIdx];
+      onBoundary(index, word.length);
+      this.onSpeak?.(text, index);
+
+      wordIdx++;
+
+      if (wordIdx < words.length) {
+        this._mobileTTSTimer = setTimeout(nextStep, wordDuration) as any;
+      }
+    };
+
+    nextStep();
   }
 
   /**
