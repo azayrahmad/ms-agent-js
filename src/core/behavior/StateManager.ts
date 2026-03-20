@@ -16,20 +16,27 @@ export interface StateManagerConfig {
 }
 
 /**
- * Context for the state machine.
+ * Context for the behavioral state machine.
  */
 export interface StateContext {
+  /** Count of elapsed idle ticks since the last level increase. */
   idleTickCount: number;
+  /** Current boredom/idle level of the agent (e.g., 1-3). */
   currentIdleLevel: number;
+  /** Time elapsed towards the next tick, in milliseconds. */
   elapsedSinceLastTick: number;
+  /** Fixed interval between idle behavioral checks, in milliseconds. */
   idleIntervalMs: number;
+  /** Number of ticks required to progress to the next idle level. */
   ticksPerLevel: number;
+  /** Maximum boredom level possible. */
   maxIdleLevel: number;
+  /** The current high-level state name of the agent. */
   currentState: string;
 }
 
 /**
- * Events for the state machine.
+ * Events that the StateManager state machine can process.
  */
 export type StateEvent =
   | { type: "TICK"; deltaTime: number }
@@ -41,19 +48,32 @@ export type StateEvent =
 
 /**
  * StateManager class for managing the agent's high-level behavioral state.
- * It handles the progression from one state to another (e.g., Idling -> Playing -> Idling)
- * and manages "boredom" levels through the idle progression system.
+ * It uses a structured state machine to handle transitions between idling,
+ * action states (playing, showing), and hidden states, as well as managing
+ * boredom/idle progression.
  */
 export class StateManager {
+  /** Map of behavioral states from the character definition. */
   private states: Record<string, State>;
+  /** Reference to the manager for frame playback. */
   private animationManager: AnimationManager;
+  /** Reference to the queue to suppress idles when busy. */
   private requestQueue?: RequestQueue;
+  /** Internal state machine for behavioral logic. */
   private machine: Machine<StateContext, StateEvent>;
 
+  /** The default prefix for idle boredom levels. */
   private idlePrefix: string = "IdlingLevel";
+  /** Track IDs to prevent race conditions during async animation playback. */
   private lastAnimationId: number = 0;
+  /** Track whether the agent was previously animating to detect state changes. */
   private wasAnimating: boolean = false;
 
+  /**
+   * @param states - State definitions indexed by name.
+   * @param animationManager - Low-level manager for controlling sprite animations.
+   * @param config - Optional configuration for idle behaviors.
+   */
   constructor(
     states: Record<string, State>,
     animationManager: AnimationManager,
@@ -117,7 +137,7 @@ export class StateManager {
             },
             ANIMATION_END: [
               { target: "Playing", cond: "hasRequests" },
-              { target: "Persistent", cond: "shouldLoopPersistent", actions: ["updateStateAnimation"] },
+              { target: "Persistent", cond: "shouldLoopPersistent" },
             ],
             PLAY: {
               target: "Playing",
@@ -197,15 +217,17 @@ export class StateManager {
         },
         playShowAnimation: (ctx, event) => {
           const animationName = event.type === "SHOW" ? event.animationName : undefined;
-          this.handleVisibilityChangeInternal(true, animationName).catch(console.error);
+          this.pendingVisibilityTransition = this.handleVisibilityChangeInternal(true, animationName);
         },
         playHideAnimation: (ctx, event) => {
           const animationName = event.type === "HIDE" ? event.animationName : undefined;
-          this.handleVisibilityChangeInternal(false, animationName).catch(console.error);
+          this.pendingVisibilityTransition = this.handleVisibilityChangeInternal(false, animationName);
         },
       },
     });
   }
+
+  private pendingVisibilityTransition?: Promise<void>;
 
   /**
    * Internal getter for testing compatibility.
@@ -222,7 +244,7 @@ export class StateManager {
   }
 
   /**
-   * The current "boredom" level of the agent.
+   * The current boredom level of the agent (1-3).
    */
   public get idleLevel(): number {
     return this.machine.context.currentIdleLevel;
@@ -250,7 +272,10 @@ export class StateManager {
   }
 
   /**
-   * Updates the state machine. Called once per main loop iteration.
+   * Updates the behavioral state machine. Called once per main loop iteration.
+   * Processes idle ticks and detects animation completion.
+   *
+   * @param deltaTime - Time elapsed since the last update in milliseconds.
    */
   public async update(deltaTime: number): Promise<void> {
     this.machine.send({ type: "TICK", deltaTime });
@@ -263,7 +288,8 @@ export class StateManager {
   }
 
   /**
-   * Handle an idle tick.
+   * Internal logic for handling an idle behavioral tick.
+   * Manages boredom progression and idle animation triggering.
    */
   private handleIdleTick(ctx: StateContext) {
     if (this.isIdleState(ctx.currentState)) {
@@ -291,6 +317,9 @@ export class StateManager {
 
   /**
    * Explicitly sets the agent's behavioral state.
+   *
+   * @param stateName - The name of the state (must exist in definition or be a special transient state).
+   * @throws Error if the state name is invalid.
    */
   public async setState(stateName: string): Promise<void> {
     if (
@@ -306,7 +335,14 @@ export class StateManager {
   }
 
   /**
-   * Plays a specific animation, optionally setting a temporary state.
+   * Plays a specific animation and sets a corresponding behavioral state.
+   *
+   * @param animationName - The animation to play.
+   * @param stateName - (Optional) The behavioral state to transition to while playing.
+   * @param useExitBranch - Whether to start from an exiting frame.
+   * @param timeoutMs - (Optional) Duration before forcing the animation to exit.
+   * @param loop - (Optional) Whether to loop the animation indefinitely.
+   * @returns A promise that resolves when the animation finishes or is interrupted.
    */
   public async playAnimation(
     animationName: string,
@@ -343,14 +379,15 @@ export class StateManager {
       return result;
     } finally {
       if (timeoutId) clearTimeout(timeoutId);
-      if (this.lastAnimationId === currentAnimationId) {
-        this.machine.send({ type: "ANIMATION_END" });
-      }
+      // We don't send ANIMATION_END here anymore, relying on the poll in update()
+      // to ensure a single source of truth for completion.
     }
   }
 
   /**
-   * Picks a random non-idle animation and plays it.
+   * Picks a random non-idle animation from the library and plays it.
+   *
+   * @param timeoutMs - Max duration for the animation.
    */
   public async playRandomAnimation(timeoutMs: number = 5000): Promise<void> {
     const allAnimations = Object.keys((this.animationManager as any).animations);
@@ -363,7 +400,8 @@ export class StateManager {
   }
 
   /**
-   * Legacy method kept for interface compatibility.
+   * Fired when an explicit action animation completes.
+   * Transitions the agent back to an idle or busy state.
    */
   public async handleAnimationCompleted(): Promise<void> {
     this.machine.send({ type: "ANIMATION_END" });
@@ -390,12 +428,22 @@ export class StateManager {
   }
 
   /**
-   * Handles showing or hiding the agent.
+   * Handles showing or hiding the agent by triggering appropriate transitions.
+   *
+   * @param showing - Whether the agent should become visible.
+   * @param animationName - (Optional) Custom animation to play for the transition.
    */
   public async handleVisibilityChange(showing: boolean, animationName?: string): Promise<void> {
     this.machine.send(showing ? { type: "SHOW", animationName } : { type: "HIDE", animationName });
+    if (this.pendingVisibilityTransition) {
+        await this.pendingVisibilityTransition;
+        this.pendingVisibilityTransition = undefined;
+    }
   }
 
+  /**
+   * Internal implementation for intro/outro transitions.
+   */
   private async handleVisibilityChangeInternal(showing: boolean, animationName?: string): Promise<void> {
     const visibilityState = showing ? "Showing" : "Hiding";
     let animToPlay = "";
@@ -410,6 +458,7 @@ export class StateManager {
       await this.animationManager.preloadAnimation(animToPlay);
       this.wasAnimating = true;
       await this.animationManager.playAnimation(animToPlay, true);
+      // Explicitly send ANIMATION_END for internal transitions to ensure state machine moves on
       this.machine.send({ type: "ANIMATION_END" });
     } else {
       if (!showing) {

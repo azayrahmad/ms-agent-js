@@ -34,26 +34,18 @@ describe('StateManager Regression Tests', () => {
   });
 
   it('should transition from Showing to IdlingLevel1 after animation ends', async () => {
-    // 1. Trigger SHOW
-    await stateManager.handleVisibilityChange(true);
+    // 1. Trigger SHOW (async)
+    const showPromise = stateManager.handleVisibilityChange(true);
     expect(stateManager.currentStateName).toBe('Showing');
 
-    // 2. Simulate animation finish
-    mockAnimationManager.isAnimating = true; // Was animating
-    await stateManager.update(100);
-    mockAnimationManager.isAnimating = false; // Finished
-    await stateManager.update(100); // Should send ANIMATION_END
+    // 2. Resolve animation
+    await showPromise;
 
     expect(stateManager.currentStateName).toBe('IdlingLevel1');
   });
 
   it('should loop non-idle persistent states', async () => {
     await stateManager.handleVisibilityChange(true);
-    // Finish show
-    mockAnimationManager.isAnimating = true;
-    await stateManager.update(100);
-    mockAnimationManager.isAnimating = false;
-    await stateManager.update(100);
 
     // Set to Gesturing
     await stateManager.setState('Gesturing');
@@ -73,11 +65,6 @@ describe('StateManager Regression Tests', () => {
 
   it('should NOT loop idle states immediately', async () => {
     await stateManager.handleVisibilityChange(true);
-    // Finish show
-    mockAnimationManager.isAnimating = true;
-    await stateManager.update(100);
-    mockAnimationManager.isAnimating = false;
-    await stateManager.update(100);
 
     expect(stateManager.currentStateName).toBe('IdlingLevel1');
     mockAnimationManager.interruptAndPlayAnimation.mockClear();
