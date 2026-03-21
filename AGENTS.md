@@ -19,7 +19,7 @@ Follow these common patterns when tasked with extending the library:
 
 ### Recipe: Modifying Balloon Styles
 -   The Balloon uses **Shadow DOM**. Styles are defined in `src/Balloon.ts` using a `<style>` tag.
--   Visual changes to the bubble shape should be made in the SVG path generation logic in `Balloon._updatePath`.
+-   Visual changes to the bubble shape should be made in the SVG path generation logic in `Balloon._drawBalloon`.
 
 ---
 

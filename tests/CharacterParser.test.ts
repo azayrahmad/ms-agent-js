@@ -106,4 +106,38 @@ EndAnimation
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     await expect(CharacterParser.load('fail.acd')).rejects.toThrow();
   });
+
+  it('should parse complex ExtraData correctly', () => {
+    const content = `
+DefineCharacter
+  Width = 100
+  Height = 100
+  DefineInfo 0x0409
+    ExtraData = "G1 ~~ G2 ^^ R1 ~~ R2"
+  EndInfo
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const info = result.character.infos[0];
+    expect(info.greetings).toEqual(['G1', 'G2']);
+    expect(info.reminders).toEqual(['R1', 'R2']);
+  });
+
+  it('should default to empty arrays if ExtraData is malformed', () => {
+    const content = `
+DefineCharacter
+  Width = 100
+  Height = 100
+  DefineInfo 0x0409
+    ExtraData = "Some random text"
+  EndInfo
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const info = result.character.infos[0];
+    expect(info.greetings).toEqual([]);
+    expect(info.reminders).toEqual([]);
+  });
 });

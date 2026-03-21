@@ -354,4 +354,60 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should start TTS fallback if onboundary is not called within 200ms', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        balloon.speak(complete, 'Hello world', false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Simulate onstart
+        utterance.onstart();
+
+        // Advance 250ms (past 200ms threshold)
+        vi.advanceTimersByTime(250);
+
+        // Fallback should have kicked in and processed "Hello"
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+
+        vi.useRealTimers();
+    });
+
+    it('should NOT start TTS fallback if onboundary IS called within 200ms', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        balloon.setTTSEnabled(true);
+
+        const complete = vi.fn();
+        balloon.speak(complete, 'Hello world', false, true, false);
+
+        const utterance = (window.speechSynthesis.speak as any).mock.calls[0][0];
+
+        // Simulate onstart
+        utterance.onstart();
+
+        // Advance 100ms
+        vi.advanceTimersByTime(100);
+
+        // Simulate onboundary
+        utterance.onboundary({ charIndex: 0, charLength: 5 });
+        expect(balloon.balloonEl.querySelector('.clippy-content')?.textContent).toBe('Hello');
+
+        // Advance past 200ms threshold (another 150ms)
+        vi.advanceTimersByTime(150);
+
+        // Fallback should NOT have kicked in. If it did, it would have moved to "world"
+        // (since it estimates and word 0 is already done) or at least word 0 again.
+        // Actually, the logic in _startTTSFallback doesn't check if index was already reached.
+        // But the 200ms timer in onstart is cleared if onboundary fires.
+
+        // Let's verify that the mobile timer was cleared.
+        expect((balloon as any)._mobileTTSTimer).toBeNull();
+
+        vi.useRealTimers();
+    });
 });

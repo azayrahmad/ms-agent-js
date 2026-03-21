@@ -493,4 +493,65 @@ describe('Agent Additional Coverage', () => {
         expect(agent2.options.initialAnimation).toBe('LookUp');
         agent2.destroy();
     });
+
+    it('ask should handle Enter keypress in textarea', async () => {
+        const askPromise = agent.ask({
+            content: [{ type: 'input' }],
+            buttons: [{ label: 'OK', value: 'ok-val' }]
+        });
+
+        // Wait for balloon to render
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        const balloonEl = agent.balloon.balloonEl;
+        // In the mock environment, we use the last queried elements from the mock document
+        const textarea = (balloonEl as any).lastQueriedTextarea;
+        const okButton = (balloonEl as any).lastQueriedCustomButtons[0];
+
+        // Mock button click
+        const buttonClickSpy = vi.spyOn(okButton, 'click');
+
+        // Simulate Enter key
+        const event = {
+            key: 'Enter',
+            preventDefault: vi.fn(),
+            type: 'keypress'
+        } as any;
+
+        // Find the listener manually from the mock
+        const listener = textarea.listeners['keypress'][0];
+        listener(event);
+
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(buttonClickSpy).toHaveBeenCalled();
+
+        // Clicking the button should resolve the promise
+        okButton.click();
+        const result = await askPromise;
+        expect(result?.value).toBe('ok-val');
+    });
+
+    it('ask should handle TTS completion callback', async () => {
+        const speakSpy = vi.spyOn(agent.balloon, 'speak');
+        const handleAnimCompletedSpy = vi.spyOn(agent.stateManager, 'handleAnimationCompleted');
+        vi.spyOn(agent.stateManager, 'currentStateName', 'get').mockReturnValue('Speaking');
+
+        agent.ask({
+            title: 'Test Title',
+            content: ['Hello'],
+            buttons: ['OK']
+        });
+
+        // Wait for ask logic to call speak
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        expect(speakSpy).toHaveBeenCalled();
+        const completionCallback = speakSpy.mock.calls[0][0] as Function;
+
+        // Call the callback
+        completionCallback();
+
+        expect(handleAnimCompletedSpy).toHaveBeenCalled();
+        expect(agent.animationManager.isExitingFlag).toBe(true);
+    });
 });
