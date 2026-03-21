@@ -222,4 +222,23 @@ describe('SpriteManager', () => {
             20, 20
         );
     });
+
+    it('should throw error if BMP magic number is invalid', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(54);
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x0000, true); // Invalid magic
+
+        expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Not a BMP file, magic: 0x0');
+    });
+
+    it('should handle missing sprites in drawFrame silently', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const mockCtx = { drawImage: vi.fn() };
+        const frame = { images: [{ filename: 'missing.bmp', offsetX: 0, offsetY: 0 }] };
+
+        // Should not throw and not call drawImage
+        sm.drawFrame(mockCtx as any, frame as any, 0, 0);
+        expect(mockCtx.drawImage).not.toHaveBeenCalled();
+    });
 });

@@ -243,6 +243,11 @@ export class CharacterParser {
    * Uses legacy delimiters (^^ and ~~).
    */
   private parseExtraData(extraData: string, languageInfo: Info): void {
+    if (!extraData.includes("^^") && !extraData.includes("~~")) {
+      languageInfo.greetings = [];
+      languageInfo.reminders = [];
+      return;
+    }
     const parts = extraData.split("^^");
     // Parse greetings (before ^^)
     languageInfo.greetings = parts[0]

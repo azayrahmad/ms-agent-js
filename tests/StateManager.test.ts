@@ -131,4 +131,44 @@ describe('StateManager', () => {
         'random1', false, true
     );
   });
+
+  it('should progress boredom levels correctly', async () => {
+    // Show the agent to unpause it
+    await stateManager.handleVisibilityChange(true);
+    await stateManager.setState('IdlingLevel1');
+
+    // ticksPerLevel is 3. We are currently at level 1.
+    // 3 ticks at level 1 should move us to level 2.
+    for (let i = 0; i < 3; i++) {
+        await stateManager.update(1000);
+    }
+
+    expect(stateManager.idleLevel).toBe(2);
+    expect(stateManager.currentStateName).toBe('IdlingLevel2');
+
+    // 3 more ticks should move us to level 3 (or max level)
+    for (let i = 0; i < 3; i++) {
+        await stateManager.update(1000);
+    }
+    expect(stateManager.idleLevel).toBe(3);
+  });
+
+  it('should reset boredom when a custom state is set', async () => {
+    // Show the agent to unpause it
+    await stateManager.handleVisibilityChange(true);
+    await stateManager.setState('IdlingLevel1');
+
+    // Progress to level 2
+    for (let i = 0; i < 3; i++) {
+        await stateManager.update(1000);
+    }
+    expect(stateManager.idleLevel).toBe(2);
+
+    // Set a custom state
+    mockStates['Custom'] = { name: 'Custom', animations: ['idle1'] };
+    await stateManager.setState('Custom');
+
+    expect(stateManager.idleLevel).toBe(1);
+    expect(stateManager.currentStateName).toBe('Custom');
+  });
 });
