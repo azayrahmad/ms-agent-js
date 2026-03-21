@@ -267,7 +267,7 @@ export class AgentRenderer {
         border: none;
         margin: 0;
         opacity: 0;
-        position: fixed;
+        position: absolute;
       }
       .clippy-checkbox label {
         margin-left: 19px;

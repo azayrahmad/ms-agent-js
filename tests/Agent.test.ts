@@ -429,6 +429,34 @@ describe('Agent Additional Coverage', () => {
         expect(agent.options.y).toBe(0);
     });
 
+    it('should correctly render checkbox and label in ask dialog', async () => {
+        const showHtmlSpy = vi.spyOn(agent.balloon, 'showHtml');
+
+        agent.ask({
+            content: [{ type: 'checkbox', label: 'Test Checkbox', checked: false }],
+            buttons: ['OK']
+        });
+
+        // Wait for balloon to render
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        expect(showHtmlSpy).toHaveBeenCalled();
+        const html = showHtmlSpy.mock.calls[0][0];
+
+        // Verify it contains a checkbox with an ID and a label with a 'for' attribute
+        expect(html).toContain('type="checkbox"');
+        expect(html).toContain('id="clippy-checkbox-');
+        expect(html).toContain('for="clippy-checkbox-');
+
+        // Extract ID from input and 'for' from label to ensure they match
+        const idMatch = html.match(/id="([^"]+)"/);
+        const forMatch = html.match(/for="([^"]+)"/);
+
+        expect(idMatch).toBeTruthy();
+        expect(forMatch).toBeTruthy();
+        expect(idMatch![1]).toBe(forMatch![1]);
+    });
+
     it('handleResize should reposition agent if it goes out of bounds', async () => {
         // window.innerWidth/innerHeight are getters/setters in setup.ts
         (window as any).innerWidth = 1000;
