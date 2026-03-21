@@ -37,6 +37,8 @@ export interface AskOptions {
   )[];
   /** Auto-cancel timeout in milliseconds (default: 60000). */
   timeout?: number;
+  /** Optional animation to play while the dialog is active. */
+  animation?: string;
 }
 
 /**
@@ -675,6 +677,12 @@ export class Agent {
    */
   private startTalkingAnimation(animName: string = "Explain") {
     if (this.talkingAnimationName === animName) return;
+
+    // Fallback to Explain if custom animation doesn't exist
+    if (!this.core.definition.animations[animName]) {
+      animName = "Explain";
+    }
+
     if (this.core.definition.animations[animName]) {
       this.talkingAnimationName = animName;
       this.core.stateManager
@@ -698,17 +706,27 @@ export class Agent {
    * Makes the agent speak the given text using the speech balloon.
    *
    * @param text - The message to display.
-   * @param options - Speech options (hold balloon, use TTS, skip typing animation).
+   * @param options - Speech options (hold balloon, use TTS, skip typing animation, animation name).
    * @returns A request object to track the operation's progress.
    */
   public speak(
     text: string,
-    options: { hold?: boolean; useTTS?: boolean; skipTyping?: boolean } = {},
+    options: {
+      hold?: boolean;
+      useTTS?: boolean;
+      skipTyping?: boolean;
+      animation?: string;
+    } = {},
   ): AgentRequest {
-    const { hold = false, useTTS = true, skipTyping = false } = options;
+    const {
+      hold = false,
+      useTTS = true,
+      skipTyping = false,
+      animation,
+    } = options;
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
-      this.startTalkingAnimation();
+      this.startTalkingAnimation(animation);
       return new Promise((resolve) => {
         this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
       });
@@ -810,7 +828,7 @@ export class Agent {
       }
       balloonContent += `</div>`;
 
-      this.startTalkingAnimation();
+      this.startTalkingAnimation(options.animation);
 
       return new Promise<void>((resolveQueue) => {
         const finish = (
@@ -921,7 +939,7 @@ export class Agent {
           this.startTalkingAnimation("Writing");
         };
         const handleBlur = () => {
-          this.startTalkingAnimation("Explain");
+          this.startTalkingAnimation(options.animation);
           this.renderer.balloon.reposition();
         };
 

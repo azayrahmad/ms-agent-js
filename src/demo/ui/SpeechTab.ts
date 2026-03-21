@@ -20,6 +20,7 @@ export class SpeechTab extends BaseTab {
   private askStyleSelect: HTMLSelectElement;
   private speakTextInput: HTMLTextAreaElement;
   private skipTypingCheck: HTMLInputElement;
+  private speakAnimationSelect: HTMLSelectElement;
 
   /**
    * Initializes the Speech tab.
@@ -42,6 +43,7 @@ export class SpeechTab extends BaseTab {
     this.askStyleSelect = document.getElementById("ask-style-select") as HTMLSelectElement;
     this.speakTextInput = document.getElementById("speak-text") as HTMLTextAreaElement;
     this.skipTypingCheck = document.getElementById("skip-typing-check") as HTMLInputElement;
+    this.speakAnimationSelect = document.getElementById("speak-animation-select") as HTMLSelectElement;
   }
 
   /**
@@ -63,6 +65,7 @@ export class SpeechTab extends BaseTab {
     this.speakBtn.addEventListener("click", () => {
       this.state.currentAgent?.speak(this.speakTextInput.value, {
         skipTyping: this.skipTypingCheck.checked,
+        animation: this.speakAnimationSelect.value || undefined,
       });
     });
 
@@ -187,5 +190,31 @@ export class SpeechTab extends BaseTab {
     this.speakBtn.disabled = !enabled;
     this.askBtn.disabled = !enabled;
     this.askOptionsBtn.disabled = !enabled;
+
+    if (enabled && this.state.currentAgent) {
+      this.populateAnimationList();
+    }
+  }
+
+  /**
+   * Populates the animation dropdown with available animations.
+   */
+  private populateAnimationList() {
+    const agent = this.state.currentAgent;
+    if (!agent) return;
+
+    const animations = agent.animations().sort();
+    const currentValue = this.speakAnimationSelect.value;
+    this.speakAnimationSelect.innerHTML = '<option value="">(Default)</option>';
+
+    animations.forEach((name) => {
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      if (name === currentValue) {
+        option.selected = true;
+      }
+      this.speakAnimationSelect.appendChild(option);
+    });
   }
 }

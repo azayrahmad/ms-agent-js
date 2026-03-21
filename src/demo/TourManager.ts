@@ -54,6 +54,7 @@ export class TourManager {
           content: [tabInfo.text],
           buttons: ["OK"],
           timeout: 0,
+          animation: "Explain",
         });
         if (!result) return;
       }
@@ -70,6 +71,7 @@ export class TourManager {
       content: ["Finally, the Debug Info window shows real-time data about the agent's internal state, current animation, and position."],
       buttons: ["OK"],
       timeout: 0,
+      animation: "Thinking",
     });
 
     agent.speak("That's the end of the tour! Have fun exploring!");
