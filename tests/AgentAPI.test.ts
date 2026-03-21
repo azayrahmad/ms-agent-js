@@ -279,5 +279,36 @@ describe('Agent Public API', () => {
           const result = await askPromise;
           expect(result).toEqual({ value: "OK", text: null, checked: false });
       });
+
+      it('should auto-cancel after timeout', async () => {
+        vi.useFakeTimers();
+        const agent = await Agent.load('TestAgent');
+        const askPromise = agent.ask({ timeout: 100 });
+
+        vi.advanceTimersByTime(150);
+
+        const result = await askPromise;
+        expect(result).toBeNull();
+        agent.destroy();
+        vi.useRealTimers();
+      });
+    });
+
+    it('should have working TTS facade methods', async () => {
+        const agent = await Agent.load('TestAgent');
+
+        const setSpy = vi.spyOn(agent.balloon, 'setTTSOptions');
+        agent.setTTSOptions({ rate: 2.0 });
+        expect(setSpy).toHaveBeenCalledWith({ rate: 2.0 });
+
+        const getSpy = vi.spyOn(agent.balloon, 'getTTSVoices').mockReturnValue([]);
+        agent.getTTSVoices();
+        expect(getSpy).toHaveBeenCalled();
+
+        const stopSpy = vi.spyOn(agent.balloon, 'stopTTS');
+        agent.stopTTS();
+        expect(stopSpy).toHaveBeenCalled();
+
+        agent.destroy();
     });
 });

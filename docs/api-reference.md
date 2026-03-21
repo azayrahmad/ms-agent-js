@@ -21,6 +21,7 @@ Asynchronously loads and initializes an agent.
 | `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 | `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
 | `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
+| `useCache` | `boolean` | `true` | Whether to use internal character and asset caching. |
 
 ## Properties
 

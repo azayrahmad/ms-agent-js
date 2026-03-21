@@ -75,6 +75,16 @@ export const setupGlobals = (mockDefinition?: any) => {
         headers: new Map(),
         body: null
       });
+    } else if (url.endsWith('.bmp')) {
+      const bmpBuffer = new Uint8Array([0x42, 0x4D, 54, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 40, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0]).buffer;
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        arrayBuffer: () => Promise.resolve(bmpBuffer),
+        blob: () => Promise.resolve(new Blob([bmpBuffer])),
+        headers: new Map(),
+        body: null
+      });
     } else {
       // For other files, we might want to return 404 to trigger fallbacks in Agent.load
       return Promise.resolve({

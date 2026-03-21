@@ -25,7 +25,6 @@ Follow these common patterns when tasked with extending the library:
 
 ## 💡 Tips for AI Agents
 
--   **Path Normalization**: Files in `public/agents/` often have inconsistent casing. Always use `CharacterParser.normalizePath()` when resolving asset URLs.
 -   **Awaiting Requests**: API methods return `AgentRequest` objects which are "thenable". You can `await agent.play(...)` directly.
 -   **JSDoc**: The codebase is heavily documented. Use the `read_file` tool on `src/types.ts` to understand the primary data structures.
 -   **Architecture**: For a visual overview of how the managers interact, see **[docs/internals.md](./docs/internals.md)**.
