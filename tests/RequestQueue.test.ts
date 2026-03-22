@@ -19,6 +19,9 @@ describe('RequestQueue', () => {
     const req1 = queue.add(task1);
     const req2 = queue.add(task2);
 
+    // Give microtasks a chance to run so req1 starts
+    await Promise.resolve();
+
     expect(req1.status).toBe(RequestStatus.InProgress);
     expect(req2.status).toBe(RequestStatus.Pending);
 

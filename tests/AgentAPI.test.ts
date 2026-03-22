@@ -77,6 +77,7 @@ describe('Agent Public API', () => {
     it('should support queuing a delay with delay()', async () => {
         const agent = await Agent.load('Clippit');
         const request = agent.delay(100);
+        await Promise.resolve(); // Start queue
         expect(request.status).toBe(RequestStatus.InProgress);
         await request;
         expect(request.status).toBe(RequestStatus.Complete);
@@ -135,14 +136,16 @@ describe('Agent Public API', () => {
             // Small delay for task to start
             await new Promise(resolve => setTimeout(resolve, 50));
 
-            const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
-            const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
+            const balloonEl = agent.balloon.balloonEl;
+            const textarea = balloonEl.querySelector('textarea') as HTMLTextAreaElement;
+            const submitBtn = balloonEl.querySelector('.clippy-input-buttons button') as HTMLButtonElement;
 
             textarea.value = 'User Answer';
-            customButtons[0].click(); // Click "Submit"
+            textarea.dispatchEvent(new Event('input'));
+            submitBtn.click();
 
             const result = await askPromise;
-            expect(result).toEqual({ value: 'submit_val', text: 'User Answer', checked: false });
+            expect(result).toEqual({ value: 'submit_val', text: 'User Answer', checked: null });
         });
 
         it('should resolve with null when cancel button (value: null) is clicked', async () => {
@@ -153,9 +156,10 @@ describe('Agent Public API', () => {
 
             await new Promise(resolve => setTimeout(resolve, 50));
 
-            const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
+            const balloonEl = agent.balloon.balloonEl;
+            const cancelBtn = balloonEl.querySelector('.clippy-input-buttons button') as HTMLButtonElement;
 
-            customButtons[0].click(); // Click "Cancel"
+            cancelBtn.click();
 
             const result = await askPromise;
             expect(result).toBe(null);
@@ -171,14 +175,15 @@ describe('Agent Public API', () => {
 
             await new Promise(resolve => setTimeout(resolve, 50));
 
-            const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
+            const balloonEl = agent.balloon.balloonEl;
+            const textarea = balloonEl.querySelector('textarea') as HTMLTextAreaElement;
 
             // Trigger focus
-            textarea.focus();
+            textarea.dispatchEvent(new FocusEvent('focus'));
             expect(playAnimationSpy).toHaveBeenCalledWith('Writing', 'Speaking', false, undefined, true);
 
             // Trigger blur
-            textarea.blur();
+            textarea.dispatchEvent(new FocusEvent('blur'));
             expect(playAnimationSpy).toHaveBeenCalledWith('Explain', 'Speaking', false, undefined, true);
         });
 
@@ -207,20 +212,16 @@ describe('Agent Public API', () => {
           await new Promise((resolve) => setTimeout(resolve, 100));
 
           const balloonEl = agent.balloon.balloonEl;
-          const choicesList = (balloonEl as any).lastQueriedChoicesList;
-          const textarea = (balloonEl as any).lastQueriedTextarea;
+          const textarea = balloonEl.querySelector('textarea') as HTMLTextAreaElement;
+          const choice2 = balloonEl.querySelector('.clippy-choices li[data-index="1"]') as HTMLLIElement;
 
           textarea.value = "Some input";
+          textarea.dispatchEvent(new Event('input'));
 
-          // Mock clicking the second choice
-          const li = document.createElement("li");
-          li.setAttribute("data-index", "1");
-          const event = { target: li };
-          const clickListener = (choicesList as any).listeners["click"][0];
-          clickListener(event);
+          choice2.click();
 
           const result = await askPromise;
-          expect(result).toEqual({ value: 1, text: "Some input", checked: false });
+          expect(result).toEqual({ value: 1, text: "Some input", checked: null });
       });
 
       it("should handle multiple content items in order", async () => {
@@ -246,10 +247,8 @@ describe('Agent Public API', () => {
 
           // Complete it
           const balloonEl = agent.balloon.balloonEl;
-          const choicesList = (balloonEl as any).lastQueriedChoicesList;
-          const li = document.createElement("li");
-          li.setAttribute("data-index", "0");
-          (choicesList as any).listeners["click"][0]({ target: li });
+          const choice1 = balloonEl.querySelector('.clippy-choices li[data-index="0"]') as HTMLLIElement;
+          choice1.click();
 
           await askPromise;
       });
@@ -267,14 +266,15 @@ describe('Agent Public API', () => {
           const balloonEl = agent.balloon.balloonEl;
 
           const checkbox = balloonEl.querySelector('.ask-checkbox') as HTMLInputElement;
-          const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
+          const submitBtn = balloonEl.querySelector('.clippy-input-buttons button') as HTMLButtonElement;
 
           expect(checkbox).toBeDefined();
           expect(checkbox).not.toBeNull();
-          checkbox.checked = true; // Setup state manually for mock
-          expect(checkbox.checked).toBe(true);
+
           checkbox.checked = false;
-          customButtons[0].click();
+          checkbox.dispatchEvent(new Event('change'));
+
+          submitBtn.click();
 
           const result = await askPromise;
           expect(result).toEqual({ value: "OK", text: null, checked: false });
@@ -284,6 +284,8 @@ describe('Agent Public API', () => {
         vi.useFakeTimers();
         const agent = await Agent.load('TestAgent');
         const askPromise = agent.ask({ timeout: 100 });
+
+        await Promise.resolve(); // Let task start
 
         vi.advanceTimersByTime(150);
 

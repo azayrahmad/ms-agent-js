@@ -272,6 +272,9 @@ describe('Agent Core Methods', () => {
     it('stopCurrent should stop only the active request', async () => {
         const stopSpy = vi.spyOn(agent.requestQueue, 'stop');
         agent.requestQueue.add(async () => {}); // add a dummy request
+
+        await Promise.resolve(); // Start queue
+
         const activeId = agent.requestQueue.activeRequestId;
 
         agent.stopCurrent();
@@ -288,19 +291,15 @@ describe('Agent Core Methods', () => {
         const removeListenerSpy = vi.spyOn(window, 'removeEventListener');
         const container = (agent as any).container;
         const parent = document.createElement('div');
-        // Manually mock parentNode behavior since our mock document doesn't handle it well
-        Object.defineProperty(container, 'parentNode', { value: parent, writable: true });
         parent.appendChild(container);
-        parent.removeChild = vi.fn().mockImplementation((child) => {
-           const idx = (parent.childNodes as any[]).indexOf(child);
-           if (idx !== -1) (parent.childNodes as any[]).splice(idx, 1);
-        });
+
+        const removeChildSpy = vi.spyOn(parent, 'removeChild');
 
         agent.destroy();
 
         expect((agent as any).isDestroyed).toBe(true);
         expect(removeListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
-        expect(parent.removeChild).toHaveBeenCalledWith(container);
+        expect(removeChildSpy).toHaveBeenCalledWith(container);
     });
 });
 
@@ -462,20 +461,18 @@ describe('Agent Additional Coverage', () => {
     });
 
     it('handleResize should reposition agent if it goes out of bounds', async () => {
-        // window.innerWidth/innerHeight are getters/setters in setup.ts
-        (window as any).innerWidth = 1000;
-        (window as any).innerHeight = 1000;
+        vi.stubGlobal('innerWidth', 1000);
+        vi.stubGlobal('innerHeight', 1000);
 
         // Move agent instantly to ensure starting position
         (agent as any).setInstantPosition(950, 950);
 
         // Resize window to 800x800
-        (window as any).innerWidth = 800;
-        (window as any).innerHeight = 800;
+        vi.stubGlobal('innerWidth', 800);
+        vi.stubGlobal('innerHeight', 800);
 
         // Trigger resize
-        const resizeHandler = (window.addEventListener as any).mock.calls.find((c: any) => c[0] === 'resize')[1];
-        resizeHandler();
+        window.dispatchEvent(new Event('resize'));
 
         // Max X = 800 - 100 = 700
         // Max Y = 800 - 100 = 700

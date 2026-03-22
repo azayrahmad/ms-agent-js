@@ -104,6 +104,9 @@ describe('StateManager', () => {
   it('should handle visibility change to Hidden with custom animation', async () => {
     mockStates['Hiding'] = { name: 'Hiding', animations: ['CustomHide'] };
 
+    // Agent must be visible first to transition to Hiding
+    await stateManager.handleVisibilityChange(true);
+
     await stateManager.handleVisibilityChange(false, 'CustomHide');
 
     expect(mockAnimationManager.playAnimation).toHaveBeenCalledWith('CustomHide', true);

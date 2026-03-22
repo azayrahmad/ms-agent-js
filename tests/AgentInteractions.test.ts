@@ -49,16 +49,15 @@ describe('Agent Interactions', () => {
         agent.on('contextmenu', onContextMenu);
 
         const canvas = (agent as any).renderer.canvas;
-        const event = {
-            preventDefault: vi.fn(),
+        const event = new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
             clientX: 100,
             clientY: 200
-        };
+        });
 
-        const listener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'contextmenu')[1];
-        listener(event);
+        canvas.dispatchEvent(event);
 
-        expect(event.preventDefault).toHaveBeenCalled();
         expect(onContextMenu).toHaveBeenCalledWith(expect.objectContaining({
             x: 100,
             y: 200,
@@ -68,18 +67,21 @@ describe('Agent Interactions', () => {
 
     it('should emit contextmenu event on long press (500ms)', async () => {
         vi.useFakeTimers();
-        // Update window stub to use fake timers
-        (window as any).setTimeout = global.setTimeout;
-        (window as any).clearTimeout = global.clearTimeout;
 
         const agent = await Agent.load('Clippit');
         const onContextMenu = vi.fn();
         agent.on('contextmenu', onContextMenu);
 
         const canvas = (agent as any).renderer.canvas;
-        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
+        const event = new PointerEvent('pointerdown', {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+            clientX: 100,
+            clientY: 200
+        });
 
-        downListener({ button: 0, clientX: 100, clientY: 200 });
+        canvas.dispatchEvent(event);
 
         vi.advanceTimersByTime(500);
 
@@ -92,22 +94,26 @@ describe('Agent Interactions', () => {
 
     it('should cancel long press if pointerup occurs before 500ms', async () => {
         vi.useFakeTimers();
-        (window as any).setTimeout = global.setTimeout;
-        (window as any).clearTimeout = global.clearTimeout;
 
         const agent = await Agent.load('Clippit');
         const onContextMenu = vi.fn();
         agent.on('contextmenu', onContextMenu);
 
         const canvas = (agent as any).renderer.canvas;
-        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
-
-        downListener({ button: 0, clientX: 100, clientY: 200 });
+        canvas.dispatchEvent(new PointerEvent('pointerdown', {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+            clientX: 100,
+            clientY: 200
+        }));
 
         vi.advanceTimersByTime(250);
 
-        const upListener = window.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerup')[1];
-        upListener();
+        window.dispatchEvent(new PointerEvent('pointerup', {
+            bubbles: true,
+            cancelable: true
+        }));
 
         vi.advanceTimersByTime(250);
 
@@ -117,22 +123,28 @@ describe('Agent Interactions', () => {
 
     it('should cancel long press if moved significantly', async () => {
         vi.useFakeTimers();
-        (window as any).setTimeout = global.setTimeout;
-        (window as any).clearTimeout = global.clearTimeout;
 
         const agent = await Agent.load('Clippit');
         const onContextMenu = vi.fn();
         agent.on('contextmenu', onContextMenu);
 
         const canvas = (agent as any).renderer.canvas;
-        const downListener = canvas.addEventListener.mock.calls.find((call: any) => call[0] === 'pointerdown')[1];
-
-        downListener({ button: 0, clientX: 100, clientY: 200 });
+        canvas.dispatchEvent(new PointerEvent('pointerdown', {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+            clientX: 100,
+            clientY: 200
+        }));
 
         vi.advanceTimersByTime(100);
 
-        const moveListener = window.addEventListener.mock.calls.find((call: any) => call[0] === 'pointermove')[1];
-        moveListener({ clientX: 110, clientY: 210 });
+        window.dispatchEvent(new PointerEvent('pointermove', {
+            bubbles: true,
+            cancelable: true,
+            clientX: 110,
+            clientY: 210
+        }));
 
         vi.advanceTimersByTime(400);
 

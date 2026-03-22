@@ -82,7 +82,9 @@ export class RequestQueue {
     const entry: QueueEntry = { request, task };
 
     this.queue.push(entry);
-    this.processNext();
+    // Use microtask to allow immediate synchronous cancellations
+    // before the task even begins.
+    Promise.resolve().then(() => this.processNext());
 
     return request;
   }
@@ -90,17 +92,25 @@ export class RequestQueue {
   private async processNext() {
     if (this.currentEntry || this.queue.length === 0) return;
 
-    this.currentEntry = this.queue.shift()!;
-    const request = this.currentEntry.request;
+    const entry = this.queue.shift()!;
+    const request = entry.request;
+
+    // Check if it was already cancelled while in queue
+    if (request.isCancelled) {
+      this.processNext();
+      return;
+    }
+
+    this.currentEntry = entry;
     request.status = RequestStatus.InProgress;
 
     try {
-      await this.currentEntry.task(request);
+      await entry.task(request);
       if (request.status === RequestStatus.InProgress) {
         request.resolve();
       }
     } catch (err) {
-      this.currentEntry.request.reject(err);
+      entry.request.reject(err);
     } finally {
       this.currentEntry = null;
       this.processNext();

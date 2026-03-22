@@ -8,7 +8,10 @@ export default defineConfig(({ mode }) => {
   return {
     base: isApp ? '/ms-agent-js/' : '/',
     test: {
+      globals: true,
+      environment: 'jsdom',
       setupFiles: ['tests/setup.ts'],
+      exclude: ['tests/e2e/**', 'node_modules/**'],
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json-summary', 'html'],

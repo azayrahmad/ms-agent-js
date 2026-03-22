@@ -106,4 +106,27 @@ EndAnimation
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     await expect(CharacterParser.load('fail.acd')).rejects.toThrow();
   });
+
+  it('should handle malformed ACD content gracefully', () => {
+    const content = `
+DefineCharacter
+  Width = abc
+  Height = 100
+EndCharacter
+DefineAnimation "Broken"
+  DefineFrame
+    Duration = -10
+    DefineImage
+      # No Filename
+    EndImage
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+
+    // It should still produce a result but with NaN or default values
+    expect(result.character.width).toBeNaN();
+    expect(result.animations['Broken'].frames[0].duration).toBe(-10);
+  });
 });
