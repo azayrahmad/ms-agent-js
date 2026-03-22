@@ -102,6 +102,7 @@ export class StateManager {
           entry: ["setHidden"],
           on: {
             SHOW: "Showing",
+            HIDE: "Hiding",
             STATE_SET: {
               target: "Persistent",
               actions: ["setStateName", "resetIdle"],
@@ -111,6 +112,11 @@ export class StateManager {
         Showing: {
           entry: ["setShowing", "playShowAnimation"],
           on: {
+            TICK: {
+              target: "Persistent",
+              cond: "isEffectivelyIdle",
+              actions: ["resetToIdleState", "resetIdle"],
+            },
             ANIMATION_END: [
               { target: "Playing", cond: "hasRequests" },
               { target: "Persistent", actions: ["resetToIdleState", "resetIdle"] },
@@ -125,6 +131,11 @@ export class StateManager {
         Hiding: {
           entry: ["setHiding", "playHideAnimation"],
           on: {
+            TICK: {
+              target: "Hidden",
+              cond: "isEffectivelyIdle",
+              actions: ["setHidden"],
+            },
             ANIMATION_END: "Hidden",
             SHOW: "Showing",
           },
@@ -138,6 +149,7 @@ export class StateManager {
             ANIMATION_END: [
               { target: "Playing", cond: "hasRequests" },
               { target: "Persistent", cond: "shouldLoopPersistent" },
+              { actions: ["resetToIdleState", "resetIdle"] },
             ],
             PLAY: {
               target: "Playing",
@@ -152,6 +164,11 @@ export class StateManager {
         },
         Playing: {
           on: {
+            TICK: {
+              target: "Persistent",
+              cond: "isEffectivelyIdle",
+              actions: ["resetToIdleState", "resetIdle"],
+            },
             ANIMATION_END: [
               { target: "Playing", cond: "hasRequests" },
               { target: "Persistent", actions: ["resetToIdleState", "resetIdle"] },
@@ -174,16 +191,25 @@ export class StateManager {
       guards: {
         hasRequests: () => !!this.requestQueue && !this.requestQueue.isEmpty,
         isNotAnimating: () => !this.animationManager.isAnimating,
+        isEffectivelyIdle: () =>
+          !this.animationManager.isAnimating && (!this.requestQueue || this.requestQueue.isEmpty),
         shouldLoopPersistent: (ctx) => {
-            if (this.animationManager.isAnimating) return false;
-            // Loop if NOT an idle state (e.g., Gesturing)
-            return !this.isIdleState(ctx.currentState);
-        }
+          if (this.animationManager.isAnimating) return false;
+          // Loop if NOT an idle state (e.g., Gesturing)
+          if (ctx.currentState === "Speaking" || ctx.currentState === "Moving") return false;
+          return !this.isIdleState(ctx.currentState);
+        },
       },
       actions: {
-        setHidden: (ctx) => { ctx.currentState = "Hidden"; },
-        setShowing: (ctx) => { ctx.currentState = "Showing"; },
-        setHiding: (ctx) => { ctx.currentState = "Hiding"; },
+        setHidden: (ctx) => {
+          ctx.currentState = "Hidden";
+        },
+        setShowing: (ctx) => {
+          ctx.currentState = "Showing";
+        },
+        setHiding: (ctx) => {
+          ctx.currentState = "Hiding";
+        },
         setStateName: (ctx, event) => {
           if (event.type === "STATE_SET") {
             ctx.currentState = event.stateName;
@@ -192,7 +218,7 @@ export class StateManager {
           }
         },
         resetToIdleState: (ctx) => {
-            ctx.currentState = `${this.idlePrefix}1`;
+          ctx.currentState = `${this.idlePrefix}1`;
         },
         resetIdle: (ctx) => {
           ctx.currentIdleLevel = 1;
@@ -271,13 +297,13 @@ export class StateManager {
    * @param deltaTime - Time elapsed since the last update in milliseconds.
    */
   public async update(deltaTime: number): Promise<void> {
-    this.machine.send({ type: "TICK", deltaTime });
-
     const isAnimating = this.animationManager.isAnimating;
     if (this.wasAnimating && !isAnimating) {
-        this.machine.send({ type: "ANIMATION_END" });
+      this.machine.send({ type: "ANIMATION_END" });
     }
     this.wasAnimating = isAnimating;
+
+    this.machine.send({ type: "TICK", deltaTime });
   }
 
   /**
@@ -345,7 +371,7 @@ export class StateManager {
     loop: boolean = false,
   ): Promise<boolean> {
     if (stateName) {
-        this.machine.send({ type: "PLAY", animationName, stateName, timeoutMs, loop });
+      this.machine.send({ type: "PLAY", animationName, stateName, timeoutMs, loop });
     }
 
     const currentAnimationId = ++this.lastAnimationId;
@@ -429,8 +455,8 @@ export class StateManager {
   public async handleVisibilityChange(showing: boolean, animationName?: string): Promise<void> {
     this.machine.send(showing ? { type: "SHOW", animationName } : { type: "HIDE", animationName });
     if (this.pendingVisibilityTransition) {
-        await this.pendingVisibilityTransition;
-        this.pendingVisibilityTransition = undefined;
+      await this.pendingVisibilityTransition;
+      this.pendingVisibilityTransition = undefined;
     }
   }
 
