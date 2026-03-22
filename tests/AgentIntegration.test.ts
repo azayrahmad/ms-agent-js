@@ -52,7 +52,7 @@ describe('Agent Integration', () => {
         await agent.stateManager.update(100);
 
         // StateManager should have seen the queue is not empty and reset idle timer
-        expect((agent.stateManager as any).elapsedSinceLastTick).toBe(0);
+        expect((agent.stateManager as any).machine.context.elapsedSinceLastTick).toBe(0);
     });
 
     it('should allow waiting for a previous request', async () => {
