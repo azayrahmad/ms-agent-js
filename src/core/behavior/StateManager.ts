@@ -215,11 +215,11 @@ export class StateManager {
         updateStateAnimation: () => {
           this.updateStateAnimation().catch(console.error);
         },
-        playShowAnimation: (ctx, event) => {
+        playShowAnimation: (_, event) => {
           const animationName = event.type === "SHOW" ? event.animationName : undefined;
           this.pendingVisibilityTransition = this.handleVisibilityChangeInternal(true, animationName);
         },
-        playHideAnimation: (ctx, event) => {
+        playHideAnimation: (_, event) => {
           const animationName = event.type === "HIDE" ? event.animationName : undefined;
           this.pendingVisibilityTransition = this.handleVisibilityChangeInternal(false, animationName);
         },
@@ -228,13 +228,6 @@ export class StateManager {
   }
 
   private pendingVisibilityTransition?: Promise<void>;
-
-  /**
-   * Internal getter for testing compatibility.
-   */
-  private get elapsedSinceLastTick(): number {
-    return this.machine.context.elapsedSinceLastTick;
-  }
 
   /**
    * The name of the current behavioral state.
