@@ -253,6 +253,18 @@ export class AgentRenderer {
         background-position: -22px 0;
       }
 
+      .clippy-choices li.clippy-pagination-link::before {
+        display: none;
+      }
+      .clippy-choices li.clippy-pagination-link {
+        justify-content: center;
+        font-style: italic;
+        opacity: 0.7;
+      }
+      .clippy-choices li.clippy-pagination-link:hover {
+        opacity: 1;
+      }
+
       .clippy-checkbox {
         align-self: flex-start;
         margin: 5px 0;

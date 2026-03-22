@@ -102,7 +102,13 @@ export class SpeechTab extends BaseTab {
     this.askOptionsBtn.addEventListener("click", async () => {
       const agent = this.state.currentAgent;
       if (!agent) return;
-      const choices = ["I'm doing great!", "Not too bad.", "Could be better."];
+      const choices = [
+        "I'm doing great!",
+        "Not too bad.",
+        "Could be better.",
+        "A bit tired, honestly.",
+        "Ready for some fun!",
+      ];
       const result = await agent.ask({
         title: "How are you today?",
         content: [

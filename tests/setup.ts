@@ -171,10 +171,75 @@ export const setupGlobals = (mockDefinition?: any) => {
       const el: any = {
         style: {},
         nodeName: tag.toUpperCase(),
+        _innerHTML: "",
+        get innerHTML() {
+          return this._innerHTML;
+        },
+        set innerHTML(html: string) {
+          this._innerHTML = html;
+          this.childNodes = [];
+          this.shadowNodes = [];
+          if (html.includes("clippy-choices")) {
+            const ul = document.createElement("ul");
+            ul.className = "clippy-choices";
+            ul.classList.add("clippy-choices");
+            if (html.includes("style-bulb")) ul.classList.add("style-bulb");
+            if (html.includes("style-bullet")) ul.classList.add("style-bullet");
+            this.appendChild(ul);
+            const liMatches = Array.from(html.matchAll(/<li([^>]*)>(.*?)<\/li>/g));
+            liMatches.forEach((match) => {
+              const li = document.createElement("li");
+              const attrs = match[1];
+              const content = match[2];
+              if (attrs.includes("data-index")) {
+                const m = attrs.match(/data-index="(\d+)"/);
+                if (m) li.setAttribute("data-index", m[1]);
+              }
+              if (attrs.includes("data-action")) {
+                const m = attrs.match(/data-action="([^"]+)"/);
+                if (m) li.setAttribute("data-action", m[1]);
+              }
+              if (attrs.includes("clippy-pagination-link")) {
+                li.className = "clippy-pagination-link";
+                li.classList.add("clippy-pagination-link");
+                li.classList.contains = vi.fn().mockImplementation((cls) => {
+                  return li.className.includes(cls);
+                });
+              } else {
+                li.classList.contains = vi.fn().mockReturnValue(false);
+              }
+              li.textContent = content.replace(/<[^>]*>/g, "");
+              ul.appendChild(li);
+            });
+          }
+          if (html.includes("<textarea")) {
+            const t = document.createElement("textarea");
+            this.appendChild(t);
+          }
+          if (html.includes("ask-checkbox")) {
+            const c = document.createElement("input");
+            c.className = "ask-checkbox";
+            c.setAttribute("type", "checkbox");
+            this.appendChild(c);
+          }
+          if (html.includes("custom-button")) {
+            const btnMatches = Array.from(
+              html.matchAll(/<button[^>]*data-index="(\d+)"[^>]*>(.*?)<\/button>/g),
+            );
+            btnMatches.forEach((match) => {
+              const btn = document.createElement("button");
+              btn.className = "custom-button";
+              btn.setAttribute("data-index", match[1]);
+              btn.textContent = match[2].replace(/<[^>]*>/g, "");
+              this.appendChild(btn);
+            });
+          }
+        },
         attributes: {},
-        appendChild: vi.fn().mockImplementation((child) => {
-          if (el.shadowNodes) el.shadowNodes.push(child);
-          if (el.childNodes) el.childNodes.push(child);
+        appendChild: vi.fn().mockImplementation(function (this: any, child) {
+          if (this.shadowNodes) this.shadowNodes.push(child);
+          if (this.childNodes) this.childNodes.push(child);
+          child.parentNode = this;
         }),
         className: '',
         classList: {
@@ -206,9 +271,19 @@ export const setupGlobals = (mockDefinition?: any) => {
           const listeners = this.listeners?.[event.type] || [];
           listeners.forEach((l: any) => l(event));
         }),
-        click: vi.fn().mockImplementation(function(this: any) {
-          const listeners = this.listeners?.['click'] || [];
-          listeners.forEach((l: any) => l({ target: this, currentTarget: this, preventDefault: () => {} }));
+        click: vi.fn().mockImplementation(function (this: any) {
+          const listeners = this.listeners?.["click"] || [];
+          const event = {
+            target: this,
+            currentTarget: this,
+            preventDefault: () => {},
+          };
+          listeners.forEach((l: any) => l(event));
+
+          // Bubble to parent
+          if (this.parentNode && this.parentNode.listeners?.["click"]) {
+            this.parentNode.listeners["click"].forEach((l: any) => l(event));
+          }
         }),
         setAttribute: vi.fn().mockImplementation(function(this: any, name, val) {
           this.attributes[name] = val;
@@ -277,14 +352,34 @@ export const setupGlobals = (mockDefinition?: any) => {
           }
           return null;
         }),
-        querySelectorAll: vi.fn().mockImplementation(function(this: any, selector: string) {
+        querySelectorAll: vi.fn().mockImplementation(function (this: any, selector: string) {
           const findAllInNodes = (nodes: any[], results: any[]) => {
-              for (const node of nodes) {
-                  if (selector === '.custom-button' && node.className.includes('custom-button')) results.push(node);
-                  if (selector === '.clippy-choices' && node.className.includes('clippy-choices')) results.push(node);
-                  findAllInNodes(node.childNodes || [], results);
-                  findAllInNodes(node.shadowNodes || [], results);
+            for (const node of nodes) {
+              if (
+                selector === ".custom-button" &&
+                node.className &&
+                typeof node.className === "string" &&
+                node.className.includes("custom-button")
+              ) {
+                if (!results.includes(node)) results.push(node);
               }
+              if (
+                selector === ".clippy-choices" &&
+                node.className &&
+                typeof node.className === "string" &&
+                node.className.includes("clippy-choices")
+              ) {
+                if (!results.includes(node)) results.push(node);
+              }
+              if (
+                selector === ".clippy-choices li" &&
+                node.nodeName === "LI"
+              ) {
+                if (!results.includes(node)) results.push(node);
+              }
+              findAllInNodes(node.childNodes || [], results);
+              findAllInNodes(node.shadowNodes || [], results);
+            }
           };
 
           const results: any[] = [];
