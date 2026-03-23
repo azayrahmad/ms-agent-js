@@ -15,7 +15,6 @@ export class AnimationTab extends BaseTab {
   private play5sBtn: HTMLButtonElement;
   private playLoopedBtn: HTMLButtonElement;
   private randomBtn: HTMLButtonElement;
-  private visibilityBtn: HTMLButtonElement;
 
   private gestureLeftBtn: HTMLButtonElement;
   private gestureRightBtn: HTMLButtonElement;
@@ -38,7 +37,6 @@ export class AnimationTab extends BaseTab {
     this.play5sBtn = document.getElementById("play-5s-btn") as HTMLButtonElement;
     this.playLoopedBtn = document.getElementById("play-looped-btn") as HTMLButtonElement;
     this.randomBtn = document.getElementById("random-btn") as HTMLButtonElement;
-    this.visibilityBtn = document.getElementById("visibility-btn") as HTMLButtonElement;
 
     this.gestureLeftBtn = document.getElementById("gesture-left-btn") as HTMLButtonElement;
     this.gestureRightBtn = document.getElementById("gesture-right-btn") as HTMLButtonElement;
@@ -93,23 +91,6 @@ export class AnimationTab extends BaseTab {
 
     this.stateSelect.addEventListener("change", () => {
       this.state.currentAgent?.setState(this.stateSelect.value);
-    });
-
-    this.visibilityBtn.addEventListener("click", async () => {
-      if (!this.state.currentAgent) return;
-
-      this.visibilityBtn.disabled = true;
-      this.state.isVisible = !this.state.isVisible;
-
-      if (this.state.isVisible) {
-        await this.state.currentAgent.show();
-        this.visibilityBtn.textContent = "Hide";
-      } else {
-        await this.state.currentAgent.hide();
-        this.visibilityBtn.textContent = "Show";
-      }
-
-      this.visibilityBtn.disabled = false;
     });
 
     this.gestureLeftBtn.addEventListener("click", () => {
@@ -215,7 +196,6 @@ export class AnimationTab extends BaseTab {
     this.play5sBtn.disabled = !enabled;
     this.playLoopedBtn.disabled = !enabled;
     this.randomBtn.disabled = !enabled;
-    this.visibilityBtn.disabled = !enabled;
     this.gestureLeftBtn.disabled = !enabled;
     this.gestureRightBtn.disabled = !enabled;
     this.gestureUpBtn.disabled = !enabled;
@@ -224,7 +204,6 @@ export class AnimationTab extends BaseTab {
 
     if (!enabled) {
       this.playLoopedBtn.textContent = "Play looped";
-      this.visibilityBtn.textContent = "Hide";
     }
   }
 

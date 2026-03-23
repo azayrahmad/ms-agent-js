@@ -116,6 +116,7 @@ class DemoApp {
 
     this.state.isVisible = true;
     this.aboutTab.updateButtonState(true);
+    this.aboutTab.updateVisibilityState(true);
 
     this.animationTab.setEnabled(true);
     this.speechTab.setEnabled(true);
