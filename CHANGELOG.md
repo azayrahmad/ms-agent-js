@@ -1,37 +1,5 @@
 # Changelog
 
-## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
-
-
-### Features
-
-* add bulleted choice lists to Agent.ask and update demo layout ([2bcabe0](https://github.com/azayrahmad/ms-agent-js/commit/2bcabe04955a24226e8f5fe45f7e768164e5bfc8))
-* add interactive guided tour to the demo dashboard ([70f1278](https://github.com/azayrahmad/ms-agent-js/commit/70f1278d27dab559015f72ad5b74a5cdf63f45a9))
-* **balloon:** implement flex layout for balloon and enhance button UI with interactive bullets ([2365ef9](https://github.com/azayrahmad/ms-agent-js/commit/2365ef94b03fa2316c25185590c675a3188e61ea))
-* **demo:** add interactive guided tour to the demo with refined positioning ([70f1278](https://github.com/azayrahmad/ms-agent-js/commit/70f1278d27dab559015f72ad5b74a5cdf63f45a9))
-* **demo:** extract gallery metadata from agent definition ([64924d8](https://github.com/azayrahmad/ms-agent-js/commit/64924d8a1bd4032e269f6f113795a02c24e6f1b5))
-* **demo:** implement guided tour and welcome dialog ([70f1278](https://github.com/azayrahmad/ms-agent-js/commit/70f1278d27dab559015f72ad5b74a5cdf63f45a9))
-* **demo:** move visibility toggle to about tab ([714acad](https://github.com/azayrahmad/ms-agent-js/commit/714acad35bccb86df549f5fe52e9b1f3c6760511))
-* final implementation of interactive choice lists in Agent.ask ([a740ac3](https://github.com/azayrahmad/ms-agent-js/commit/a740ac33edde3cab49171c48d00f52191f76565e))
-* implement asset caching for agent definitions, sprites, and audio ([d887a71](https://github.com/azayrahmad/ms-agent-js/commit/d887a71587e89a906ac155cd0286eca3eeb56b79))
-* implement in-memory asset caching for agent definitions, sprites, and audio ([af5cb68](https://github.com/azayrahmad/ms-agent-js/commit/af5cb68961741832c79c7c2b85ae2e2d738bfaf6))
-* implement simple pagination for balloon choices and update demo ([02bc481](https://github.com/azayrahmad/ms-agent-js/commit/02bc4812ffa562bb64804d926c3d43386149cf88))
-* refactor Agent.ask with custom buttons and structured results ([a003911](https://github.com/azayrahmad/ms-agent-js/commit/a003911a7511bf4b07591de894b2bdadba908e5d))
-* remove uuid dependency to make the library truly dependency-free ([b68099d](https://github.com/azayrahmad/ms-agent-js/commit/b68099d52e8d2448d148dd7e8a574242fee08f85))
-* support custom looping animation in speak/ask and demo ([296dcb6](https://github.com/azayrahmad/ms-agent-js/commit/296dcb6f52babbd7c866904c9047e2b805d8e09f))
-
-
-### Bug Fixes
-
-* **Agent:** refactor definition loading and add JSDoc ([8f371a3](https://github.com/azayrahmad/ms-agent-js/commit/8f371a3dc15894d79203682e7e46484ab3819349))
-* **balloon:** resolve checkbox interaction and positioning issues ([d805b33](https://github.com/azayrahmad/ms-agent-js/commit/d805b33aaab2f40a4504d3ba05c8a68857c06e49))
-* **demo:** use stored value for welcome balloon checkbox ([519c0ee](https://github.com/azayrahmad/ms-agent-js/commit/519c0ee81aba9d797da6821c702b1d72c7344df1))
-* dismiss loading progress bar before showing welcome balloon ([6d0accc](https://github.com/azayrahmad/ms-agent-js/commit/6d0accca49bf590cc23bb4e0343cca513d9f0eb4))
-* ensure agent returns to idle and maintains state labels ([8fb40d9](https://github.com/azayrahmad/ms-agent-js/commit/8fb40d9523b16d3d0a3915e983bd46b1e5e83b3b))
-* implement TTS fallback timer for Chrome Mobile ([2ff49db](https://github.com/azayrahmad/ms-agent-js/commit/2ff49dbd6f3081b1b68a7fa7eec925c5761619c9))
-* include trailing punctuation in speech balloon TTS sync ([4758f10](https://github.com/azayrahmad/ms-agent-js/commit/4758f104ca2b8d3eb8dda5a3c71a163879c4eeb0))
-* resolve TypeScript build errors for unused variables in StateManager ([5ce32b8](https://github.com/azayrahmad/ms-agent-js/commit/5ce32b83ee395c021a63c7f6c966ccf23f0a24dd))
-
 ## [0.4.1](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.0...v0.4.1) (2026-03-16)
 
 
