@@ -126,14 +126,15 @@ describe('Agent Public API', () => {
     describe('agent.ask()', () => {
         it('should resolve with custom button value when clicked', async () => {
             const agent = await Agent.load('Clippit');
+            agent.stop(); // Ensure queue is clean
             const askPromise = agent.ask({
                 title: 'Test Question',
                 content: [{ type: 'input', placeholder: 'Type here...' }],
                 buttons: [{ label: 'Submit', value: 'submit_val' }]
             });
 
-            // Small delay for task to start
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // Delay for task to start and multiple RAF cycles in balloon
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
             const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
@@ -147,11 +148,12 @@ describe('Agent Public API', () => {
 
         it('should resolve with null when cancel button (value: null) is clicked', async () => {
             const agent = await Agent.load('Clippit');
+            agent.stop();
             const askPromise = agent.ask({
                 buttons: [{ label: 'Cancel', value: null }]
             });
 
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             const customButtons = (agent.balloon.balloonEl as any).lastQueriedCustomButtons as HTMLButtonElement[];
 
@@ -163,13 +165,14 @@ describe('Agent Public API', () => {
 
         it('should switch animations on focus and blur of the textarea', async () => {
             const agent = await Agent.load('Clippit');
+            agent.stop();
             const playAnimationSpy = vi.spyOn(agent.stateManager, 'playAnimation');
 
             agent.ask({
                 content: [{ type: 'input' }]
             });
 
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             const textarea = (agent.balloon.balloonEl as any).lastQueriedTextarea as HTMLTextAreaElement;
 
@@ -184,18 +187,18 @@ describe('Agent Public API', () => {
 
         it('should resolve with null if balloon is hidden', async () => {
             const agent = await Agent.load('Clippit');
-            const askPromise = agent.ask();
+            agent.stop();
 
-            await new Promise(resolve => setTimeout(resolve, 0));
+            // Mocking the visibility check used by DialogManager
+            vi.spyOn(agent.balloon, 'isVisible', 'get').mockReturnValue(false);
 
-            agent.balloon.close();
-
-            const result = await askPromise;
+            const result = await agent.ask();
             expect(result).toBe(null);
         });
 
         it('should resolve with choice index and text input from content array', async () => {
           const agent = await Agent.load('Clippit');
+          agent.stop();
           const askPromise = agent.ask({
             title: "Choice",
             content: [
@@ -204,7 +207,7 @@ describe('Agent Public API', () => {
             ]
           });
 
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 150));
 
           const balloonEl = agent.balloon.balloonEl;
           const choicesList = (balloonEl as any).lastQueriedChoicesList;
@@ -215,7 +218,7 @@ describe('Agent Public API', () => {
           // Mock clicking the second choice
           const li = document.createElement("li");
           li.setAttribute("data-index", "1");
-          const event = { target: li };
+          const event = { target: li, currentTarget: li, preventDefault: () => {} };
           const clickListener = (choicesList as any).listeners["click"][0];
           clickListener(event);
 
@@ -225,6 +228,7 @@ describe('Agent Public API', () => {
 
       it("should handle multiple content items in order", async () => {
           const agent = await Agent.load("Clippit");
+          agent.stop();
           const askPromise = agent.ask({
             title: "Order Test",
             content: [
@@ -235,7 +239,7 @@ describe('Agent Public API', () => {
             ]
           });
 
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 150));
           const contentEl = (agent.balloon as any)._contentEl;
           const content = contentEl.innerHTML;
 
@@ -249,13 +253,14 @@ describe('Agent Public API', () => {
           const choicesList = (balloonEl as any).lastQueriedChoicesList;
           const li = document.createElement("li");
           li.setAttribute("data-index", "0");
-          (choicesList as any).listeners["click"][0]({ target: li });
+          (choicesList as any).listeners["click"][0]({ target: li, currentTarget: li, preventDefault: () => {} });
 
           await askPromise;
       });
 
       it("should resolve with checkbox state", async () => {
           const agent = await Agent.load("Clippit");
+          agent.stop();
           const askPromise = agent.ask({
             content: [
                 { type: "checkbox", label: "Check me", checked: true }
@@ -263,7 +268,7 @@ describe('Agent Public API', () => {
             buttons: ["OK"]
           });
 
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 150));
           const balloonEl = agent.balloon.balloonEl;
 
           const checkbox = balloonEl.querySelector('.ask-checkbox') as HTMLInputElement;

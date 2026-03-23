@@ -1,45 +1,24 @@
-import { CharacterParser } from "./core/resources/CharacterParser";
-import { AssetCache } from "./core/resources/Cache";
 import { AgentCore } from "./core/Core";
+import { AgentLoader } from "./core/resources/AgentLoader";
+import { ActionManager } from "./core/behavior/ActionManager";
 import { AgentRenderer } from "./ui/Renderer";
+import { InputManager } from "./ui/InputManager";
+import {
+  DialogManager,
+  type AskOptions,
+  type AskContentItem,
+} from "./ui/DialogManager";
 import type { TTSOptions } from "./ui/Balloon";
 import type {
   AgentCharacterDefinition,
   AgentRequest,
   AgentOptions,
 } from "./core/base/types";
-import { fetchWithProgress } from "./utils";
 
 /** Generic listener type for agent events. */
 type AgentEventListener = (...args: any[]) => void;
 
-/**
- * Represents an item in the content array of an 'ask' dialog.
- */
-export type AskContentItem =
-  | string
-  | { type: "choices"; items: string[]; style?: "bullet" | "bulb" }
-  | { type: "input"; placeholder?: string; rows?: number }
-  | { type: "checkbox"; label: string; checked?: boolean };
-
-/**
- * Configuration for the interactive 'ask' dialog.
- */
-export interface AskOptions {
-  /** Header text for the dialog. */
-  title?: string;
-  /** Array of content items (text, choices, or input) in order of appearance. */
-  content?: AskContentItem[];
-  /** Array of button definitions to appear at the bottom. */
-  buttons?: (
-    | string
-    | { label: string; value: any; bullet?: "bullet" | "bulb" }
-  )[];
-  /** Auto-cancel timeout in milliseconds (default: 60000). */
-  timeout?: number;
-  /** Optional animation to play while the dialog is active. */
-  animation?: string;
-}
+export type { AskOptions, AskContentItem };
 
 /**
  * The primary Agent class, serving as the library's main entry point.
@@ -57,17 +36,13 @@ export class Agent {
   private core: AgentCore;
   private renderer: AgentRenderer;
   private container: HTMLElement;
+  private actionManager: ActionManager;
+  private inputManager: InputManager;
+  private dialogManager: DialogManager;
 
   private isDestroyed: boolean = false;
   private lastTime: number = 0;
   private rafId: number = 0;
-
-  private isDragging: boolean = false;
-  private wasDragging: boolean = false;
-  private dragStartX: number = 0;
-  private dragStartY: number = 0;
-  private initialAgentX: number = 0;
-  private initialAgentY: number = 0;
 
   /** The full parsed character definition for this agent. */
   public get definition(): AgentCharacterDefinition {
@@ -110,117 +85,21 @@ export class Agent {
     this.core = core;
     this.renderer = renderer;
     this.container = container;
-
-    this.setupDragging();
-    this.renderer.canvas.addEventListener("click", () => {
-      if (!this.wasDragging) {
-        this.emit("click");
-      }
-    });
-
-    if (this.core.options.keepInViewport) {
-      window.addEventListener("resize", this.handleResize);
-    }
-  }
-
-  private handleResize = () => {
-    const canvas = this.renderer.canvas;
-    const maxX = window.innerWidth - canvas.width;
-    const maxY = window.innerHeight - canvas.height;
-
-    let nx = this.core.options.x;
-    let ny = this.core.options.y;
-
-    let changed = false;
-    if (nx > maxX) {
-      nx = Math.max(0, maxX);
-      changed = true;
-    }
-    if (ny > maxY) {
-      ny = Math.max(0, maxY);
-      changed = true;
-    }
-
-    if (changed) {
-      this.setInstantPosition(nx, ny);
-      this.emit("reposition", { x: nx, y: ny });
-    }
-  };
-
-  /**
-   * Internal helper to load the agent definition from cache or remote source.
-   * It attempts to load an optimized JSON version first, then falls back to
-   * legacy .acd files with various naming conventions (uppercase/lowercase).
-   *
-   * @param name - The name of the agent to load.
-   * @param baseUrl - The base URL where agent assets are located.
-   * @param options - Configuration options, including signal for cancellation.
-   * @returns A promise resolving to the fully parsed and normalized definition.
-   * @throws Error if the definition cannot be loaded from any source.
-   */
-  private static async getDefinition(
-    name: string,
-    baseUrl: string,
-    options: AgentOptions,
-  ): Promise<AgentCharacterDefinition> {
-    const useCache = options.useCache !== false;
-
-    if (useCache) {
-      const cached = AssetCache.getDefinition(baseUrl);
-      if (cached) return cached;
-    }
-
-    let definition: AgentCharacterDefinition | undefined;
-
-    try {
-      // Prioritize optimized agent.json (atlas-based)
-      const agentJsonUrl = `${baseUrl}/agent.json`;
-      const response = await fetchWithProgress(agentJsonUrl, {
-        signal: options.signal,
-        onProgress: options.onProgress,
-      });
-
-      if (!response.ok) throw new Error("No agent.json");
-      definition = (await response.json()) as AgentCharacterDefinition;
-    } catch (e) {
-      if (e instanceof Error && e.name === "AbortError") throw e;
-
-      // Fallback to legacy .acd format
-      const acdPath = `${baseUrl}/${name.toUpperCase()}.acd`;
-      try {
-        definition = await CharacterParser.load(acdPath, options.signal);
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") throw err;
-        // Fallback to lowercase acd filename
-        try {
-          definition = await CharacterParser.load(
-            `${baseUrl}/${name.toLowerCase()}.acd`,
-            options.signal,
-          );
-        } catch (innerErr) {
-          if (innerErr instanceof Error && innerErr.name === "AbortError")
-            throw innerErr;
-          console.error(
-            `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}. ` +
-              `Please ensure the 'agents/' directory is correctly served and 'baseUrl' is correct.`,
-          );
-          throw err;
-        }
-      }
-    }
-
-    if (!definition) {
-      throw new Error(
-        `MSAgentJS: Failed to load agent assets for '${name}' at ${baseUrl}.`,
-      );
-    }
-
-    this.normalizeDefinition(definition);
-    if (useCache) {
-      AssetCache.setDefinition(baseUrl, definition);
-    }
-
-    return definition;
+    this.actionManager = new ActionManager(
+      core,
+      this.setInstantPosition.bind(this),
+    );
+    this.inputManager = new InputManager(
+      core,
+      renderer,
+      this.emit.bind(this),
+      this.setInstantPosition.bind(this),
+    );
+    this.dialogManager = new DialogManager(
+      core,
+      renderer,
+      this.startTalkingAnimation.bind(this),
+    );
   }
 
   /**
@@ -238,7 +117,7 @@ export class Agent {
     const defaultBaseUrl = `https://unpkg.com/ms-agent-js@latest/dist/agents/${name}`;
     const baseUrl = (options.baseUrl || defaultBaseUrl).replace(/\/$/, "");
 
-    const definition = await this.getDefinition(name, baseUrl, options);
+    const definition = await AgentLoader.getDefinition(name, baseUrl, options);
 
     // Resolve final options with defaults
     const fullOptions: Required<AgentOptions> = {
@@ -299,31 +178,6 @@ export class Agent {
   }
 
   /**
-   * Internal normalization logic for character definitions.
-   */
-  private static normalizeDefinition(definition: AgentCharacterDefinition) {
-    if (
-      definition.character.colorTable &&
-      !definition.character.colorTable.startsWith("http")
-    ) {
-      definition.character.colorTable = definition.character.colorTable.replace(
-        /\\/g,
-        "/",
-      );
-    }
-    Object.values(definition.animations).forEach((animation) => {
-      animation.frames.forEach((frame) => {
-        frame.images.forEach((image) => {
-          image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
-        });
-        if (frame.soundEffect) {
-          frame.soundEffect = frame.soundEffect.toLowerCase();
-        }
-      });
-    });
-  }
-
-  /**
    * Starts the internal requestAnimationFrame loop.
    */
   private startLoop() {
@@ -339,98 +193,6 @@ export class Agent {
     this.rafId = requestAnimationFrame(loop);
   }
 
-  /**
-   * Internal method to set up drag-and-drop behavior for the agent.
-   */
-  private setupDragging() {
-    let longPressTimer: number | null = null;
-    const canvas = this.renderer.canvas;
-
-    const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return; // Only left click/primary contact
-      this.isDragging = true;
-      this.wasDragging = false;
-      this.dragStartX = e.clientX;
-      this.dragStartY = e.clientY;
-      this.initialAgentX = this.core.options.x;
-      this.initialAgentY = this.core.options.y;
-
-      window.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
-      window.addEventListener("pointercancel", onPointerUp);
-
-      this.emit("dragstart");
-
-      // Long press logic for context menu
-      longPressTimer = window.setTimeout(() => {
-        this.emit("contextmenu", {
-          x: e.clientX,
-          y: e.clientY,
-          originalEvent: e,
-        });
-        this.isDragging = false;
-        this.wasDragging = false;
-        cleanup();
-      }, 500);
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (!this.isDragging) return;
-      const dx = e.clientX - this.dragStartX;
-      const dy = e.clientY - this.dragStartY;
-
-      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-        this.wasDragging = true;
-        // Cancel long press if moved significantly
-        if (longPressTimer) {
-          clearTimeout(longPressTimer);
-          longPressTimer = null;
-        }
-      }
-
-      let nx = this.initialAgentX + dx;
-      let ny = this.initialAgentY + dy;
-
-      // Constrain agent within the viewport boundaries
-      const maxX = window.innerWidth - canvas.width;
-      const maxY = window.innerHeight - canvas.height;
-      nx = Math.max(0, Math.min(nx, maxX));
-      ny = Math.max(0, Math.min(ny, maxY));
-
-      this.setInstantPosition(nx, ny);
-      this.emit("drag", { x: nx, y: ny });
-    };
-
-    const cleanup = () => {
-      if (longPressTimer) {
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
-      }
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("pointercancel", onPointerUp);
-    };
-
-    const onPointerUp = () => {
-      if (!this.isDragging) {
-        cleanup();
-        return;
-      }
-      this.isDragging = false;
-      cleanup();
-      this.emit("dragend");
-    };
-
-    canvas.addEventListener("pointerdown", onPointerDown);
-    canvas.addEventListener("contextmenu", (e: MouseEvent) => {
-      e.preventDefault();
-      this.emit("contextmenu", {
-        x: e.clientX,
-        y: e.clientY,
-        originalEvent: e,
-      });
-    });
-  }
 
   /**
    * Internal method for instant position updates without queuing.
@@ -551,19 +313,7 @@ export class Agent {
    * @returns A request object to track the operation's progress.
    */
   public gestureAt(x: number, y: number): AgentRequest {
-    return this.enqueueRequest(async (_request) => {
-      const direction = this.toAgentPerspective(this.getDirection(x, y, 4));
-      const stateName = `Gesturing${direction}`;
-      if (this.core.definition.states[stateName]) {
-        await this.core.stateManager.setState(stateName);
-      } else {
-        // Fallback to direct animation if the high-level state is missing
-        const animName = `Gesture${direction}`;
-        if (this.core.definition.animations[animName]) {
-          await this.core.stateManager.playAnimation(animName, "Gesturing");
-        }
-      }
-    });
+    return this.actionManager.gestureAt(x, y);
   }
 
   /**
@@ -575,23 +325,7 @@ export class Agent {
    * @returns A request object to track the operation's progress.
    */
   public lookAt(x: number, y: number): AgentRequest {
-    return this.enqueueRequest(async (request) => {
-      const direction = this.toAgentPerspective(this.getDirection(x, y, 8));
-      const animName = `Look${direction}`;
-      if (
-        this.core.animationManager.currentAnimationName === animName &&
-        this.core.animationManager.isAnimating
-      ) {
-        return;
-      }
-      if (this.core.definition.animations[animName]) {
-        this.emit("animationStart", animName);
-        await this.core.stateManager.playAnimation(animName, "Looking");
-        if (!request.isCancelled) {
-          this.emit("animationEnd", animName);
-        }
-      }
-    });
+    return this.actionManager.lookAt(x, y);
   }
 
   /**
@@ -614,60 +348,7 @@ export class Agent {
    * @returns A request object to track the movement.
    */
   public moveTo(x: number, y: number, speed: number = 400): AgentRequest {
-    return this.enqueueRequest(async (request) => {
-      const startX = this.core.options.x;
-      const startY = this.core.options.y;
-      const dx = x - startX;
-      const dy = y - startY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < 1) {
-        this.setInstantPosition(x, y);
-        return;
-      }
-
-      const duration = (distance / speed) * 1000;
-      const startTime = performance.now();
-      const direction4 = this.getDirection(x, y, 4);
-      const moveAnim = `Moving${direction4}`;
-      let activeAnim = "";
-
-      if (this.core.definition.animations[moveAnim]) {
-        activeAnim = moveAnim;
-      } else {
-        const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
-        const lookAnim = `Look${direction8}`;
-        if (this.core.definition.animations[lookAnim]) {
-          activeAnim = lookAnim;
-        }
-      }
-
-      if (activeAnim) {
-        this.core.stateManager.playAnimation(activeAnim, "Moving");
-      }
-
-      return new Promise<void>((resolve) => {
-        const moveStep = (currentTime: number) => {
-          if (request.isCancelled) {
-            if (activeAnim) this.core.stateManager.handleAnimationCompleted();
-            resolve();
-            return;
-          }
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const curX = startX + dx * progress;
-          const curY = startY + dy * progress;
-          this.setInstantPosition(curX, curY);
-          if (progress < 1) {
-            requestAnimationFrame(moveStep);
-          } else {
-            if (activeAnim) this.core.stateManager.handleAnimationCompleted();
-            resolve();
-          }
-        };
-        requestAnimationFrame(moveStep);
-      });
-    });
+    return this.actionManager.moveTo(x, y, speed);
   }
 
   private talkingAnimationName: string | null = null;
@@ -756,333 +437,7 @@ export class Agent {
     text: string | null;
     checked: boolean | null;
   } | null> {
-    const title = options.title || "";
-    const content = options.content || [];
-    const buttons = options.buttons || [];
-    const timeout = options.timeout !== undefined ? options.timeout : 60000;
-
-    let resolveAsk: (
-      value: {
-        value: any;
-        text: string | null;
-        checked: boolean | null;
-      } | null,
-    ) => void;
-    const askPromise = new Promise<{
-      value: any;
-      text: string | null;
-      checked: boolean | null;
-    } | null>((res) => {
-      resolveAsk = res;
-    });
-
-    this.enqueueRequest(async (request) => {
-      if (request.isCancelled) {
-        resolveAsk(null);
-        return;
-      }
-
-      let inputBalloonTimeout: number | null = null;
-      let resolved = false;
-      let choicePage = 0;
-      const choicesPerPage = 3;
-
-      const renderContent = () => {
-        let balloonContent = `<div class="clippy-input">`;
-        if (title) balloonContent += `<b>${title}</b>`;
-
-        content.forEach((item) => {
-          if (typeof item === "string") {
-            balloonContent += `<div>${item}</div>`;
-          } else if (item.type === "choices") {
-            const style = item.style || "bullet";
-            const totalPages = Math.ceil(item.items.length / choicesPerPage);
-
-            let choicesHtml = "";
-            if (choicePage > 0) {
-              choicesHtml += `<li class="clippy-pagination-link prev" data-action="prev"><span>See previous...</span></li>`;
-            }
-
-            const start = choicePage * choicesPerPage;
-            const end = Math.min(start + choicesPerPage, item.items.length);
-
-            for (let i = start; i < end; i++) {
-              choicesHtml += `<li data-index="${i}"><span>${item.items[i]}</span></li>`;
-            }
-
-            if (choicePage < totalPages - 1) {
-              choicesHtml += `<li class="clippy-pagination-link next" data-action="next"><span>See more...</span></li>`;
-            }
-
-            balloonContent += `<ul class="clippy-choices style-${style}">${choicesHtml}</ul>`;
-          } else if (item.type === "input") {
-            const placeholder = item.placeholder || "";
-            const rows = item.rows || 2;
-            balloonContent += `<textarea rows="${rows}" placeholder="${placeholder}"></textarea>`;
-          } else if (item.type === "checkbox") {
-            const checked = item.checked ? "checked" : "";
-            const id = `clippy-checkbox-${Math.random().toString(36).substring(2, 11)}`;
-            balloonContent += `<div class="clippy-checkbox"><input type="checkbox" id="${id}" class="ask-checkbox" ${checked}><label for="${id}">${item.label}</label></div>`;
-          }
-        });
-
-        if (buttons.length > 0) {
-          const isSingleButton = buttons.length === 1;
-          balloonContent += `<div class="clippy-input-buttons${isSingleButton ? " single-button" : ""}">`;
-          buttons.forEach((btn, i) => {
-            const label = typeof btn === "string" ? btn : btn.label;
-            const bType = typeof btn === "string" ? null : btn.bullet;
-            const btnClass = bType ? `style-${bType}` : "";
-            const bulletSpan = bType ? '<span class="button-bullet"></span>' : "";
-            balloonContent += `<button class="custom-button ${btnClass}" data-index="${i}">${bulletSpan}${label}</button>`;
-          });
-          balloonContent += `</div>`;
-        }
-        balloonContent += `</div>`;
-        return balloonContent;
-      };
-
-      let ttsText = title;
-      content.forEach((item) => {
-        if (typeof item === "string") {
-          ttsText += (ttsText ? " " : "") + item;
-        }
-      });
-
-      this.startTalkingAnimation(options.animation);
-
-      return new Promise<void>((resolveQueue) => {
-        const attachEvents = () => {
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const choicesLists = Array.from(
-            balloonEl.querySelectorAll(".clippy-choices"),
-          ) as HTMLUListElement[];
-          const customButtons = Array.from(
-            balloonEl.querySelectorAll(".custom-button"),
-          ) as HTMLButtonElement[];
-
-          input?.addEventListener("keypress", handleKeypress);
-          input?.addEventListener("focus", handleFocus);
-          input?.addEventListener("blur", handleBlur);
-          choicesLists.forEach((list) =>
-            list.addEventListener("click", handleChoiceClick),
-          );
-          customButtons.forEach((btn) =>
-            btn.addEventListener("click", handleCustomButtonClick),
-          );
-
-          if (input) input.focus();
-        };
-
-        const detachEvents = () => {
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const choicesLists = Array.from(
-            balloonEl.querySelectorAll(".clippy-choices"),
-          ) as HTMLUListElement[];
-          const customButtons = Array.from(
-            balloonEl.querySelectorAll(".custom-button"),
-          ) as HTMLButtonElement[];
-
-          input?.removeEventListener("keypress", handleKeypress);
-          input?.removeEventListener("focus", handleFocus);
-          input?.removeEventListener("blur", handleBlur);
-          choicesLists.forEach((list) =>
-            list.removeEventListener("click", handleChoiceClick),
-          );
-          customButtons.forEach((btn) =>
-            btn.removeEventListener("click", handleCustomButtonClick),
-          );
-        };
-
-        const finish = (
-          value: {
-            value: any;
-            text: string | null;
-            checked: boolean | null;
-          } | null,
-        ) => {
-          if (resolved) return;
-          resolved = true;
-          this.renderer.balloon.onHide = null;
-          this.talkingAnimationName = null;
-          if (this.core.stateManager.currentStateName === "Speaking") {
-            this.core.animationManager.isExitingFlag = true;
-            this.core.stateManager.handleAnimationCompleted();
-          }
-          detachEvents();
-          clearBalloonTimeout();
-          resolveAsk(value);
-          resolveQueue();
-        };
-
-        this.renderer.balloon.onHide = () => {
-          if (this.core.stateManager.currentStateName === "Speaking") {
-            this.core.animationManager.isExitingFlag = true;
-            this.core.stateManager.handleAnimationCompleted();
-          }
-          finish(null);
-        };
-
-        const handleKeypress = (e: KeyboardEvent) => {
-          resetBalloonTimeout();
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const balloonEl = this.renderer.balloon.balloonEl;
-            const customButtons = Array.from(
-              balloonEl.querySelectorAll(".custom-button"),
-            ) as HTMLButtonElement[];
-            if (customButtons.length > 0) {
-              customButtons[0].click();
-            }
-          }
-        };
-
-        const handleCancel = () => {
-          finish(null);
-          this.renderer.balloon.close();
-        };
-
-        const handleChoiceClick = (e: MouseEvent) => {
-          resetBalloonTimeout();
-          const target = e.target as HTMLElement;
-          const li = target.closest("li");
-          if (!li) return;
-
-          const action = li.getAttribute("data-action");
-          if (action === "next") {
-            choicePage++;
-            refreshContent();
-            return;
-          }
-          if (action === "prev") {
-            choicePage--;
-            refreshContent();
-            return;
-          }
-
-          if (li.hasAttribute("data-index")) {
-            const index = parseInt(li.getAttribute("data-index") || "0");
-            const balloonEl = this.renderer.balloon.balloonEl;
-            const input = balloonEl.querySelector(
-              "textarea",
-            ) as HTMLTextAreaElement;
-            const checkbox = balloonEl.querySelector(
-              ".ask-checkbox",
-            ) as HTMLInputElement | null;
-            const text = input ? input.value || null : null;
-            const checked = checkbox ? !!checkbox.checked : null;
-            finish({ value: index, text, checked });
-            this.renderer.balloon.close();
-          }
-        };
-
-        const handleCustomButtonClick = (e: MouseEvent) => {
-          const btn = e.currentTarget as HTMLButtonElement;
-          const index = parseInt(btn.getAttribute("data-index") || "0");
-          const buttonDef = buttons[index];
-          const value =
-            typeof buttonDef === "string" ? buttonDef : buttonDef.value;
-
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const checkbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          const text = input ? input.value || null : null;
-          const checked = checkbox ? !!checkbox.checked : null;
-
-          if (value === null) {
-            finish(null);
-          } else {
-            finish({ value, text, checked });
-          }
-          this.renderer.balloon.close();
-        };
-
-        const handleFocus = () => {
-          this.startTalkingAnimation("Writing");
-        };
-        const handleBlur = () => {
-          this.startTalkingAnimation(options.animation);
-          this.renderer.balloon.reposition();
-        };
-
-        const resetBalloonTimeout = () => {
-          clearBalloonTimeout();
-          if (timeout > 0) {
-            inputBalloonTimeout = window.setTimeout(() => {
-              handleCancel();
-            }, timeout);
-          }
-        };
-
-        const clearBalloonTimeout = () => {
-          if (inputBalloonTimeout) {
-            clearTimeout(inputBalloonTimeout);
-            inputBalloonTimeout = null;
-          }
-        };
-
-        const refreshContent = () => {
-          detachEvents();
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const checkbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          const prevText = input ? input.value : "";
-          const prevChecked = checkbox ? checkbox.checked : false;
-
-          this.renderer.balloon.showHtml(renderContent(), true);
-
-          // Restore state
-          const newInput = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const newCheckbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          if (newInput) newInput.value = prevText;
-          if (newCheckbox) newCheckbox.checked = prevChecked;
-
-          attachEvents();
-        };
-
-        this.showHtml(renderContent(), true);
-        if (ttsText) {
-          this.renderer.balloon.speak(
-            () => {
-              this.talkingAnimationName = null;
-              if (this.core.stateManager.currentStateName === "Speaking") {
-                this.core.animationManager.isExitingFlag = true;
-                this.core.stateManager.handleAnimationCompleted();
-              }
-            },
-            ttsText,
-            true,
-            true,
-            false,
-            true,
-          );
-        }
-
-        attachEvents();
-        resetBalloonTimeout();
-        setTimeout(() => this.renderer.balloon.reposition(), 0);
-      });
-    });
-
-    return askPromise;
+    return this.dialogManager.ask(options);
   }
 
   /** Configures global system Text-to-Speech options. */
@@ -1212,48 +567,6 @@ export class Agent {
     this.core.emit(event as any, ...args);
   }
 
-  /** Translates a world direction to the agent's POV (swaps Left/Right). */
-  private toAgentPerspective(direction: string): string {
-    return direction
-      .replace("Left", "TEMP")
-      .replace("Right", "Left")
-      .replace("TEMP", "Right");
-  }
-
-  /** Calculates the direction from the agent to a target point. */
-  private getDirection(
-    targetX: number,
-    targetY: number,
-    numDirections: 4 | 8,
-  ): string {
-    const centerX =
-      this.core.options.x +
-      (this.core.definition.character.width * this.core.options.scale) / 2;
-    const centerY =
-      this.core.options.y +
-      (this.core.definition.character.height * this.core.options.scale) / 2;
-    const dx = targetX - centerX;
-    const dy = targetY - centerY;
-    const angle = Math.atan2(dy, dx);
-    let degrees = angle * (180 / Math.PI);
-    if (degrees < 0) degrees += 360;
-
-    if (numDirections === 4) {
-      if (degrees >= 315 || degrees < 45) return "Right";
-      if (degrees >= 45 && degrees < 135) return "Down";
-      if (degrees >= 135 && degrees < 225) return "Left";
-      return "Up";
-    } else {
-      if (degrees >= 337.5 || degrees < 22.5) return "Right";
-      if (degrees >= 22.5 && degrees < 67.5) return "DownRight";
-      if (degrees >= 67.5 && degrees < 112.5) return "Down";
-      if (degrees >= 112.5 && degrees < 157.5) return "DownLeft";
-      if (degrees >= 157.5 && degrees < 202.5) return "Left";
-      if (degrees >= 202.5 && degrees < 247.5) return "UpLeft";
-      if (degrees >= 247.5 && degrees < 292.5) return "Up";
-      return "UpRight";
-    }
-  }
 
   /**
    * Performs full cleanup: cancels animations, stops speech, and removes the agent from the DOM.
@@ -1261,7 +574,7 @@ export class Agent {
   public destroy() {
     this.isDestroyed = true;
     cancelAnimationFrame(this.rafId);
-    window.removeEventListener("resize", this.handleResize);
+    this.inputManager.destroy();
     if (this.container.parentNode)
       this.container.parentNode.removeChild(this.container);
     this.core.clear();

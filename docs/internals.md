@@ -16,8 +16,15 @@ graph TD
     A[Agent]
     end
 
+    subgraph "Specialized Managers"
+    AL[AgentLoader]
+    AM[ActionManager]
+    IM[InputManager]
+    DM[DialogManager]
+    end
+
     subgraph "Logic Core (AgentCore)"
-    D[AnimationManager]
+    AnM[AnimationManager]
     F[StateManager]
     H[RequestQueue]
     E[AudioManager]
@@ -32,10 +39,21 @@ graph TD
     R[Canvas Renderer]
     end
 
+    A --> AL
+    A --> AM
+    A --> IM
+    A --> DM
     A --> AgentCore
     A --> AgentRenderer
-    AgentCore --> B
-    AgentCore --> D
+
+    AL --> B
+    AM --> AgentCore
+    IM --> AgentCore
+    IM --> AgentRenderer
+    DM --> AgentCore
+    DM --> AgentRenderer
+
+    AgentCore --> AnM
     AgentCore --> E
     AgentCore --> F
     AgentCore --> H
@@ -46,7 +64,11 @@ graph TD
 
 | Component | Responsibility | Folder |
 | --- | --- | --- |
-| **`Agent`** | Public API facade. Coordinates `AgentCore` and `AgentRenderer`. | `src/` |
+| **`Agent`** | Public API facade. Coordinates managers, core and renderer. | `src/` |
+| **`AgentLoader`** | Handles character definition loading and normalization. | `src/core/resources/` |
+| **`ActionManager`** | Coordinates high-level actions (`moveTo`, `lookAt`, etc). | `src/core/behavior/` |
+| **`InputManager`** | Manages drag-and-drop and viewport positioning. | `src/ui/` |
+| **`DialogManager`** | Handles complex interactive speech balloon dialogs (`ask`). | `src/ui/` |
 | **`AgentCore`** | Headless engine. Manages state, animations, and sound logic. | `src/core/` |
 | **`AgentRenderer`** | UI layer. Manages Shadow DOM, Canvas, and CSS. | `src/ui/` |
 | **`EventEmitter`** | Foundation for event-driven decoupled communication. | `src/core/base/` |

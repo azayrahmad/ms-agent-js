@@ -78,6 +78,10 @@ export class Balloon {
 
   /** Callback triggered when the balloon is hidden. */
   public onHide: (() => void) | null = null;
+  /** Returns true if the balloon is currently visible to the user. */
+  public get isVisible(): boolean {
+    return !this._hidden && this._balloonEl.style.display !== "none";
+  }
   /** Callback triggered when a word or character boundary is reached during speech. */
   public onSpeak: ((text: string, charIndex: number) => void) | null = null;
 

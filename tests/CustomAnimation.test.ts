@@ -4,13 +4,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Agent } from '../src/Agent';
 import { AgentCore } from '../src/core/Core';
+import { AgentLoader } from '../src/core/resources/AgentLoader';
 
 describe('Agent Custom Animation', () => {
   let agent: any;
 
   beforeEach(async () => {
-    // Mock Agent.getDefinition to provide a simple character definition
-    vi.spyOn(Agent as any, 'getDefinition').mockResolvedValue({
+    // Mock AgentLoader.getDefinition to provide a simple character definition
+    vi.spyOn(AgentLoader as any, 'getDefinition').mockResolvedValue({
       atlas: {},
       character: { width: 100, height: 100, colorTable: '', style: 0 },
       animations: {
@@ -85,7 +86,7 @@ describe('Agent Custom Animation', () => {
   });
 
   it('should use custom animation in ask and restore after blur', async () => {
-    vi.spyOn(agent, 'enqueueRequest').mockImplementation((task) => {
+    vi.spyOn(agent.core.requestQueue, 'add').mockImplementation((task) => {
         task({ isCancelled: false } as any);
         return {} as any;
     });
