@@ -4,10 +4,11 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig(({ mode }) => {
   const isApp = mode === 'app';
+  const isDev = mode === 'development';
 
   return {
     base: isApp ? '/ms-agent-js/' : '/',
-    publicDir: isApp ? 'public' : false,
+    publicDir: isApp || isDev ? 'public' : false,
     test: {
       setupFiles: ['tests/setup.ts'],
       coverage: {
@@ -41,8 +42,11 @@ export default defineConfig(({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'public/agents/*',
+            src: 'public/agents/**/*',
             dest: 'agents',
+            rename: {
+              stripBase: 2,
+            },
           },
         ],
       }),
