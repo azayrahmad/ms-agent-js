@@ -127,13 +127,20 @@
 
                                 <div
                                     class="field-row"
-                                    style="justify-content: center"
+                                    style="justify-content: center; gap: 4px;"
                                 >
                                     <button
                                         id="start-stop-btn"
                                         style="width: 120px"
                                     >
                                         Start
+                                    </button>
+                                    <button
+                                        id="visibility-btn"
+                                        style="width: 120px"
+                                        disabled
+                                    >
+                                        Hide
                                     </button>
                                 </div>
                             </div>
@@ -258,18 +265,6 @@
                                     <div class="field-row">
                                         <label for="state-select">State:</label>
                                         <select id="state-select"></select>
-                                    </div>
-                                    <div
-                                        class="field-row"
-                                        style="
-                                            justify-content: flex-end;
-                                            gap: 4px;
-                                            margin-top: 4px;
-                                        "
-                                    >
-                                        <button id="visibility-btn" disabled>
-                                            Hide
-                                        </button>
                                     </div>
                                     <hr />
                                     <div

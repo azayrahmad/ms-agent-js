@@ -6,17 +6,36 @@ import { DemoState } from "../state";
  */
 export class AboutTab extends BaseTab {
   private startStopBtn: HTMLButtonElement;
+  private visibilityBtn: HTMLButtonElement;
   private onToggle: () => Promise<void>;
 
   constructor(state: DemoState, onToggle: () => Promise<void>) {
     super("panel-about", state);
     this.startStopBtn = document.getElementById("start-stop-btn") as HTMLButtonElement;
+    this.visibilityBtn = document.getElementById("visibility-btn") as HTMLButtonElement;
     this.onToggle = onToggle;
   }
 
   public init() {
     this.startStopBtn.addEventListener("click", async () => {
       await this.onToggle();
+    });
+
+    this.visibilityBtn.addEventListener("click", async () => {
+      if (!this.state.currentAgent) return;
+
+      this.visibilityBtn.disabled = true;
+      this.state.isVisible = !this.state.isVisible;
+
+      if (this.state.isVisible) {
+        await this.state.currentAgent.show();
+        this.visibilityBtn.textContent = "Hide";
+      } else {
+        await this.state.currentAgent.hide();
+        this.visibilityBtn.textContent = "Show";
+      }
+
+      this.visibilityBtn.disabled = false;
     });
   }
 
@@ -25,5 +44,19 @@ export class AboutTab extends BaseTab {
    */
   public updateButtonState(isStarted: boolean) {
     this.startStopBtn.textContent = isStarted ? "Stop" : "Start";
+    if (!isStarted) {
+      this.visibilityBtn.disabled = true;
+      this.visibilityBtn.textContent = "Hide";
+    } else {
+      this.visibilityBtn.disabled = false;
+    }
+  }
+
+  /**
+   * Updates the visibility button state based on current agent visibility.
+   */
+  public updateVisibilityState(isVisible: boolean) {
+    this.state.isVisible = isVisible;
+    this.visibilityBtn.textContent = isVisible ? "Hide" : "Show";
   }
 }
