@@ -2,7 +2,7 @@
   "name": "ms-agent-js",
   "description": "The modern, dependency-free Clippy for the web. A TypeScript-based Microsoft Agent implementation perfect for nostalgic apps and unique AI/LLM interfaces.",
   "private": false,
-  "version": "0.6.0",
+  "version": "0.5.0",
   "type": "module",
   "author": "Microsoft Agent JS Contributors",
   "license": "MIT",
