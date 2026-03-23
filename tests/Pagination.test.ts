@@ -58,17 +58,17 @@ describe('Agent Pagination', () => {
         expect(choices[0].textContent).toBe('Choice 1');
         expect(choices[1].textContent).toBe('Choice 2');
         expect(choices[2].textContent).toBe('Choice 3');
-        expect(choices[3].textContent).toBe('See next');
+        expect(choices[3].textContent).toBe('See more...');
         expect(choices[3].classList.contains('clippy-pagination-link')).toBe(true);
 
-        // Click "See next"
+        // Click "See more..."
         const nextLink = choices[3] as HTMLElement;
         nextLink.click();
 
-        // Second page (1): "See previous", Choice 4, 5
+        // Second page (1): "See previous...", Choice 4, 5
         choices = balloonEl.querySelectorAll('.clippy-choices li');
         expect(choices.length).toBe(3);
-        expect(choices[0].textContent).toBe('See previous');
+        expect(choices[0].textContent).toBe('See previous...');
         expect(choices[0].classList.contains('clippy-pagination-link')).toBe(true);
         expect(choices[1].textContent).toBe('Choice 4');
         expect(choices[2].textContent).toBe('Choice 5');

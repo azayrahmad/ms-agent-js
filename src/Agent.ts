@@ -800,7 +800,7 @@ export class Agent {
 
             let choicesHtml = "";
             if (choicePage > 0) {
-              choicesHtml += `<li class="clippy-pagination-link" data-action="prev"><span>See previous</span></li>`;
+              choicesHtml += `<li class="clippy-pagination-link prev" data-action="prev"><span>See previous...</span></li>`;
             }
 
             const start = choicePage * choicesPerPage;
@@ -811,7 +811,7 @@ export class Agent {
             }
 
             if (choicePage < totalPages - 1) {
-              choicesHtml += `<li class="clippy-pagination-link" data-action="next"><span>See next</span></li>`;
+              choicesHtml += `<li class="clippy-pagination-link next" data-action="next"><span>See more...</span></li>`;
             }
 
             balloonContent += `<ul class="clippy-choices style-${style}">${choicesHtml}</ul>`;

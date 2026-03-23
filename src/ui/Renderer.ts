@@ -2,6 +2,7 @@ import { AgentCore } from "../core/Core";
 import { Balloon } from "./Balloon";
 import bulletsUrl from "../assets/ui/ask-bullets.png";
 import bulbsUrl from "../assets/ui/ask-bulbs.png";
+import pagesUrl from "../assets/ui/ask-pages.png";
 import { formatColor } from "../utils";
 
 /**
@@ -254,15 +255,19 @@ export class AgentRenderer {
       }
 
       .clippy-choices li.clippy-pagination-link::before {
-        display: none;
+        width: 16px;
+        height: 8px;
+        background-image: url('${pagesUrl}');
+        background-position: 0 0;
       }
-      .clippy-choices li.clippy-pagination-link {
-        justify-content: center;
-        font-style: italic;
-        opacity: 0.7;
+      .clippy-choices li.clippy-pagination-link.prev::before {
+        transform: rotate(180deg);
       }
-      .clippy-choices li.clippy-pagination-link:hover {
-        opacity: 1;
+      .clippy-choices li.clippy-pagination-link:hover::before {
+        background-position: -16px 0;
+      }
+      .clippy-choices li.clippy-pagination-link:active::before {
+        background-position: -32px 0;
       }
 
       .clippy-checkbox {
