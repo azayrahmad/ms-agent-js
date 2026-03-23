@@ -117,6 +117,7 @@ export class AnimationManager extends EventEmitter<any> {
     useExitBranch: boolean = false,
     loop: boolean = false
   ): void {
+    if (!animationName) return;
     const animation = this.animations[animationName];
     if (animation) {
       const previousAnimation = this.currentAnimation?.name || '';
@@ -430,13 +431,23 @@ export class AnimationManager extends EventEmitter<any> {
    */
   private completeAnimation(): void {
     const completedAnimation = this.currentAnimation?.name || '';
-    if (this.animationPromise) {
-      this.animationPromise.resolve(true);
-      this.animationPromise = null;
-      this.activePromise = null;
-    }
+    const returnAnimation = this.currentAnimation?.returnAnimation;
+
     this.currentAnimation = null;
     this.emit('animationCompleted', completedAnimation);
+
+    // If there's a return animation, play it automatically.
+    // We don't resolve the promise yet; the return animation will eventually call
+    // completeAnimation again and resolve it then.
+    if (returnAnimation && this.animations[returnAnimation]) {
+      this.setAnimation(returnAnimation);
+    } else {
+      if (this.animationPromise) {
+        this.animationPromise.resolve(true);
+        this.animationPromise = null;
+        this.activePromise = null;
+      }
+    }
   }
 
   /**
