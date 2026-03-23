@@ -18,7 +18,9 @@ export type AgentEvents =
   | "requestComplete"
   | "frameChanged"
   | "speak"
-  | "reposition";
+  | "reposition"
+  | "balloonShow"
+  | "balloonHide";
 
 /**
  * Map of event names to their expected payload types.
@@ -54,4 +56,8 @@ export interface AgentEventPayloads {
   speak: { text: string; charIndex: number };
   /** Emitted when the agent is automatically repositioned to stay within the viewport. */
   reposition: { x: number; y: number };
+  /** Emitted when the speech balloon is shown. */
+  balloonShow: undefined;
+  /** Emitted when the speech balloon is hidden or closed. */
+  balloonHide: undefined;
 }

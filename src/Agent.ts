@@ -278,6 +278,15 @@ export class Agent {
     renderer.balloon.onSpeak = (text: string, charIndex: number) => {
       core.emit("speak", { text, charIndex });
     };
+    renderer.balloon.on("show", () => {
+      core.emit("balloonShow");
+    });
+    renderer.balloon.on("hide", () => {
+      core.emit("balloonHide");
+    });
+    renderer.balloon.on("close", () => {
+      core.emit("balloonHide");
+    });
 
     const agent = new Agent(core, renderer, container);
 
@@ -760,6 +769,7 @@ export class Agent {
     const content = options.content || [];
     const buttons = options.buttons || [];
     const timeout = options.timeout !== undefined ? options.timeout : 60000;
+    const startCounter = this.renderer.balloon.sessionCounter;
 
     let resolveAsk: (
       value: {
@@ -777,15 +787,224 @@ export class Agent {
     });
 
     this.enqueueRequest(async (request) => {
-      if (request.isCancelled) {
-        resolveAsk(null);
-        return;
-      }
-
-      let inputBalloonTimeout: number | null = null;
       let resolved = false;
+      let resolveQueueFn: (() => void) | null = null;
+      let inputBalloonTimeout: number | null = null;
       let choicePage = 0;
       const choicesPerPage = 3;
+
+      const self = this;
+
+      function clearBalloonTimeout() {
+        if (inputBalloonTimeout) {
+          clearTimeout(inputBalloonTimeout);
+          inputBalloonTimeout = null;
+        }
+      }
+
+      function onHideFinish() {
+        finish(null);
+      }
+
+      function handleKeypress(e: KeyboardEvent) {
+        resetBalloonTimeout();
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const balloonEl = self.renderer.balloon.balloonEl;
+          const customButtons = Array.from(
+            balloonEl.querySelectorAll(".custom-button"),
+          ) as HTMLButtonElement[];
+          if (customButtons.length > 0) {
+            customButtons[0].click();
+          }
+        }
+      }
+
+      const handleFocus = () => {
+        self.startTalkingAnimation("Writing");
+      };
+
+      const handleBlur = () => {
+        self.startTalkingAnimation(options.animation);
+        self.renderer.balloon.reposition();
+      };
+
+      function handleChoiceClick(e: MouseEvent) {
+        resetBalloonTimeout();
+        const target = e.target as HTMLElement;
+        const li = target.closest("li");
+        if (!li) return;
+
+        const action = li.getAttribute("data-action");
+        if (action === "next") {
+          choicePage++;
+          refreshContent();
+          return;
+        }
+        if (action === "prev") {
+          choicePage--;
+          refreshContent();
+          return;
+        }
+
+        if (li.hasAttribute("data-index")) {
+          const index = parseInt(li.getAttribute("data-index") || "0");
+          const balloonEl = self.renderer.balloon.balloonEl;
+          const input = balloonEl.querySelector(
+            "textarea",
+          ) as HTMLTextAreaElement;
+          const checkbox = balloonEl.querySelector(
+            ".ask-checkbox",
+          ) as HTMLInputElement | null;
+          const text = input ? input.value || null : null;
+          const checked = checkbox ? !!checkbox.checked : null;
+          finish({ value: index, text, checked });
+          self.renderer.balloon.close();
+        }
+      }
+
+      function handleCustomButtonClick(e: MouseEvent) {
+        const btn = e.currentTarget as HTMLButtonElement;
+        const index = parseInt(btn.getAttribute("data-index") || "0");
+        const buttonDef = buttons[index];
+        const value =
+          typeof buttonDef === "string" ? buttonDef : buttonDef.value;
+
+        const balloonEl = self.renderer.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const checkbox = balloonEl.querySelector(
+          ".ask-checkbox",
+        ) as HTMLInputElement | null;
+        const text = input ? input.value || null : null;
+        const checked = checkbox ? !!checkbox.checked : null;
+
+        if (value === null) {
+          finish(null);
+        } else {
+          finish({ value, text, checked });
+        }
+        self.renderer.balloon.close();
+      }
+
+      function handleCancel() {
+        finish(null);
+        self.renderer.balloon.close();
+      }
+
+      function detachEvents() {
+        const balloonEl = self.renderer.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const choicesLists = Array.from(
+          balloonEl.querySelectorAll(".clippy-choices"),
+        ) as HTMLUListElement[];
+        const customButtons = Array.from(
+          balloonEl.querySelectorAll(".custom-button"),
+        ) as HTMLButtonElement[];
+
+        input?.removeEventListener("keypress", handleKeypress);
+        input?.removeEventListener("focus", handleFocus);
+        input?.removeEventListener("blur", handleBlur);
+        choicesLists.forEach((list) =>
+          list.removeEventListener("click", handleChoiceClick),
+        );
+        customButtons.forEach((btn) =>
+          btn.removeEventListener("click", handleCustomButtonClick),
+        );
+      }
+
+      function attachEvents() {
+        const balloonEl = self.renderer.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const choicesLists = Array.from(
+          balloonEl.querySelectorAll(".clippy-choices"),
+        ) as HTMLUListElement[];
+        const customButtons = Array.from(
+          balloonEl.querySelectorAll(".custom-button"),
+        ) as HTMLButtonElement[];
+
+        input?.addEventListener("keypress", handleKeypress);
+        input?.addEventListener("focus", handleFocus);
+        input?.addEventListener("blur", handleBlur);
+        choicesLists.forEach((list) =>
+          list.addEventListener("click", handleChoiceClick),
+        );
+        customButtons.forEach((btn) =>
+          btn.addEventListener("click", handleCustomButtonClick),
+        );
+
+        if (input) input.focus();
+      }
+
+      function finish(
+        value: {
+          value: any;
+          text: string | null;
+          checked: boolean | null;
+        } | null,
+      ) {
+        if (resolved) return;
+        resolved = true;
+        self.renderer.balloon.off("hide", onHideFinish);
+        self.renderer.balloon.off("close", onHideFinish);
+        self.talkingAnimationName = null;
+        if (self.core.stateManager.currentStateName === "Speaking") {
+          self.core.animationManager.isExitingFlag = true;
+          self.core.stateManager.handleAnimationCompleted();
+        }
+        detachEvents();
+        clearBalloonTimeout();
+        resolveAsk(value);
+        if (resolveQueueFn) {
+          resolveQueueFn();
+        }
+      }
+
+      function resetBalloonTimeout() {
+        clearBalloonTimeout();
+        if (timeout > 0) {
+          inputBalloonTimeout = window.setTimeout(() => {
+            handleCancel();
+          }, timeout);
+        }
+      }
+
+      function refreshContent() {
+        detachEvents();
+        const balloonEl = self.renderer.balloon.balloonEl;
+        const input = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const checkbox = balloonEl.querySelector(
+          ".ask-checkbox",
+        ) as HTMLInputElement | null;
+        const prevText = input ? input.value : "";
+        const prevChecked = checkbox ? checkbox.checked : false;
+
+        self.renderer.balloon.showHtml(renderContent(), true);
+
+        // Restore state
+        const newInput = balloonEl.querySelector(
+          "textarea",
+        ) as HTMLTextAreaElement;
+        const newCheckbox = balloonEl.querySelector(
+          ".ask-checkbox",
+        ) as HTMLInputElement | null;
+        if (newInput) newInput.value = prevText;
+        if (newCheckbox) newCheckbox.checked = prevChecked;
+
+        attachEvents();
+      }
+
+      if (request.isCancelled || self.renderer.balloon.sessionCounter > startCounter) {
+        finish(null);
+        return;
+      }
 
       const renderContent = () => {
         let balloonContent = `<div class="clippy-input">`;
@@ -842,6 +1061,10 @@ export class Agent {
         return balloonContent;
       };
 
+
+      this.renderer.balloon.on("hide", onHideFinish);
+      this.renderer.balloon.on("close", onHideFinish);
+
       let ttsText = title;
       content.forEach((item) => {
         if (typeof item === "string") {
@@ -852,213 +1075,8 @@ export class Agent {
       this.startTalkingAnimation(options.animation);
 
       return new Promise<void>((resolveQueue) => {
-        const attachEvents = () => {
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const choicesLists = Array.from(
-            balloonEl.querySelectorAll(".clippy-choices"),
-          ) as HTMLUListElement[];
-          const customButtons = Array.from(
-            balloonEl.querySelectorAll(".custom-button"),
-          ) as HTMLButtonElement[];
-
-          input?.addEventListener("keypress", handleKeypress);
-          input?.addEventListener("focus", handleFocus);
-          input?.addEventListener("blur", handleBlur);
-          choicesLists.forEach((list) =>
-            list.addEventListener("click", handleChoiceClick),
-          );
-          customButtons.forEach((btn) =>
-            btn.addEventListener("click", handleCustomButtonClick),
-          );
-
-          if (input) input.focus();
-        };
-
-        const detachEvents = () => {
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const choicesLists = Array.from(
-            balloonEl.querySelectorAll(".clippy-choices"),
-          ) as HTMLUListElement[];
-          const customButtons = Array.from(
-            balloonEl.querySelectorAll(".custom-button"),
-          ) as HTMLButtonElement[];
-
-          input?.removeEventListener("keypress", handleKeypress);
-          input?.removeEventListener("focus", handleFocus);
-          input?.removeEventListener("blur", handleBlur);
-          choicesLists.forEach((list) =>
-            list.removeEventListener("click", handleChoiceClick),
-          );
-          customButtons.forEach((btn) =>
-            btn.removeEventListener("click", handleCustomButtonClick),
-          );
-        };
-
-        const finish = (
-          value: {
-            value: any;
-            text: string | null;
-            checked: boolean | null;
-          } | null,
-        ) => {
-          if (resolved) return;
-          resolved = true;
-          this.renderer.balloon.onHide = null;
-          this.talkingAnimationName = null;
-          if (this.core.stateManager.currentStateName === "Speaking") {
-            this.core.animationManager.isExitingFlag = true;
-            this.core.stateManager.handleAnimationCompleted();
-          }
-          detachEvents();
-          clearBalloonTimeout();
-          resolveAsk(value);
-          resolveQueue();
-        };
-
-        this.renderer.balloon.onHide = () => {
-          if (this.core.stateManager.currentStateName === "Speaking") {
-            this.core.animationManager.isExitingFlag = true;
-            this.core.stateManager.handleAnimationCompleted();
-          }
-          finish(null);
-        };
-
-        const handleKeypress = (e: KeyboardEvent) => {
-          resetBalloonTimeout();
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const balloonEl = this.renderer.balloon.balloonEl;
-            const customButtons = Array.from(
-              balloonEl.querySelectorAll(".custom-button"),
-            ) as HTMLButtonElement[];
-            if (customButtons.length > 0) {
-              customButtons[0].click();
-            }
-          }
-        };
-
-        const handleCancel = () => {
-          finish(null);
-          this.renderer.balloon.close();
-        };
-
-        const handleChoiceClick = (e: MouseEvent) => {
-          resetBalloonTimeout();
-          const target = e.target as HTMLElement;
-          const li = target.closest("li");
-          if (!li) return;
-
-          const action = li.getAttribute("data-action");
-          if (action === "next") {
-            choicePage++;
-            refreshContent();
-            return;
-          }
-          if (action === "prev") {
-            choicePage--;
-            refreshContent();
-            return;
-          }
-
-          if (li.hasAttribute("data-index")) {
-            const index = parseInt(li.getAttribute("data-index") || "0");
-            const balloonEl = this.renderer.balloon.balloonEl;
-            const input = balloonEl.querySelector(
-              "textarea",
-            ) as HTMLTextAreaElement;
-            const checkbox = balloonEl.querySelector(
-              ".ask-checkbox",
-            ) as HTMLInputElement | null;
-            const text = input ? input.value || null : null;
-            const checked = checkbox ? !!checkbox.checked : null;
-            finish({ value: index, text, checked });
-            this.renderer.balloon.close();
-          }
-        };
-
-        const handleCustomButtonClick = (e: MouseEvent) => {
-          const btn = e.currentTarget as HTMLButtonElement;
-          const index = parseInt(btn.getAttribute("data-index") || "0");
-          const buttonDef = buttons[index];
-          const value =
-            typeof buttonDef === "string" ? buttonDef : buttonDef.value;
-
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const checkbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          const text = input ? input.value || null : null;
-          const checked = checkbox ? !!checkbox.checked : null;
-
-          if (value === null) {
-            finish(null);
-          } else {
-            finish({ value, text, checked });
-          }
-          this.renderer.balloon.close();
-        };
-
-        const handleFocus = () => {
-          this.startTalkingAnimation("Writing");
-        };
-        const handleBlur = () => {
-          this.startTalkingAnimation(options.animation);
-          this.renderer.balloon.reposition();
-        };
-
-        const resetBalloonTimeout = () => {
-          clearBalloonTimeout();
-          if (timeout > 0) {
-            inputBalloonTimeout = window.setTimeout(() => {
-              handleCancel();
-            }, timeout);
-          }
-        };
-
-        const clearBalloonTimeout = () => {
-          if (inputBalloonTimeout) {
-            clearTimeout(inputBalloonTimeout);
-            inputBalloonTimeout = null;
-          }
-        };
-
-        const refreshContent = () => {
-          detachEvents();
-          const balloonEl = this.renderer.balloon.balloonEl;
-          const input = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const checkbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          const prevText = input ? input.value : "";
-          const prevChecked = checkbox ? checkbox.checked : false;
-
-          this.renderer.balloon.showHtml(renderContent(), true);
-
-          // Restore state
-          const newInput = balloonEl.querySelector(
-            "textarea",
-          ) as HTMLTextAreaElement;
-          const newCheckbox = balloonEl.querySelector(
-            ".ask-checkbox",
-          ) as HTMLInputElement | null;
-          if (newInput) newInput.value = prevText;
-          if (newCheckbox) newCheckbox.checked = prevChecked;
-
-          attachEvents();
-        };
-
-        this.showHtml(renderContent(), true);
+        resolveQueueFn = resolveQueue;
+        this.renderer.balloon.showHtml(renderContent(), true);
         if (ttsText) {
           this.renderer.balloon.speak(
             () => {

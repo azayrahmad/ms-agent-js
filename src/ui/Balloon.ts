@@ -1,5 +1,11 @@
 import { type AgentCharacterDefinition, CharacterStyle } from "../core/base/types";
 import { formatColor } from "../utils";
+import { EventEmitter } from "../core/base/EventEmitter";
+
+/**
+ * Valid event types emitted by the Balloon.
+ */
+export type BalloonEvents = "show" | "hide" | "speak" | "close";
 
 /**
  * Options for Text-to-Speech (TTS) output.
@@ -41,7 +47,7 @@ const BALLOON_MARGIN = 15;
  * Balloon class for rendering speech bubbles using procedural SVG.
  * Supports character-by-character typing, TTS synchronization, and automatic repositioning.
  */
-export class Balloon {
+export class Balloon extends EventEmitter<BalloonEvents> {
   /** The element the balloon is pointing to (the agent canvas). */
   private _targetEl: HTMLElement;
   /** The main balloon container element. */
@@ -75,6 +81,7 @@ export class Balloon {
 
   private _ttsFallbackTimer: number | null = null;
   private _mobileTTSTimer: number | null = null;
+  private _sessionCounter: number = 0;
 
   /** Callback triggered when the balloon is hidden. */
   public onHide: (() => void) | null = null;
@@ -101,6 +108,7 @@ export class Balloon {
     container: HTMLElement | ShadowRoot,
     definition: AgentCharacterDefinition,
   ) {
+    super();
     this._targetEl = targetEl;
     this._definition = definition;
 
@@ -651,6 +659,7 @@ export class Balloon {
     this._balloonEl.style.visibility = "visible";
     this._balloonEl.style.opacity = "1";
     this.reposition();
+    this.emit("show");
   }
 
   /**
@@ -663,7 +672,9 @@ export class Balloon {
     if (fast) {
       this._balloonEl.style.display = "none";
       this._hidden = true;
+      this._sessionCounter++;
       this.onHide?.();
+      this.emit("hide");
       this._callComplete();
       return;
     }
@@ -678,7 +689,9 @@ export class Balloon {
     this._balloonEl.style.display = "none";
     this._hidden = true;
     this._hidingTimeout = null;
+    this._sessionCounter++;
     this.onHide?.();
+    this.emit("hide");
     this._callComplete();
   }
 
@@ -737,6 +750,7 @@ export class Balloon {
   public close() {
     this.stop();
     this.hide(true);
+    this.emit("close");
     this._callComplete();
   }
 
@@ -784,6 +798,21 @@ export class Balloon {
       () => this._finishHideBalloon(),
       this.CLOSE_BALLOON_DELAY,
     ) as any;
+  }
+
+  /**
+   * Returns true if the balloon is currently hidden.
+   */
+  public get isHidden(): boolean {
+    return this._hidden;
+  }
+
+  /**
+   * Returns a counter that increments every time the balloon is hidden or closed.
+   * Useful for tracking if the balloon was dismissed while an action was enqueued.
+   */
+  public get sessionCounter(): number {
+    return this._sessionCounter;
   }
 
   /**
