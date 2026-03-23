@@ -1,131 +1,145 @@
 import { Agent } from "../Agent";
 
 /**
+ * Interface for a structured help entry.
+ */
+interface HelpEntry {
+  title: string;
+  content: string[];
+  keywords: string[];
+}
+
+/**
  * Manages the interactive developer help system.
  * Provides a hybrid interface with predefined topics and keyword-based search.
  */
 export class HelpManager {
-  /**
-   * Keyword-to-response mapping for free-form input.
-   */
-  private static readonly KEYWORD_MAP: Record<string, { title: string; content: string[] }> = {
-    "install": {
-      title: "Getting Started",
-      content: ["Install via npm: `npm install ms-agent-js`", "Or use a CDN. See docs/getting-started.md for details."]
-    },
-    "setup": {
-      title: "Getting Started",
-      content: ["Install via npm: `npm install ms-agent-js`", "Or use a CDN. See docs/getting-started.md for details."]
-    },
-    "npm": {
-      title: "Getting Started",
-      content: ["Install via npm: `npm install ms-agent-js`", "Or use a CDN. See docs/getting-started.md for details."]
-    },
-    "start": {
-      title: "Getting Started",
-      content: ["Use `Agent.load('Name')` to begin.", "See docs/getting-started.md for a quick start guide."]
-    },
-    "animation": {
-      title: "Animations & Movement",
-      content: ["Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.", "See docs/api-reference.md for the full list of methods."]
-    },
-    "play": {
-      title: "Animations & Movement",
-      content: ["Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.", "See docs/api-reference.md for the full list of methods."]
-    },
-    "move": {
-      title: "Animations & Movement",
-      content: ["Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.", "See docs/api-reference.md for the full list of methods."]
-    },
-    "gesture": {
-      title: "Animations & Movement",
-      content: ["Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.", "See docs/api-reference.md for the full list of methods."]
-    },
-    "look": {
-      title: "Animations & Movement",
-      content: ["Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.", "See docs/api-reference.md for the full list of methods."]
-    },
-    "speak": {
-      title: "Speech & TTS",
-      content: ["Use `speak(text)` or `ask(options)` for interactive dialogs.", "TTS settings are handled via `setTTSOptions()`. See docs/api-reference.md."]
-    },
-    "talk": {
-      title: "Speech & TTS",
-      content: ["Use `speak(text)` or `ask(options)` for interactive dialogs.", "TTS settings are handled via `setTTSOptions()`. See docs/api-reference.md."]
-    },
-    "tts": {
-      title: "Speech & TTS",
-      content: ["Use `speak(text)` or `ask(options)` for interactive dialogs.", "TTS settings are handled via `setTTSOptions()`. See docs/api-reference.md."]
-    },
-    "voice": {
-      title: "Speech & TTS",
-      content: ["Use `speak(text)` or `ask(options)` for interactive dialogs.", "TTS settings are handled via `setTTSOptions()`. See docs/api-reference.md."]
-    },
-    "ask": {
-      title: "Speech & TTS",
-      content: ["The `ask()` method supports choices, inputs, and checkboxes.", "It returns a promise with the results. See docs/api-reference.md."]
-    },
-    "custom": {
-      title: "Custom Agents",
-      content: ["You can add your own agents by providing .acd or .json files.", "See docs/assets.md for optimization tips (WebP/WebM/Atlas)."]
-    },
-    "acd": {
-      title: "Custom Agents",
-      content: ["You can add your own agents by providing .acd or .json files.", "See docs/assets.md for optimization tips (WebP/WebM/Atlas)."]
-    },
-    "asset": {
-      title: "Custom Agents",
-      content: ["You can add your own agents by providing .acd or .json files.", "See docs/assets.md for optimization tips (WebP/WebM/Atlas)."]
-    },
-    "own": {
-      title: "Custom Agents",
-      content: ["You can add your own agents by providing .acd or .json files.", "See docs/assets.md for optimization tips (WebP/WebM/Atlas)."]
-    },
-    "build": {
-      title: "Custom Agents",
-      content: ["You can add your own agents by providing .acd or .json files.", "See docs/assets.md for optimization tips (WebP/WebM/Atlas)."]
-    },
-    "contribute": {
-      title: "Contributing",
-      content: ["We welcome contributions! Check CONTRIBUTING.md for repo setup instructions.", "Vite, Vitest, and TypeScript are the main tools used."]
-    },
-    "develop": {
-      title: "Contributing",
-      content: ["We welcome contributions! Check CONTRIBUTING.md for repo setup instructions.", "Vite, Vitest, and TypeScript are the main tools used."]
-    },
-    "source": {
-      title: "Contributing",
-      content: ["We welcome contributions! Check CONTRIBUTING.md for repo setup instructions.", "Vite, Vitest, and TypeScript are the main tools used."]
-    },
-    "github": {
-      title: "Contributing",
-      content: ["We welcome contributions! Check CONTRIBUTING.md for repo setup instructions.", "Vite, Vitest, and TypeScript are the main tools used."]
-    },
-    "docs": {
-      title: "Documentation Map",
-      content: ["- docs/getting-started.md", "- docs/api-reference.md", "- docs/assets.md", "- docs/request-system.md", "- docs/internals.md"]
-    },
-    "help": {
-      title: "Documentation Map",
-      content: ["- docs/getting-started.md", "- docs/api-reference.md", "- docs/assets.md", "- docs/request-system.md", "- docs/internals.md"]
-    },
-    "reference": {
-      title: "Documentation Map",
-      content: ["- docs/getting-started.md", "- docs/api-reference.md", "- docs/assets.md", "- docs/request-system.md", "- docs/internals.md"]
-    },
-    "api": {
-      title: "Documentation Map",
-      content: ["- docs/getting-started.md", "- docs/api-reference.md", "- docs/assets.md", "- docs/request-system.md", "- docs/internals.md"]
-    }
-  };
+  private static readonly DOCS_BASE = "https://github.com/azayrahmad/ms-agent-js/blob/main";
 
   /**
-   * The 3 main topics displayed as bullet choices.
+   * Structured help entries including title, content, and searchable keywords.
+   */
+  private static readonly HELP_ENTRIES: HelpEntry[] = [
+    {
+      title: "Getting Started",
+      content: [
+        "Install via npm: `npm install ms-agent-js` or use a CDN.",
+        `See <a href="${this.DOCS_BASE}/docs/getting-started.md" target="_blank">getting-started.md</a> for a quick start guide.`,
+        "Use `Agent.load('Name')` to begin."
+      ],
+      keywords: ["install", "setup", "npm", "start", "how", "begin"]
+    },
+    {
+      title: "Animations & Movement",
+      content: [
+        "Use `play(name)`, `moveTo(x, y)`, `gestureAt(x, y)`, or `lookAt(x, y)`.",
+        `See <a href="${this.DOCS_BASE}/docs/api-reference.md" target="_blank">api-reference.md</a> for the full list of methods.`,
+        "Movement animations are automatically chosen based on direction."
+      ],
+      keywords: ["animation", "play", "move", "gesture", "look", "walk", "run"]
+    },
+    {
+      title: "Speech & TTS",
+      content: [
+        "Use `speak(text)` or `ask(options)` for interactive dialogs.",
+        `TTS settings are handled via <code>setTTSOptions()</code>. See <a href="${this.DOCS_BASE}/docs/api-reference.md" target="_blank">api-reference.md</a>.`,
+        "The `ask()` method supports choices, inputs, and checkboxes."
+      ],
+      keywords: ["speak", "talk", "tts", "voice", "ask", "question", "input"]
+    },
+    {
+      title: "Custom Agents",
+      content: [
+        "You can add your own agents by providing .acd or .json files.",
+        `See <a href="${this.DOCS_BASE}/docs/assets.md" target="_blank">assets.md</a> for optimization tips (WebP/WebM/Atlas).`,
+        "Optimized JSON formats are recommended for performance."
+      ],
+      keywords: ["custom", "acd", "asset", "own", "build", "character"]
+    },
+    {
+      title: "Events",
+      content: [
+        "The agent emits events like 'click', 'show', 'hide', 'animationStart', and 'animationEnd'.",
+        `Use <code>agent.on('event', callback)</code> to listen. See <a href="${this.DOCS_BASE}/docs/api-reference.md" target="_blank">api-reference.md</a>.`
+      ],
+      keywords: ["events", "on", "click", "listen", "callback", "handle"]
+    },
+    {
+      title: "Audio & Sounds",
+      content: [
+        "Agents can play sound effects defined in their character files.",
+        "Speech can use system TTS or balloon-only mode. Toggle with <code>useAudio</code> option.",
+        "Audio doubling and playback issues are handled by internal managers."
+      ],
+      keywords: ["audio", "sound", "effect", "volume", "silent", "wav"]
+    },
+    {
+      title: "Scaling",
+      content: [
+        "Use <code>agent.setScale(number)</code> to resize the agent dynamically.",
+        "The agent stays centered and within viewport bounds.",
+        "Scaling affects all sprites and UI components."
+      ],
+      keywords: ["scaling", "size", "resize", "big", "small", "zoom", "scale"]
+    },
+    {
+      title: "Interruption & Stopping",
+      content: [
+        "Use <code>agent.stop()</code> to cancel the current and all queued actions.",
+        "Use <code>agent.stopCurrent()</code> to skip just the current action.",
+        "Interrupting triggers transition animations where defined."
+      ],
+      keywords: ["stop", "interrupt", "cancel", "skip", "pause", "resume"]
+    },
+    {
+      title: "Coordinate System",
+      content: [
+        "Positioning uses screen coordinates (pixels).",
+        "The agent's position is relative to the top-left of the viewport (fixed) or document (absolute).",
+        "Use <code>window.scrollX/Y</code> for document-relative positioning."
+      ],
+      keywords: ["coordinates", "where", "location", "position", "x", "y", "top", "left"]
+    },
+    {
+      title: "Documentation Map",
+      content: [
+        `- <a href="${this.DOCS_BASE}/docs/getting-started.md" target="_blank">getting-started.md</a>`,
+        `- <a href="${this.DOCS_BASE}/docs/api-reference.md" target="_blank">api-reference.md</a>`,
+        `- <a href="${this.DOCS_BASE}/docs/assets.md" target="_blank">assets.md</a>`,
+        `- <a href="${this.DOCS_BASE}/docs/request-system.md" target="_blank">request-system.md</a>`,
+        `- <a href="${this.DOCS_BASE}/docs/internals.md" target="_blank">internals.md</a>`
+      ],
+      keywords: ["docs", "help", "reference", "api", "map", "readme"]
+    },
+    {
+      title: "Contributing",
+      content: [
+        `We welcome contributions! Check <a href="${this.DOCS_BASE}/CONTRIBUTING.md" target="_blank">CONTRIBUTING.md</a> for repo setup instructions.`,
+        "Vite, Vitest, and TypeScript are the main tools used.",
+        "Follow the established code standards and PR guidelines."
+      ],
+      keywords: ["contribute", "develop", "source", "github", "repo", "pr"]
+    },
+    {
+      title: "General Information",
+      content: [
+        "MS Agent JS brings classic desktop assistants back to the web using modern TypeScript.",
+        `See <a href="${this.DOCS_BASE}/README.md" target="_blank">README.md</a> for more project details.`
+      ],
+      keywords: ["clippy", "agent", "microsoft", "modern", "web", "typescript"]
+    }
+  ];
+
+  /**
+   * The main topics displayed as bullet choices.
    */
   private static readonly MAIN_TOPICS = [
     "How do I get started?",
     "How do I control animations/speech?",
-    "How do I add custom agents?"
+    "How do I add custom agents?",
+    "How do I handle events?",
+    "How do I stop or interrupt actions?",
+    "Documentation Map"
   ];
 
   /**
@@ -158,16 +172,19 @@ export class HelpManager {
 
       // Handle Choice Selection
       if (typeof result.value === "number") {
-        switch (result.value) {
-          case 0:
-            await this.showHelp(agent, this.KEYWORD_MAP["install"]);
-            break;
-          case 1:
-            await this.showHelp(agent, this.KEYWORD_MAP["animation"]);
-            break;
-          case 2:
-            await this.showHelp(agent, this.KEYWORD_MAP["custom"]);
-            break;
+        // Map choice indices to help entries
+        const entryMap: Record<number, string> = {
+          0: "Getting Started",
+          1: "Animations & Movement",
+          2: "Custom Agents",
+          3: "Events",
+          4: "Interruption & Stopping",
+          5: "Documentation Map"
+        };
+        const title = entryMap[result.value];
+        const entry = this.HELP_ENTRIES.find(e => e.title === title);
+        if (entry) {
+          await this.showHelp(agent, entry);
         }
         continue;
       }
@@ -175,18 +192,47 @@ export class HelpManager {
       // Handle Keyword Search
       if (result.value === "Ask" && result.text) {
         const text = result.text.toLowerCase().trim();
-        let matched = false;
+        const tokens = text.split(/\s+/).map(t => t.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ""));
 
-        // Try to match keywords as substrings
-        for (const [key, response] of Object.entries(this.KEYWORD_MAP)) {
-          if (text.includes(key)) {
-            await this.showHelp(agent, response);
-            matched = true;
-            break;
+        const scoredMatches: { score: number; entry: HelpEntry }[] = [];
+
+        for (const entry of this.HELP_ENTRIES) {
+          let score = 0;
+          let entryMatched = false;
+          for (const keyword of entry.keywords) {
+            if (text.includes(keyword)) {
+              score += 2; // Substring match
+              entryMatched = true;
+            }
+            if (tokens.includes(keyword)) {
+              score += 3; // Direct word match
+              entryMatched = true;
+            }
+          }
+
+          if (entryMatched) {
+            scoredMatches.push({ score, entry });
           }
         }
 
-        if (!matched) {
+        // Sort by score (descending)
+        scoredMatches.sort((a, b) => b.score - a.score);
+
+        if (scoredMatches.length > 0) {
+          const choiceResult = await agent.ask({
+            title: "Search Results",
+            content: [
+              `I found ${scoredMatches.length} matching topic${scoredMatches.length > 1 ? "s" : ""}:`,
+              { type: "choices", items: scoredMatches.map(m => m.entry.title) }
+            ],
+            buttons: ["Back"],
+            timeout: 0
+          });
+
+          if (choiceResult && typeof choiceResult.value === "number") {
+            await this.showHelp(agent, scoredMatches[choiceResult.value].entry);
+          }
+        } else {
           await agent.ask({
             title: "Help",
             content: [
@@ -207,12 +253,12 @@ export class HelpManager {
    * Displays a specific help topic response.
    *
    * @param agent - The agent to show the help in.
-   * @param response - The title and content array to display.
+   * @param entry - The help entry to display.
    */
-  private static async showHelp(agent: Agent, response: { title: string; content: string[] }) {
+  private static async showHelp(agent: Agent, entry: HelpEntry) {
     await agent.ask({
-      title: response.title,
-      content: response.content,
+      title: entry.title,
+      content: entry.content,
       buttons: ["Back"],
       timeout: 0
     });

@@ -7,18 +7,26 @@ import { DemoState } from "../state";
 export class AboutTab extends BaseTab {
   private startStopBtn: HTMLButtonElement;
   private visibilityBtn: HTMLButtonElement;
+  private helpBtn: HTMLButtonElement;
   private onToggle: () => Promise<void>;
+  private onHelp: () => Promise<void>;
 
-  constructor(state: DemoState, onToggle: () => Promise<void>) {
+  constructor(state: DemoState, onToggle: () => Promise<void>, onHelp: () => Promise<void>) {
     super("panel-about", state);
     this.startStopBtn = document.getElementById("start-stop-btn") as HTMLButtonElement;
     this.visibilityBtn = document.getElementById("visibility-btn") as HTMLButtonElement;
+    this.helpBtn = document.getElementById("help-btn") as HTMLButtonElement;
     this.onToggle = onToggle;
+    this.onHelp = onHelp;
   }
 
   public init() {
     this.startStopBtn.addEventListener("click", async () => {
       await this.onToggle();
+    });
+
+    this.helpBtn.addEventListener("click", async () => {
+      await this.onHelp();
     });
 
     this.visibilityBtn.addEventListener("click", async () => {
@@ -46,9 +54,11 @@ export class AboutTab extends BaseTab {
     this.startStopBtn.textContent = isStarted ? "Stop" : "Start";
     if (!isStarted) {
       this.visibilityBtn.disabled = true;
+      this.helpBtn.disabled = true;
       this.visibilityBtn.textContent = "Hide";
     } else {
       this.visibilityBtn.disabled = false;
+      this.helpBtn.disabled = false;
     }
   }
 

@@ -26,7 +26,11 @@ class DemoApp {
   constructor() {
     this.state = new DemoState();
 
-    this.aboutTab = new AboutTab(this.state, () => this.toggleAgent());
+    this.aboutTab = new AboutTab(
+      this.state,
+      () => this.toggleAgent(),
+      () => this.checkTourWelcome(true)
+    );
     this.assistantTab = new AssistantTab(this.state, (name) => this.loadAgent(name));
     this.animationTab = new AnimationTab(this.state);
     this.speechTab = new SpeechTab(this.state);
@@ -160,14 +164,15 @@ class DemoApp {
 
   /**
    * Checks if the tour welcome message should be displayed.
+   * @param force - If true, the welcome message is shown regardless of previous preference.
    */
-  private async checkTourWelcome() {
+  private async checkTourWelcome(force = false) {
     const agent = this.state.currentAgent;
     if (!agent) return;
 
     const skipTourWelcome = localStorage.getItem("msagentjs_skip_tour_welcome") === "true";
-    if (!skipTourWelcome && !this.state.tourWelcomeShown) {
-      this.state.tourWelcomeShown = true;
+    if (force || (!skipTourWelcome && !this.state.tourWelcomeShown)) {
+      if (!force) this.state.tourWelcomeShown = true;
       const result = await agent.ask({
         title: "Welcome to MS Agent JS!",
         content: [
