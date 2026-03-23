@@ -181,7 +181,7 @@ class DemoApp {
             type: "choices",
             items: ["I want the tour", "I have questions (Help)", "I'm fine, thanks"],
           },
-          { type: "checkbox", label: "Show this every start", checked: true },
+          { type: "checkbox", label: "Show this every start", checked: !skipTourWelcome },
         ],
         timeout: 0,
       });
