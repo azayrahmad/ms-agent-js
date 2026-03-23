@@ -434,6 +434,7 @@ describe('Agent Additional Coverage', () => {
     });
 
     it('should correctly render checkbox and label in ask dialog', async () => {
+        vi.useFakeTimers();
         const showHtmlSpy = vi.spyOn(agent.balloon, 'showHtml');
 
         agent.ask({
@@ -442,7 +443,7 @@ describe('Agent Additional Coverage', () => {
         });
 
         // Wait for balloon to render
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await vi.advanceTimersByTimeAsync(100);
 
         expect(showHtmlSpy).toHaveBeenCalled();
         const html = showHtmlSpy.mock.calls[0][0];

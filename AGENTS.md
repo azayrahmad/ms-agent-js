@@ -46,7 +46,7 @@ As an AI agent (like Jules), you **MUST** adhere to the following standards to e
 - **Conventional Commits**: Use the format `type(scope): description`.
     - **Allowed Scopes**: `core`, `ui`, `balloon`, `audio`, `sprite`, `anim`, `state`, `parser`, `demo`, `docs`, `scripts`, `deps`.
     - **Examples**: `feat(balloon): add support for RTL text`, `fix(demo): resolve layout shift on mobile`.
-- **Pre-Commit Verification**: Always run `npm run test:coverage` and `npm run build` before submitting. Verify the build by running `npm run preview` and checking the output.
+- **Pre-Commit Verification**: Always run `npm run test:coverage`, `npx playwright test`, and `npm run build` before submitting. Verify the build by running `npm run preview` and checking the output.
 - **Documentation Index**: Before finishing any task, evaluate all relevant documentation files and update them to reflect your changes.
 
 | File | Summary |

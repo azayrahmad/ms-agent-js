@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
+import { AssetCache } from '../src/core/resources/Cache';
 import { setupGlobals } from './setup';
 import { RequestStatus } from '../src/core/base/types';
 
@@ -37,8 +38,13 @@ describe('Agent Public API', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        AssetCache.clearMemory();
         setupGlobals(mockDefinition);
         (CharacterParser.load as any).mockResolvedValue(mockDefinition);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('should return all animation names with animations()', async () => {
@@ -83,6 +89,7 @@ describe('Agent Public API', () => {
     });
 
     it('should stop only the current request with stopCurrent()', async () => {
+        vi.useFakeTimers();
         const agent = await Agent.load('Clippit');
 
         const req1 = agent.enqueueRequest(async (request) => {
@@ -93,8 +100,8 @@ describe('Agent Public API', () => {
 
         const req2 = agent.delay(1000);
 
-        // Wait a bit to ensure req1 is InProgress
-        await new Promise(resolve => setTimeout(resolve, 50));
+        // Advance enough for req1 to start
+        await vi.advanceTimersByTimeAsync(50);
 
         expect(req1.status).toBe(RequestStatus.InProgress);
 
@@ -102,12 +109,8 @@ describe('Agent Public API', () => {
 
         expect(req1.status).toBe(RequestStatus.Interrupted);
 
-        // Use a loop to wait for status change to avoid flaky timeouts
-        let iterations = 0;
-        while (req2.status !== RequestStatus.InProgress && iterations < 20) {
-            await new Promise(resolve => setTimeout(resolve, 20));
-            iterations++;
-        }
+        // Advance enough for req1's internal loop to finish and next task to start
+        await vi.advanceTimersByTimeAsync(10);
 
         expect(req2.status).toBe(RequestStatus.InProgress);
     });
@@ -290,12 +293,11 @@ describe('Agent Public API', () => {
         const agent = await Agent.load('TestAgent');
         const askPromise = agent.ask({ timeout: 100 });
 
-        vi.advanceTimersByTime(150);
+        await vi.advanceTimersByTimeAsync(150);
 
         const result = await askPromise;
         expect(result).toBeNull();
         agent.destroy();
-        vi.useRealTimers();
       });
     });
 
