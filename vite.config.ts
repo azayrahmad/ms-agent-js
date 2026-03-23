@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: isApp ? '/ms-agent-js/' : '/',
+    publicDir: isApp ? 'public' : false,
     test: {
       setupFiles: ['tests/setup.ts'],
       coverage: {
@@ -17,7 +18,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: isApp ? 'dist-app' : 'dist',
-      emptyOutDir: false,
+      emptyOutDir: true,
       lib: isApp
         ? undefined
         : {
