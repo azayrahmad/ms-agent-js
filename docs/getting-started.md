@@ -84,7 +84,9 @@ agent.moveTo(100, 100);
 // Ask for user input
 const result = await agent.ask({
   title: 'Welcome',
-  placeholder: 'What is your name?'
+  content: [
+    { type: 'input', placeholder: 'What is your name?' }
+  ]
 });
 
 if (result && result.text) {

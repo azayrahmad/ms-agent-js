@@ -382,7 +382,7 @@ describe('Agent Additional Coverage', () => {
 
     it('should cover all 8 directions in lookAt', async () => {
         const playSpy = agent.stateManager.playAnimation;
-        const getDir = (x: number, y: number) => (agent as any).getDirection(x, y, 8);
+        const getDir = (x: number, y: number) => (agent as any).actionManager.getDirection(x, y, 8);
 
         // Center is (550, 550)
         // dx=1, dy=0 -> Right

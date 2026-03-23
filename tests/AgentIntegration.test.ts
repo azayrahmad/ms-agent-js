@@ -93,6 +93,7 @@ describe('Agent Integration', () => {
     it('should perform animated moveTo', async () => {
         const agent = await Agent.load('Clippit');
         const setPosSpy = vi.spyOn(agent as any, 'setInstantPosition');
+        vi.spyOn(agent.actionManager as any, 'setInstantPosition');
 
         // We need to capture the moveStep function passed to requestAnimationFrame
         let moveStep: any;
@@ -121,8 +122,8 @@ describe('Agent Integration', () => {
         now += 350;
         if (moveStep) moveStep(now);
 
-        expect(setPosSpy).toHaveBeenCalled();
-        const lastPos = setPosSpy.mock.calls[setPosSpy.mock.calls.length - 1];
+        expect(agent.actionManager['setInstantPosition']).toHaveBeenCalled();
+        const lastPos = (agent.actionManager['setInstantPosition'] as any).mock.calls[(agent.actionManager['setInstantPosition'] as any).mock.calls.length - 1];
         // progress = 350 / 707.1 ≈ 0.495
         // expected x ≈ 0 + 500 * 0.495 ≈ 247.5
         expect(lastPos[0]).toBeGreaterThan(200);

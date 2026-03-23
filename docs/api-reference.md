@@ -113,6 +113,33 @@ Opens an interactive dialog with a title, a content array (text, choices, and in
 - **`timeout`**: Auto-cancel after milliseconds (default: 60000).
 - **`animation`**: Optional looping animation name to play while the dialog is active (e.g., 'Explain').
 
+---
+
+## Specialized Managers
+
+While the `Agent` class is the primary interface, the following specialized managers are also available for advanced usage and are exported from the library.
+
+### `AgentLoader`
+Handles the asynchronous loading and normalization of character definitions.
+- `AgentLoader.getDefinition(name, baseUrl, options)`: Static method to load and parse an agent definition.
+
+### `ActionManager`
+Coordinates high-level character actions and movement.
+- `gestureAt(x, y)`: Points at a coordinate.
+- `lookAt(x, y)`: Turns to look at a coordinate.
+- `moveTo(x, y, speed)`: Smoothly moves the agent.
+
+### `InputManager`
+Manages user interactions and viewport positioning.
+- `handleResize()`: Ensures the agent stays within the viewport boundaries.
+- `destroy()`: Cleans up event listeners.
+
+### `DialogManager`
+Encapsulates the logic for interactive speech balloon dialogs.
+- `ask(options)`: Opens an interactive dialog and returns a promise.
+
+---
+
 ### `agent.stop(request?)`
 Stops the specified request or all requests in the queue. If the active request is stopped, the agent moves to the next one.
 
