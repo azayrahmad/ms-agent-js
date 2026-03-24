@@ -95,7 +95,6 @@ Displays text in a speech balloon.
 - **`useTTS`**: Enable/disable system speech for this request (default: true).
 - **`skipTyping`**: Show all text instantly (default: false).
 - **`animation`**: Optional looping animation name to play while speaking (e.g., 'Explain').
-- **`skipContentUpdate`**: (Internal/Expert) If true, does not overwrite the current content of the balloon. Useful for persistent interactive elements.
 
 ### `agent.showHtml(html, hold?)`
 Displays raw HTML inside the speech balloon.

@@ -493,4 +493,45 @@ describe('Agent Additional Coverage', () => {
         expect(agent2.options.initialAnimation).toBe('LookUp');
         agent2.destroy();
     });
+
+    it('play should warn if animation is missing', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        agent.play('NonExistent');
+        expect(warnSpy).toHaveBeenCalledWith("MSAgentJS: Animation 'NonExistent' not found.");
+    });
+
+    it('setState should change the high-level state', async () => {
+        (agent.definition.states as any)['Searching'] = { name: 'Searching', animations: [] };
+        const setStateSpy = vi.spyOn(agent.stateManager, 'setState');
+        const emitSpy = vi.spyOn(agent as any, 'emit');
+
+        await agent.setState('Searching');
+
+        expect(setStateSpy).toHaveBeenCalledWith('Searching');
+        expect(emitSpy).toHaveBeenCalledWith('stateChange', 'Searching', 'IdlingLevel1');
+    });
+
+    it('should handle balloon onHide in startTalkingAnimation', async () => {
+        (agent.definition.animations as any)['Explain'] = { frames: [] };
+        // Trigger startTalkingAnimation by calling speak
+        agent.speak('Hello');
+
+        // wait for queue
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        expect((agent as any).talkingAnimationName).toBe('Explain');
+
+        const onHide = agent.renderer.balloon.onHide;
+        expect(onHide).toBeTypeOf('function');
+
+        // Mock Speaking state
+        vi.spyOn(agent.stateManager, 'currentStateName', 'get').mockReturnValue('Speaking');
+        const handleAnimCompSpy = vi.spyOn(agent.stateManager, 'handleAnimationCompleted');
+
+        onHide!();
+
+        expect((agent as any).talkingAnimationName).toBeNull();
+        expect(agent.animationManager.isExitingFlag).toBe(true);
+        expect(handleAnimCompSpy).toHaveBeenCalled();
+    });
 });

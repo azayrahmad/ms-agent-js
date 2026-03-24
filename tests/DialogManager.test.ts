@@ -82,4 +82,30 @@ describe('DialogManager', () => {
         const result = await askPromise;
         expect(result).toEqual({ value: 0, text: 'User text', checked: false });
     });
+
+    it('should change animation to Writing on focus and restore on blur', async () => {
+        const askPromise = dialogManager.ask({
+            content: [{ type: 'input', placeholder: 'Type...' }],
+            animation: 'Explain'
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        const balloonEl = renderer.balloon.balloonEl;
+        const textarea = (balloonEl as any).lastQueriedTextarea;
+
+        // Simulate focus
+        const focusListener = (textarea as any).listeners['focus'][0];
+        focusListener();
+        expect(startTalkingSpy).toHaveBeenLastCalledWith('Writing');
+
+        // Simulate blur
+        const blurListener = (textarea as any).listeners['blur'][0];
+        blurListener();
+        expect(startTalkingSpy).toHaveBeenLastCalledWith('Explain');
+
+        // Clean up
+        renderer.balloon.close();
+        await askPromise;
+    });
 });
