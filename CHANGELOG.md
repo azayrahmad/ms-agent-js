@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.5.0...v0.5.0) (2026-03-24)
+
+
+### Features
+
+* update readme and bump version ([eefd1f8](https://github.com/azayrahmad/ms-agent-js/commit/eefd1f808423caf764641e48dbc314f8a0b5359b))
+
+
+### Miscellaneous Chores
+
+* release 0.5.0 ([5045d1d](https://github.com/azayrahmad/ms-agent-js/commit/5045d1dc313a3444cbf87c0d1ee6778dc09153ed))
+
 ## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
 
 
