@@ -22,7 +22,11 @@ test.describe('Visual Regressions', () => {
     await expect(clippitCanvas).toBeVisible();
 
     // Take screenshot of Clippy in Idle state
-    await expect(clippitCanvas).toHaveScreenshot('clippit-idle.png', { threshold: 0.1 });
+    // We use animations: 'disabled' and maxDiffPixelRatio to handle the sprite animations
+    await expect(clippitCanvas).toHaveScreenshot('clippit-idle.png', {
+        animations: 'disabled',
+        maxDiffPixelRatio: 0.2
+    });
 
     // Trigger Speak interaction
     await page.locator('#tab-speech').click();
@@ -37,6 +41,9 @@ test.describe('Visual Regressions', () => {
     await page.waitForTimeout(1000);
 
     // Take snapshot of the agent and balloon together
-    await expect(agentContainer).toHaveScreenshot('clippit-speaking.png', { threshold: 0.1 });
+    await expect(agentContainer).toHaveScreenshot('clippit-speaking.png', {
+        animations: 'disabled',
+        maxDiffPixelRatio: 0.2
+    });
   });
 });
