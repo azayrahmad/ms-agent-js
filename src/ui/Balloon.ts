@@ -144,6 +144,12 @@ export class Balloon {
     this._contentEl.style.color = formatColor(definition.balloon.foreColor);
     this._contentEl.style.fontFamily = definition.balloon.fontName || "Arial";
     this._contentEl.style.fontSize = `${definition.balloon.fontHeight}px`;
+    if (definition.balloon.fontWeight) {
+      this._contentEl.style.fontWeight = definition.balloon.fontWeight.toString();
+    }
+    if (definition.balloon.italic) {
+      this._contentEl.style.fontStyle = "italic";
+    }
     this._contentEl.style.boxSizing = "border-box";
     this._contentEl.style.display = "flex";
     this._contentEl.style.flexDirection = "column";

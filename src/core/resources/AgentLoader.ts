@@ -88,6 +88,8 @@ export class AgentLoader {
    * Internal normalization logic for character definitions.
    */
   private static normalizeDefinition(definition: AgentCharacterDefinition) {
+    if (!definition.character) return;
+
     if (
       definition.character.colorTable &&
       !definition.character.colorTable.startsWith("http")
