@@ -1,23 +1,5 @@
 # Changelog
 
-## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.5.0...v0.5.0) (2026-03-25)
-
-
-### Features
-
-* update readme and bump version ([eefd1f8](https://github.com/azayrahmad/ms-agent-js/commit/eefd1f808423caf764641e48dbc314f8a0b5359b))
-
-
-### Bug Fixes
-
-* **tests:** exclude e2e tests from vitest coverage run ([eec9cb0](https://github.com/azayrahmad/ms-agent-js/commit/eec9cb0e19bcbace5722285507ffcc7867c0fe2b))
-* **tests:** resolve e2e interference and flaky visual snapshots ([786d155](https://github.com/azayrahmad/ms-agent-js/commit/786d155666a7be0ac12a6750d892545670d35ab6))
-
-
-### Miscellaneous Chores
-
-* release 0.5.0 ([5045d1d](https://github.com/azayrahmad/ms-agent-js/commit/5045d1dc313a3444cbf87c0d1ee6778dc09153ed))
-
 ## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
 
 
@@ -49,6 +31,8 @@
 * implement TTS fallback timer for Chrome Mobile ([2ff49db](https://github.com/azayrahmad/ms-agent-js/commit/2ff49dbd6f3081b1b68a7fa7eec925c5761619c9))
 * include trailing punctuation in speech balloon TTS sync ([4758f10](https://github.com/azayrahmad/ms-agent-js/commit/4758f104ca2b8d3eb8dda5a3c71a163879c4eeb0))
 * resolve TypeScript build errors for unused variables in StateManager ([5ce32b8](https://github.com/azayrahmad/ms-agent-js/commit/5ce32b83ee395c021a63c7f6c966ccf23f0a24dd))
+* **tests:** exclude e2e tests from vitest coverage run ([eec9cb0](https://github.com/azayrahmad/ms-agent-js/commit/eec9cb0e19bcbace5722285507ffcc7867c0fe2b))
+* **tests:** resolve e2e interference and flaky visual snapshots ([786d155](https://github.com/azayrahmad/ms-agent-js/commit/786d155666a7be0ac12a6750d892545670d35ab6))
 
 ## [0.4.1](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.0...v0.4.1) (2026-03-16)
 
