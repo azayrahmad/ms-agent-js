@@ -18,6 +18,20 @@ export interface Character {
   style: number;
   /** Path to the bitmap file containing the color palette. */
   colorTable: string;
+  /** Path to the icon file. */
+  icon?: string;
+  /** ID of the text-to-speech engine. */
+  ttsEngineID?: string;
+  /** ID of the text-to-speech mode. */
+  ttsModeID?: string;
+  /** Language ID for text-to-speech. */
+  ttsLangID?: string;
+  /** Gender for text-to-speech (1 = female, 2 = male). */
+  ttsGender?: number;
+  /** Age for text-to-speech. */
+  ttsAge?: number;
+  /** Style for text-to-speech (e.g., "Business"). */
+  ttsStyle?: string;
 }
 
 /**
@@ -36,6 +50,10 @@ export const CharacterStyle = {
   BalloonAutoHide: 0x0008,
   /** Balloon should automatically pace the text display. */
   BalloonAutoPace: 0x0010,
+  /** Character supports text-to-speech. */
+  VoiceTTS: 0x0020,
+  /** Character is a system character. */
+  SystemChar: 0x0040,
 } as const;
 
 /**
@@ -56,6 +74,10 @@ export interface Balloon {
   backColor: string;
   /** Border color as a hex string or Win32 BGR color. */
   borderColor: string;
+  /** Font weight (e.g., 400 for normal, 700 for bold). */
+  fontWeight?: number;
+  /** Whether the font is italicized. */
+  italic?: boolean;
 }
 
 /**
@@ -81,6 +103,16 @@ export interface BranchingDefinition {
 }
 
 /**
+ * Represents a mouth shape definition for lip-syncing.
+ */
+export interface MouthDefinition {
+  /** The type of mouth shape (e.g., "Closed", "OpenWide1"). */
+  type: string;
+  /** Filename of the .bmp image for this mouth shape. */
+  filename: string;
+}
+
+/**
  * Represents a single frame within an animation.
  */
 export interface FrameDefinition {
@@ -94,6 +126,8 @@ export interface FrameDefinition {
   images: ImageDefinition[];
   /** A list of potential branches from this frame. */
   branching?: BranchingDefinition[];
+  /** A list of mouth overlays for lip-syncing. */
+  mouths?: MouthDefinition[];
 }
 
 /**
