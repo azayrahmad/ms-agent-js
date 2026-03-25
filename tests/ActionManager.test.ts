@@ -65,4 +65,28 @@ describe('ActionManager', () => {
         await actionManager.lookAt(100, 550);
         expect(core.stateManager.playAnimation).toHaveBeenCalledWith('LookRight', 'Looking');
     });
+
+    it('moveTo should set instant position if distance < 1', async () => {
+        await actionManager.moveTo(500, 500); // Current is 500, 500
+        expect(setPosSpy).toHaveBeenCalledWith(500, 500);
+        expect(core.stateManager.playAnimation).not.toHaveBeenCalled();
+    });
+
+    it('moveTo should handle request cancellation', async () => {
+        // Mock requestQueue.add to execute the task immediately with a cancelled request
+        vi.spyOn(core.requestQueue, 'add').mockImplementation((task: any) => {
+            const req = { isCancelled: true, id: 1, promise: Promise.resolve() };
+            // moveTo's inner task returns a promise, we await it to let the cancelled logic run
+            return task(req);
+        });
+        const handleAnimCompSpy = vi.spyOn(core.stateManager, 'handleAnimationCompleted');
+
+        // Ensure an animation is selected to trigger handleAnimationCompleted on cancel
+        // getDirection(100, 550, 4) with center 550,550 returns 'Left'
+        core.definition.animations['MovingLeft'] = { frames: [] } as any;
+
+        await actionManager.moveTo(100, 550);
+
+        expect(handleAnimCompSpy).toHaveBeenCalled();
+    });
 });

@@ -67,4 +67,27 @@ describe('AgentLoader', () => {
         const def = await AgentLoader.getDefinition('TestAgent', 'http://test.com', {});
         expect((def as any).fromJson).toBe(true);
     });
+
+    it('should fallback to lowercase .acd if uppercase fails', async () => {
+        (window as any).__mockFetchFailAgentJson = true;
+        (CharacterParser.load as any)
+            .mockRejectedValueOnce(new Error('UPPERCASE FAIL'))
+            .mockResolvedValueOnce(mockDefinition);
+
+        const baseUrl = 'http://test.com/agent';
+        await AgentLoader.getDefinition('TestAgent', baseUrl, {});
+
+        expect(CharacterParser.load).toHaveBeenCalledTimes(2);
+        expect(CharacterParser.load).toHaveBeenNthCalledWith(1, 'http://test.com/agent/TESTAGENT.acd', undefined);
+        expect(CharacterParser.load).toHaveBeenNthCalledWith(2, 'http://test.com/agent/testagent.acd', undefined);
+    });
+
+    it('should throw error if all fallback loading fails', async () => {
+        (window as any).__mockFetchFailAgentJson = true;
+        (CharacterParser.load as any).mockRejectedValue(new Error('TOTAL FAIL'));
+
+        const baseUrl = 'http://test.com/agent';
+        await expect(AgentLoader.getDefinition('TestAgent', baseUrl, {}))
+            .rejects.toThrow('TOTAL FAIL');
+    });
 });
