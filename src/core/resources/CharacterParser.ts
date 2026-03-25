@@ -1,10 +1,10 @@
 import {
   type Character,
-  type Balloon,
   type Animation,
   type FrameDefinition,
   type ImageDefinition,
   type BranchingDefinition,
+  type MouthDefinition,
   type State,
   type Info,
   CharacterStyle,
