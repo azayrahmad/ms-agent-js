@@ -41,6 +41,7 @@ describe('Agent.load', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+        vi.useRealTimers();
     });
 
     it('should use unpkg CDN as default baseUrl when none is provided', async () => {
@@ -380,6 +381,10 @@ describe('Agent Additional Coverage', () => {
         vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
     });
 
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it('should cover all 8 directions in lookAt', async () => {
         const playSpy = agent.stateManager.playAnimation;
         const getDir = (x: number, y: number) => (agent as any).actionManager.getDirection(x, y, 8);
@@ -513,13 +518,16 @@ describe('Agent Additional Coverage', () => {
     });
 
     it('should handle balloon onHide in startTalkingAnimation', async () => {
+        vi.useFakeTimers();
         (agent.definition.animations as any)['Explain'] = { frames: [] };
         // Trigger startTalkingAnimation by calling speak
         agent.speak('Hello');
 
-        // wait for queue
-        await Promise.resolve();
-        await Promise.resolve();
+        // wait for queue and state transition to be processed
+        for (let i = 0; i < 10; i++) {
+            agent.stateManager.update(16);
+            await vi.advanceTimersByTimeAsync(16);
+        }
 
         expect((agent as any).talkingAnimationName).toBe('Explain');
 
