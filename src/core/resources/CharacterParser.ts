@@ -469,6 +469,8 @@ export class CharacterParser {
     const mouth: MouthDefinition = {
       type: "",
       filename: "",
+      offsetX: 0,
+      offsetY: 0,
     };
     i++;
 
@@ -485,6 +487,12 @@ export class CharacterParser {
             break;
           case "Filename":
             mouth.filename = value.replace(/\\/g, "/");
+            break;
+          case "OffsetX":
+            mouth.offsetX = parseInt(value, 10);
+            break;
+          case "OffsetY":
+            mouth.offsetY = parseInt(value, 10);
             break;
         }
       }

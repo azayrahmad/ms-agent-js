@@ -110,6 +110,10 @@ export interface MouthDefinition {
   type: string;
   /** Filename of the .bmp image for this mouth shape. */
   filename: string;
+  /** Horizontal offset of the mouth layer. */
+  offsetX: number;
+  /** Vertical offset of the mouth layer. */
+  offsetY: number;
 }
 
 /**

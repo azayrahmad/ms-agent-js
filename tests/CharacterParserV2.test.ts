@@ -71,6 +71,8 @@ DefineAnimation "RestPose"
     DefineMouth
       Type = Closed
       Filename = "Images\\0001.bmp"
+      OffsetX = 1
+      OffsetY = 2
     EndMouth
     DefineMouth
       Type = OpenWide1
@@ -94,6 +96,8 @@ EndAnimation
     expect(frame.mouths?.length).toBe(2);
     expect(frame.mouths?.[0].type).toBe('Closed');
     expect(frame.mouths?.[0].filename).toBe('Images/0001.bmp');
+    expect(frame.mouths?.[0].offsetX).toBe(1);
+    expect(frame.mouths?.[0].offsetY).toBe(2);
     expect(frame.mouths?.[1].type).toBe('OpenWide1');
     expect(frame.mouths?.[1].filename).toBe('Images/0002.bmp');
   });

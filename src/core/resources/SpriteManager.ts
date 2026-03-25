@@ -212,6 +212,22 @@ export class SpriteManager {
   }
 
   /**
+   * Pre-loads all sprites for a frame, including mouth shapes.
+   *
+   * @param frame - The frame definition to load sprites for.
+   */
+  public async loadFrameSprites(frame: FrameDefinition): Promise<void> {
+    const promises: Promise<void>[] = [];
+    frame.images.forEach((img) => promises.push(this.loadSprite(img.filename)));
+    if (frame.mouths) {
+      frame.mouths.forEach((mouth) =>
+        promises.push(this.loadSprite(mouth.filename)),
+      );
+    }
+    await Promise.all(promises);
+  }
+
+  /**
    * Loads a sprite BMP file, processes transparency, and caches it as a canvas.
    * If a texture atlas is already loaded, this method does nothing.
    *

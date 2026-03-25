@@ -102,6 +102,11 @@ export class AgentLoader {
         frame.images.forEach((image) => {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
         });
+        if (frame.mouths) {
+          frame.mouths.forEach((mouth) => {
+            mouth.filename = mouth.filename.replace(/\\/g, "/").toLowerCase();
+          });
+        }
         if (frame.soundEffect) {
           frame.soundEffect = frame.soundEffect.toLowerCase();
         }
