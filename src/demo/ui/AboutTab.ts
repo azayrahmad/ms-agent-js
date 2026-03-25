@@ -1,5 +1,6 @@
 import { BaseTab } from "./BaseTab";
 import { DemoState } from "../state";
+import pkg from "../../../package.json";
 
 /**
  * The 'About' tab: provides information and the main Start/Stop button.
@@ -21,6 +22,11 @@ export class AboutTab extends BaseTab {
   }
 
   public init() {
+    const versionEl = document.getElementById("app-version");
+    if (versionEl) {
+      versionEl.textContent = `v${pkg.version}`;
+    }
+
     this.startStopBtn.addEventListener("click", async () => {
       await this.onToggle();
     });
