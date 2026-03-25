@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => {
         reporter: ['text', 'json-summary', 'html'],
         exclude: ['tests/**', 'scripts/**', 'vite.config.ts'],
       },
+      exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**'],
     },
     build: {
       outDir: isApp ? 'dist-app' : 'dist',

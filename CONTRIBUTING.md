@@ -35,14 +35,20 @@ We use **Vitest** for unit and integration testing, and **Playwright** for end-t
 
 ### Running Tests
 ```bash
-# Run all unit tests
+# Run all unit tests (Vitest)
 npm test
 
 # Run Vitest in UI mode
 npx vitest --ui
+
+# Run E2E and Visual tests (Playwright)
+npx playwright test
+
+# Update visual regression snapshots
+npx playwright test --update-snapshots
 ```
 
-Before submitting a PR, ensure all tests pass and consider adding new tests for any features or bug fixes.
+Before submitting a PR, ensure all tests pass and consider adding new tests for any features or bug fixes. New UI features should include Playwright E2E tests and visual regression snapshots.
 
 ---
 
