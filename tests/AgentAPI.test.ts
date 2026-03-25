@@ -73,6 +73,19 @@ describe('Agent Public API', () => {
         expect(setInstantPositionSpy).toHaveBeenCalled();
     });
 
+    it('should early return if new scale is identical in setScale()', async () => {
+        const agent = await Agent.load('Clippit');
+        const setInstantPositionSpy = vi.spyOn(agent as any, 'setInstantPosition');
+        agent.setScale(1); // Default is 1
+        expect(setInstantPositionSpy).not.toHaveBeenCalled();
+    });
+
+    it('should append to document.body if no container provided in load()', async () => {
+        const appendChildSpy = vi.spyOn(document.body, 'appendChild');
+        await Agent.load('Clippit', { container: undefined });
+        expect(appendChildSpy).toHaveBeenCalled();
+    });
+
     it('should show HTML in balloon with showHtml()', async () => {
         const agent = await Agent.load('Clippit');
         const showHtmlSpy = vi.spyOn(agent.balloon, 'showHtml');

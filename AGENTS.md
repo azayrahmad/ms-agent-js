@@ -11,14 +11,14 @@ Follow these common patterns when tasked with extending the library:
 ### Recipe: Adding a New Manager
 1.  Define the manager class in `src/`.
 2.  Initialize it in the `Agent` constructor.
-3.  If it needs to be updated every frame, call its `update(deltaTime)` method inside `Agent._loop`.
+3.  If it needs to be updated every frame, call its `update(deltaTime)` method inside `Agent.startLoop`.
 
 ### Recipe: Debugging the Frame Loop
 -   The `AnimationManager` handles frame durations in units of 10ms (matching the original MS Agent spec).
 -   If animations are too fast/slow, check the `speed` multiplier in `Agent` or the `duration` values in the `AgentCharacterDefinition`.
 
 ### Recipe: Modifying Balloon Styles
--   The Balloon uses **Shadow DOM**. Styles are defined in `src/Balloon.ts` using a `<style>` tag.
+-   The Balloon uses **Shadow DOM**. Styles are defined in `src/ui/Balloon.ts` using a `<style>` tag.
 -   Visual changes to the bubble shape should be made in the SVG path generation logic in `Balloon._drawBalloon`.
 
 ---
@@ -26,7 +26,7 @@ Follow these common patterns when tasked with extending the library:
 ## 💡 Tips for AI Agents
 
 -   **Awaiting Requests**: API methods return `AgentRequest` objects which are "thenable". You can `await agent.play(...)` directly.
--   **JSDoc**: The codebase is heavily documented. Use the `read_file` tool on `src/types.ts` to understand the primary data structures.
+-   **JSDoc**: The codebase is heavily documented. Use the `read_file` tool on `src/core/base/types.ts` to understand the primary data structures.
 -   **Architecture**: For a visual overview of how the managers interact, see **[docs/internals.md](./docs/internals.md)**.
 -   **Testing**: We use Vitest. Run `npm test` after changes. For visual changes, manual verification via `npm run dev` is recommended.
 
@@ -67,7 +67,7 @@ As an AI agent (like Jules), you **MUST** adhere to the following standards to e
 
 ### 3. Project-Specific Rules
 - **Meta-Adherence**: Always read this `AGENTS.md` at the start of every task and consult your "Memory" context for historical patterns.
-- **Test Coverage**: Maintain or improve the project's line coverage (~87.6%). New features MUST have corresponding tests in `tests/`.
+- **Test Coverage**: Maintain or improve the project's line coverage (~90%). New features MUST have corresponding tests in `tests/`.
 - **Asset Integrity**: Ensure character loading logic remains compatible with both legacy `.acd` and optimized `.json` formats.
 - **No Magic Strings**: Avoid hardcoding animation names or states; use constants or values from character definitions.
 - **Mobile First**: Implement fallbacks for mobile-specific limitations (e.g., TTS word tracking in `Balloon.ts`).
