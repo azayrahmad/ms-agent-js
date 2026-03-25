@@ -518,7 +518,8 @@ describe('Agent Additional Coverage', () => {
         agent.speak('Hello');
 
         // wait for queue
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await Promise.resolve();
+        await Promise.resolve();
 
         expect((agent as any).talkingAnimationName).toBe('Explain');
 
