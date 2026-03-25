@@ -24,14 +24,17 @@
 
 A web reimplementation of Microsoft Agent. Bring back Clippy and other classic Office assistants with authentic animations and speech support. Perfect for retro UIs and nostalgic web projects.
 
-![MS Agent JS in action as Clippy](public/clippy-welcome-ss.png)
+<p align="center">
+  <img src="public/clippy-welcome-ss.png" alt="MS Agent JS in action as Clippy">
+</p>
 
 Inspired by [clippy.js](https://github.com/clippyjs/clippy.js), this is a fully rewritten project focuses on a more faithful and modern recreation of Microsoft Agent with improved animation handling, richer features, extensibility, and a design that works seamlessly on any web page.
 
 <p align="center">
   <a href="https://azayrahmad.github.io/ms-agent-js/"><strong>Live Demo</strong></a> |
   <a href="./docs/getting-started.md"><strong>Documentation</strong></a> |
-  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a>
+  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a> |
+  <a href="https://ko-fi.com/azayrahmad"><strong>Support on Ko-Fi</strong></a>
 </p>
 
 ## ✨ Features
