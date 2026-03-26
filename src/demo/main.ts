@@ -248,3 +248,6 @@ class DemoApp {
 // Start the demo application
 const app = new DemoApp();
 app.init();
+
+// Export for verification
+(window as any).demoApp = app;

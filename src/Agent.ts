@@ -155,6 +155,7 @@ export class Agent {
 
     const renderer = new AgentRenderer(core, container);
     renderer.balloon.onSpeak = (text: string, charIndex: number) => {
+      core.handleSpeakEvent(text, charIndex);
       core.emit("speak", { text, charIndex });
     };
 
@@ -540,6 +541,7 @@ export class Agent {
         this.core.animationManager.isExitingFlag = true;
       }
       this.renderer.balloon.close();
+      this.core.stopVisemes();
     }
   }
 

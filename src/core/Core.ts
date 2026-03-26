@@ -5,6 +5,7 @@ import { AnimationManager } from "./behavior/AnimationManager";
 import { StateManager } from "./behavior/StateManager";
 import { SpriteManager } from "./resources/SpriteManager";
 import { AudioManager } from "./resources/AudioManager";
+import { VisemeManager, MouthPosition } from "./behavior/VisemeManager";
 import type { AgentCharacterDefinition, AgentOptions } from "./base/types";
 
 /**
@@ -89,6 +90,56 @@ export class AgentCore extends EventEmitter<AgentEvents> {
     });
   }
 
+  private visemeTimers: any[] = [];
+
+  /**
+   * Handles the 'speak' event by scheduling viseme changes for the current word.
+   */
+  public handleSpeakEvent(text: string, charIndex: number) {
+    this.stopVisemes();
+
+    // Find the word that contains charIndex
+    const wordRegex = /[a-zA-Z'-]+/g;
+    let match;
+    let currentWordVisemes: MouthPosition[] | null = null;
+
+    while ((match = wordRegex.exec(text)) !== null) {
+      const start = match.index;
+      const end = match.index + match[0].length;
+      if (charIndex >= start && charIndex < end) {
+        currentWordVisemes = VisemeManager.wordToVisemes(match[0]);
+        break;
+      }
+    }
+
+    if (!currentWordVisemes) return;
+
+    const MS_PER_PHONEME = 78;
+    const rate = 1.0; // TODO: Get rate from TTS options
+
+    currentWordVisemes.forEach((v, i) => {
+      const timer = setTimeout(() => {
+        this.animationManager.setViseme(v);
+      }, i * (MS_PER_PHONEME / rate));
+      this.visemeTimers.push(timer);
+    });
+
+    // Reset to Closed after word
+    const endTimer = setTimeout(() => {
+      this.animationManager.setViseme(MouthPosition.Closed);
+    }, currentWordVisemes.length * (MS_PER_PHONEME / rate));
+    this.visemeTimers.push(endTimer);
+  }
+
+  /**
+   * Stops any ongoing viseme animations.
+   */
+  public stopVisemes() {
+    this.visemeTimers.forEach(clearTimeout);
+    this.visemeTimers = [];
+    this.animationManager.setViseme(null);
+  }
+
   /**
    * Initializes the core by preloading mandatory assets.
    */
@@ -117,5 +168,14 @@ export class AgentCore extends EventEmitter<AgentEvents> {
         this.isUpdating = false;
       });
     }
+  }
+
+  /**
+   * Removes all registered listeners and stops ongoing activities.
+   */
+  public override clear(): void {
+    super.clear();
+    this.audioManager.stop();
+    this.stopVisemes();
   }
 }
