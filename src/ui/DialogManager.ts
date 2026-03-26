@@ -1,5 +1,6 @@
 import { AgentCore } from "../core/Core";
 import { AgentRenderer } from "./Renderer";
+import { ensureSentenceEnd } from "../utils";
 
 /**
  * Represents an item in the content array of an 'ask' dialog.
@@ -348,10 +349,10 @@ export class DialogManager {
           return;
         }
 
-        let ttsText = title;
+        let ttsText = title ? ensureSentenceEnd(title) : "";
         content.forEach((item) => {
           if (typeof item === "string") {
-            ttsText += (ttsText ? " " : "") + item;
+            ttsText += (ttsText ? " " : "") + ensureSentenceEnd(item);
           }
         });
 

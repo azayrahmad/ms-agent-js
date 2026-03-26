@@ -93,3 +93,16 @@ export function formatColor(color: string): string {
   }
   return `#${raw}`;
 }
+
+/**
+ * Ensures a string ends with sentence-ending or pause-inducing punctuation.
+ * If the string is missing such punctuation, a period is appended.
+ */
+export function ensureSentenceEnd(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  if (/[.!?:;,]$/.test(trimmed)) {
+    return text;
+  }
+  return `${text}.`;
+}
