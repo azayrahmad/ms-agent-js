@@ -138,4 +138,24 @@ EndCharacter
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     await expect(CharacterParser.load('fail.acd')).rejects.toThrow();
   });
+
+  it('should parse ExitBranch and SoundEffect in DefineFrame', () => {
+    const content = `
+DefineAnimation "Test"
+  DefineFrame
+    Duration = 10
+    ExitBranch = 5
+    SoundEffect = "gesture.wav"
+    DefineImage
+      Filename = 0000.bmp
+    EndImage
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const frame = result.animations['Test'].frames[0];
+    expect(frame.exitBranch).toBe(5);
+    expect(frame.soundEffect).toBe('gesture.wav');
+  });
 });

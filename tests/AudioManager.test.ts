@@ -67,4 +67,50 @@ describe('AudioManager', () => {
     expect(mockSource.start).toHaveBeenCalledWith(0, 0, 1);
     expect(mockSource.buffer).toBe(mockBuffer);
   });
+
+  it('playFrameSound should warn if sound is not in atlas', () => {
+    const manager = new AudioManager('http://example.com/agent');
+    manager.setAudioAtlas({});
+    (manager as any).spritesheetBuffer = {};
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    manager.playFrameSound('missing.wav');
+    expect(warnSpy).toHaveBeenCalledWith('Sound missing.wav not found in audio atlas');
+  });
+
+  it('playFromSpritesheet should resume context if suspended', () => {
+    const manager = new AudioManager('http://example.com/agent');
+    const mockBuffer = { duration: 10 };
+    (manager as any).spritesheetBuffer = mockBuffer;
+
+    const resumeSpy = vi.fn();
+    const mockSource = { connect: vi.fn(), start: vi.fn() };
+    const ctx = (manager as any).getContext();
+    Object.defineProperty(ctx, 'state', { value: 'suspended' });
+    ctx.resume = resumeSpy;
+    ctx.createBufferSource = vi.fn().mockReturnValue(mockSource);
+
+    (manager as any).playFromSpritesheet(0, 1);
+    expect(resumeSpy).toHaveBeenCalled();
+  });
+
+  it('playFrameSound should attempt to load sound if not cached', async () => {
+    const manager = new AudioManager('http://example.com/agent');
+    const loadSpy = vi.spyOn(manager, 'loadSounds').mockResolvedValue(undefined);
+
+    manager.playFrameSound('new_sound.wav');
+
+    expect(loadSpy).toHaveBeenCalledWith(['new_sound.wav']);
+  });
+
+  it('isMSADPCM should return false if fmt chunk is not found', () => {
+    const manager = new AudioManager('http://example.com/agent');
+    const buffer = new ArrayBuffer(100);
+    const view = new DataView(buffer);
+    view.setUint32(0, 0x46464952, true); // 'RIFF'
+    view.setUint32(8, 0x45564157, true); // 'WAVE'
+    // No 'fmt ' chunk
+
+    expect((manager as any).isMSADPCM(buffer)).toBe(false);
+  });
 });

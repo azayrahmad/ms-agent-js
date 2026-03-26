@@ -105,7 +105,7 @@ Opens an interactive dialog with a title, a content array (text, choices, and in
 - **`title`**: Header text for the dialog.
 - **`content`**: An array of `AskContentItem`.
   - `string`: Renders a block of text.
-  - `{ type: 'choices', items: string[], style?: 'bullet' | 'bulb' }`: Renders a list of clickable choices.
+  - `{ type: 'choices', items: string[], style?: 'bullet' | 'bulb', bullet?: 'bullet' | 'bulb' }`: Renders a list of clickable choices.
   - `{ type: 'input', placeholder?: string, rows?: number }`: Renders a text area input.
   - `{ type: 'checkbox', label: string, checked?: boolean }`: Renders a labeled checkbox.
 - **`buttons`**: An array of button definitions. Each can be a string or an object `{ label: string, value: any, bullet?: 'bullet' | 'bulb' }`.
@@ -170,14 +170,17 @@ Unsubscribes from an agent event.
 
 ### Available Events
 
-- `click`: User clicked the agent canvas.
-- `contextmenu`: User right-clicked or long-pressed the agent. Payload: `{ x, y, originalEvent }`.
-- `animationStart` / `animationEnd`: Triggered when an animation begins/finishes. Payload: `animationName`.
-- `stateChange`: Triggered when the high-level behavior state changes. Payload: `(newState, oldState)`.
-- `show` / `hide`: Triggered for visibility transitions.
-- `dragstart` / `drag` / `dragend`: Triggered during movement interactions. Payload: `{ x, y }` for `drag`.
-- `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x, y }`.
-- `speak`: Triggered during speech when a word or character boundary is reached. Payload: `{ text, charIndex }`.
+- `click`: User clicked the agent canvas. Payload: `undefined`.
+- `contextmenu`: User right-clicked or long-pressed the agent. Payload: `{ x, y, originalEvent: MouseEvent | PointerEvent }`.
+- `animationStart` / `animationEnd`: Triggered when an animation begins/finishes. Payload: `string` (animation name).
+- `stateChange`: Triggered when the high-level behavior state changes. Payload: `[newState: string, oldState: string]`.
+- `show` / `hide`: Triggered for visibility transitions. Payload: `undefined`.
+- `dragstart`: Triggered when a drag operation begins. Payload: `undefined`.
+- `drag`: Triggered during a drag operation with the new screen coordinates. Payload: `{ x: number, y: number }`.
+- `dragend`: Triggered when a drag operation ends. Payload: `undefined`.
+- `frameChanged`: Emitted every time an animation frame changes on the canvas. Payload: `undefined`.
+- `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x: number, y: number }`.
+- `speak`: Triggered during speech when a word or character boundary is reached. Payload: `{ text: string, charIndex: number }`.
 - `requestStart` / `requestComplete`: Triggered when a request starts or finishes in the queue. Payload: `AgentRequest`.
 
 ### `agent.destroy()`

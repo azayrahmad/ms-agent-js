@@ -166,6 +166,30 @@ describe('fetchWithProgress', () => {
       filename: 'test.json'
     }));
   });
+
+  it('should fallback to full url as filename if no path segment exists', async () => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode('{}');
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(data);
+        controller.close();
+      }
+    });
+    const mockResponse = new Response(stream, {
+      headers: { 'content-length': '2' }
+    });
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
+
+    const onProgress = vi.fn();
+    // Using a URL without any path segment should trigger the fallback
+    const response = await fetchWithProgress('', { onProgress });
+    await response.text();
+
+    expect(onProgress).toHaveBeenCalledWith(expect.objectContaining({
+      filename: ''
+    }));
+  });
 });
 
 import { formatColor } from '../src/utils';
