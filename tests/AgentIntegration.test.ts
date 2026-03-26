@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Agent } from '../src/Agent';
 import { CharacterParser } from '../src/core/resources/CharacterParser';
 import { AnimationManager } from '../src/core/behavior/AnimationManager';
+import { AudioManager } from '../src/core/resources/AudioManager';
+import { AssetCache } from '../src/core/resources/Cache';
 import { RequestStatus } from '../src/core/base/types';
 import { setupGlobals } from './setup';
 
@@ -17,6 +19,7 @@ vi.mock('../src/core/resources/SpriteManager', () => ({
         getSpriteHeight = vi.fn().mockReturnValue(100);
         loadSprite = vi.fn().mockResolvedValue(undefined);
         drawFrame = vi.fn();
+        loadFrameSprites = vi.fn().mockResolvedValue(undefined);
     }
 }));
 
@@ -135,5 +138,26 @@ describe('Agent Integration', () => {
         await req;
         expect(agent.options.x).toBe(500);
         expect(agent.options.y).toBe(500);
+    });
+
+    it('should initialize with audio atlas if provided', async () => {
+        const audioAtlasDefinition: any = {
+            character: { width: 100, height: 100, colorTable: 'colortable.bmp' },
+            balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12, numLines: 2, charsPerLine: 20 },
+            animations: {},
+            states: {
+                'IdlingLevel1': { name: 'IdlingLevel1', animations: [] }
+            },
+            audioAtlas: { 'sound1.wav': { start: 0, end: 1 } }
+        };
+
+        // Directly set in cache to avoid AgentLoader logic
+        AssetCache.setDefinition('https://unpkg.com/ms-agent-js@latest/dist/agents/Clippit', audioAtlasDefinition);
+
+        vi.spyOn(AudioManager.prototype, 'loadSounds').mockResolvedValue(undefined);
+
+        const agent = await Agent.load('Clippit', { useAudio: true });
+
+        expect(((agent as any).core.audioManager as any).audioAtlas).toEqual(audioAtlasDefinition.audioAtlas);
     });
 });
