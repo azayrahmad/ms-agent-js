@@ -60,7 +60,7 @@
     "jsdom": "^29.0.1",
     "sharp": "^0.34.5",
     "tsx": "^4.21.0",
-    "typescript": "~5.9.3",
+    "typescript": "^6.0.2",
     "vite": "^8.0.1",
     "vite-plugin-static-copy": "^4.0.0",
     "vitest": "^4.0.18"
