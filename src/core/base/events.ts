@@ -18,6 +18,7 @@ export type AgentEvents =
   | "requestComplete"
   | "frameChanged"
   | "speak"
+  | "viseme"
   | "reposition";
 
 /**
@@ -51,7 +52,9 @@ export interface AgentEventPayloads {
   /** Emitted every time an animation frame changes on the canvas. */
   frameChanged: undefined;
   /** Emitted during speech when a word or character boundary is reached. */
-  speak: { text: string; charIndex: number };
+  speak: { text: string; charIndex: number; rate: number };
+  /** Emitted when the active mouth viseme changes. */
+  viseme: { type: string };
   /** Emitted when the agent is automatically repositioned to stay within the viewport. */
   reposition: { x: number; y: number };
 }

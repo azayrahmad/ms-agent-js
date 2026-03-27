@@ -421,43 +421,66 @@ export class SpriteManager {
     x: number,
     y: number,
     scale: number = 1,
+    visemeType: string | null = null,
   ): void {
     if (!frame.images) return;
 
     // Draw images in reverse order as per the original implementation (back-to-front layering)
     for (let i = frame.images.length - 1; i >= 0; i--) {
       const imgDef = frame.images[i];
+      this.drawSingleLayer(ctx, imgDef.filename, imgDef.offsetX, imgDef.offsetY, x, y, scale);
+    }
 
-      if (this.spriteSheet && this.definition.atlas) {
-        const atlasEntry = this.definition.atlas[imgDef.filename];
-        if (atlasEntry) {
-          const trimX = atlasEntry.trimX || 0;
-          const trimY = atlasEntry.trimY || 0;
-          ctx.drawImage(
-            this.spriteSheet,
-            atlasEntry.x,
-            atlasEntry.y,
-            atlasEntry.w,
-            atlasEntry.h,
-            x + (imgDef.offsetX + trimX) * scale,
-            y + (imgDef.offsetY + trimY) * scale,
-            atlasEntry.w * scale,
-            atlasEntry.h * scale,
-          );
-          continue;
-        }
+    // Overlay mouth if applicable
+    if (visemeType && frame.mouths) {
+      const mouth = frame.mouths.find((m) => m.type === visemeType);
+      if (mouth) {
+        this.drawSingleLayer(ctx, mouth.filename, mouth.offsetX, mouth.offsetY, x, y, scale);
       }
+    }
+  }
 
-      const sprite = this.sprites.get(imgDef.filename);
-      if (sprite) {
+  /**
+   * Internal helper to draw a single image or atlas entry.
+   */
+  private drawSingleLayer(
+    ctx: CanvasRenderingContext2D,
+    filename: string,
+    offsetX: number,
+    offsetY: number,
+    baseX: number,
+    baseY: number,
+    scale: number,
+  ): void {
+    if (this.spriteSheet && this.definition.atlas) {
+      const atlasEntry = this.definition.atlas[filename];
+      if (atlasEntry) {
+        const trimX = atlasEntry.trimX || 0;
+        const trimY = atlasEntry.trimY || 0;
         ctx.drawImage(
-          sprite,
-          x + imgDef.offsetX * scale,
-          y + imgDef.offsetY * scale,
-          sprite.width * scale,
-          sprite.height * scale,
+          this.spriteSheet,
+          atlasEntry.x,
+          atlasEntry.y,
+          atlasEntry.w,
+          atlasEntry.h,
+          baseX + (offsetX + trimX) * scale,
+          baseY + (offsetY + trimY) * scale,
+          atlasEntry.w * scale,
+          atlasEntry.h * scale,
         );
+        return;
       }
+    }
+
+    const sprite = this.sprites.get(filename);
+    if (sprite) {
+      ctx.drawImage(
+        sprite,
+        baseX + offsetX * scale,
+        baseY + offsetY * scale,
+        sprite.width * scale,
+        sprite.height * scale,
+      );
     }
   }
 

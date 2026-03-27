@@ -3,6 +3,7 @@ import { type AgentEvents } from "./base/events";
 import { RequestQueue } from "./behavior/RequestQueue";
 import { AnimationManager } from "./behavior/AnimationManager";
 import { StateManager } from "./behavior/StateManager";
+import { VisemeManager } from "./behavior/VisemeManager";
 import { SpriteManager } from "./resources/SpriteManager";
 import { AudioManager } from "./resources/AudioManager";
 import type { AgentCharacterDefinition, AgentOptions } from "./base/types";
@@ -20,6 +21,8 @@ export class AgentCore extends EventEmitter<AgentEvents> {
   public readonly requestQueue: RequestQueue;
   /** Manager responsible for low-level animation sequences. */
   public readonly animationManager: AnimationManager;
+  /** Manager responsible for phoneme-to-viseme lip-sync. */
+  public readonly visemeManager: VisemeManager;
   /** Manager responsible for high-level behavioral states and idles. */
   public readonly stateManager: StateManager;
   /** Manager responsible for loading and coordinating sprites. */
@@ -63,6 +66,8 @@ export class AgentCore extends EventEmitter<AgentEvents> {
       definition.animations,
     );
 
+    this.visemeManager = new VisemeManager();
+
     this.stateManager = new StateManager(
       definition.states,
       this.animationManager,
@@ -87,6 +92,30 @@ export class AgentCore extends EventEmitter<AgentEvents> {
     this.animationManager.on("frameChanged", () => {
       this.emit("frameChanged");
     });
+
+    this.on("speak", (payload) => {
+      const { text, charIndex, rate } = payload;
+      const word = this.getWordAt(text, charIndex);
+      if (word) {
+        const visemes = this.visemeManager.getVisemesForWord(word);
+        this.visemeManager.scheduleTimeline(visemes, rate, (type) => {
+          this.animationManager.setViseme(type);
+          this.emit("viseme", { type });
+        });
+      } else {
+        this.visemeManager.stop();
+        this.animationManager.setViseme(null);
+      }
+    });
+  }
+
+  /**
+   * Internal helper to extract a word from text at a specific character index.
+   */
+  private getWordAt(text: string, index: number): string {
+    const before = text.slice(0, index + 1).match(/[a-zA-Z'-]+$/);
+    const after = text.slice(index + 1).match(/^[a-zA-Z'-]+/);
+    return (before ? before[0] : "") + (after ? after[0] : "");
   }
 
   /**
@@ -108,6 +137,14 @@ export class AgentCore extends EventEmitter<AgentEvents> {
    * @param currentTime - The current performance timestamp.
    * @param deltaTime - Time elapsed since the last update in milliseconds.
    */
+  /**
+   * Cleans up internal state and stops all active managers.
+   */
+  public clear() {
+    this.visemeManager.stop();
+    this.animationManager.setViseme(null);
+  }
+
   public update(currentTime: number, deltaTime: number) {
     this.animationManager.update(currentTime);
 
