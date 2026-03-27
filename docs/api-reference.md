@@ -23,6 +23,19 @@ Asynchronously loads and initializes an agent.
 | `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
 | `useCache` | `boolean` | `true` | Whether to use internal character and asset caching. |
 
+### Character Styles
+The following bitmask flags are available in the character's `style` property:
+
+| Flag | Value | Description |
+| --- | --- | --- |
+| `VoiceNone` | `0x0001` | Character does not support voice output. |
+| `BalloonRoundRect` | `0x0002` | Balloon should have rounded rectangles. |
+| `BalloonSizeToText` | `0x0004` | Balloon should automatically size itself to fit the text. |
+| `BalloonAutoHide` | `0x0008` | Balloon should automatically hide when speech is complete. |
+| `BalloonAutoPace` | `0x0010` | Balloon should automatically pace the text display. |
+| `VoiceTTS` | `0x0020` | Character uses Text-to-Speech for voice output. |
+| `SystemChar` | `0x0040` | Character is a system character. |
+
 ## Properties
 
 The `Agent` instance provides several read-only properties to access internal managers and state:

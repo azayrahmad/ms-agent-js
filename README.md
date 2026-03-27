@@ -45,7 +45,7 @@ Inspired by [clippy.js](https://github.com/clippyjs/clippy.js), this is a fully 
 - **High Performance**: Uses HTML5 Canvas and optimized asset formats (WebP/WebM).
 - **Speech Support**: Support text input, selection list, and action buttons. TTS support with browser's native Web Speech API.
 - **Draggable**: Built-in support for repositioning agents via mouse/touch or programmatically. 
-- **Legacy Support**: Works with decompiled MS Agent's ACF files directly. Add your own Agents!
+- **Legacy Support**: Works with decompiled MS Agent's ACD files directly. Add your own Agents!
 
 ## 🎭 Available Agents
 

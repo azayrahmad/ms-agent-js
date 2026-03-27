@@ -354,4 +354,61 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should draw SVG paths for all quadrants', () => {
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        const pathEl = (balloon as any)._pathEl as SVGPathElement;
+
+        // Bottom (Default)
+        balloon.reposition();
+        expect(pathEl.getAttribute('d')).toContain('L');
+        expect((balloon as any)._tipType).toBe(2);
+
+        // Top
+        vi.spyOn(targetEl, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 20, left: 500, bottom: 120, right: 600
+        } as DOMRect);
+        balloon.reposition();
+        expect(pathEl.getAttribute('d')).toBeDefined();
+        expect((balloon as any)._tipType).toBe(0);
+
+        // Right (Balloon on Left)
+        vi.spyOn(targetEl, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 50, left: 900, bottom: 150, right: 1000
+        } as DOMRect);
+        vi.stubGlobal('window', { ...window, innerHeight: 200 }); // tight V space
+        balloon.reposition();
+        expect((balloon as any)._tipType).toBe(1);
+        expect(pathEl.getAttribute('d')).toBeDefined();
+
+        // Left (Balloon on Right)
+        vi.spyOn(targetEl, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 50, left: 50, bottom: 150, right: 150
+        } as DOMRect);
+        balloon.reposition();
+        expect((balloon as any)._tipType).toBe(3);
+        expect(pathEl.getAttribute('d')).toBeDefined();
+    });
+
+    it('should handle window bounds during repositioning', () => {
+        const tightTarget = document.createElement('div');
+        // Place agent far right
+        vi.spyOn(tightTarget, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 400, left: 1000, bottom: 500, right: 1100
+        } as DOMRect);
+
+        vi.stubGlobal('window', {
+            ...window,
+            innerWidth: 1024,
+            innerHeight: 768,
+        });
+
+        const balloon = new Balloon(tightTarget, container, mockDefinition);
+        balloon.reposition();
+
+        const relLeft = parseInt(balloon.balloonEl.style.left);
+        const absLeft = 1000 + relLeft;
+        // Should be constrained to window.innerWidth - 10
+        expect(absLeft + balloon.balloonEl.offsetWidth).toBeLessThanOrEqual(1024 - 10);
+    });
 });
