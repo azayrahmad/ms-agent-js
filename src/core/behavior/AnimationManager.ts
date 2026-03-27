@@ -33,6 +33,8 @@ export class AnimationManager extends EventEmitter<any> {
   private activePromise: Promise<boolean> | null = null;
   /** Default scaling factor (usually overwritten by the Agent's options). */
   private scale: number = 2;
+  /** The current mouth viseme shape to display. */
+  private activeViseme: string | null = null;
 
   /**
    * The name of the animation currently being played.
@@ -385,10 +387,32 @@ export class AnimationManager extends EventEmitter<any> {
    * @param y - Vertical position.
    * @param scale - Scaling factor.
    */
-  public draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = this.scale): void {
+  /**
+   * Sets the current mouth viseme shape.
+   *
+   * @param type - The mouth shape type (e.g., 'OpenWide1', 'Closed') or null to clear.
+   */
+  public setViseme(type: string | null): void {
+    this.activeViseme = type;
+  }
+
+  /**
+   * Draws the current animation frame onto the provided 2D canvas context.
+   *
+   * @param ctx - The destination canvas context.
+   * @param x - Horizontal position.
+   * @param y - Vertical position.
+   * @param scale - Scaling factor.
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    scale: number = this.scale,
+  ): void {
     const frame = this.currentFrame;
     if (frame) {
-      this.spriteManager.drawFrame(ctx, frame, x, y, scale);
+      this.spriteManager.drawFrame(ctx, frame, x, y, scale, this.activeViseme);
     }
   }
 

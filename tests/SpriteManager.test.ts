@@ -222,4 +222,33 @@ describe('SpriteManager', () => {
             20, 20
         );
     });
+
+    it('should draw mouth overlay correctly', () => {
+        const atlasDefinition = {
+            ...mockDefinition,
+            atlas: {
+                'body.bmp': { x: 0, y: 0, w: 50, h: 50 },
+                'mouth.bmp': { x: 50, y: 0, w: 20, h: 10 }
+            }
+        };
+        const sm = new SpriteManager('/agent', atlasDefinition);
+        (sm as any).spriteSheet = { width: 100, height: 100 };
+
+        const mockCtx = { drawImage: vi.fn() };
+        const frame = {
+            images: [{ filename: 'body.bmp', offsetX: 0, offsetY: 0 }],
+            mouths: [{ type: 'OpenWide4', filename: 'mouth.bmp', offsetX: 15, offsetY: 20 }]
+        };
+
+        sm.drawFrame(mockCtx as any, frame as any, 0, 0, 1, 'OpenWide4');
+
+        // Should draw body then mouth
+        expect(mockCtx.drawImage).toHaveBeenCalledTimes(2);
+        expect(mockCtx.drawImage).toHaveBeenLastCalledWith(
+            (sm as any).spriteSheet,
+            50, 0, 20, 10,
+            15, 20,
+            20, 10
+        );
+    });
 });

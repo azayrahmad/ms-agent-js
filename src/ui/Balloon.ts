@@ -83,7 +83,9 @@ export class Balloon {
     return !this._hidden && this._balloonEl.style.display !== "none";
   }
   /** Callback triggered when a word or character boundary is reached during speech. */
-  public onSpeak: ((text: string, charIndex: number) => void) | null = null;
+  public onSpeak:
+    | ((text: string, charIndex: number, rate: number) => void)
+    | null = null;
 
   /** Time in milliseconds to wait between typing each character. */
   public CHAR_SPEAK_TIME = 50;
@@ -480,6 +482,12 @@ export class Balloon {
           this.hide();
         }
       } else {
+        const char = text[idx];
+        const isStartOfWord = idx === 0 || text[idx - 1] === " ";
+        if (isStartOfWord && /[a-zA-Z'-]/.test(char)) {
+          this.onSpeak?.(text, idx, this._ttsOptions.rate);
+        }
+
         idx++;
         if (!skipContentUpdate) {
           this._contentEl.textContent = text.slice(0, idx);
@@ -560,7 +568,7 @@ export class Balloon {
       if (onBoundary) {
         onBoundary(event.charIndex, event.charLength);
       }
-      this.onSpeak?.(text, event.charIndex);
+      this.onSpeak?.(text, event.charIndex, this._ttsOptions.rate);
     };
 
     const cleanupAndEnd = () => {
@@ -614,7 +622,7 @@ export class Balloon {
 
       const { word, index } = words[wordIdx];
       onBoundary(index, word.length);
-      this.onSpeak?.(text, index);
+      this.onSpeak?.(text, index, this._ttsOptions.rate);
 
       wordIdx++;
 
@@ -685,6 +693,7 @@ export class Balloon {
 
   private _finishHideBalloon() {
     if (this._active) return;
+    this.onSpeak?.("", 0, 1); // Reset visemes
     this._balloonEl.style.display = "none";
     this._hidden = true;
     this._hidingTimeout = null;
@@ -718,6 +727,13 @@ export class Balloon {
    */
   public isTTSEnabled(): boolean {
     return this._ttsUserEnabled;
+  }
+
+  /**
+   * Returns the current TTS options.
+   */
+  public getTTSOptions(): Required<TTSOptions> {
+    return this._ttsOptions;
   }
 
   /**
