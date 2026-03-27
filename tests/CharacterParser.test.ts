@@ -138,4 +138,105 @@ EndCharacter
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     await expect(CharacterParser.load('fail.acd')).rejects.toThrow();
   });
+
+  it('should parse expanded LCIDs correctly', () => {
+    const content = `
+DefineCharacter
+  DefineInfo 0x0401
+    Name = "Arabic"
+  EndInfo
+  DefineInfo 0x040d
+    Name = "Hebrew"
+  EndInfo
+  DefineInfo 0x041e
+    Name = "Thai"
+  EndInfo
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.infos[0].locale.language).toBe('ar');
+    expect(result.character.infos[1].locale.language).toBe('he');
+    expect(result.character.infos[2].locale.language).toBe('th');
+  });
+
+  it('should parse new style flags and aliases', () => {
+    const content = `
+DefineCharacter
+  Style = AXS_BALLOON_SIZETOTEXT | AXS_VOICE_TTS | AXS_SYSTEMCHAR
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const style = result.character.style;
+    expect(style & 0x0004).toBeTruthy(); // BalloonSizeToText
+    expect(style & 0x0020).toBeTruthy(); // VoiceTTS
+    expect(style & 0x0040).toBeTruthy(); // SystemChar
+  });
+
+  it('should normalize backslashes in SoundEffect and Filename', () => {
+    const content = `
+DefineCharacter
+  ColorTable = "images\\ColorTable.bmp"
+EndCharacter
+
+DefineAnimation "Test"
+  DefineFrame
+    SoundEffect = "audio\\effect.wav"
+    DefineImage
+      Filename = "images\\0000.bmp"
+    EndImage
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.colorTable).toBe('images/ColorTable.bmp');
+    expect(result.animations['Test'].frames[0].soundEffect).toBe('audio/effect.wav');
+    expect(result.animations['Test'].frames[0].images[0].filename).toBe('images/0000.bmp');
+  });
+
+  it('should continue parsing after EndCharacter', () => {
+    const content = `
+DefineCharacter
+  Width = 100
+EndCharacter
+
+DefineBalloon
+  NumLines = 2
+EndBalloon
+
+DefineAnimation "Post"
+  DefineFrame
+    Duration = 10
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.width).toBe(100);
+    expect(result.balloon.numLines).toBe(2);
+    expect(result.animations['Post']).toBeDefined();
+  });
+
+  it('should handle multiple EndCharacter markers and content following them', () => {
+    const content = `
+DefineCharacter
+  Width = 100
+EndCharacter
+
+// Extra EndCharacter that should be ignored
+EndCharacter
+
+DefineAnimation "Final"
+  DefineFrame
+    Duration = 10
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.width).toBe(100);
+    expect(result.animations['Final']).toBeDefined();
+  });
 });

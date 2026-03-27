@@ -102,6 +102,7 @@ The `StateManager` uses a declarative state machine (`StateMachine.ts`) to manag
 - **States**: `Hidden`, `Showing`, `Hiding`, `Playing`, `Persistent` (for Idles and custom states).
 - **Events**: `TICK`, `ANIMATION_END`, `SHOW`, `HIDE`, `PLAY`, `STATE_SET`.
 - **Guards**: `hasRequests`, `isNotAnimating`, `shouldLoopPersistent`.
+- **Special Behavioral Values**: `Speaking`, `Moving` (used within `Persistent` or `Playing` to control loops and transitions).
 - **Actions**: `playShowAnimation`, `updateStateAnimation`, `resetIdle`, etc.
 
 This structured approach separates behavioral logic from frame-by-frame rendering, making it easy to add new behavioral modes or customize the agent's reaction to user interaction.

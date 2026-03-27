@@ -222,4 +222,32 @@ describe('SpriteManager', () => {
             20, 20
         );
     });
+
+    it('should draw frame from sprites map correctly', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const mockCanvas = { width: 10, height: 10 };
+        (sm as any).sprites.set('frame1.bmp', mockCanvas);
+
+        const mockCtx = {
+            drawImage: vi.fn()
+        };
+
+        const frame = {
+            images: [{ filename: 'frame1.bmp', offsetX: 5, offsetY: 5 }]
+        };
+
+        sm.drawFrame(mockCtx as any, frame as any, 100, 100, 1);
+
+        expect(mockCtx.drawImage).toHaveBeenCalledWith(
+            mockCanvas,
+            100 + 5, 100 + 5,
+            10, 10
+        );
+    });
+
+    it('should return sprite dimensions', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        expect(sm.getSpriteWidth()).toBe(100);
+        expect(sm.getSpriteHeight()).toBe(100);
+    });
 });
