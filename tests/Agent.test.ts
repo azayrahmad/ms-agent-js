@@ -246,6 +246,23 @@ describe('Agent Core Methods', () => {
         vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
     });
 
+    it('should have access to all specialized managers', () => {
+        expect(agent.spriteManager).toBeDefined();
+        expect(agent.audioManager).toBeDefined();
+        expect(agent.animationManager).toBeDefined();
+        expect(agent.stateManager).toBeDefined();
+        expect(agent.balloon).toBeDefined();
+        expect(agent.requestQueue).toBeDefined();
+        expect(agent.options).toBeDefined();
+    });
+
+    it('should emit speak event when balloon onSpeak is triggered', async () => {
+        const speakSpy = vi.fn();
+        agent.on('speak', speakSpy);
+        agent.renderer.balloon.onSpeak!('Hello', 5);
+        expect(speakSpy).toHaveBeenCalledWith({ text: 'Hello', charIndex: 5 });
+    });
+
     it('setScale should update scale and reposition agent centered', () => {
         // Mock sprite size
         vi.spyOn(agent.spriteManager, 'getSpriteWidth').mockReturnValue(100);

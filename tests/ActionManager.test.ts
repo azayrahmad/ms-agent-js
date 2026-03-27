@@ -89,4 +89,51 @@ describe('ActionManager', () => {
 
         expect(handleAnimCompSpy).toHaveBeenCalled();
     });
+
+    it('gestureAt should fallback to Gesture animation if Gesturing state is missing', async () => {
+        // Target (100, 550) screen-left -> Agent-perspective Right
+        // GesturingRight state is missing, but GestureRight animation exists
+        delete core.definition.states['GesturingRight'];
+        core.definition.animations['GestureRight'] = { frames: [] } as any;
+
+        await actionManager.gestureAt(100, 550);
+
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('GestureRight', 'Gesturing');
+    });
+
+    it('lookAt should do nothing if animation is missing', async () => {
+        // Target (100, 550) screen-left -> Agent-perspective Right
+        // LookRight animation is missing
+        delete core.definition.animations['LookRight'];
+
+        await actionManager.lookAt(100, 550);
+
+        expect(core.stateManager.playAnimation).not.toHaveBeenCalled();
+    });
+
+    it('lookAt should take early return if already playing same animation', async () => {
+        // Target (100, 550) screen-left -> Agent-perspective Right
+        core.definition.animations['LookRight'] = { frames: [] } as any;
+        vi.spyOn(core.animationManager, 'currentAnimationName', 'get').mockReturnValue('LookRight');
+        vi.spyOn(core.animationManager, 'isAnimating', 'get').mockReturnValue(true);
+
+        await actionManager.lookAt(100, 550);
+
+        expect(core.stateManager.playAnimation).not.toHaveBeenCalled();
+    });
+
+    it('lookAt should emit start and end events if not cancelled', async () => {
+        const startSpy = vi.fn();
+        const endSpy = vi.fn();
+        core.on('animationStart' as any, startSpy);
+        core.on('animationEnd' as any, endSpy);
+
+        // Target (100, 550) screen-left -> Agent-perspective Right
+        core.definition.animations['LookRight'] = { frames: [] } as any;
+
+        await actionManager.lookAt(100, 550);
+
+        expect(startSpy).toHaveBeenCalledWith('LookRight');
+        expect(endSpy).toHaveBeenCalledWith('LookRight');
+    });
 });

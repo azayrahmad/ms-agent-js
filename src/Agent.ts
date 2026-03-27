@@ -493,7 +493,11 @@ export class Agent {
   }
 
   /**
-   * Internal method to enqueue a task and emit events.
+   * Low-level method to enqueue a task and emit events.
+   * Primarily used by internal managers to schedule actions in the request queue.
+   *
+   * @param task - The asynchronous function to execute as a request.
+   * @returns A request object for tracking progress.
    * @internal
    */
   public enqueueRequest(

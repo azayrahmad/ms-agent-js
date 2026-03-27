@@ -222,4 +222,36 @@ describe('SpriteManager', () => {
             20, 20
         );
     });
+
+    it('bmpToCanvas should throw error for invalid magic number', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(14);
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x0000, true); // Not 'BM'
+
+        expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Not a BMP file, magic: 0x0');
+    });
+
+    it('drawFrame should skip drawing if sprite is not found', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const mockCtx = { drawImage: vi.fn() };
+        const frame = {
+            images: [{ filename: 'nonexistent.bmp', offsetX: 0, offsetY: 0 }]
+        };
+
+        sm.drawFrame(mockCtx as any, frame as any, 0, 0, 1);
+        expect(mockCtx.drawImage).not.toHaveBeenCalled();
+    });
+
+    it('loadSprite should use cache if available', async () => {
+        const sm = new SpriteManager('/agent', mockDefinition, { useCache: true });
+        const mockCanvas = {} as any;
+        vi.spyOn(AssetCache, 'getSprite').mockReturnValue(mockCanvas);
+        const fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+
+        await sm.loadSprite('test.bmp');
+        expect(fetchMock).not.toHaveBeenCalled();
+        expect((sm as any).sprites.get('test.bmp')).toBe(mockCanvas);
+    });
 });
