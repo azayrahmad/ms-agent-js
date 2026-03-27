@@ -37,6 +37,13 @@ export class AnimationManager extends EventEmitter<any> {
   private activeViseme: string | null = null;
 
   /**
+   * The current mouth viseme shape to display.
+   */
+  public get currentViseme(): string | null {
+    return this.activeViseme;
+  }
+
+  /**
    * The name of the animation currently being played.
    */
   public get currentAnimationName(): string {
