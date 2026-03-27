@@ -91,6 +91,13 @@ async function optimizeAgent(agentDir: string) {
                 img.filename = normalized; // Normalize in definition too
                 imagesToProcess.add(normalized);
             });
+            if (frame.mouths) {
+                frame.mouths.forEach(mouth => {
+                    const normalized = mouth.filename.replace(/\\/g, '/').toLowerCase();
+                    mouth.filename = normalized; // Normalize in definition too
+                    imagesToProcess.add(normalized);
+                });
+            }
         });
     });
 
