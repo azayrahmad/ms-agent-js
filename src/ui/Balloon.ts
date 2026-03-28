@@ -791,6 +791,22 @@ export class Balloon {
   }
 
   /**
+   * Returns the word index at a given character position.
+   */
+  private _getWordAt(text: string, charIndex: number): number {
+    const words = text.split(/\s+/);
+    let currentIdx = 0;
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (charIndex >= currentIdx && charIndex < currentIdx + word.length + 1) {
+        return i;
+      }
+      currentIdx += word.length + 1;
+    }
+    return words.length - 1;
+  }
+
+  /**
    * Returns the main balloon container element.
    */
   public get balloonEl() {

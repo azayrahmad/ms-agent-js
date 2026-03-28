@@ -134,6 +134,38 @@ EndCharacter
     expect(result.character.width).toBe(100);
   });
 
+  it('should parse SoundEffect and ExitBranch in DefineFrame', () => {
+    const content = `
+DefineAnimation "Test"
+  DefineFrame
+    Duration = 10
+    SoundEffect = "click.wav"
+    ExitBranch = 5
+    DefineImage
+      Filename = 0000.bmp
+    EndImage
+  EndFrame
+EndAnimation
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const frame = result.animations['Test'].frames[0];
+    expect(frame.soundEffect).toBe('click.wav');
+    expect(frame.exitBranch).toBe(5);
+  });
+
+  it('should parse new CharacterStyle flags and aliases', () => {
+    const content = `
+DefineCharacter
+  Style = AXS_VOICE_TTS | AXS_SYSTEM_CHAR | AXS_BALLOON_SIZETOTEXT
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    // VoiceTTS (0x0020) | SystemChar (0x0040) | BalloonSizeToText (0x0004) = 0x0064
+    expect(result.character.style).toBe(0x0064);
+  });
+
   it('should handle load error when all paths fail', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     await expect(CharacterParser.load('fail.acd')).rejects.toThrow();

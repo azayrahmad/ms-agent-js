@@ -354,4 +354,51 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should correctly determine the word at a given character index', () => {
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+        const text = 'Hello world, this is a test.';
+        // Hello (5) + space (1) = 6
+        // world, (6) + space (1) = 13
+        // this (4) + space (1) = 18
+        // is (2) + space (1) = 21
+        // a (1) + space (1) = 23
+        // test. (5) = 28
+
+        // index 0 (H in Hello) -> 0
+        expect((balloon as any)._getWordAt(text, 0)).toBe(0);
+        // index 6 (w in world) -> 1
+        expect((balloon as any)._getWordAt(text, 6)).toBe(1);
+        // index 23 (t in test) -> 5
+        expect((balloon as any)._getWordAt(text, 23)).toBe(5);
+        // index out of bounds
+        expect((balloon as any)._getWordAt(text, 100)).toBe(5);
+    });
+
+    it('should position balloon in TipQuadrant.Bottom when space is tight on bottom', () => {
+        const tightTarget = document.createElement('div');
+        // Place agent near bottom of screen
+        vi.spyOn(tightTarget, 'getBoundingClientRect').mockReturnValue({
+            width: 100, height: 100, top: 600, left: 500, bottom: 700, right: 600
+        } as DOMRect);
+
+        vi.stubGlobal('window', {
+            ...window,
+            innerWidth: 1024,
+            innerHeight: 768,
+            speechSynthesis: window.speechSynthesis
+        });
+
+        const balloon = new Balloon(tightTarget, container, mockDefinition);
+        // Mock balloon height to be large
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+        vi.spyOn(content, 'getBoundingClientRect').mockReturnValue({
+            width: 200, height: 200, top: 0, left: 0, bottom: 200, right: 200
+        } as DOMRect);
+
+        balloon.reposition();
+
+        // When bottom space < balloon height + tip depth
+        expect((balloon as any)._tipType).toBe(2); // TipQuadrant.Bottom (balloon is above)
+    });
 });

@@ -32,6 +32,7 @@ graph TD
     M[MSADPCMDecoder]
     S[SpriteManager]
     SM[StateMachine]
+    VM[VisemeManager]
     end
 
     subgraph "UI Layer (AgentRenderer)"
@@ -58,6 +59,7 @@ graph TD
     AgentCore --> F
     AgentCore --> H
     AgentCore --> S
+    AgentCore --> VM
     F --> SM
     E --> M
 ```
@@ -77,6 +79,7 @@ graph TD
 | **`AnimationManager`** | Low-level frame-by-frame timing and branching. | `src/core/behavior/` |
 | **`StateManager`** | High-level behavioral state transitions and idles. | `src/core/behavior/` |
 | **`StateMachine`** | Lightweight XState-inspired engine for behavioral logic. | `src/core/behavior/` |
+| **`VisemeManager`** | Coordinates lip-syncing logic and mouth shape animations. | `src/core/behavior/` |
 | **`AudioManager`** | Audio spritesheet management and ADPCM decoding. | `src/core/resources/` |
 | **`MSADPCMDecoder`** | Decodes legacy Microsoft ADPCM WAV files into PCM. | `src/core/resources/` |
 | **`Balloon`** | Procedural SVG speech bubble rendering with Shadow DOM isolation. | `src/ui/` |
