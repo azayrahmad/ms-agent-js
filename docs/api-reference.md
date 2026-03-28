@@ -87,6 +87,24 @@ Manually sets the high-level state (e.g., "IdlingLevel3").
 
 ---
 
+## Constants & Flags
+
+### `CharacterStyle`
+Bitmask flags used to define character features and balloon behavior.
+
+| Flag | Hex Value | Description |
+| --- | --- | --- |
+| `None` | `0x0000` | No specific style applied. |
+| `VoiceNone` | `0x0001` | Character does not support voice output. |
+| `BalloonRoundRect` | `0x0002` | Balloon should have rounded rectangles. |
+| `BalloonSizeToText` | `0x0004` | Balloon should automatically size itself to fit the text. |
+| `BalloonAutoHide` | `0x0008` | Balloon should automatically hide when speech is complete. |
+| `BalloonAutoPace` | `0x0010` | Balloon should automatically pace the text display. |
+| `VoiceTTS` | `0x0020` | Character supports Text-to-Speech (TTS). |
+| `SystemChar` | `0x0040` | Character is a system-level agent. |
+
+---
+
 ## Interaction & Speech
 
 ### `agent.speak(text, options?)`

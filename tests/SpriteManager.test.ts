@@ -222,4 +222,51 @@ describe('SpriteManager', () => {
             20, 20
         );
     });
+
+    it('should load individual BMP sprites without atlas', async () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+
+        // Minimal BMP buffer
+        const buffer = new ArrayBuffer(14 + 40 + (4 * 4));
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x4d42, true); // BM
+        view.setUint32(10, 14 + 40, true); // Offset
+        view.setUint32(14, 40, true); // Info size
+        view.setInt32(18, 2, true);
+        view.setInt32(22, 2, true);
+        view.setUint16(28, 32, true); // 32-bit
+
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+            ok: true,
+            headers: new Map([['content-type', 'image/bmp']]),
+            arrayBuffer: () => Promise.resolve(buffer),
+            url: 'http://example.com/sprite.bmp'
+        }));
+
+        await sm.loadSprite('sprite.bmp');
+
+        expect((sm as any).sprites.has('sprite.bmp')).toBe(true);
+        // Use a more portable check if HTMLCanvasElement is not available in all environments
+        const sprite = (sm as any).sprites.get('sprite.bmp');
+        expect(sprite).toBeDefined();
+        expect(sprite.getContext).toBeDefined();
+    });
+
+    it('should handle fetch failure in loadSprite', async () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+
+        await expect(sm.loadSprite('missing.bmp')).rejects.toThrow('Failed to load sprite missing.bmp');
+    });
+
+    it('should handle HTML error pages in loadSprite', async () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+            ok: true,
+            headers: new Map([['content-type', 'text/html']]), // Error page
+            url: 'http://example.com/404.html'
+        }));
+
+        await expect(sm.loadSprite('error.bmp')).rejects.toThrow('Failed to load sprite error.bmp');
+    });
 });

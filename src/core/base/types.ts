@@ -36,6 +36,10 @@ export const CharacterStyle = {
   BalloonAutoHide: 0x0008,
   /** Balloon should automatically pace the text display. */
   BalloonAutoPace: 0x0010,
+  /** Character supports Text-to-Speech (TTS). */
+  VoiceTTS: 0x0020,
+  /** Character is a system-level agent. */
+  SystemChar: 0x0040,
 } as const;
 
 /**
