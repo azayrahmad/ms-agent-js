@@ -20,7 +20,7 @@ Asynchronously loads and initializes an agent.
 | `x`, `y` | `number` | Bottom Right | Initial coordinates of the agent. |
 | `initialAnimation`| `string` | `""` | Animation to play on load instead of 'Showing'. |
 | `onProgress` | `function` | `undefined` | Callback for loading progress: `(p: {loaded, total, filename}) => void`. |
-| `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process. |
+| `signal` | `AbortSignal` | `undefined` | Allows cancelling the loading process or individual requests. |
 | `useCache` | `boolean` | `true` | Whether to use internal character and asset caching. |
 
 ## Properties
@@ -75,6 +75,23 @@ Returns an array of all available animation names.
 
 ### `agent.hasAnimation(name)`
 Returns `true` if the animation exists for the current agent.
+
+---
+
+## Character Definitions & Styles
+
+### `CharacterStyle`
+Bitmask flags used in the character definition to control behavior.
+
+| Flag | Value | Description |
+| --- | --- | --- |
+| `VoiceNone` | `0x0001` | Character does not support voice output. |
+| `BalloonRoundRect` | `0x0002` | Balloon should have rounded rectangles. |
+| `BalloonSizeToText` | `0x0004` | Balloon should automatically size itself to fit text. |
+| `BalloonAutoHide` | `0x0008` | Balloon should automatically hide when speech is complete. |
+| `BalloonAutoPace` | `0x0010` | Balloon should automatically pace the text display. |
+| `VoiceTTS` | `0x0020` | Character supports Text-to-Speech output. |
+| `SystemChar` | `0x0040` | Character is a system-wide character. |
 
 ### `agent.gestureAt(x, y)`
 Points at a specific screen coordinate.

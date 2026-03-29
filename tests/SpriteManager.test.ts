@@ -196,6 +196,15 @@ describe('SpriteManager', () => {
         expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Unsupported BMP bit count: 16-bit');
     });
 
+    it('should throw error if magic number is not BM', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(14 + 40);
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x1234, true);
+
+        expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Not a BMP file, magic: 0x1234');
+    });
+
     it('should draw frame from atlas correctly', () => {
         const atlasDefinition = {
             ...mockDefinition,
@@ -221,5 +230,57 @@ describe('SpriteManager', () => {
             100 + (5 + 2), 100 + (5 + 2),
             20, 20
         );
+    });
+
+    it('should draw frame from individual sprites if no atlas', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const mockSprite = { width: 50, height: 50 };
+        (sm as any).sprites.set('frame1.bmp', mockSprite);
+
+        const mockCtx = {
+            drawImage: vi.fn()
+        };
+
+        const frame = {
+            images: [{ filename: 'frame1.bmp', offsetX: 10, offsetY: 10 }]
+        };
+
+        sm.drawFrame(mockCtx as any, frame as any, 200, 200, 2);
+
+        expect(mockCtx.drawImage).toHaveBeenCalledWith(
+            mockSprite,
+            200 + 10 * 2, 200 + 10 * 2,
+            50 * 2, 50 * 2
+        );
+    });
+
+    it('should load individual sprite BMP and process transparency', async () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+
+        const width = 2;
+        const height = 2;
+        const rowSize = Math.floor((24 * width + 31) / 32) * 4;
+        const buffer = new ArrayBuffer(14 + 40 + (rowSize * height));
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x4d42, true);
+        view.setUint32(10, 14 + 40, true);
+        view.setUint32(14, 40, true);
+        view.setInt32(18, width, true);
+        view.setInt32(22, height, true);
+        view.setUint16(28, 24, true);
+
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+            ok: true,
+            url: 'http://test.com/0000.bmp',
+            headers: new Map([['content-type', 'image/bmp']]),
+            arrayBuffer: () => Promise.resolve(buffer)
+        }));
+
+        await sm.loadSprite('0000.bmp');
+
+        expect((sm as any).sprites.has('0000.bmp')).toBe(true);
+        const canvas = (sm as any).sprites.get('0000.bmp');
+        expect(canvas.width).toBe(2);
+        expect(canvas.height).toBe(2);
     });
 });

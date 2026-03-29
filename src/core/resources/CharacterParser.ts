@@ -28,6 +28,25 @@ const LCID_MAP: Record<string, string> = {
   "0x0804": "zh-CN", // Chinese - China
   "0x0416": "pt-BR", // Portuguese - Brazil
   "0x0419": "ru-RU", // Russian - Russia
+  "0x0401": "ar-SA", // Arabic - Saudi Arabia
+  "0x0402": "bg-BG", // Bulgarian - Bulgaria
+  "0x0403": "ca-ES", // Catalan - Spain
+  "0x0405": "cs-CZ", // Czech - Czech Republic
+  "0x0406": "da-DK", // Danish - Denmark
+  "0x0408": "el-GR", // Greek - Greece
+  "0x040d": "he-IL", // Hebrew - Israel
+  "0x040e": "hu-HU", // Hungarian - Hungary
+  "0x0413": "nl-NL", // Dutch - Netherlands
+  "0x0414": "nb-NO", // Norwegian Bokmål - Norway
+  "0x0415": "pl-PL", // Polish - Poland
+  "0x0418": "ro-RO", // Romanian - Romania
+  "0x041b": "sk-SK", // Slovak - Slovakia
+  "0x041d": "sv-SE", // Swedish - Sweden
+  "0x041e": "th-TH", // Thai - Thailand
+  "0x041f": "tr-TR", // Turkish - Turkey
+  "0x0421": "id-ID", // Indonesian - Indonesia
+  "0x0424": "sl-SI", // Slovenian - Slovenia
+  "0x0816": "pt-PT", // Portuguese - Portugal
 };
 
 /**
@@ -279,6 +298,9 @@ export class CharacterParser {
         style |= CharacterStyle.BalloonAutoHide;
       else if (trimmedPart === "AXS_BALLOON_AUTO_PACE")
         style |= CharacterStyle.BalloonAutoPace;
+      else if (trimmedPart === "AXS_VOICE_TTS") style |= CharacterStyle.VoiceTTS;
+      else if (trimmedPart === "AXS_SYSTEM_CHARACTER")
+        style |= CharacterStyle.SystemChar;
     }
 
     return style;

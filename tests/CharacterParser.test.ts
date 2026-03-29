@@ -112,6 +112,39 @@ EndCharacter
     expect(info.name).toBe('Clippit_FR');
   });
 
+  it('should parse additional LCIDs correctly', () => {
+    const parser = new CharacterParser();
+
+    const localesToTest = [
+      { lcid: '0x0401', expectedLang: 'ar' },
+      { lcid: '0x040d', expectedLang: 'he' },
+      { lcid: '0x041e', expectedLang: 'th' },
+      { lcid: '0x0402', expectedLang: 'bg' },
+      { lcid: '0x0421', expectedLang: 'id' },
+    ];
+
+    for (const test of localesToTest) {
+      const content = `DefineCharacter\nDefineInfo ${test.lcid}\nName = Test\nEndInfo\nEndCharacter`;
+      const result = parser.parse(content);
+      const info = result.character.infos[0];
+      expect(info.languageCode).toBe(test.lcid);
+      expect(info.locale.language).toBe(test.expectedLang);
+    }
+  });
+
+  it('should parse new character style flags correctly', () => {
+    const content = `
+DefineCharacter
+  Style = AXS_VOICE_TTS | AXS_SYSTEM_CHARACTER
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const style = result.character.style;
+    // VoiceTTS: 0x0020, SystemChar: 0x0040. Total: 0x0060 (96)
+    expect(style).toBe(0x0020 | 0x0040);
+  });
+
   it('should handle edge cases in ExtraData parsing', () => {
     const parser = new CharacterParser();
     const info1 = { greetings: [], reminders: [] } as any;
