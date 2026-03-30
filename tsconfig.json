@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2025",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2025", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
     "skipLibCheck": true,
 
@@ -15,6 +15,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationDir": "dist",
+    "rootDir": "src",
 
     /* Linting */
     "strict": true,
@@ -23,7 +24,8 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "stableTypeOrdering": true
   },
   "include": ["src"],
   "exclude": ["src/**/*.test.ts", "src/demo"]
