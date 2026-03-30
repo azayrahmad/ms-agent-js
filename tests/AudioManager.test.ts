@@ -67,4 +67,27 @@ describe('AudioManager', () => {
     expect(mockSource.start).toHaveBeenCalledWith(0, 0, 1);
     expect(mockSource.buffer).toBe(mockBuffer);
   });
+
+  it('should stop all active sources', () => {
+    const manager = new AudioManager('http://example.com/agent');
+    const mockSource1 = { stop: vi.fn(), connect: vi.fn(), start: vi.fn() };
+    const mockSource2 = { stop: vi.fn(), connect: vi.fn(), start: vi.fn() };
+
+    const ctx = (manager as any).getContext();
+    ctx.createBufferSource = vi.fn()
+      .mockReturnValueOnce(mockSource1)
+      .mockReturnValueOnce(mockSource2);
+
+    (manager as any).soundBuffers.set('sound1.wav', { duration: 1 });
+    (manager as any).soundBuffers.set('sound2.wav', { duration: 1 });
+
+    manager.playFrameSound('sound1.wav');
+    manager.playFrameSound('sound2.wav');
+
+    manager.stop();
+
+    expect(mockSource1.stop).toHaveBeenCalled();
+    expect(mockSource2.stop).toHaveBeenCalled();
+    expect((manager as any).activeSources.size).toBe(0);
+  });
 });

@@ -440,15 +440,27 @@ export class Agent {
     return this.dialogManager.ask(options);
   }
 
-  /** Configures global system Text-to-Speech options. */
+  /**
+   * Configures global system Text-to-Speech options.
+   *
+   * @param options - TTS configuration (rate, pitch, volume, voice).
+   */
   public setTTSOptions(options: TTSOptions) {
     this.renderer.balloon.setTTSOptions(options);
   }
-  /** Returns a list of available system TTS voices. */
+
+  /**
+   * Returns a list of available system TTS voices from the Web Speech API.
+   *
+   * @returns An array of SpeechSynthesisVoice objects.
+   */
   public getTTSVoices(): SpeechSynthesisVoice[] {
     return this.renderer.balloon.getTTSVoices();
   }
-  /** Instantly stops any ongoing system speech. */
+
+  /**
+   * Instantly stops any ongoing system Text-to-Speech playback.
+   */
   public stopTTS() {
     this.renderer.balloon.stopTTS();
   }
@@ -483,11 +495,22 @@ export class Agent {
     });
   }
 
-  /** Subscribes to an agent event. */
+  /**
+   * Subscribes to an agent event.
+   *
+   * @param event - The name of the event to listen for.
+   * @param listener - The callback function to execute when the event occurs.
+   */
   public on(event: string, listener: AgentEventListener) {
     this.core.on(event as any, listener);
   }
-  /** Unsubscribes from an agent event. */
+
+  /**
+   * Unsubscribes from an agent event.
+   *
+   * @param event - The name of the event.
+   * @param listener - The original callback function to remove.
+   */
   public off(event: string, listener: AgentEventListener) {
     this.core.off(event as any, listener);
   }

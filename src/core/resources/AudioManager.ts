@@ -27,6 +27,8 @@ export class AudioManager {
   private spritesheetBuffer: AudioBuffer | null = null;
   /** Promise tracking the spritesheet loading process. */
   private spritesheetLoadingPromise: Promise<void> | null = null;
+  /** Active buffer sources that are currently playing. */
+  private activeSources: Set<AudioBufferSourceNode> = new Set();
   /** Optional loading options. */
   private options: {
     signal?: AbortSignal;
@@ -296,6 +298,8 @@ export class AudioManager {
       const source = ctx.createBufferSource();
       source.buffer = buffer;
       source.connect(ctx.destination);
+      this.activeSources.add(source);
+      source.onended = () => this.activeSources.delete(source);
       source.start(0);
     } else {
       // Avoid duplicate playback for sounds already being loaded
@@ -339,7 +343,23 @@ export class AudioManager {
     const source = ctx.createBufferSource();
     source.buffer = this.spritesheetBuffer;
     source.connect(ctx.destination);
+    this.activeSources.add(source);
+    source.onended = () => this.activeSources.delete(source);
     // source.start(when, offset, duration)
     source.start(0, start, end - start);
+  }
+
+  /**
+   * Stops all currently playing sound effects.
+   */
+  public stop(): void {
+    this.activeSources.forEach((source) => {
+      try {
+        source.stop();
+      } catch (e) {
+        // Source might have already stopped
+      }
+    });
+    this.activeSources.clear();
   }
 }

@@ -112,6 +112,36 @@ EndCharacter
     expect(info.name).toBe('Clippit_FR');
   });
 
+  it('should parse newly added LCIDs', () => {
+    const content = `
+DefineCharacter
+  DefineInfo 0x0401
+    Name = "ArabicAgent"
+  EndInfo
+  DefineInfo 0x040d
+    Name = "HebrewAgent"
+  EndInfo
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    expect(result.character.infos[0].locale.language).toBe('ar');
+    expect(result.character.infos[1].locale.language).toBe('he');
+  });
+
+  it('should parse new style flags and handle case-insensitivity', () => {
+    const content = `
+DefineCharacter
+  Style = AXS_VOICE_TTS | axs_system_char | AXS_BALLOON_SIZETOTEXT
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const style = result.character.style;
+    // VoiceTTS (0x0020) | SystemChar (0x0040) | BalloonSizeToText (0x0004) = 0x0064 (100 decimal)
+    expect(style).toBe(0x0064);
+  });
+
   it('should handle edge cases in ExtraData parsing', () => {
     const parser = new CharacterParser();
     const info1 = { greetings: [], reminders: [] } as any;

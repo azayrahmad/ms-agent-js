@@ -118,4 +118,13 @@ export class AgentCore extends EventEmitter<AgentEvents> {
       });
     }
   }
+
+  /**
+   * Clears all resources and pending tasks.
+   */
+  public clear() {
+    this.requestQueue.stop();
+    this.animationManager.stop();
+    this.audioManager.stop();
+  }
 }

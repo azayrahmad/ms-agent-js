@@ -414,4 +414,15 @@ export class AnimationManager extends EventEmitter<any> {
       await this.audioManager.loadSounds(soundsToLoad);
     }
   }
+
+  /**
+   * Instantly stops any ongoing animation.
+   */
+  public stop(): void {
+    this.currentAnimation = null;
+    this.animationPromise?.resolve(false);
+    this.animationPromise = null;
+    this.activePromise = null;
+    this._isExiting = false;
+  }
 }

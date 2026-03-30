@@ -186,6 +186,25 @@ describe('SpriteManager', () => {
         expect(canvas.width).toBe(2);
     });
 
+    it('should throw error for invalid BMP magic number', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(14 + 40);
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x0000, true); // Not 'BM'
+
+        expect(() => (sm as any).bmpToCanvas(buffer)).toThrow('Not a BMP file, magic: 0x0');
+    });
+
+    it('should throw error if palette index is out of range', () => {
+        const sm = new SpriteManager('/agent', mockDefinition);
+        const buffer = new ArrayBuffer(14 + 40); // Too small for any palette
+        const view = new DataView(buffer);
+        view.setUint16(0, 0x4d42, true);
+        view.setUint32(14, 40, true);
+
+        expect(() => (sm as any).getPaletteColor(buffer, 0)).toThrow('Palette index out of range');
+    });
+
     it('should throw error for unsupported bit counts', () => {
         const sm = new SpriteManager('/agent', mockDefinition);
         const buffer = new ArrayBuffer(14 + 40);
