@@ -39,15 +39,15 @@ describe('AnimationManager', () => {
     animationManager = new AnimationManager(spriteManager, audioManager, mockAnimations);
   });
 
-  it('should fast-forward through null frames (duration 0)', () => {
+  it('should fast-forward through null frames (duration 0) IF branching is provided', () => {
     const animationWithNullFrames: Animation = {
-        name: 'nulls',
-        transitionType: 0,
-        frames: [
-            { duration: 0, images: [] }, // Jump immediately to 1
-            { duration: 0, images: [] }, // Jump immediately to 2
-            { duration: 10, images: [] } // Stay here
-        ]
+      name: 'nulls',
+      transitionType: 0,
+      frames: [
+        { duration: 0, images: [], branching: [{ branchTo: 2, probability: 100 }] }, // Jump immediately to index 1
+        { duration: 0, images: [], branching: [{ branchTo: 3, probability: 100 }] }, // Jump immediately to index 2
+        { duration: 10, images: [] } // Stay here
+      ]
     };
     (animationManager as any).animations['nulls'] = animationWithNullFrames;
 
@@ -56,26 +56,108 @@ describe('AnimationManager', () => {
     expect(animationManager.currentFrameIndexValue).toBe(2);
   });
 
-  it('should complete animation when jumping to index 0 from a null frame', async () => {
+  it('should pause on a null frame (duration 0) and take exit branch when stopped (transitionType 1)', async () => {
     const animationEndingInNull: Animation = {
-        name: 'end-null',
-        transitionType: 0,
-        frames: [
-            { duration: 10, images: [] },
-            { duration: 0, images: [] } // Duration 0, next is 0 (completion)
-        ]
+      name: 'end-null-type-1',
+      transitionType: 1,
+      frames: [
+        {
+          duration: 10,
+          images: [{ filename: 'last.bmp', offsetX: 0, offsetY: 0 }],
+        },
+        { duration: 0, images: [], exitBranch: 4 }, // Pause here, exit to frame 4
+        { duration: 10, images: [] }, // Frame 2 (idx 2)
+        { duration: 10, images: [] }, // Frame 3 (idx 3)
+        { duration: 10, images: [] }, // Frame 4 (idx 4)
+      ],
     };
-    (animationManager as any).animations['end-null'] = animationEndingInNull;
+    (animationManager as any).animations['end-null-type-1'] = animationEndingInNull;
 
-    const promise = animationManager.playAnimation('end-null');
+    const promise = animationManager.playAnimation('end-null-type-1');
 
     // Initial state: frame 0
     expect(animationManager.currentFrameIndexValue).toBe(0);
 
+    // Update to trigger next frame (the null frame at index 1)
+    animationManager.update(performance.now() + 200);
+
+    // Should be on frame 1 (paused)
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+    expect(animationManager.isAnimating).toBe(true);
+    expect(animationManager.isExitingFlag).toBe(false); // Should NOT auto-exit
+
+    // Manually signal exit
+    animationManager.isExitingFlag = true;
+
+    // Next update SHOULD take the exit branch immediately now that _isExiting is true.
+    animationManager.update(performance.now() + 400);
+
+    // Should have jumped to frame 4 (index 3)
+    expect(animationManager.currentFrameIndexValue).toBe(3);
+
+    // Next update should move to index 4
+    animationManager.update(performance.now() + 600);
+    expect(animationManager.currentFrameIndexValue).toBe(4);
+
+    // Next update should complete (loops back to 0)
+    animationManager.update(performance.now() + 800);
+    await expect(promise).resolves.toBe(true);
+    expect(animationManager.isAnimating).toBe(false);
+  });
+
+  it('should fallback to lastRenderedFrame exitBranch when pausing on a null frame with no exitBranch (transitionType 1)', async () => {
+    const animationEndingInNull: Animation = {
+      name: 'announce-style',
+      transitionType: 1,
+      frames: [
+        {
+          duration: 10,
+          images: [{ filename: 'last.bmp', offsetX: 0, offsetY: 0 }],
+          exitBranch: 4, // Frame 1 -> Exit to frame 4 (idx 3)
+        },
+        { duration: 0, images: [] }, // Frame 2: Null frame, NO exitBranch
+        { duration: 10, images: [] }, // Frame 3: Sequential next (idx 2)
+        { duration: 10, images: [] }, // Frame 4: Exit target (idx 3)
+      ],
+    };
+    (animationManager as any).animations['announce-style'] = animationEndingInNull;
+
+    animationManager.playAnimation('announce-style');
+
+    // Update to trigger next frame (the null frame at index 1)
+    animationManager.update(performance.now() + 200);
+
+    // Should be on frame 2 (idx 1), paused
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+    expect(animationManager.isAnimating).toBe(true);
+
+    // Manually signal exit
+    animationManager.isExitingFlag = true;
+
+    // Next update should fallback to frame 1's exit branch (since frame 2 has none)
+    animationManager.update(performance.now() + 400);
+
+    // Should have jumped to frame 4 (index 3)
+    expect(animationManager.currentFrameIndexValue).toBe(3);
+  });
+
+  it('should NOT pause on a null frame (duration 0) when transitionType is 0', async () => {
+    const animationEndingInNull: Animation = {
+      name: 'end-null-type-0',
+      transitionType: 0,
+      frames: [
+        { duration: 10, images: [] },
+        { duration: 0, images: [] }, // Duration 0, next is 0 (completion)
+      ],
+    };
+    (animationManager as any).animations['end-null-type-0'] = animationEndingInNull;
+
+    const promise = animationManager.playAnimation('end-null-type-0');
+
     // Update to trigger next frame
     animationManager.update(performance.now() + 200);
 
-    // Should have skipped frame 1 and completed
+    // Should have skipped frame 1 and completed automatically because transitionType is 0
     await expect(promise).resolves.toBe(true);
     expect(animationManager.isAnimating).toBe(false);
   });

@@ -187,6 +187,17 @@ export class AnimationManager extends EventEmitter<any> {
         const { index: nextIndex, isBranch } =
           this.getNextFrameDetails(currentFrame);
 
+        // If it's a 0-duration frame, we only proceed if a branch was taken,
+        // or if we are in transition type 1 (Microsoft Agent standard) and NOT exiting.
+        // If transition type 1 is used, we pause on 0-duration frames to wait for an exit.
+        if (
+          !isBranch &&
+          this.currentAnimation?.transitionType === 1 &&
+          !this._isExiting
+        ) {
+          break;
+        }
+
         if (this.checkAnimationCompletion(currentFrame, nextIndex, isBranch))
           return;
 
@@ -239,7 +250,7 @@ export class AnimationManager extends EventEmitter<any> {
    * Completions occur either at the end of the frame sequence or when an exit branch loops back.
    */
   private checkAnimationCompletion(
-    _currentFrame: FrameDefinition,
+    currentFrame: FrameDefinition,
     nextFrameIndex: number,
     isBranch: boolean,
   ): boolean {
@@ -250,6 +261,19 @@ export class AnimationManager extends EventEmitter<any> {
         return true;
       }
     } else {
+      // If NOT yet exiting, check if we've reached a 0-duration frame with an exit branch.
+      // In Microsoft Agent transition type 1, these act as "terminal" pause frames.
+      // If we reach one during normal sequential playback, we force an exit.
+      if (
+        this.currentAnimation?.transitionType === 1 &&
+        currentFrame.duration === 0 &&
+        currentFrame.exitBranch !== undefined &&
+        !isBranch
+      ) {
+        this.isExitingFlag = true;
+        return false;
+      }
+
       // Normal completion when we loop back to the first frame sequentially
       if (!isBranch && nextFrameIndex === 0 && this.animationPromise) {
         if (this.isLooping) {
@@ -270,9 +294,23 @@ export class AnimationManager extends EventEmitter<any> {
     index: number;
     isBranch: boolean;
   } {
+    // Sequential next index calculation.
+    const sequentialNext =
+      (this.currentFrameIndex + 1) % this.currentAnimation!.frames.length;
+
     // If exiting, prioritize the exit branch if it exists
-    if (this._isExiting && currentFrame.exitBranch !== undefined) {
-      return { index: currentFrame.exitBranch - 1, isBranch: true };
+    if (this._isExiting) {
+      if (currentFrame.exitBranch !== undefined) {
+        return { index: currentFrame.exitBranch - 1, isBranch: true };
+      }
+      // If the current frame has no exit branch but is a 0-duration frame (logic frame),
+      // fallback to the exit branch of the last frame that was actually rendered.
+      if (
+        currentFrame.duration === 0 &&
+        this.lastRenderedFrame?.exitBranch !== undefined
+      ) {
+        return { index: this.lastRenderedFrame.exitBranch - 1, isBranch: true };
+      }
     }
 
     // If exiting, we still want to follow "forward" branches that take us closer to the end
@@ -308,9 +346,7 @@ export class AnimationManager extends EventEmitter<any> {
     }
 
     // Default to sequential playback (wrapping around to 0)
-    const next =
-      (this.currentFrameIndex + 1) % this.currentAnimation!.frames.length;
-    return { index: next, isBranch: false };
+    return { index: sequentialNext, isBranch: false };
   }
 
   /**
