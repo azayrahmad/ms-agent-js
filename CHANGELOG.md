@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.5.1](https://github.com/azayrahmad/ms-agent-js/compare/v0.5.0...v0.5.1) (2026-03-31)
+
+
+### Features
+
+* **demo:** add version info and Ko-fi link to about tab ([c81510b](https://github.com/azayrahmad/ms-agent-js/commit/c81510beedfdb7b2732692c8a847ac09f9edb601))
+* update readme and bump version ([eefd1f8](https://github.com/azayrahmad/ms-agent-js/commit/eefd1f808423caf764641e48dbc314f8a0b5359b))
+
+
+### Bug Fixes
+
+* **demo:** Update tutorial buttons and fix focused button styling ([885cc95](https://github.com/azayrahmad/ms-agent-js/commit/885cc95d4b0f4531ccd611c4950b539b8fb0669f))
+* resolve flakiness and timeout in 'handle balloon onHide' test ([2d6572d](https://github.com/azayrahmad/ms-agent-js/commit/2d6572d3e2e4d6e5f4d213b4479bc6f3117fa490))
+* **tests:** exclude e2e tests from vitest coverage run ([eec9cb0](https://github.com/azayrahmad/ms-agent-js/commit/eec9cb0e19bcbace5722285507ffcc7867c0fe2b))
+* **tests:** resolve e2e interference and flaky visual snapshots ([786d155](https://github.com/azayrahmad/ms-agent-js/commit/786d155666a7be0ac12a6750d892545670d35ab6))
+
+
+### Miscellaneous Chores
+
+* release 0.5.0 ([5045d1d](https://github.com/azayrahmad/ms-agent-js/commit/5045d1dc313a3444cbf87c0d1ee6778dc09153ed))
+* release 0.5.1 ([c4c99b2](https://github.com/azayrahmad/ms-agent-js/commit/c4c99b25f8f41ba03c854e88c8bf54d27778c3d3))
+
 ## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
 
 
