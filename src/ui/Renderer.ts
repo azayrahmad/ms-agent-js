@@ -175,6 +175,16 @@ export class AgentRenderer {
 
         box-shadow: inset 1px 1px darkgrey, inset -1px -1px white;
       }
+      .clippy-input-buttons button .button-label {
+        border: 1px dashed transparent;
+        padding: 1px 2px;
+      }
+      .clippy-input-buttons button:focus {
+        outline: none;
+      }
+      .clippy-input-buttons button:focus .button-label {
+        border: 1px dashed grey;
+      }
       .clippy-input-buttons button .button-bullet {
         display: inline-block;
         margin-right: 5px;
