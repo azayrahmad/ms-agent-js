@@ -79,7 +79,7 @@ init();
 
 ---
 
-## 📖 Documentation Map
+## 📖 Documentation
 
 - **[Getting Started](./docs/getting-started.md)**: Installation and basic usage.
 - **[API Reference](./docs/api-reference.md)**: Full list of methods, options, and events.
@@ -89,6 +89,14 @@ init();
 - **[Internal Architecture](./docs/internals.md)**: Deep dive into the engine's core logic.
 - **[AI Onboarding](./AGENTS.md)**: Specific recipes and tips for AI agents.
 - **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
+
+## 🛣️ Future Roadmap
+
+- Support for MS Agent 2.1 features:
+  - Advanced animation looping logic.
+  - Mouth movement (viseme).
+  - Tray icon.
+- Support for streaming text (for LLM streaming output)
 
 ## 🤝 Credits
 
