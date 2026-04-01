@@ -44,16 +44,33 @@ This document compares the animation handling of **MSAgentJS** with **TripleAgen
 - **Inference:** Does NOT appear to infer return animations from names (e.g., it doesn't automatically look for "NameReturn" if the property is missing).
 - **Status:** No explicit automation of the return animation playback was found in the core logic.
 
+## Official MS Agent Documentation Intent
+
+According to [Microsoft Agent Documentation](https://learn.microsoft.com/en-us/windows/win32/lwef/creating-animations):
+
+### Null Frames (0-duration)
+- **Rendering:** Frames with no image and zero duration **must not be displayed**.
+- **Logic:** They are intended for "branching without first displaying a particular image."
+- **Terminal Exit:** A zero-duration frame can be placed at the end of an animation to provide a "final exit point" for exit branching when the last visible frame isn't suitable as a neutral pose.
+
+### Return Animations
+- **Purpose:** To return the character to a neutral position after an animation.
+- **Trigger:** When the engine gets a request to play a *new* animation, it automatically attempts to play the **Return animation** of the *current* animation first.
+- **Implementation:** Authors can either:
+    1. Define an explicit animation and link it.
+    2. Use **Exit Branching** (Transition Type 1) to navigate the current animation to a neutral frame.
+
 ## Summary of Findings
 
-| Feature | MSAgentJS | TripleAgent |
-| --- | --- | --- |
-| `TransitionType 1` | Full Support | Parsed only |
-| `TransitionType 2` | Ignored | Parsed only |
-| Null Frame Fast-forward | Internal `while` loop | Main loop recursion |
-| Null Frame Rendering | Last valid frame | Last valid frame |
-| `ReturnAnimation` | Not implemented | Parsed only |
-| Exit Branch Logic | Robust | Basic |
+| Feature | MSAgentJS | TripleAgent | MS Agent Spec |
+| --- | --- | --- | --- |
+| `TransitionType 0` | Not implemented | Parsed only | Use Return Animation |
+| `TransitionType 1` | Full Support | Parsed only | Use Exit Branching |
+| `TransitionType 2` | Ignored | Parsed only | No Transition |
+| Null Frame Fast-forward | Internal `while` loop | Main loop recursion | Logic only, no display |
+| Null Frame Rendering | Last valid frame | Last valid frame | Not displayed |
+| `ReturnAnimation` | Not implemented | Parsed only | Auto-play on next request |
+| Exit Branch Logic | Robust | Basic | Path to neutral frame |
 
 ## Recommendations for MSAgentJS
 1. **Support `ReturnAnimation`**: Implement parsing and automatic playback of the designated return animation when an animation completes, matching the behavior described in MS Agent documentation.
