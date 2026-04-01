@@ -33,6 +33,10 @@ export class AnimationManager extends EventEmitter<any> {
   private activePromise: Promise<boolean> | null = null;
   /** Default scaling factor (usually overwritten by the Agent's options). */
   private scale: number = 2;
+  /** The name of the last animation that finished playing to completion. */
+  private lastAnimationName: string = '';
+  /** Whether we are currently executing a return transition to avoid recursion. */
+  private isProcessingReturn: boolean = false;
 
   /**
    * The name of the animation currently being played.
@@ -89,8 +93,11 @@ export class AnimationManager extends EventEmitter<any> {
       return this.lastRenderedFrame;
     }
     const frame = this.currentAnimation.frames[this.currentFrameIndex];
-    // Don't display frames with duration 0 (logic frames); stick to the last valid one.
-    if (frame.duration === 0) {
+    // MSAgent spec: "If a frame has no image and zero duration, the frame will not be displayed".
+    // We stick to the last valid frame to maintain visual continuity.
+    const hasImages =
+      frame.images.length > 0 || (frame.mouths && frame.mouths.length > 0);
+    if (frame.duration === 0 && !hasImages) {
       return this.lastRenderedFrame;
     }
     return frame;
@@ -152,8 +159,31 @@ export class AnimationManager extends EventEmitter<any> {
   public async playAnimation(
     animationName: string,
     useExitBranch: boolean = false,
-    loop: boolean = false
+    loop: boolean = false,
   ): Promise<boolean> {
+    // Check if we need to transition from a previous animation (Spec-compliant smooth transitions)
+    const lastAnim = this.animations[this.lastAnimationName];
+    const returnAnimName = lastAnim?.returnAnimation;
+    const needsReturn =
+      !this.isProcessingReturn &&
+      returnAnimName &&
+      this.animations[returnAnimName] &&
+      this.lastAnimationName !== animationName &&
+      animationName !== returnAnimName &&
+      !this.isAnimating;
+
+    if (needsReturn) {
+      this.isProcessingReturn = true;
+      try {
+        await this.playAnimation(returnAnimName);
+      } finally {
+        this.isProcessingReturn = false;
+        this.lastAnimationName = '';
+      }
+      // Re-trigger the original play request now that return animation is finished
+      return this.playAnimation(animationName, useExitBranch, loop);
+    }
+
     this.activePromise = new Promise((resolve, reject) => {
       this.animationPromise = { resolve, reject };
       this.setAnimation(animationName, useExitBranch, loop);
@@ -392,6 +422,15 @@ export class AnimationManager extends EventEmitter<any> {
    */
   private completeAnimation(): void {
     const completedAnimation = this.currentAnimation?.name || '';
+
+    // Track the last animation for smooth return transitions.
+    // We ignore animations that are themselves "Return" animations to avoid loops.
+    if (!completedAnimation.endsWith('Return')) {
+      this.lastAnimationName = completedAnimation;
+    } else {
+      this.lastAnimationName = ''; // Back to neutral
+    }
+
     if (this.animationPromise) {
       this.animationPromise.resolve(true);
       this.animationPromise = null;

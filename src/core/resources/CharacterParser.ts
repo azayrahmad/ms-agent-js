@@ -427,6 +427,15 @@ export class CharacterParser {
     if (this.currentAnimation && this.currentAgent.animations) {
       this.currentAgent.animations[this.currentAnimation.name] =
         this.currentAnimation;
+
+      // MSAgent binary spec includes a ReturnAnimation property, but .acd files often omit it
+      // and use a naming convention instead. Here we infer it if TransitionType is 0 or 2.
+      if (
+        this.currentAnimation.transitionType === 0 ||
+        this.currentAnimation.transitionType === 2
+      ) {
+        this.currentAnimation.returnAnimation = `${this.currentAnimation.name}Return`;
+      }
     }
     return i;
   }
