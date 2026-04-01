@@ -36,12 +36,13 @@ This document compares the animation handling of **MSAgentJS** with **TripleAgen
 
 ### MSAgentJS
 - **Implemented:** No.
-- **Status:** Currently ignored during parsing and playback.
+- **Status:** Currently ignored. Note that text-based `.acd` files (which this project uses) do not explicitly contain this property. Instead, characters like Genie use a naming convention where companion animations have a "Return" suffix (e.g., `GetAttention` and `GetAttentionReturn`).
 
 ### TripleAgent
 - **Implemented:** Partially (Parsing only).
-- **Logic:** Parses `ReturnAnimation` string from the animation header.
-- **Status:** Noted in the README as part of the "speaking frame" quirk but not explicitly automated in the core request handler seen in `agent.cpp`.
+- **Logic:** Parses `ReturnAnimation` string from the binary `.acs` animation header (this field is defined in the MS Agent binary spec).
+- **Inference:** Does NOT appear to infer return animations from names (e.g., it doesn't automatically look for "NameReturn" if the property is missing).
+- **Status:** No explicit automation of the return animation playback was found in the core logic.
 
 ## Summary of Findings
 
