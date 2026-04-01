@@ -380,4 +380,103 @@ describe('AnimationManager', () => {
     await expect(promise).resolves.toBe(true);
     expect(animationManager.isAnimating).toBe(false);
   });
+
+  describe('Transition Type 2 (Return animations)', () => {
+    it('should play Return animation when interrupted (isExitingFlag = true)', async () => {
+      const mockAnims: Record<string, Animation> = {
+        'GetAttention': {
+          name: 'GetAttention',
+          transitionType: 2,
+          frames: [{ duration: 10, images: [] }]
+        },
+        'GetAttentionReturn': {
+          name: 'GetAttentionReturn',
+          transitionType: 0,
+          frames: [{ duration: 10, images: [] }]
+        }
+      };
+      const am = new AnimationManager(spriteManager, audioManager, mockAnims);
+
+      const promise = am.playAnimation('GetAttention');
+      am.isExitingFlag = true;
+      am.update(performance.now() + 200);
+
+      expect(am.currentAnimationName).toBe('GetAttentionReturn');
+      expect(am.isAnimating).toBe(true);
+
+      am.update(performance.now() + 400);
+      await expect(promise).resolves.toBe(true);
+      expect(am.isAnimating).toBe(false);
+    });
+
+    it('should strip suffixes Continued/Blink/Return and play Return animation', async () => {
+      const mockAnims: Record<string, Animation> = {
+        'GetAttentionContinued': {
+          name: 'GetAttentionContinued',
+          transitionType: 2,
+          frames: [{ duration: 10, images: [] }]
+        },
+        'GetAttentionBlink': {
+          name: 'GetAttentionBlink',
+          transitionType: 2,
+          frames: [{ duration: 10, images: [] }]
+        },
+        'GetAttentionReturn': {
+          name: 'GetAttentionReturn',
+          transitionType: 0,
+          frames: [{ duration: 10, images: [] }]
+        }
+      };
+      const am = new AnimationManager(spriteManager, audioManager, mockAnims);
+
+      // Test Continued
+      am.playAnimation('GetAttentionContinued');
+      am.isExitingFlag = true;
+      am.update(performance.now() + 200);
+      expect(am.currentAnimationName).toBe('GetAttentionReturn');
+
+      // Test Blink
+      am.playAnimation('GetAttentionBlink');
+      am.isExitingFlag = true;
+      am.update(performance.now() + 200);
+      expect(am.currentAnimationName).toBe('GetAttentionReturn');
+    });
+
+    it('should handle case-insensitivity when matching Return animations', async () => {
+      const mockAnims: Record<string, Animation> = {
+        'getattention': {
+          name: 'getattention',
+          transitionType: 2,
+          frames: [{ duration: 10, images: [] }]
+        },
+        'GetAttentionReturn': {
+          name: 'GetAttentionReturn',
+          transitionType: 0,
+          frames: [{ duration: 10, images: [] }]
+        }
+      };
+      const am = new AnimationManager(spriteManager, audioManager, mockAnims);
+
+      am.playAnimation('getattention');
+      am.isExitingFlag = true;
+      am.update(performance.now() + 200);
+      expect(am.currentAnimationName).toBe('GetAttentionReturn');
+    });
+
+    it('should NOT play another Return animation if current is already a Return animation', async () => {
+      const mockAnims: Record<string, Animation> = {
+        'GetAttentionReturn': {
+          name: 'GetAttentionReturn',
+          transitionType: 2,
+          frames: [{ duration: 10, images: [] }]
+        }
+      };
+      const am = new AnimationManager(spriteManager, audioManager, mockAnims);
+
+      am.playAnimation('GetAttentionReturn');
+      am.isExitingFlag = true;
+      am.update(performance.now() + 200);
+      expect(am.isAnimating).toBe(false);
+    });
+  });
 });

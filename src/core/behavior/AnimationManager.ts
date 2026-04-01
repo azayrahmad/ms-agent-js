@@ -389,9 +389,23 @@ export class AnimationManager extends EventEmitter<any> {
 
   /**
    * Marks the current animation as finished and resolves any pending promises.
+   * If the animation is transition type 2 and was interrupted, it attempts to play a "Return" animation first.
    */
   private completeAnimation(): void {
     const completedAnimation = this.currentAnimation?.name || '';
+    const wasExiting = this._isExiting;
+    const transitionType = this.currentAnimation?.transitionType;
+
+    // Handle Transition Type 2 Return animations
+    if (wasExiting && transitionType === 2 && !completedAnimation.toLowerCase().endsWith('return')) {
+      const returnAnimationName = this.getReturnAnimationName(completedAnimation);
+      if (returnAnimationName && this.animations[returnAnimationName]) {
+        // Switch to the Return animation instead of completing
+        this.setAnimation(returnAnimationName, false, false);
+        return;
+      }
+    }
+
     if (this.animationPromise) {
       this.animationPromise.resolve(true);
       this.animationPromise = null;
@@ -399,6 +413,32 @@ export class AnimationManager extends EventEmitter<any> {
     }
     this.currentAnimation = null;
     this.emit('animationCompleted', completedAnimation);
+  }
+
+  /**
+   * Calculates the related Return animation name for a given animation.
+   * Handles stripping suffixes like Continued, Blink, and Return (case-insensitive).
+   */
+  private getReturnAnimationName(animationName: string): string | null {
+    // Regex to match suffixes Continued, Blink, or Return at the end of the string
+    const suffixRegex = /(Continued|Blink|Return)$/i;
+    const mainName = animationName.replace(suffixRegex, '');
+
+    // Return the name with the 'Return' suffix
+    const returnName = mainName + 'Return';
+
+    // We check case-insensitively but prefer the casing from the definitions if possible
+    // Actually, animation names are used as keys in this.animations, which is a Record<string, Animation>.
+    // Usually they match exactly.
+    if (this.animations[returnName]) return returnName;
+
+    // Case-insensitive search if exact match fails
+    const lowerReturnName = returnName.toLowerCase();
+    for (const name in this.animations) {
+      if (name.toLowerCase() === lowerReturnName) return name;
+    }
+
+    return null;
   }
 
   /**
