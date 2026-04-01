@@ -297,12 +297,21 @@ export class AnimationManager extends EventEmitter<any> {
     // Sequential next index calculation.
     const sequentialNext =
       (this.currentFrameIndex + 1) % this.currentAnimation!.frames.length;
+    const isLastFrame =
+      this.currentFrameIndex === this.currentAnimation!.frames.length - 1;
 
     // If exiting, prioritize the exit branch if it exists
     if (this._isExiting) {
       if (currentFrame.exitBranch !== undefined) {
         return { index: currentFrame.exitBranch - 1, isBranch: true };
       }
+
+      // If we are at the last frame and it has no explicit exit branch,
+      // we should proceed to sequentialNext (which is 0) to allow completion.
+      if (isLastFrame) {
+        return { index: sequentialNext, isBranch: false };
+      }
+
       // If the current frame has no exit branch but is a 0-duration frame (logic frame),
       // fallback to the exit branch of the last frame that was actually rendered.
       if (
