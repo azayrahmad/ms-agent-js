@@ -25,6 +25,8 @@ export class AnimationManager extends EventEmitter<any> {
   private lastRenderedFrame: FrameDefinition | null = null;
   /** Whether the current animation is in the process of exiting via an exit branch. */
   private _isExiting: boolean = false;
+  /** Set of frame indices visited during the current exit traversal. */
+  private exitHistory: Set<number> = new Set();
   /** Whether the current animation should loop back to the beginning instead of finishing. */
   private isLooping: boolean = false;
   /** Internal promise controls for the currently playing animation. */
@@ -49,11 +51,15 @@ export class AnimationManager extends EventEmitter<any> {
   }
 
   public set isExitingFlag(value: boolean) {
+    const wasExiting = this._isExiting;
     this._isExiting = value;
 
-    // When we start exiting, we stop looping
+    // When we start exiting, we stop looping and clear the exit history
     if (value) {
       this.isLooping = false;
+      if (!wasExiting) {
+        this.exitHistory.clear();
+      }
     }
   }
 
@@ -125,6 +131,7 @@ export class AnimationManager extends EventEmitter<any> {
       this.lastFrameTime = performance.now();
       // Reset isExiting directly but call the setter to trigger immediate exit jumps if needed
       this._isExiting = false;
+      this.exitHistory.clear();
       this.isLooping = loop;
 
       if (previousAnimation && previousAnimation !== animationName) {
@@ -302,14 +309,13 @@ export class AnimationManager extends EventEmitter<any> {
 
     // If exiting, prioritize the exit branch if it exists
     if (this._isExiting) {
-      if (currentFrame.exitBranch !== undefined) {
-        return { index: currentFrame.exitBranch - 1, isBranch: true };
-      }
+      this.exitHistory.add(this.currentFrameIndex);
 
-      // If we are at the last frame and it has no explicit exit branch,
-      // we should proceed to sequentialNext (which is 0) to allow completion.
-      if (isLastFrame) {
-        return { index: sequentialNext, isBranch: false };
+      if (currentFrame.exitBranch !== undefined) {
+        const nextIdx = currentFrame.exitBranch - 1;
+        if (!this.exitHistory.has(nextIdx)) {
+          return { index: nextIdx, isBranch: true };
+        }
       }
 
       // If the current frame has no exit branch but is a 0-duration frame (logic frame),
@@ -318,7 +324,15 @@ export class AnimationManager extends EventEmitter<any> {
         currentFrame.duration === 0 &&
         this.lastRenderedFrame?.exitBranch !== undefined
       ) {
-        return { index: this.lastRenderedFrame.exitBranch - 1, isBranch: true };
+        const nextIdx = this.lastRenderedFrame.exitBranch - 1;
+        if (!this.exitHistory.has(nextIdx)) {
+          return { index: nextIdx, isBranch: true };
+        }
+      }
+
+      // If we are at the last frame or if we detected a loop, proceed to completion
+      if (isLastFrame) {
+        return { index: sequentialNext, isBranch: false };
       }
     }
 
