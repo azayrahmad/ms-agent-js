@@ -142,6 +142,8 @@ export interface Animation {
   name: string;
   /** Type of transition between animations (legacy property). */
   transitionType: number;
+  /** (Optional) The name of the animation to play after this one completes. */
+  returnAnimation?: string;
   /** Sequential list of frame definitions. */
   frames: FrameDefinition[];
 }

@@ -64,14 +64,15 @@ According to [Microsoft Agent Documentation](https://learn.microsoft.com/en-us/w
 
 | Feature | MSAgentJS | TripleAgent | MS Agent Spec |
 | --- | --- | --- | --- |
-| `TransitionType 0` | Not implemented | Parsed only | Use Return Animation |
+| `TransitionType 0` | Full Support | Parsed only | Use Return Animation |
 | `TransitionType 1` | Full Support | Parsed only | Use Exit Branching |
-| `TransitionType 2` | Ignored | Parsed only | No Transition |
+| `TransitionType 2` | Full Support | Parsed only | No Transition |
 | Null Frame Fast-forward | Internal `while` loop | Main loop recursion | Logic only, no display |
 | Null Frame Rendering | Last valid frame | Last valid frame | Not displayed |
-| `ReturnAnimation` | Not implemented | Parsed only | Auto-play on next request |
+| `ReturnAnimation` | Inferred & Auto-played | Parsed only | Auto-play on next request |
 | Exit Branch Logic | Robust | Basic | Path to neutral frame |
 
-## Recommendations for MSAgentJS
-1. **Support `ReturnAnimation`**: Implement parsing and automatic playback of the designated return animation when an animation completes, matching the behavior described in MS Agent documentation.
-2. **Investigate `TransitionType 2`**: Research if type 2 (often seen in Genie's "return" animations) implies specific behavior such as automatic looping or specific branching priorities.
+## Implementation Details (MSAgentJS)
+1. **Return Animation Inference**: Since `.acd` files omit the explicit property, the `CharacterParser` infers it by looking for animations with the "Return" suffix when `TransitionType` is 0 or 2.
+2. **Smooth Transitions**: `AnimationManager.playAnimation` automatically chains the previous animation's Return variant before starting a new request, ensuring visual continuity.
+3. **Strict Null-Frame Rules**: Frames with duration 0 and no visual content (images/mouths) are strictly hidden, adhering to the specification.
