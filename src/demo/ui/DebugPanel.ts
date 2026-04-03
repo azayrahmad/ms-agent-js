@@ -7,6 +7,7 @@ import { DemoState } from "../state";
 export class DebugPanel {
   private state: DemoState;
   private dashState: HTMLElement;
+  private dashAnimState: HTMLElement;
   private dashAnim: HTMLElement;
   private dashFrame: HTMLElement;
   private dashLevel: HTMLElement;
@@ -22,6 +23,7 @@ export class DebugPanel {
   constructor(state: DemoState) {
     this.state = state;
     this.dashState = document.getElementById("dash-state")!;
+    this.dashAnimState = document.getElementById("dash-anim-state")!;
     this.dashAnim = document.getElementById("dash-anim")!;
     this.dashFrame = document.getElementById("dash-frame")!;
     this.dashLevel = document.getElementById("dash-level")!;
@@ -44,6 +46,7 @@ export class DebugPanel {
    */
   public reset() {
     this.dashState.textContent = "-";
+    this.dashAnimState.textContent = "-";
     this.dashAnim.textContent = "-";
     this.dashFrame.textContent = "-";
     this.dashLevel.textContent = "-";
@@ -60,6 +63,7 @@ export class DebugPanel {
     const agent = this.state.currentAgent;
     if (agent && agent.stateManager && agent.animationManager) {
       this.dashState.textContent = agent.stateManager.currentStateName;
+      this.dashAnimState.textContent = agent.animationManager.playbackState;
       this.dashAnim.textContent = agent.animationManager.currentAnimationName || "-";
       this.dashFrame.textContent = agent.animationManager.currentFrameIndexValue.toString();
       this.dashLevel.textContent = agent.stateManager.idleLevel.toString();
