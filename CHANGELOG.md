@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.6.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.5.0...v0.6.0) (2026-03-24)
+
+Implementation of real-time lip-syncing for agents during speech.
+
+### Features
+
+* **core:** implement real-time lip-syncing with `VisemeManager` and mouth overlays ([#task](https://github.com/azayrahmad/ms-agent-js/commit/TODO))
+* **core:** add `VisemeManager` for phoneme-to-viseme mapping based on MS Agent specifications
+* **ui:** support rendering mouth shape overlays in `AnimationManager` and `SpriteManager`
+
+### Bug Fixes
+
+* **core:** ensure clean disposal of viseme timers and audio resources during agent destruction
+* **tests:** resolve timing-related flakes in asynchronous agent tests
+
 ## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
 
 

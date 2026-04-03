@@ -1,6 +1,7 @@
 import {
   type FrameDefinition,
   type AgentCharacterDefinition,
+  type MouthDefinition,
 } from "../base/types";
 import { fetchWithProgress } from "../../utils";
 import { AssetCache } from "./Cache";
@@ -458,6 +459,54 @@ export class SpriteManager {
           sprite.height * scale,
         );
       }
+    }
+  }
+
+  /**
+   * Draws a specific mouth overlay onto the provided 2D rendering context.
+   *
+   * @param ctx - The destination canvas context.
+   * @param mouth - The definition of the mouth shape to draw.
+   * @param x - Horizontal position.
+   * @param y - Vertical position.
+   * @param scale - Scaling factor.
+   */
+  public drawMouth(
+    ctx: CanvasRenderingContext2D,
+    mouth: MouthDefinition,
+    x: number,
+    y: number,
+    scale: number = 1,
+  ): void {
+    if (this.spriteSheet && this.definition.atlas) {
+      const atlasEntry = this.definition.atlas[mouth.filename];
+      if (atlasEntry) {
+        const trimX = atlasEntry.trimX || 0;
+        const trimY = atlasEntry.trimY || 0;
+        ctx.drawImage(
+          this.spriteSheet,
+          atlasEntry.x,
+          atlasEntry.y,
+          atlasEntry.w,
+          atlasEntry.h,
+          x + (mouth.offsetX + trimX) * scale,
+          y + (mouth.offsetY + trimY) * scale,
+          atlasEntry.w * scale,
+          atlasEntry.h * scale,
+        );
+        return;
+      }
+    }
+
+    const sprite = this.sprites.get(mouth.filename);
+    if (sprite) {
+      ctx.drawImage(
+        sprite,
+        x + mouth.offsetX * scale,
+        y + mouth.offsetY * scale,
+        sprite.width * scale,
+        sprite.height * scale,
+      );
     }
   }
 

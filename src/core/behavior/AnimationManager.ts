@@ -59,6 +59,18 @@ export class AnimationManager extends EventEmitter<any> {
     return this.machine.context.currentAnimation?.name || '';
   }
 
+  /** The current viseme (mouth position) name. */
+  private currentViseme: string | null = null;
+
+  /**
+   * Sets the current viseme to be rendered as an overlay.
+   *
+   * @param viseme - The name of the viseme (e.g., 'Closed', 'OpenWide1').
+   */
+  public setViseme(viseme: string | null): void {
+    this.currentViseme = viseme;
+  }
+
   /**
    * Whether the manager is currently in the process of exiting an animation.
    */
@@ -482,16 +494,30 @@ export class AnimationManager extends EventEmitter<any> {
 
   /**
    * Draws the current animation frame onto the provided 2D canvas context.
+   * It also renders any active viseme (mouth) overlay.
    *
    * @param ctx - The destination canvas context.
    * @param x - Horizontal position.
    * @param y - Vertical position.
    * @param scale - Scaling factor.
    */
-  public draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = this.scale): void {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    scale: number = this.scale,
+  ): void {
     const frame = this.currentFrame;
     if (frame) {
       this.spriteManager.drawFrame(ctx, frame, x, y, scale);
+
+      // Render mouth overlay if a viseme is set
+      if (this.currentViseme) {
+        const mouthDef = frame.mouths?.find((m) => m.type === this.currentViseme);
+        if (mouthDef) {
+          this.spriteManager.drawMouth(ctx, mouthDef, x, y, scale);
+        }
+      }
     }
   }
 

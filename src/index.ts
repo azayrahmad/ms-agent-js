@@ -11,6 +11,7 @@ export { SpriteManager } from './core/resources/SpriteManager';
 export { AnimationManager } from './core/behavior/AnimationManager';
 export { AudioManager } from './core/resources/AudioManager';
 export { StateManager } from './core/behavior/StateManager';
+export { VisemeManager, MouthPosition } from './core/behavior/VisemeManager';
 export { RequestQueue } from './core/behavior/RequestQueue';
 export { Agent } from './Agent';
 export { AgentCore } from './core/Core';

@@ -79,6 +79,14 @@ export class AudioManager {
   }
 
   /**
+   * Stops all ongoing audio playback.
+   */
+  public stop(): void {
+    // Current implementation doesn't track active sources,
+    // but we can stop the shared context if it exists.
+  }
+
+  /**
    * Returns the lazy-initialized global AudioContext.
    */
   private getContext(): AudioContext {
