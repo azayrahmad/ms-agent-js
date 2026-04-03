@@ -23,6 +23,8 @@ export interface AnimationContext {
   isLooping: boolean;
   /** Internal promise controls for the currently playing animation. */
   animationPromise: { resolve: (val: boolean) => void; reject: (err: any) => void } | null;
+  /** Set of frame indices visited during the current exit sequence to detect and break infinite loops. */
+  exitHistory: Set<number>;
 }
 
 /**
@@ -108,6 +110,7 @@ export class AnimationManager extends EventEmitter<any> {
         lastRenderedFrame: null,
         isLooping: false,
         animationPromise: null,
+        exitHistory: new Set(),
       },
       states: {
         Idle: {
@@ -155,6 +158,7 @@ export class AnimationManager extends EventEmitter<any> {
           ctx.currentFrameIndex = 0;
           ctx.lastFrameTime = performance.now();
           ctx.isLooping = !!event.loop;
+          ctx.exitHistory.clear();
 
           if (previousAnimation && previousAnimation !== event.animation.name) {
             this.emit('animationCompleted', previousAnimation);
@@ -363,6 +367,13 @@ export class AnimationManager extends EventEmitter<any> {
 
     // If exiting, prioritize the exit branch if it exists
     if (isExiting) {
+      // Check if we've already visited this frame in the current exit sequence
+      if (ctx.exitHistory.has(ctx.currentFrameIndex)) {
+        // Break the loop by falling back to sequential playback
+        return { index: sequentialNext, isBranch: false };
+      }
+      ctx.exitHistory.add(ctx.currentFrameIndex);
+
       if (currentFrame.exitBranch !== undefined) {
         return { index: currentFrame.exitBranch - 1, isBranch: true };
       }

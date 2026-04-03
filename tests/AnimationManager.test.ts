@@ -380,4 +380,42 @@ describe('AnimationManager', () => {
     await expect(promise).resolves.toBe(true);
     expect(animationManager.isAnimating).toBe(false);
   });
+
+  it('should break an infinite exit branch loop', async () => {
+    const loopAnim: Animation = {
+      name: 'exit-loop',
+      transitionType: 0,
+      frames: [
+        { duration: 10, images: [], exitBranch: 2 }, // Frame 1 (idx 0) -> 2
+        { duration: 10, images: [], exitBranch: 1 }, // Frame 2 (idx 1) -> 1 (LOOP)
+      ],
+    };
+    (animationManager as any).animations['exit-loop'] = loopAnim;
+
+    const promise = animationManager.playAnimation('exit-loop');
+    animationManager.isExitingFlag = true;
+
+    // Advance clock
+    const now = performance.now();
+    animationManager.update(now + 100); // 0 -> 1
+    expect(animationManager.currentFrameIndexValue).toBe(1);
+
+    animationManager.update(now + 200); // 1 -> 0 (visited history should trigger sequential fall back)
+    // Wait, let's trace:
+    // Frame 1 (idx 0) visited. history: {0}. Next: idx 1.
+    // Frame 2 (idx 1) visited. history: {0, 1}. Next: idx 0.
+    // Frame 1 (idx 0) already in history. Fallback to sequentialNext: (0 + 1) % 2 = 1.
+    // Wait, sequentialNext will stay at 1? Let's check my logic.
+    // If idx 0 is already in history, sequentialNext is (0 + 1) % 2 = 1.
+    // Then it goes to Frame 2 again.
+    // Frame 2 (idx 1) already in history. sequentialNext (1 + 1) % 2 = 0.
+    // Loop continues? No, checkAnimationCompletion will see nextFrameIndex 0 and finish if exiting.
+
+    // Actually, checkAnimationCompletion:
+    // if (nextFrameIndex === 0) { completeAnimation(); return true; }
+    // So it will complete when it hits index 0.
+
+    expect(animationManager.isAnimating).toBe(false);
+    await expect(promise).resolves.toBe(true);
+  });
 });
