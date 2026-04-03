@@ -154,8 +154,12 @@ export class Agent {
     await core.init();
 
     const renderer = new AgentRenderer(core, container);
-    renderer.balloon.onSpeak = (text: string, charIndex: number) => {
-      core.emit("speak", { text, charIndex });
+    renderer.balloon.onSpeak = (
+      text: string,
+      charIndex: number,
+      rate: number,
+    ) => {
+      core.emit("speak", { text, charIndex, rate });
     };
 
     const agent = new Agent(core, renderer, container);
@@ -540,6 +544,7 @@ export class Agent {
         this.core.animationManager.isExitingFlag = true;
       }
       this.renderer.balloon.close();
+      this.core.clear();
     }
   }
 

@@ -10,6 +10,7 @@ export class DebugPanel {
   private dashAnimState: HTMLElement;
   private dashAnim: HTMLElement;
   private dashFrame: HTMLElement;
+  private dashMouth: HTMLElement;
   private dashLevel: HTMLElement;
   private dashNextTick: HTMLElement;
   private dashQueue: HTMLElement;
@@ -26,6 +27,7 @@ export class DebugPanel {
     this.dashAnimState = document.getElementById("dash-anim-state")!;
     this.dashAnim = document.getElementById("dash-anim")!;
     this.dashFrame = document.getElementById("dash-frame")!;
+    this.dashMouth = document.getElementById("dash-mouth")!;
     this.dashLevel = document.getElementById("dash-level")!;
     this.dashNextTick = document.getElementById("dash-next-tick")!;
     this.dashQueue = document.getElementById("dash-queue")!;
@@ -49,6 +51,7 @@ export class DebugPanel {
     this.dashAnimState.textContent = "-";
     this.dashAnim.textContent = "-";
     this.dashFrame.textContent = "-";
+    this.dashMouth.textContent = "-";
     this.dashLevel.textContent = "-";
     this.dashNextTick.textContent = "-";
     this.dashQueue.textContent = "-";
@@ -66,6 +69,7 @@ export class DebugPanel {
       this.dashAnimState.textContent = agent.animationManager.playbackState;
       this.dashAnim.textContent = agent.animationManager.currentAnimationName || "-";
       this.dashFrame.textContent = agent.animationManager.currentFrameIndexValue.toString();
+      this.dashMouth.textContent = agent.animationManager.currentViseme || "-";
       this.dashLevel.textContent = agent.stateManager.idleLevel.toString();
       this.dashNextTick.textContent = (agent.stateManager.timeUntilNextTick / 1000).toFixed(1);
 
