@@ -5,6 +5,34 @@ import {
 import type { SpriteManager } from '../resources/SpriteManager';
 import type { AudioManager } from '../resources/AudioManager';
 import { EventEmitter } from '../base/EventEmitter';
+import { Machine, type MachineConfig } from './StateMachine';
+
+/**
+ * Context for the animation state machine.
+ */
+export interface AnimationContext {
+  /** The currently playing animation definition. */
+  currentAnimation: Animation | null;
+  /** The 0-based index of the current frame in the current animation. */
+  currentFrameIndex: number;
+  /** Timestamp (from performance.now()) when the current frame was first displayed. */
+  lastFrameTime: number;
+  /** A reference to the last valid (non-null) frame rendered, used as a buffer during logic frames. */
+  lastRenderedFrame: FrameDefinition | null;
+  /** Whether the current animation should loop back to the beginning instead of finishing. */
+  isLooping: boolean;
+  /** Internal promise controls for the currently playing animation. */
+  animationPromise: { resolve: (val: boolean) => void; reject: (err: any) => void } | null;
+}
+
+/**
+ * Events that the AnimationManager state machine can process.
+ */
+export type AnimationEvent =
+  | { type: 'PLAY'; animation: Animation; useExitBranch?: boolean; loop?: boolean }
+  | { type: 'TICK'; currentTime: number }
+  | { type: 'INTERRUPT' }
+  | { type: 'STOP' };
 
 /**
  * AnimationManager class for handling low-level frame timing, branching, and sound synchronization.
@@ -15,20 +43,8 @@ export class AnimationManager extends EventEmitter<any> {
   private audioManager: AudioManager;
   /** Dictionary of all available animations for this character. */
   private animations: Record<string, Animation>;
-  /** The currently playing animation. */
-  private currentAnimation: Animation | null = null;
-  /** The 0-based index of the current frame in the current animation. */
-  private currentFrameIndex: number = 0;
-  /** Timestamp (from performance.now()) when the current frame was first displayed. */
-  private lastFrameTime: number = 0;
-  /** A reference to the last valid (non-null) frame rendered, used as a buffer during logic frames. */
-  private lastRenderedFrame: FrameDefinition | null = null;
-  /** Whether the current animation is in the process of exiting via an exit branch. */
-  private _isExiting: boolean = false;
-  /** Whether the current animation should loop back to the beginning instead of finishing. */
-  private isLooping: boolean = false;
-  /** Internal promise controls for the currently playing animation. */
-  private animationPromise: { resolve: (val: boolean) => void; reject: (err: any) => void } | null = null;
+  /** Internal state machine for playback logic. */
+  private machine: Machine<AnimationContext, AnimationEvent>;
   /** The promise for the active animation playback. */
   private activePromise: Promise<boolean> | null = null;
   /** Default scaling factor (usually overwritten by the Agent's options). */
@@ -38,22 +54,19 @@ export class AnimationManager extends EventEmitter<any> {
    * The name of the animation currently being played.
    */
   public get currentAnimationName(): string {
-    return this.currentAnimation?.name || '';
+    return this.machine.context.currentAnimation?.name || '';
   }
 
   /**
    * Whether the manager is currently in the process of exiting an animation.
    */
   public get isExitingFlag(): boolean {
-    return this._isExiting;
+    return this.machine.state === 'Exiting';
   }
 
   public set isExitingFlag(value: boolean) {
-    this._isExiting = value;
-
-    // When we start exiting, we stop looping
-    if (value) {
-      this.isLooping = false;
+    if (value && this.machine.state === 'Playing') {
+      this.machine.send({ type: 'INTERRUPT' });
     }
   }
 
@@ -61,7 +74,14 @@ export class AnimationManager extends EventEmitter<any> {
    * The index of the frame currently being processed.
    */
   public get currentFrameIndexValue(): number {
-    return this.currentFrameIndex;
+    return this.machine.context.currentFrameIndex;
+  }
+
+  /**
+   * The current playback state of the manager (Idle, Playing, or Exiting).
+   */
+  public get playbackState(): string {
+    return this.machine.state;
   }
 
   /**
@@ -72,12 +92,138 @@ export class AnimationManager extends EventEmitter<any> {
   constructor(
     spriteManager: SpriteManager,
     audioManager: AudioManager,
-    animations: Record<string, Animation>
+    animations: Record<string, Animation>,
   ) {
     super();
     this.spriteManager = spriteManager;
     this.audioManager = audioManager;
     this.animations = animations;
+
+    const machineConfig: MachineConfig<AnimationContext, AnimationEvent> = {
+      initial: 'Idle',
+      context: {
+        currentAnimation: null,
+        currentFrameIndex: 0,
+        lastFrameTime: 0,
+        lastRenderedFrame: null,
+        isLooping: false,
+        animationPromise: null,
+      },
+      states: {
+        Idle: {
+          on: {
+            PLAY: [
+              { target: 'Exiting', cond: 'shouldStartExiting', actions: ['setupAnimation'] },
+              { target: 'Playing', actions: ['setupAnimation'] },
+            ],
+          },
+        },
+        Playing: {
+          on: {
+            TICK: { actions: ['processTick'] },
+            INTERRUPT: 'Exiting',
+            STOP: 'Idle',
+            PLAY: [
+              { target: 'Exiting', cond: 'shouldStartExiting', actions: ['setupAnimation'] },
+              { target: 'Playing', actions: ['setupAnimation'] },
+            ],
+          },
+        },
+        Exiting: {
+          on: {
+            TICK: { actions: ['processTick'] },
+            STOP: 'Idle',
+            PLAY: [
+              { target: 'Exiting', cond: 'shouldStartExiting', actions: ['setupAnimation'] },
+              { target: 'Playing', actions: ['setupAnimation'] },
+            ],
+          },
+        },
+      },
+    };
+
+    this.machine = new Machine(machineConfig, {
+      guards: {
+        shouldStartExiting: (_, event) => event.type === 'PLAY' && !!event.useExitBranch,
+      },
+      actions: {
+        setupAnimation: (ctx, event) => {
+          if (event.type !== 'PLAY') return;
+
+          const previousAnimation = ctx.currentAnimation?.name || '';
+          ctx.currentAnimation = event.animation;
+          ctx.currentFrameIndex = 0;
+          ctx.lastFrameTime = performance.now();
+          ctx.isLooping = !!event.loop;
+
+          if (previousAnimation && previousAnimation !== event.animation.name) {
+            this.emit('animationCompleted', previousAnimation);
+          }
+
+          // Play sound for the first frame if it has one
+          this.checkAndPlaySound(ctx.currentAnimation.frames[0]);
+        },
+        processTick: (ctx, event) => {
+          if (event.type !== 'TICK') return;
+          this.runTick(ctx, event.currentTime);
+        },
+      },
+    });
+  }
+
+  /**
+   * Internal logic for processing an animation tick, separated from the machine action for clarity.
+   */
+  private runTick(ctx: AnimationContext, currentTime: number): void {
+    if (!ctx.currentAnimation || ctx.currentAnimation.frames.length === 0) return;
+
+    let safetyCounter = 0;
+    const MAX_NULL_FRAMES = 100;
+
+    while (ctx.currentAnimation && safetyCounter <= MAX_NULL_FRAMES) {
+      const currentFrame = ctx.currentAnimation.frames[ctx.currentFrameIndex];
+
+      if (currentFrame.duration === 0) {
+        const { index: nextIndex, isBranch } = this.getNextFrameDetails(ctx, currentFrame);
+
+        if (!isBranch && ctx.currentAnimation?.transitionType === 1 && this.machine.state !== 'Exiting') {
+          break;
+        }
+
+        if (this.checkAnimationCompletion(ctx, currentFrame, nextIndex, isBranch)) return;
+
+        ctx.currentFrameIndex = nextIndex;
+        ctx.lastFrameTime = currentTime;
+        this.emit('frameChanged');
+        this.checkAndPlaySound(ctx.currentAnimation.frames[ctx.currentFrameIndex]);
+
+        safetyCounter++;
+        if (safetyCounter > MAX_NULL_FRAMES) {
+          console.warn(
+            `MSAgentJS: Infinite loop detected in animation '${ctx.currentAnimation?.name}'. Safety break at frame ${ctx.currentFrameIndex}.`,
+          );
+          break;
+        }
+        continue;
+      }
+
+      if (currentTime - ctx.lastFrameTime >= currentFrame.duration * 10) {
+        const { index: nextIndex, isBranch } = this.getNextFrameDetails(ctx, currentFrame);
+
+        if (this.checkAnimationCompletion(ctx, currentFrame, nextIndex, isBranch)) return;
+
+        ctx.currentFrameIndex = nextIndex;
+        ctx.lastFrameTime = currentTime;
+
+        this.emit('frameChanged');
+        this.checkAndPlaySound(ctx.currentAnimation.frames[ctx.currentFrameIndex]);
+
+        safetyCounter++;
+        continue;
+      }
+
+      break;
+    }
   }
 
   /**
@@ -85,13 +231,14 @@ export class AnimationManager extends EventEmitter<any> {
    * Handles "null frames" (duration 0) by returning the last valid rendered frame instead.
    */
   public get currentFrame(): FrameDefinition | null {
-    if (!this.currentAnimation || this.currentAnimation.frames.length === 0) {
-      return this.lastRenderedFrame;
+    const ctx = this.machine.context;
+    if (!ctx.currentAnimation || ctx.currentAnimation.frames.length === 0) {
+      return ctx.lastRenderedFrame;
     }
-    const frame = this.currentAnimation.frames[this.currentFrameIndex];
+    const frame = ctx.currentAnimation.frames[ctx.currentFrameIndex];
     // Don't display frames with duration 0 (logic frames); stick to the last valid one.
     if (frame.duration === 0) {
-      return this.lastRenderedFrame;
+      return ctx.lastRenderedFrame;
     }
     return frame;
   }
@@ -100,7 +247,7 @@ export class AnimationManager extends EventEmitter<any> {
    * Whether an animation is currently active and updating.
    */
   public get isAnimating(): boolean {
-    return this.currentAnimation !== null;
+    return this.machine.state !== 'Idle';
   }
 
   /**
@@ -114,30 +261,14 @@ export class AnimationManager extends EventEmitter<any> {
   public setAnimation(
     animationName: string,
     useExitBranch: boolean = false,
-    loop: boolean = false
+    loop: boolean = false,
   ): void {
     const animation = this.animations[animationName];
     if (animation) {
-      const previousAnimation = this.currentAnimation?.name || '';
-
-      this.currentAnimation = animation;
-      this.currentFrameIndex = 0;
-      this.lastFrameTime = performance.now();
-      // Reset isExiting directly but call the setter to trigger immediate exit jumps if needed
-      this._isExiting = false;
-      this.isLooping = loop;
-
-      if (previousAnimation && previousAnimation !== animationName) {
-        this.emit('animationCompleted', previousAnimation);
-      }
-
-      this.isExitingFlag = useExitBranch;
-
-      // Play sound for the first frame if it has one
-      this.checkAndPlaySound(this.currentAnimation.frames[0]);
-
-      // Use update(now) to handle potential null frames at the start
-      this.update(this.lastFrameTime);
+      this.machine.send({ type: 'PLAY', animation, useExitBranch, loop });
+      this.update(this.machine.context.lastFrameTime);
+    } else {
+      this.machine.send({ type: 'STOP' });
     }
   }
 
@@ -152,10 +283,10 @@ export class AnimationManager extends EventEmitter<any> {
   public async playAnimation(
     animationName: string,
     useExitBranch: boolean = false,
-    loop: boolean = false
+    loop: boolean = false,
   ): Promise<boolean> {
     this.activePromise = new Promise((resolve, reject) => {
-      this.animationPromise = { resolve, reject };
+      this.machine.context.animationPromise = { resolve, reject };
       this.setAnimation(animationName, useExitBranch, loop);
     });
     return this.activePromise;
@@ -169,80 +300,7 @@ export class AnimationManager extends EventEmitter<any> {
    * @param currentTime - The current performance timestamp.
    */
   public update(currentTime: number = performance.now()): void {
-    if (!this.currentAnimation || this.currentAnimation.frames.length === 0)
-      return;
-
-    // If we've completed an exit animation, don't update further
-    if (this._isExiting && !this.animationPromise) return;
-
-    let safetyCounter = 0;
-    const MAX_NULL_FRAMES = 100;
-
-    // We use a while loop to handle sequential null-duration (logic) frames instantly
-    while (this.currentAnimation && safetyCounter <= MAX_NULL_FRAMES) {
-      const currentFrame = this.currentAnimation.frames[this.currentFrameIndex];
-
-      // If it's a null frame (duration 0), handle it immediately and move to next
-      if (currentFrame.duration === 0) {
-        const { index: nextIndex, isBranch } =
-          this.getNextFrameDetails(currentFrame);
-
-        // If it's a 0-duration frame, we only proceed if a branch was taken,
-        // or if we are in transition type 1 (Microsoft Agent standard) and NOT exiting.
-        // If transition type 1 is used, we pause on 0-duration frames to wait for an exit.
-        if (
-          !isBranch &&
-          this.currentAnimation?.transitionType === 1 &&
-          !this._isExiting
-        ) {
-          break;
-        }
-
-        if (this.checkAnimationCompletion(currentFrame, nextIndex, isBranch))
-          return;
-
-        this.currentFrameIndex = nextIndex;
-        this.lastFrameTime = currentTime;
-        this.emit('frameChanged');
-        this.checkAndPlaySound(
-          this.currentAnimation.frames[this.currentFrameIndex],
-        );
-
-        safetyCounter++;
-        if (safetyCounter > MAX_NULL_FRAMES) {
-          console.warn(
-            `MSAgentJS: Infinite loop detected in animation '${this.currentAnimation?.name}'. Safety break at frame ${this.currentFrameIndex}.`,
-          );
-          break;
-        }
-        continue;
-      }
-
-      // If it's a normal frame, check if its display duration (in units of 10ms) has elapsed
-      if (currentTime - this.lastFrameTime >= currentFrame.duration * 10) {
-        const { index: nextIndex, isBranch } =
-          this.getNextFrameDetails(currentFrame);
-
-        if (this.checkAnimationCompletion(currentFrame, nextIndex, isBranch)) {
-          return;
-        }
-
-        this.currentFrameIndex = nextIndex;
-        this.lastFrameTime = currentTime;
-
-        this.emit('frameChanged');
-        this.checkAndPlaySound(
-          this.currentAnimation.frames[this.currentFrameIndex],
-        );
-
-        // Continue the loop to potentially handle a null frame that we just moved into
-        safetyCounter++;
-        continue;
-      }
-
-      // If we reach here, it's a normal frame but not yet time to advance
-      break;
-    }
+    this.machine.send({ type: 'TICK', currentTime });
   }
 
   /**
@@ -250,14 +308,15 @@ export class AnimationManager extends EventEmitter<any> {
    * Completions occur either at the end of the frame sequence or when an exit branch loops back.
    */
   private checkAnimationCompletion(
+    ctx: AnimationContext,
     currentFrame: FrameDefinition,
     nextFrameIndex: number,
     isBranch: boolean,
   ): boolean {
-    if (this._isExiting) {
+    if (this.machine.state === 'Exiting') {
       // If we are exiting and reached the end (either by natural end or exit branch loop back to frame 0)
       if (nextFrameIndex === 0) {
-        this.completeAnimation();
+        this.completeAnimation(ctx);
         return true;
       }
     } else {
@@ -265,22 +324,22 @@ export class AnimationManager extends EventEmitter<any> {
       // In Microsoft Agent transition type 1, these act as "terminal" pause frames.
       // If we reach one during normal sequential playback, we force an exit.
       if (
-        this.currentAnimation?.transitionType === 1 &&
+        ctx.currentAnimation?.transitionType === 1 &&
         currentFrame.duration === 0 &&
         currentFrame.exitBranch !== undefined &&
         !isBranch
       ) {
-        this.isExitingFlag = true;
+        this.machine.send({ type: 'INTERRUPT' });
         return false;
       }
 
       // Normal completion when we loop back to the first frame sequentially
-      if (!isBranch && nextFrameIndex === 0 && this.animationPromise) {
-        if (this.isLooping) {
+      if (!isBranch && nextFrameIndex === 0 && ctx.animationPromise) {
+        if (ctx.isLooping) {
           // Instead of completing, we just loop back (which nextFrameIndex 0 already does)
           return false;
         }
-        this.completeAnimation();
+        this.completeAnimation(ctx);
         return true;
       }
     }
@@ -290,26 +349,27 @@ export class AnimationManager extends EventEmitter<any> {
   /**
    * Determines the next frame index to jump to, considering exit branches and probabilities.
    */
-  private getNextFrameDetails(currentFrame: FrameDefinition): {
+  private getNextFrameDetails(
+    ctx: AnimationContext,
+    currentFrame: FrameDefinition,
+  ): {
     index: number;
     isBranch: boolean;
   } {
     // Sequential next index calculation.
-    const sequentialNext =
-      (this.currentFrameIndex + 1) % this.currentAnimation!.frames.length;
+    const sequentialNext = (ctx.currentFrameIndex + 1) % ctx.currentAnimation!.frames.length;
+
+    const isExiting = this.machine.state === 'Exiting';
 
     // If exiting, prioritize the exit branch if it exists
-    if (this._isExiting) {
+    if (isExiting) {
       if (currentFrame.exitBranch !== undefined) {
         return { index: currentFrame.exitBranch - 1, isBranch: true };
       }
       // If the current frame has no exit branch but is a 0-duration frame (logic frame),
       // fallback to the exit branch of the last frame that was actually rendered.
-      if (
-        currentFrame.duration === 0 &&
-        this.lastRenderedFrame?.exitBranch !== undefined
-      ) {
-        return { index: this.lastRenderedFrame.exitBranch - 1, isBranch: true };
+      if (currentFrame.duration === 0 && ctx.lastRenderedFrame?.exitBranch !== undefined) {
+        return { index: ctx.lastRenderedFrame.exitBranch - 1, isBranch: true };
       }
     }
 
@@ -317,24 +377,19 @@ export class AnimationManager extends EventEmitter<any> {
     // (frame 0). If no forward branches exist, we ignore branching to break loops.
     const branching = currentFrame.branching || [];
     const useBranchingWhileExiting =
-      this._isExiting &&
-      branching.some(
-        (b) => b.branchTo - 1 > this.currentFrameIndex || b.branchTo - 1 === 0,
-      );
+      isExiting &&
+      branching.some((b) => b.branchTo - 1 > ctx.currentFrameIndex || b.branchTo - 1 === 0);
 
-    if (
-      branching.length > 0 &&
-      (!this._isExiting || useBranchingWhileExiting)
-    ) {
+    if (branching.length > 0 && (!isExiting || useBranchingWhileExiting)) {
       const randomValue = Math.floor(Math.random() * 100);
       let cumulative = 0;
 
       for (const branch of branching) {
         // If exiting, only consider forward-leading branches
-        if (this._isExiting) {
+        if (isExiting) {
           const isForward =
-            branch.branchTo - 1 > this.currentFrameIndex ||
-            (branch.branchTo - 1 === 0 && this.currentFrameIndex > 0);
+            branch.branchTo - 1 > ctx.currentFrameIndex ||
+            (branch.branchTo - 1 === 0 && ctx.currentFrameIndex > 0);
           if (!isForward) continue;
         }
 
@@ -361,7 +416,7 @@ export class AnimationManager extends EventEmitter<any> {
   public async interruptAndPlayAnimation(
     newAnimationName: string,
     useExitBranch: boolean = false,
-    loop: boolean = false
+    loop: boolean = false,
   ): Promise<boolean> {
     if (!this.isAnimating) {
       return this.playAnimation(newAnimationName, useExitBranch, loop);
@@ -371,7 +426,7 @@ export class AnimationManager extends EventEmitter<any> {
     // create one so we can await the exit sequence.
     if (!this.activePromise) {
       this.activePromise = new Promise((resolve, reject) => {
-        this.animationPromise = { resolve, reject };
+        this.machine.context.animationPromise = { resolve, reject };
       });
     }
 
@@ -390,14 +445,15 @@ export class AnimationManager extends EventEmitter<any> {
   /**
    * Marks the current animation as finished and resolves any pending promises.
    */
-  private completeAnimation(): void {
-    const completedAnimation = this.currentAnimation?.name || '';
-    if (this.animationPromise) {
-      this.animationPromise.resolve(true);
-      this.animationPromise = null;
+  private completeAnimation(ctx: AnimationContext): void {
+    const completedAnimation = ctx.currentAnimation?.name || '';
+    if (ctx.animationPromise) {
+      ctx.animationPromise.resolve(true);
+      ctx.animationPromise = null;
       this.activePromise = null;
     }
-    this.currentAnimation = null;
+    ctx.currentAnimation = null;
+    this.machine.send({ type: 'STOP' });
     this.emit('animationCompleted', completedAnimation);
   }
 
@@ -406,7 +462,7 @@ export class AnimationManager extends EventEmitter<any> {
    */
   private checkAndPlaySound(frame: FrameDefinition | null): void {
     if (frame && frame.duration > 0) {
-      this.lastRenderedFrame = frame;
+      this.machine.context.lastRenderedFrame = frame;
     }
     if (frame?.soundEffect) {
       this.audioManager.playFrameSound(frame.soundEffect);
