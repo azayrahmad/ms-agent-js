@@ -76,21 +76,35 @@ export class ActionManager {
       const duration = (distance / speed) * 1000;
       const startTime = performance.now();
       const direction4 = this.getDirection(x, y, 4);
-      const moveAnim = `Moving${direction4}`;
-      let activeAnim = "";
+      const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
 
-      if (this.core.definition.animations[moveAnim]) {
+      let activeAnim = "";
+      let isState = false;
+
+      const moveState = `Moving${direction4}`;
+      const moveAnim = `Moving${direction4}`;
+      const moveAnimAlt = `Move${direction4}`;
+      const lookAnim = `Look${direction8}`;
+
+      if (this.core.definition.states[moveState]) {
+        activeAnim = moveState;
+        isState = true;
+      } else if (this.core.definition.animations[moveAnim]) {
         activeAnim = moveAnim;
-      } else {
-        const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
-        const lookAnim = `Look${direction8}`;
-        if (this.core.definition.animations[lookAnim]) {
-          activeAnim = lookAnim;
-        }
+      } else if (this.core.definition.animations[moveAnimAlt]) {
+        activeAnim = moveAnimAlt;
+      } else if (this.core.definition.animations[lookAnim]) {
+        activeAnim = lookAnim;
       }
 
       if (activeAnim) {
-        this.core.stateManager.playAnimation(activeAnim, "Moving");
+        if (isState) {
+          this.core.stateManager.setState(activeAnim).catch(console.error);
+        } else {
+          this.core.stateManager
+            .playAnimation(activeAnim, "Moving")
+            .catch(console.error);
+        }
       }
 
       return new Promise<void>((resolve) => {
