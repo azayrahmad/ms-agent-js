@@ -1,10 +1,10 @@
 import {
   type Character,
-  type Balloon,
   type Animation,
   type FrameDefinition,
   type ImageDefinition,
   type BranchingDefinition,
+  type MouthDefinition,
   type State,
   type Info,
   CharacterStyle,
@@ -17,17 +17,38 @@ import {
  */
 const LCID_MAP: Record<string, string> = {
   "0x0409": "en-US", // English - United States
+  "0x0009": "en-US", // English - Primary
   "0x0809": "en-GB", // English - United Kingdom
   "0x040c": "fr-FR", // French - France
   "0x0407": "de-DE", // German - Germany
   "0x0410": "it-IT", // Italian - Italy
   "0x040a": "es-ES", // Spanish - Spain
+  "0x0c0a": "es-ES", // Spanish - Spain (Modern Sort)
   "0x0411": "ja-JP", // Japanese - Japan
   "0x0412": "ko-KR", // Korean - Korea
   "0x0404": "zh-TW", // Chinese - Taiwan
   "0x0804": "zh-CN", // Chinese - China
   "0x0416": "pt-BR", // Portuguese - Brazil
+  "0x0816": "pt-PT", // Portuguese - Portugal
   "0x0419": "ru-RU", // Russian - Russia
+  "0x0401": "ar-SA", // Arabic - Saudi Arabia
+  "0x040d": "he-IL", // Hebrew - Israel
+  "0x041e": "th-TH", // Thai - Thailand
+  "0x042d": "eu-ES", // Basque - Basque
+  "0x041a": "hr-HR", // Croatian - Croatia
+  "0x0405": "cs-CZ", // Czech - Czech Republic
+  "0x0406": "da-DK", // Danish - Denmark
+  "0x0413": "nl-NL", // Dutch - Netherlands
+  "0x040b": "fi-FI", // Finnish - Finland
+  "0x040e": "hu-HU", // Hungarian - Hungary
+  "0x0414": "nb-NO", // Norwegian Bokmål - Norway
+  "0x0415": "pl-PL", // Polish - Poland
+  "0x0418": "ro-RO", // Romanian - Romania
+  "0x041b": "sk-SK", // Slovak - Slovakia
+  "0x0424": "sl-SI", // Slovenian - Slovenia
+  "0x041d": "sv-SE", // Swedish - Sweden
+  "0x041f": "tr-TR", // Turkish - Turkey
+  "0x0408": "el-GR", // Greek - Greece
 };
 
 /**
@@ -36,7 +57,17 @@ const LCID_MAP: Record<string, string> = {
  */
 export class CharacterParser {
   /** The current agent definition being built during the parsing process. */
-  private currentAgent: Partial<AgentCharacterDefinition> = {
+  private currentAgent: AgentCharacterDefinition = {
+    character: {
+      infos: [],
+      guid: "",
+      width: 0,
+      height: 0,
+      transparency: 0,
+      defaultFrameDuration: 0,
+      style: 0,
+      colorTable: "",
+    },
     animations: {},
     states: {},
     balloon: {
@@ -88,63 +119,60 @@ export class CharacterParser {
    * @returns The parsed AgentCharacterDefinition.
    */
   public parse(content: string): AgentCharacterDefinition {
-    const lines = content.split(/\r?\n/);
+    // Strip BOM if present
+    if (content.charCodeAt(0) === 0xfeff) {
+      content = content.slice(1);
+    }
+
+    const lines = content.split(/\r\n|\r|\n/);
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
+      const lowerLine = line.toLowerCase();
 
       // Skip empty lines and comments
       if (!line || line.startsWith("//")) {
         continue;
       }
 
-      if (line.startsWith("DefineCharacter")) {
+      if (lowerLine.startsWith("definecharacter")) {
         i = this.parseCharacterSection(lines, i);
         continue;
       }
-      if (line.startsWith("DefineBalloon")) {
+      if (lowerLine.startsWith("defineballoon")) {
         i = this.parseBalloonSection(lines, i);
         continue;
       }
-      if (line.startsWith("DefineAnimation")) {
+      if (lowerLine.startsWith("defineanimation")) {
         i = this.parseAnimationSection(lines, i);
         continue;
       }
-      if (line.startsWith("DefineState")) {
+      if (lowerLine.startsWith("definestate")) {
         i = this.parseStateSection(lines, i);
         continue;
       }
-
-      if (line === "EndCharacter") {
-        break;
-      }
     }
 
-    return this.currentAgent as AgentCharacterDefinition;
+    return this.currentAgent;
   }
 
   /**
    * Parses the main character configuration section.
    */
   private parseCharacterSection(lines: string[], i: number): number {
-    this.currentCharacter = {
-      infos: [],
-      guid: "",
-      width: 0,
-      height: 0,
-      transparency: 0,
-      defaultFrameDuration: 0,
-      style: CharacterStyle.None,
-      colorTable: "",
-    };
+    this.currentCharacter = this.currentAgent.character;
     i++;
 
-    while (i < lines.length && lines[i].trim() !== "EndCharacter") {
+    while (
+      i < lines.length &&
+      lines[i].trim().toLowerCase() !== "endcharacter"
+    ) {
       const line = lines[i].trim();
-      if (line.startsWith("DefineInfo")) {
+      const lowerLine = line.toLowerCase();
+      if (lowerLine.startsWith("defineinfo")) {
         i = this.parseCharacterInfo(lines, i);
       }
 
-      if (line === "EndInfo") {
+      if (lowerLine === "endinfo") {
         if (this.currentLanguageInfo) {
           this.currentCharacter.infos.push(this.currentLanguageInfo);
           this.currentLanguageInfo = null;
@@ -154,7 +182,7 @@ export class CharacterParser {
       // Parse key-value pairs
       const parts = line.split("=");
       if (parts.length >= 2) {
-        const key = parts[0].trim();
+        const key = parts[0].trim().toUpperCase();
         const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
@@ -162,23 +190,44 @@ export class CharacterParser {
             this.currentCharacter.guid = value.replace(/{|}/g, "");
             break;
           }
-          case "Width":
+          case "WIDTH":
             this.currentCharacter.width = parseInt(value, 10);
             break;
-          case "Height":
+          case "HEIGHT":
             this.currentCharacter.height = parseInt(value, 10);
             break;
-          case "Transparency":
+          case "TRANSPARENCY":
             this.currentCharacter.transparency = parseInt(value, 10);
             break;
-          case "DefaultFrameDuration":
+          case "DEFAULTFRAMEDURATION":
             this.currentCharacter.defaultFrameDuration = parseInt(value, 10);
             break;
-          case "Style":
+          case "STYLE":
             this.currentCharacter.style = this.parseStyle(value);
             break;
-          case "ColorTable":
+          case "COLORTABLE":
             this.currentCharacter.colorTable = value.replace(/\\/g, "/");
+            break;
+          case "ICON":
+            this.currentCharacter.icon = value.replace(/\\/g, "/");
+            break;
+          case "TTSENGINEID":
+            this.currentCharacter.ttsEngineID = value.replace(/{|}/g, "");
+            break;
+          case "TTSMODEID":
+            this.currentCharacter.ttsModeID = value.replace(/{|}/g, "");
+            break;
+          case "TTSLANGID":
+            this.currentCharacter.ttsLangID = value;
+            break;
+          case "TTSGENDER":
+            this.currentCharacter.ttsGender = parseInt(value, 10);
+            break;
+          case "TTSAGE":
+            this.currentCharacter.ttsAge = parseInt(value, 10);
+            break;
+          case "TTSSTYLE":
+            this.currentCharacter.ttsStyle = value;
             break;
         }
       }
@@ -209,21 +258,21 @@ export class CharacterParser {
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== "EndInfo") {
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endinfo") {
       const currentLine = lines[i].trim();
       const parts = currentLine.split("=");
       if (parts.length >= 2) {
-        const key = parts[0].trim();
+        const key = parts[0].trim().toUpperCase();
         const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
-          case "Name":
+          case "NAME":
             this.currentLanguageInfo.name = value;
             break;
-          case "Description":
+          case "DESCRIPTION":
             this.currentLanguageInfo.description = value;
             break;
-          case "ExtraData":
+          case "EXTRADATA":
             this.parseExtraData(value, this.currentLanguageInfo);
             break;
         }
@@ -271,14 +320,20 @@ export class CharacterParser {
     for (const part of styleParts) {
       const trimmedPart = part.trim();
       if (trimmedPart === "AXS_VOICE_NONE") style |= CharacterStyle.VoiceNone;
+      else if (trimmedPart === "AXS_VOICE_TTS") style |= CharacterStyle.VoiceTTS;
       else if (trimmedPart === "AXS_BALLOON_ROUNDRECT")
         style |= CharacterStyle.BalloonRoundRect;
-      else if (trimmedPart === "AXS_BALLOON_SIZE_TO_TEXT")
+      else if (
+        trimmedPart === "AXS_BALLOON_SIZE_TO_TEXT" ||
+        trimmedPart === "AXS_BALLOON_SIZETOTEXT"
+      )
         style |= CharacterStyle.BalloonSizeToText;
       else if (trimmedPart === "AXS_BALLOON_AUTO_HIDE")
         style |= CharacterStyle.BalloonAutoHide;
       else if (trimmedPart === "AXS_BALLOON_AUTO_PACE")
         style |= CharacterStyle.BalloonAutoPace;
+      else if (trimmedPart === "AXS_SYSTEM_CHAR")
+        style |= CharacterStyle.SystemChar;
     }
 
     return style;
@@ -288,52 +343,52 @@ export class CharacterParser {
    * Parses the speech balloon configuration section.
    */
   private parseBalloonSection(lines: string[], i: number): number {
-    const balloon: Balloon = {
-      numLines: 0,
-      charsPerLine: 0,
-      fontName: "",
-      fontHeight: 0,
-      foreColor: "00000000",
-      backColor: "00000000",
-      borderColor: "00000000",
-    };
+    const balloon = this.currentAgent.balloon;
     i++;
 
-    while (i < lines.length && lines[i].trim() !== "EndBalloon") {
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endballoon") {
       const line = lines[i].trim();
       const parts = line.split("=");
       if (parts.length >= 2) {
-        const key = parts[0].trim();
+        const key = parts[0].trim().toUpperCase();
         const value = parts.slice(1).join("=").trim();
 
         switch (key) {
-          case "NumLines":
+          case "NUMLINES":
             balloon.numLines = parseInt(value, 10);
             break;
-          case "CharsPerLine":
+          case "CHARSPERLINE":
             balloon.charsPerLine = parseInt(value, 10);
             break;
-          case "FontName":
+          case "FONTNAME":
             balloon.fontName = value.replace(/"/g, "");
             break;
-          case "FontHeight":
+          case "FONTHEIGHT":
             balloon.fontHeight = parseInt(value, 10);
             break;
-          case "ForeColor":
+          case "FORECOLOR":
             balloon.foreColor = value;
             break;
-          case "BackColor":
+          case "BACKCOLOR":
             balloon.backColor = value;
             break;
-          case "BorderColor":
+          case "BORDERCOLOR":
             balloon.borderColor = value;
             break;
+          case "FONTWEIGHT":
+            balloon.fontWeight = parseInt(value, 10);
+            break;
+          case "ITALIC": {
+            const lowerValue = value.toLowerCase();
+            balloon.italic =
+              lowerValue === "1" || lowerValue === "true" || lowerValue === "on";
+            break;
+          }
         }
       }
       i++;
     }
 
-    this.currentAgent.balloon = balloon;
     return i;
   }
 
@@ -342,7 +397,7 @@ export class CharacterParser {
    */
   private parseAnimationSection(lines: string[], i: number): number {
     const line = lines[i].trim();
-    const match = line.match(/DefineAnimation\s+"([^"]+)"/);
+    const match = line.match(/DefineAnimation\s+"([^"]+)"/i);
     if (!match) return i;
 
     this.currentAnimation = {
@@ -352,13 +407,17 @@ export class CharacterParser {
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== "EndAnimation") {
+    while (
+      i < lines.length &&
+      lines[i].trim().toLowerCase() !== "endanimation"
+    ) {
       const currentLine = lines[i].trim();
+      const lowerLine = currentLine.toLowerCase();
 
-      if (currentLine.startsWith("TransitionType")) {
+      if (lowerLine.startsWith("transitiontype")) {
         const value = currentLine.split("=")[1].trim();
         this.currentAnimation.transitionType = parseInt(value, 10);
-      } else if (currentLine.startsWith("DefineFrame")) {
+      } else if (lowerLine.startsWith("defineframe")) {
         i = this.parseFrameSection(lines, i);
       }
 
@@ -382,21 +441,24 @@ export class CharacterParser {
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== "EndFrame") {
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endframe") {
       const line = lines[i].trim();
+      const lowerLine = line.toLowerCase();
 
-      if (line.startsWith("Duration")) {
+      if (lowerLine.startsWith("duration")) {
         const value = line.split("=")[1].trim();
         this.currentFrame.duration = parseInt(value, 10);
-      } else if (line.startsWith("ExitBranch")) {
+      } else if (lowerLine.startsWith("exitbranch")) {
         const value = line.split("=")[1].trim();
         this.currentFrame.exitBranch = parseInt(value, 10);
-      } else if (line.startsWith("SoundEffect")) {
+      } else if (lowerLine.startsWith("soundeffect")) {
         const value = line.split("=")[1].trim().replace(/"/g, "");
-        this.currentFrame.soundEffect = value;
-      } else if (line.startsWith("DefineImage")) {
+        this.currentFrame.soundEffect = value.replace(/\\/g, "/");
+      } else if (lowerLine.startsWith("defineimage")) {
         i = this.parseImageSection(lines, i);
-      } else if (line.startsWith("DefineBranching")) {
+      } else if (lowerLine.startsWith("definemouth")) {
+        i = this.parseMouthSection(lines, i);
+      } else if (lowerLine.startsWith("definebranching")) {
         i = this.parseBranchingSection(lines, i);
       }
 
@@ -405,6 +467,52 @@ export class CharacterParser {
 
     if (this.currentFrame && this.currentAnimation) {
       this.currentAnimation.frames.push(this.currentFrame);
+    }
+    return i;
+  }
+
+  /**
+   * Parses a mouth definition within a frame.
+   */
+  private parseMouthSection(lines: string[], i: number): number {
+    const mouth: MouthDefinition = {
+      type: "",
+      filename: "",
+      offsetX: 0,
+      offsetY: 0,
+    };
+    i++;
+
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endmouth") {
+      const line = lines[i].trim();
+      const parts = line.split("=");
+      if (parts.length >= 2) {
+        const key = parts[0].trim().toUpperCase();
+        const value = parts.slice(1).join("=").trim().replace(/"/g, "");
+
+        switch (key) {
+          case "TYPE":
+            mouth.type = value;
+            break;
+          case "FILENAME":
+            mouth.filename = value.replace(/\\/g, "/");
+            break;
+          case "OFFSETX":
+            mouth.offsetX = parseInt(value, 10);
+            break;
+          case "OFFSETY":
+            mouth.offsetY = parseInt(value, 10);
+            break;
+        }
+      }
+      i++;
+    }
+
+    if (this.currentFrame) {
+      if (!this.currentFrame.mouths) {
+        this.currentFrame.mouths = [];
+      }
+      this.currentFrame.mouths.push(mouth);
     }
     return i;
   }
@@ -420,21 +528,21 @@ export class CharacterParser {
     };
     i++;
 
-    while (i < lines.length && lines[i].trim() !== "EndImage") {
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endimage") {
       const line = lines[i].trim();
       const parts = line.split("=");
       if (parts.length >= 2) {
-        const key = parts[0].trim();
+        const key = parts[0].trim().toUpperCase();
         const value = parts.slice(1).join("=").trim().replace(/"/g, "");
 
         switch (key) {
-          case "Filename":
+          case "FILENAME":
             image.filename = value.replace(/\\/g, "/");
             break;
-          case "OffsetX":
+          case "OFFSETX":
             image.offsetX = parseInt(value, 10);
             break;
-          case "OffsetY":
+          case "OFFSETY":
             image.offsetY = parseInt(value, 10);
             break;
         }
@@ -456,18 +564,21 @@ export class CharacterParser {
     let branching: Partial<BranchingDefinition> = {};
     i++;
 
-    while (i < lines.length && lines[i].trim() !== "EndBranching") {
+    while (
+      i < lines.length &&
+      lines[i].trim().toLowerCase() !== "endbranching"
+    ) {
       const line = lines[i].trim();
       const parts = line.split("=");
       if (parts.length >= 2) {
-        const key = parts[0].trim();
+        const key = parts[0].trim().toUpperCase();
         const value = parseInt(parts.slice(1).join("=").trim(), 10);
 
         switch (key) {
-          case "BranchTo":
+          case "BRANCHTO":
             branching.branchTo = value;
             break;
-          case "Probability":
+          case "PROBABILITY":
             branching.probability = value;
             break;
         }
@@ -493,7 +604,7 @@ export class CharacterParser {
    */
   private parseStateSection(lines: string[], i: number): number {
     const line = lines[i].trim();
-    const match = line.match(/DefineState\s+"([^"]+)"/);
+    const match = line.match(/DefineState\s+"([^"]+)"/i);
     if (!match) return i;
 
     this.currentState = {
@@ -502,10 +613,10 @@ export class CharacterParser {
     };
 
     i++;
-    while (i < lines.length && lines[i].trim() !== "EndState") {
+    while (i < lines.length && lines[i].trim().toLowerCase() !== "endstate") {
       const currentLine = lines[i].trim();
       const parts = currentLine.split("=");
-      if (parts.length >= 2 && parts[0].trim() === "Animation") {
+      if (parts.length >= 2 && parts[0].trim().toLowerCase() === "animation") {
         this.currentState.animations.push(
           parts.slice(1).join("=").trim().replace(/"/g, ""),
         );

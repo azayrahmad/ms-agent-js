@@ -3,6 +3,7 @@ import { type AgentEvents } from "./base/events";
 import { RequestQueue } from "./behavior/RequestQueue";
 import { AnimationManager } from "./behavior/AnimationManager";
 import { StateManager } from "./behavior/StateManager";
+import { VisemeManager } from "./behavior/VisemeManager";
 import { SpriteManager } from "./resources/SpriteManager";
 import { AudioManager } from "./resources/AudioManager";
 import type { AgentCharacterDefinition, AgentOptions } from "./base/types";
@@ -26,6 +27,8 @@ export class AgentCore extends EventEmitter<AgentEvents> {
   public readonly spriteManager: SpriteManager;
   /** Manager responsible for playing sound effects. */
   public readonly audioManager: AudioManager;
+  /** Manager responsible for lip-syncing and mouth shapes. */
+  public readonly visemeManager: VisemeManager;
 
   /**
    * @param definition - The parsed character definition.
@@ -75,6 +78,8 @@ export class AgentCore extends EventEmitter<AgentEvents> {
     this.requestQueue = new RequestQueue();
     this.stateManager.setRequestQueue(this.requestQueue);
 
+    this.visemeManager = new VisemeManager();
+
     this.setupEvents();
   }
 
@@ -86,6 +91,15 @@ export class AgentCore extends EventEmitter<AgentEvents> {
   private setupEvents() {
     this.animationManager.on("frameChanged", () => {
       this.emit("frameChanged");
+    });
+
+    this.on("speak", (payload) => {
+      // Balloon emits word-level events when possible
+      this.visemeManager.scheduleWord(
+        payload.word,
+        performance.now(),
+        payload.rate * this.options.speed,
+      );
     });
   }
 
@@ -109,6 +123,9 @@ export class AgentCore extends EventEmitter<AgentEvents> {
    * @param deltaTime - Time elapsed since the last update in milliseconds.
    */
   public update(currentTime: number, deltaTime: number) {
+    const viseme = this.visemeManager.getVisemeAt(currentTime);
+    this.animationManager.setViseme(viseme);
+
     this.animationManager.update(currentTime);
 
     if (!this.isUpdating) {
