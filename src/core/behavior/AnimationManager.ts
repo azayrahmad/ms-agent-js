@@ -25,6 +25,14 @@ export interface AnimationContext {
   animationPromise: { resolve: (val: boolean) => void; reject: (err: any) => void } | null;
   /** Set of frame indices visited during the current exit sequence to detect and break infinite loops. */
   exitHistory: Set<number>;
+  /** The base name of a transition-type 2 animation sequence. */
+  baseAnimationName?: string;
+  /** The associated "Continued" animation for type 2 sequences. */
+  continuedAnimationName?: string;
+  /** The associated "Return" animation for type 2 sequences. */
+  returnAnimationName?: string;
+  /** Whether we are currently playing the "Return" animation of a type 2 sequence. */
+  isProcessingReturn?: boolean;
 }
 
 /**
@@ -155,12 +163,40 @@ export class AnimationManager extends EventEmitter<any> {
         setupAnimation: (ctx, event) => {
           if (event.type !== 'PLAY') return;
 
+          const isSequenceTransition =
+            event.animation.name === ctx.continuedAnimationName ||
+            event.animation.name === ctx.returnAnimationName;
+
+          if (!isSequenceTransition) {
+            ctx.baseAnimationName = undefined;
+            ctx.continuedAnimationName = undefined;
+            ctx.returnAnimationName = undefined;
+            ctx.isProcessingReturn = false;
+          }
+
           const previousAnimation = ctx.currentAnimation?.name || '';
           ctx.currentAnimation = event.animation;
           ctx.currentFrameIndex = 0;
           ctx.lastFrameTime = performance.now();
           ctx.isLooping = !!event.loop;
           ctx.exitHistory.clear();
+
+          // Handle transitionType 2 (Return mechanism)
+          if (
+            event.animation.transitionType === 2 &&
+            !ctx.baseAnimationName &&
+            !ctx.isProcessingReturn
+          ) {
+            const baseName = event.animation.name;
+            const continuedName = this.findAnimationCaseInsensitive(baseName + 'Continued');
+            const returnName = this.findAnimationCaseInsensitive(baseName + 'Return');
+
+            if (continuedName && returnName) {
+              ctx.baseAnimationName = baseName;
+              ctx.continuedAnimationName = continuedName;
+              ctx.returnAnimationName = returnName;
+            }
+          }
 
           if (previousAnimation && previousAnimation !== event.animation.name) {
             this.emit('animationCompleted', previousAnimation);
@@ -328,9 +364,21 @@ export class AnimationManager extends EventEmitter<any> {
     nextFrameIndex: number,
     isBranch: boolean,
   ): boolean {
-    if (this.machine.state === 'Exiting') {
+    const isExiting = this.machine.state === 'Exiting';
+
+    if (isExiting) {
       // If we are exiting and reached the end (either by natural end or exit branch loop back to frame 0)
       if (nextFrameIndex === 0) {
+        // Handle transitionType 2 (Return mechanism)
+        if (ctx.returnAnimationName && !ctx.isProcessingReturn) {
+          const returnAnim = this.animations[ctx.returnAnimationName];
+          if (returnAnim) {
+            ctx.isProcessingReturn = true;
+            // Stay in Exiting state for the return animation
+            this.machine.send({ type: 'PLAY', animation: returnAnim, useExitBranch: true });
+            return true;
+          }
+        }
         this.completeAnimation(ctx);
         return true;
       }
@@ -349,13 +397,24 @@ export class AnimationManager extends EventEmitter<any> {
       }
 
       // Normal completion when we loop back to the first frame sequentially
-      if (!isBranch && nextFrameIndex === 0 && ctx.animationPromise) {
-        if (ctx.isLooping) {
-          // Instead of completing, we just loop back (which nextFrameIndex 0 already does)
-          return false;
+      if (!isBranch && nextFrameIndex === 0) {
+        // Handle transitionType 2 (Return mechanism) - Move to Continued
+        if (ctx.continuedAnimationName && ctx.currentAnimation?.name === ctx.baseAnimationName) {
+          const continuedAnim = this.animations[ctx.continuedAnimationName];
+          if (continuedAnim) {
+            this.machine.send({ type: 'PLAY', animation: continuedAnim, loop: true });
+            return true;
+          }
         }
-        this.completeAnimation(ctx);
-        return true;
+
+        if (ctx.animationPromise) {
+          if (ctx.isLooping) {
+            // Instead of completing, we just loop back (which nextFrameIndex 0 already does)
+            return false;
+          }
+          this.completeAnimation(ctx);
+          return true;
+        }
       }
     }
     return false;
@@ -465,6 +524,14 @@ export class AnimationManager extends EventEmitter<any> {
   }
 
   /**
+   * Finds an animation name in the character definition using case-insensitive search.
+   */
+  private findAnimationCaseInsensitive(name: string): string | undefined {
+    const searchName = name.toLowerCase();
+    return Object.keys(this.animations).find((k) => k.toLowerCase() === searchName);
+  }
+
+  /**
    * Marks the current animation as finished and resolves any pending promises.
    */
   private completeAnimation(ctx: AnimationContext): void {
@@ -474,6 +541,12 @@ export class AnimationManager extends EventEmitter<any> {
       ctx.animationPromise = null;
       this.activePromise = null;
     }
+
+    ctx.baseAnimationName = undefined;
+    ctx.continuedAnimationName = undefined;
+    ctx.returnAnimationName = undefined;
+    ctx.isProcessingReturn = false;
+
     ctx.currentAnimation = null;
     this.machine.send({ type: 'STOP' });
     this.emit('animationCompleted', completedAnimation);
