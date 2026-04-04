@@ -168,14 +168,14 @@ describe('Agent.moveTo', () => {
     });
 
     it('should use Moving animation if it exists', async () => {
-        (agent.definition.animations as any)['MovingLeft'] = { frames: [] };
+        (agent.definition.animations as any)['MovingRight'] = { frames: [] };
 
         const playSpy = vi.spyOn(agent.stateManager, 'playAnimation').mockResolvedValue(true);
 
-        // Move to screen-left
+        // Move to screen-left -> agent-perspective Right
         await agent.moveTo(100, 500, 10000);
 
-        expect(playSpy).toHaveBeenCalledWith('MovingLeft', 'Moving');
+        expect(playSpy).toHaveBeenCalledWith('MovingRight', 'Moving', false, undefined, true);
     });
 });
 
@@ -281,8 +281,10 @@ describe('Agent Core Methods', () => {
 
     it('stop should set exiting flag on animation manager if animating', () => {
         vi.spyOn(agent.animationManager, 'isAnimating', 'get').mockReturnValue(true);
+        vi.spyOn(agent.animationManager, 'playbackState', 'get').mockReturnValue('Playing');
+        const exitSpy = vi.spyOn(agent.animationManager, 'isExitingFlag', 'set');
         agent.stop();
-        expect(agent.animationManager.isExitingFlag).toBe(true);
+        expect(exitSpy).toHaveBeenCalledWith(true);
     });
 
     it('destroy should cleanup resources', async () => {
@@ -351,7 +353,7 @@ describe('Agent Fallbacks and Edge Cases', () => {
         // 'MovingLeft' is missing, but 'LookLeft' exists
         (agent.definition.animations as any)['LookLeft'] = { frames: [] };
         await agent.moveTo(900, 550, 10000);
-        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookLeft', 'Moving');
+        expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookLeft', 'Moving', false, undefined, true);
     });
 });
 
@@ -536,12 +538,14 @@ describe('Agent Additional Coverage', () => {
 
         // Mock Speaking state
         vi.spyOn(agent.stateManager, 'currentStateName', 'get').mockReturnValue('Speaking');
+        vi.spyOn(agent.animationManager, 'playbackState', 'get').mockReturnValue('Playing');
+        const exitSpy = vi.spyOn(agent.animationManager, 'isExitingFlag', 'set');
         const handleAnimCompSpy = vi.spyOn(agent.stateManager, 'handleAnimationCompleted');
 
         onHide!();
 
         expect((agent as any).talkingAnimationName).toBeNull();
-        expect(agent.animationManager.isExitingFlag).toBe(true);
+        expect(exitSpy).toHaveBeenCalledWith(true);
         expect(handleAnimCompSpy).toHaveBeenCalled();
     });
 });
