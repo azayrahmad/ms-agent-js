@@ -154,8 +154,8 @@ export class Agent {
     await core.init();
 
     const renderer = new AgentRenderer(core, container);
-    renderer.balloon.onSpeak = (text: string, charIndex: number) => {
-      core.emit("speak", { text, charIndex });
+    renderer.balloon.onSpeak = (payload) => {
+      core.emit("speak", payload);
     };
 
     const agent = new Agent(core, renderer, container);

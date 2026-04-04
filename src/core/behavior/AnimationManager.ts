@@ -51,6 +51,8 @@ export class AnimationManager extends EventEmitter<any> {
   private activePromise: Promise<boolean> | null = null;
   /** Default scaling factor (usually overwritten by the Agent's options). */
   private scale: number = 2;
+  /** The current mouth shape overlay (viseme). */
+  private currentViseme: string | null = null;
 
   /**
    * The name of the animation currently being played.
@@ -308,6 +310,15 @@ export class AnimationManager extends EventEmitter<any> {
   }
 
   /**
+   * Sets the current mouth shape (viseme) to overlay on the animation.
+   *
+   * @param type - The name of the mouth shape (e.g., 'Closed', 'OpenWide1').
+   */
+  public setViseme(type: string | null): void {
+    this.currentViseme = type;
+  }
+
+  /**
    * Checks if the current animation should be marked as complete.
    * Completions occur either at the end of the frame sequence or when an exit branch loops back.
    */
@@ -491,7 +502,7 @@ export class AnimationManager extends EventEmitter<any> {
   public draw(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number = this.scale): void {
     const frame = this.currentFrame;
     if (frame) {
-      this.spriteManager.drawFrame(ctx, frame, x, y, scale);
+      this.spriteManager.drawFrame(ctx, frame, x, y, scale, this.currentViseme);
     }
   }
 
