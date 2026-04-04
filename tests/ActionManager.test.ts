@@ -23,8 +23,9 @@ describe('ActionManager', () => {
     };
 
     beforeEach(async () => {
-        setupGlobals(mockDefinition);
-        core = new AgentCore(mockDefinition as any, {
+        const def = JSON.parse(JSON.stringify(mockDefinition));
+        setupGlobals(def);
+        core = new AgentCore(def, {
             baseUrl: '', scale: 1, speed: 1, idleIntervalMs: 5000,
             useAudio: false, fixed: true, keepInViewport: true,
             initialAnimation: '', onProgress: () => {}, signal: new AbortController().signal,
@@ -88,5 +89,38 @@ describe('ActionManager', () => {
         await actionManager.moveTo(100, 550);
 
         expect(handleAnimCompSpy).toHaveBeenCalled();
+    });
+
+    it('moveTo should prioritize Moving state', async () => {
+        core.definition.states['MovingLeft'] = { name: 'MovingLeft', animations: ['MoveLeft'] };
+        core.definition.animations['MovingLeft'] = { frames: [] } as any;
+
+        // Move to screen-left -> getDirection Left -> toAgentPerspective Right (Wait, no, moveTo doesn't swap for Moving? Let's check)
+        // Actually, current code for MoveTo (original):
+        // const direction4 = this.getDirection(x, y, 4);
+        // const moveAnim = `Moving${direction4}`;
+        // My updated code:
+        // const direction4 = this.getDirection(x, y, 4);
+        // ...
+        // const moveState = `Moving${direction4}`;
+        // getDirection(100, 550, 4) -> 'Left'
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.setState).toHaveBeenCalledWith('MovingLeft');
+    });
+
+    it('moveTo should fallback to Move animation if Moving state and animation missing', async () => {
+        core.definition.animations['MoveLeft'] = { frames: [] } as any;
+
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('MoveLeft', 'Moving');
+    });
+
+    it('moveTo should fallback to Look animation if movement specific ones missing', async () => {
+        // center 550,550. 100,550 -> Left.
+        // direction8 = toAgentPerspective(Left) -> Right
+        core.definition.animations['LookRight'] = { frames: [] } as any;
+
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('LookRight', 'Moving');
     });
 });
