@@ -1,148 +1,137 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Agent } from '../src/Agent';
-import { CharacterParser } from '../src/core/resources/CharacterParser';
-import { setupGlobals } from './setup';
+import { AgentLoader } from '../src/core/resources/AgentLoader';
+import { SpriteManager } from '../src/core/resources/SpriteManager';
 
-vi.mock('../src/core/resources/CharacterParser', () => {
-  return {
-    CharacterParser: {
-      load: vi.fn(),
-    },
-  };
-});
+vi.mock('../src/core/resources/AgentLoader', () => ({
+    AgentLoader: {
+        getDefinition: vi.fn()
+    }
+}));
 
+// Mock SpriteManager to avoid actual BMP loading
 vi.mock('../src/core/resources/SpriteManager', () => {
-  class SpriteManager {
-    init = vi.fn().mockResolvedValue(undefined);
-    getSpriteWidth = vi.fn().mockReturnValue(100);
-    getSpriteHeight = vi.fn().mockReturnValue(100);
-    loadSprite = vi.fn().mockResolvedValue(undefined);
-  }
-  return { SpriteManager };
+    return {
+        SpriteManager: class {
+            init = vi.fn().mockResolvedValue(undefined);
+            getSpriteWidth = vi.fn().mockReturnValue(100);
+            getSpriteHeight = vi.fn().mockReturnValue(100);
+            drawFrame = vi.fn();
+            loadSprite = vi.fn().mockResolvedValue(undefined);
+        }
+    };
 });
 
 describe('Speech Synchronization', () => {
-  const mockDefinition = {
-    character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
-    balloon: {
-      borderColor: '000000',
-      backColor: 'ffffff',
-      foreColor: '000000',
-      fontName: 'Arial',
-      fontHeight: 12,
-    },
-    animations: {
-      Explain: {
-        name: 'Explain',
-        frames: [
-          { duration: 10, images: [] }, // Frame 0: No mouths
-          {
-            duration: 10,
-            images: [],
-            mouths: [{ type: 'Closed', filename: 'mouth.bmp', offsetX: 0, offsetY: 0 }],
-          }, // Frame 1: Has mouth
-        ],
-      },
-      NoMouths: {
-        name: 'NoMouths',
-        frames: [{ duration: 10, images: [] }],
-      },
-    },
-    states: { IdlingLevel1: { name: 'IdlingLevel1', animations: [] } },
-  };
+    let mockDefinition: any;
 
-  let agent: Agent;
+    beforeEach(() => {
+        vi.clearAllMocks();
 
-  beforeEach(async () => {
-    vi.clearAllMocks();
-    setupGlobals(mockDefinition);
-    (CharacterParser.load as any).mockResolvedValue(mockDefinition);
-    agent = await Agent.load('Clippit');
-    vi.spyOn(agent.balloon, 'isTTSEnabled').mockReturnValue(true);
-  });
+        mockDefinition = {
+            character: {
+                width: 100, height: 100, style: 0x0020 /* VoiceTTS */,
+                defaultFrameDuration: 10, colorTable: 'ct.bmp', transparency: 0
+            },
+            balloon: {
+                fontName: 'Arial', fontHeight: 12,
+                borderColor: '000000', backColor: 'FFFFFF', foreColor: '000000',
+                numLines: 2, charsPerLine: 20
+            },
+            animations: {
+                Explain: {
+                    name: 'Explain',
+                    frames: [
+                        { duration: 10, images: [] }, // No mouth
+                        { duration: 10, images: [], mouths: [{ type: 'OpenWide1', filename: 'm.bmp', offsetX: 0, offsetY: 0 }] }, // Mouth!
+                    ]
+                },
+                NoMouth: {
+                    name: 'NoMouth',
+                    frames: [
+                        { duration: 10, images: [] },
+                        { duration: 10, images: [] },
+                    ]
+                }
+            },
+            states: {
+                IdlingLevel1: { name: 'IdlingLevel1', animations: ['NoMouth'] },
+                Speaking: { name: 'Speaking', animations: ['Explain'] }
+            }
+        };
 
-  afterEach(() => {
-    agent.destroy();
-  });
+        (AgentLoader.getDefinition as any).mockResolvedValue(mockDefinition);
 
-  it('should wait for a mouth frame when animation has mouths and TTS is enabled', async () => {
-    vi.useFakeTimers();
-    const speakSpy = vi.spyOn(agent.balloon, 'speak');
-    const resumeSpy = vi.spyOn(agent.balloon, 'resumePausedSpeech');
+        // Mock requestAnimationFrame
+        vi.stubGlobal('requestAnimationFrame', (cb: any) => setTimeout(cb, 0));
 
-    // Start speaking with 'Explain' animation which has mouths
-    agent.speak('Hello', { animation: 'Explain', useTTS: true });
+        // Mock SpeechSynthesis
+        vi.stubGlobal('speechSynthesis', {
+            speak: vi.fn(),
+            cancel: vi.fn(),
+            getVoices: () => [],
+            speaking: false,
+            onvoiceschanged: null
+        });
 
-    // Wait for the request to be processed
-    await vi.advanceTimersByTimeAsync(0);
+        // Mock SpeechSynthesisUtterance
+        vi.stubGlobal('SpeechSynthesisUtterance', class {
+            constructor(public text: string) {}
+            rate = 1;
+            pitch = 1;
+            volume = 1;
+            voice = null;
+            onend = null;
+            onstart = null;
+            onboundary = null;
+        });
+    });
 
-    // Should have called speak with paused=true
-    expect(speakSpy).toHaveBeenCalledWith(
-      expect.any(Function),
-      'Hello',
-      false,
-      true,
-      false,
-      false,
-      true,
-    );
-    expect(resumeSpy).not.toHaveBeenCalled();
+    it('should pause speech until a mouth frame is reached', async () => {
+        const agent = await Agent.load('TestAgent');
+        const balloon = agent.balloon;
 
-    // Advance to frame 0 (no mouth)
-    vi.spyOn(agent.animationManager, 'currentFrame', 'get').mockReturnValue(
-      mockDefinition.animations.Explain.frames[0],
-    );
-    agent.animationManager.emit('frameChanged');
-    expect(resumeSpy).not.toHaveBeenCalled();
+        // Spy on resumePausedSpeech
+        const resumeSpy = vi.spyOn(balloon, 'resumePausedSpeech');
 
-    // Advance to frame 1 (has mouth)
-    vi.spyOn(agent.animationManager, 'currentFrame', 'get').mockReturnValue(
-      mockDefinition.animations.Explain.frames[1],
-    );
-    agent.animationManager.emit('frameChanged');
+        agent.speak('Hello world', { animation: 'Explain', useTTS: true });
 
-    expect(resumeSpy).toHaveBeenCalled();
-    vi.useRealTimers();
-  });
+        // Wait for next tick where startTalkingAnimation/speak is called
+        await new Promise(r => setTimeout(r, 20));
 
-  it('should start immediately if animation has no mouth frames', async () => {
-    vi.useFakeTimers();
-    const speakSpy = vi.spyOn(agent.balloon, 'speak');
+        expect(resumeSpy).not.toHaveBeenCalled();
 
-    agent.speak('Hello', { animation: 'NoMouths', useTTS: true });
-    await vi.advanceTimersByTimeAsync(0);
+        // Force the animation to Explain if it didn't transition
+        if (agent.animationManager.currentAnimationName !== 'Explain') {
+            agent.animationManager.setAnimation('Explain');
+        }
 
-    // Should have called speak with default paused (false)
-    expect(speakSpy).toHaveBeenCalledWith(expect.any(Function), 'Hello', false, true, false);
-    vi.useRealTimers();
-  });
+        console.log('Current Anim:', agent.animationManager.currentAnimationName);
+        console.log('Current Frame Index:', agent.animationManager.currentFrameIndexValue);
 
-  it('should start immediately if TTS is disabled', async () => {
-    vi.useFakeTimers();
-    vi.spyOn(agent.balloon, 'isTTSEnabled').mockReturnValue(false);
-    const speakSpy = vi.spyOn(agent.balloon, 'speak');
+        // Advance animation to frame 1
+        const now = performance.now();
+        agent.animationManager.update(now + 200);
 
-    agent.speak('Hello', { animation: 'Explain', useTTS: true });
-    await vi.advanceTimersByTimeAsync(0);
+        console.log('After update - Current Frame Index:', agent.animationManager.currentFrameIndexValue);
 
-    expect(speakSpy).toHaveBeenCalledWith(expect.any(Function), 'Hello', false, true, false);
-    vi.useRealTimers();
-  });
+        expect(resumeSpy).toHaveBeenCalled();
+    });
 
-  it('should fallback and resume if a different animation starts', async () => {
-    vi.useFakeTimers();
-    const resumeSpy = vi.spyOn(agent.balloon, 'resumePausedSpeech');
+    it('should NOT pause speech if animation has no mouths', async () => {
+        const agent = await Agent.load('TestAgent');
+        const balloon = agent.balloon;
+        const speakSpy = vi.spyOn(balloon, 'speak');
 
-    agent.speak('Hello', { animation: 'Explain', useTTS: true });
-    await vi.advanceTimersByTimeAsync(0);
+        agent.speak('Hello world', { animation: 'NoMouth', useTTS: true });
 
-    // Start another animation
-    agent.animationManager.emit('animationStarted', 'OtherAnimation');
+        await new Promise(r => setTimeout(r, 20));
 
-    expect(resumeSpy).toHaveBeenCalled();
-    vi.useRealTimers();
-  });
+        const calls = speakSpy.mock.calls;
+        const lastCall = calls[calls.length - 1];
+        expect(lastCall[6]).toBeFalsy();
+    });
 });

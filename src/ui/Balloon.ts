@@ -75,6 +75,9 @@ export class Balloon {
 
   private _ttsFallbackTimer: number | null = null;
   private _mobileTTSTimer: number | null = null;
+  private _targetText: string = "";
+  private _measuredBW: number | null = null;
+  private _measuredBH: number | null = null;
 
   private _pausedSpeechParams: {
     complete: () => void;
@@ -185,40 +188,83 @@ export class Balloon {
     this._balloonEl.style.display = "block";
     this._balloonEl.style.opacity = "0";
 
-    const style = this._definition.character.style;
-    const sizeToText = !!(style & CharacterStyle.BalloonSizeToText);
+    if (this._measuredBW === null || this._measuredBH === null) {
+      // Use full text for measurement, even if typing
+      const currentText = (this._contentEl && this._contentEl.textContent) || "";
+      const isHTML = (this._contentEl && this._contentEl.children && this._contentEl.children.length > 0) || false;
+      const textToMeasure =
+        this._targetText ||
+        (this._pausedSpeechParams ? this._pausedSpeechParams.text : null);
 
-    // Set width based on charsPerLine if defined
-    const charWidth = 8;
-    const maxWidth =
-      this._definition.balloon.charsPerLine > 0
-        ? Math.max(100, this._definition.balloon.charsPerLine * charWidth)
-        : 250;
+      if (textToMeasure && !isHTML) {
+        this._contentEl.textContent = textToMeasure;
+      }
 
-    const fontSize = this._definition.balloon.fontHeight || 12;
-    const lineHeight = fontSize * 1.4;
+      const style = this._definition.character.style;
+      const sizeToText = !!(style & CharacterStyle.BalloonSizeToText);
+      const numLines = this._definition.balloon.numLines || 2;
 
-    // First measurement pass: find required size
-    this._contentEl.style.display = "flex";
-    this._contentEl.style.flexDirection = "column";
-    this._contentEl.style.width = "max-content";
-    this._contentEl.style.maxWidth = `${maxWidth}px`;
-    this._contentEl.style.height = "auto";
-    this._contentEl.style.maxHeight = "none";
-    this._contentEl.style.overflow = "visible";
-    this._contentEl.style.minHeight = "0";
+      // Set width based on charsPerLine if defined
+      const charWidth = 8;
+      const maxWidth =
+        this._definition.balloon.charsPerLine > 0
+          ? Math.max(100, this._definition.balloon.charsPerLine * charWidth)
+          : 250;
 
-    let bW = Math.ceil(this._contentEl.getBoundingClientRect().width) || 100;
-    let bH = Math.ceil(this._contentEl.getBoundingClientRect().height) || 40;
+      const fontSize = this._definition.balloon.fontHeight || 12;
+      const lineHeight = fontSize * 1.4;
 
-    // Fixed size constraints
-    if (!sizeToText) {
-        const numLines = this._definition.balloon.numLines || 2;
-        const minH = numLines * lineHeight + CORNER_SPACING_Y * 2;
-        bH = Math.max(bH, minH);
+      // Save original styles to restore after measurement
+      const originalDisplay = this._contentEl.style.display;
+      const originalWidth = this._contentEl.style.width;
+      const originalMaxWidth = this._contentEl.style.maxWidth;
+      const originalHeight = this._contentEl.style.height;
+      const originalMaxHeight = this._contentEl.style.maxHeight;
+      const originalOverflow = this._contentEl.style.overflow;
+      const originalMinHeight = this._contentEl.style.minHeight;
+
+      // First measurement pass: find required size
+      this._contentEl.style.display = "inline-block";
+      this._contentEl.style.width = "auto";
+      this._contentEl.style.maxWidth = `${maxWidth}px`;
+      this._contentEl.style.height = "auto";
+      this._contentEl.style.maxHeight = "none";
+      this._contentEl.style.overflow = "visible";
+      this._contentEl.style.minHeight = "0";
+
+      const rects = this._contentEl.getBoundingClientRect();
+      let bW = Math.ceil(rects.width) || 100;
+      let bH = Math.ceil(rects.height) || 40;
+
+      // Fixed size constraints
+      const minH = numLines * lineHeight + CORNER_SPACING_Y * 2;
+      bH = Math.max(bH, minH);
+
+      // Cache the result if measurement was successful (not hidden in DOM)
+      if (rects.width > 0 && rects.height > 0) {
+        this._measuredBW = bW;
+        this._measuredBH = bH;
+      }
+
+      // Restore text if we swapped it
+      if (textToMeasure && !isHTML) {
+        this._contentEl.textContent = currentText;
+      }
+
+      // Restore original styles
+      this._contentEl.style.display = originalDisplay;
+      this._contentEl.style.width = originalWidth;
+      this._contentEl.style.maxWidth = originalMaxWidth;
+      this._contentEl.style.height = originalHeight;
+      this._contentEl.style.maxHeight = originalMaxHeight;
+      this._contentEl.style.overflow = originalOverflow;
+      this._contentEl.style.minHeight = originalMinHeight;
     }
 
-    // Lock dimensions for typing
+    const bW = this._measuredBW || 100;
+    const bH = this._measuredBH || 40;
+
+    // Lock dimensions for content container
     this._contentEl.style.width = "100%";
     this._contentEl.style.height = "100%";
     this._contentEl.style.maxWidth = "none";
@@ -416,15 +462,12 @@ export class Balloon {
     paused: boolean = false,
   ) {
     this.stop();
+    this._measuredBW = null;
+    this._measuredBH = null;
     this._hidden = false;
+    this._targetText = text;
 
     if (!skipContentUpdate) {
-      // Reset styles for measurement
-      this._contentEl.style.width = "";
-      this._contentEl.style.height = "";
-      this._contentEl.style.maxWidth = "";
-      this._contentEl.style.maxHeight = "";
-      this._contentEl.style.padding = `${CORNER_SPACING_Y}px ${CORNER_SPACING_X}px`;
       this._contentEl.textContent = text;
     }
 
@@ -726,7 +769,10 @@ export class Balloon {
    */
   public showHtml(html: string, hold: boolean) {
     this.stop();
+    this._measuredBW = null;
+    this._measuredBH = null;
     this._hidden = false;
+    this._targetText = "";
     this._balloonEl.style.visibility = "hidden";
     this._balloonEl.style.display = "block";
 
@@ -838,6 +884,8 @@ export class Balloon {
    */
   public close() {
     this.stop();
+    this._measuredBW = null;
+    this._measuredBH = null;
     this.hide(true);
     this._callComplete();
   }
@@ -848,6 +896,7 @@ export class Balloon {
   public stop() {
     this._active = false;
     this._addChar = null;
+    this._targetText = "";
     this._pausedSpeechParams = null;
     if (this._loopTimeout) {
       clearTimeout(this._loopTimeout);

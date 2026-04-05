@@ -438,9 +438,9 @@ export class Agent {
             this.core.animationManager.off("animationStarted", onAnimationStarted);
           };
 
-          const wrappedResolve = (val: any) => {
+          const wrappedResolve = () => {
             cleanup();
-            resolve(val);
+            (resolve as any)();
           };
 
           this.core.animationManager.on("frameChanged", onFrameChanged);
