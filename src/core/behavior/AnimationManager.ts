@@ -166,6 +166,8 @@ export class AnimationManager extends EventEmitter<any> {
             this.emit('animationCompleted', previousAnimation);
           }
 
+          this.emit('animationStarted', event.animation.name);
+
           // Play sound for the first frame if it has one
           this.checkAndPlaySound(ctx.currentAnimation.frames[0]);
         },

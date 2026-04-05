@@ -231,9 +231,9 @@ describe('Agent Core Methods', () => {
         character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
         balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
         animations: {
-            'A1': { frames: [] },
-            'A2': { frames: [] },
-            'Idle1': { frames: [] }
+            'A1': { name: 'A1', frames: [{ duration: 100, images: [] }] },
+            'A2': { name: 'A2', frames: [{ duration: 100, images: [] }] },
+            'Idle1': { name: 'Idle1', frames: [{ duration: 100, images: [] }] }
         },
         states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: ['Idle1'] } }
     };
@@ -281,8 +281,9 @@ describe('Agent Core Methods', () => {
 
     it('stop should set exiting flag on animation manager if animating', () => {
         vi.spyOn(agent.animationManager, 'isAnimating', 'get').mockReturnValue(true);
+        const spy = vi.spyOn(agent.animationManager, 'isExitingFlag', 'set');
         agent.stop();
-        expect(agent.animationManager.isExitingFlag).toBe(true);
+        expect(spy).toHaveBeenCalledWith(true);
     });
 
     it('destroy should cleanup resources', async () => {
@@ -311,8 +312,8 @@ describe('Agent Fallbacks and Edge Cases', () => {
         character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
         balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
         animations: {
-            'GestureRight': { frames: [] },
-            'LookRight': { frames: [] }
+            'GestureRight': { name: 'GestureRight', frames: [{ duration: 10, images: [] }] },
+            'LookRight': { name: 'LookRight', frames: [{ duration: 10, images: [] }] }
         },
         states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
     };
@@ -329,7 +330,7 @@ describe('Agent Fallbacks and Edge Cases', () => {
     it('gestureAt should fallback to direct animation if state is missing', async () => {
         // Agent Center (550, 550), Target (900, 550) is screen-right -> Agent-Left
         // 'GesturingLeft' state is missing, but 'GestureLeft' animation exists
-        (agent.definition.animations as any)['GestureLeft'] = { frames: [] };
+        (agent.definition.animations as any)['GestureLeft'] = { name: 'GestureLeft', frames: [{ duration: 10, images: [] }] };
         // Force the check for missing state
         delete agent.definition.states['GesturingLeft'];
 
@@ -349,7 +350,7 @@ describe('Agent Fallbacks and Edge Cases', () => {
     it('moveTo should fallback to Look animation if Moving is missing', async () => {
         // Agent Center (550, 550), Target (900, 550) is screen-right -> Agent-Left
         // 'MovingLeft' is missing, but 'LookLeft' exists
-        (agent.definition.animations as any)['LookLeft'] = { frames: [] };
+        (agent.definition.animations as any)['LookLeft'] = { name: 'LookLeft', frames: [{ duration: 10, images: [] }] };
         await agent.moveTo(900, 550, 10000);
         expect(agent.stateManager.playAnimation).toHaveBeenCalledWith('LookLeft', 'Moving');
     });
@@ -361,14 +362,15 @@ describe('Agent Additional Coverage', () => {
         character: { width: 100, height: 100, colorTable: 'ColorTable.bmp' },
         balloon: { borderColor: '0', backColor: 'ffffff', foreColor: '0', fontName: 'Arial', fontHeight: 12 },
         animations: {
-            'LookUp': { frames: [] },
-            'LookUpRight': { frames: [] },
-            'LookRight': { frames: [] },
-            'LookDownRight': { frames: [] },
-            'LookDown': { frames: [] },
-            'LookDownLeft': { frames: [] },
-            'LookLeft': { frames: [] },
-            'LookUpLeft': { frames: [] }
+            'LookUp': { name: 'LookUp', frames: [{ duration: 10, images: [] }] },
+            'LookUpRight': { name: 'LookUpRight', frames: [{ duration: 10, images: [] }] },
+            'LookRight': { name: 'LookRight', frames: [{ duration: 10, images: [] }] },
+            'LookDownRight': { name: 'LookDownRight', frames: [{ duration: 10, images: [] }] },
+            'LookDown': { name: 'LookDown', frames: [{ duration: 10, images: [] }] },
+            'LookDownLeft': { name: 'LookDownLeft', frames: [{ duration: 10, images: [] }] },
+            'LookLeft': { name: 'LookLeft', frames: [{ duration: 10, images: [] }] },
+            'LookUpLeft': { name: 'LookUpLeft', frames: [{ duration: 10, images: [] }] },
+            'Explain': { name: 'Explain', frames: [{ duration: 10, images: [] }] }
         },
         states: { 'IdlingLevel1': { name: 'IdlingLevel1', animations: [] } }
     };
@@ -537,11 +539,12 @@ describe('Agent Additional Coverage', () => {
         // Mock Speaking state
         vi.spyOn(agent.stateManager, 'currentStateName', 'get').mockReturnValue('Speaking');
         const handleAnimCompSpy = vi.spyOn(agent.stateManager, 'handleAnimationCompleted');
+        const flagSpy = vi.spyOn(agent.animationManager, 'isExitingFlag', 'set');
 
         onHide!();
 
         expect((agent as any).talkingAnimationName).toBeNull();
-        expect(agent.animationManager.isExitingFlag).toBe(true);
+        expect(flagSpy).toHaveBeenCalledWith(true);
         expect(handleAnimCompSpy).toHaveBeenCalled();
     });
 });

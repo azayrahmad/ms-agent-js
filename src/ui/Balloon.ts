@@ -76,6 +76,15 @@ export class Balloon {
   private _ttsFallbackTimer: number | null = null;
   private _mobileTTSTimer: number | null = null;
 
+  private _pausedSpeechParams: {
+    complete: () => void;
+    text: string;
+    hold: boolean;
+    useTTS: boolean;
+    skipTyping: boolean;
+    skipContentUpdate: boolean;
+  } | null = null;
+
   /** Callback triggered when the balloon is hidden. */
   public onHide: (() => void) | null = null;
   /** Returns true if the balloon is currently visible to the user. */
@@ -395,6 +404,7 @@ export class Balloon {
    * @param useTTS - If true, will use system Text-to-Speech.
    * @param skipTyping - If true, displays text instantly without typing animation.
    * @param skipContentUpdate - If true, does not overwrite the current content of the balloon.
+   * @param paused - If true, balloon will appear but speech logic will only start when resumePausedSpeech is called.
    */
   public speak(
     complete: () => void,
@@ -403,6 +413,7 @@ export class Balloon {
     useTTS: boolean,
     skipTyping: boolean = false,
     skipContentUpdate: boolean = false,
+    paused: boolean = false,
   ) {
     this.stop();
     this._hidden = false;
@@ -417,8 +428,66 @@ export class Balloon {
       this._contentEl.textContent = text;
     }
 
-    this.show();
+    if (paused) {
+      this._hidden = false;
+      this.reposition();
+      if (!skipContentUpdate) {
+        this._contentEl.textContent = "";
+      }
+      this.show();
+      this._active = true;
+      this._pausedSpeechParams = {
+        complete,
+        text,
+        hold,
+        useTTS,
+        skipTyping,
+        skipContentUpdate,
+      };
+      return;
+    }
 
+    this.show();
+    this._startSpeech(
+      complete,
+      text,
+      hold,
+      useTTS,
+      skipTyping,
+      skipContentUpdate,
+    );
+  }
+
+  /**
+   * Resumes speech that was previously started in a paused state.
+   */
+  public resumePausedSpeech() {
+    if (!this._pausedSpeechParams) return;
+    const { complete, text, hold, useTTS, skipTyping, skipContentUpdate } =
+      this._pausedSpeechParams;
+    this._pausedSpeechParams = null;
+    this._active = false;
+    this._startSpeech(
+      complete,
+      text,
+      hold,
+      useTTS,
+      skipTyping,
+      skipContentUpdate,
+    );
+  }
+
+  /**
+   * Internal method to start the speech typing and/or TTS logic.
+   */
+  private _startSpeech(
+    complete: () => void,
+    text: string,
+    hold: boolean,
+    useTTS: boolean,
+    skipTyping: boolean = false,
+    skipContentUpdate: boolean = false,
+  ) {
     this._completeCallback = complete;
     this._hold = hold;
 
@@ -707,7 +776,7 @@ export class Balloon {
   }
 
   private _finishHideBalloon() {
-    if (this._active) return;
+    if (this._active || this._pausedSpeechParams) return;
     this._balloonEl.style.display = "none";
     this._hidden = true;
     this._hidingTimeout = null;
@@ -779,6 +848,7 @@ export class Balloon {
   public stop() {
     this._active = false;
     this._addChar = null;
+    this._pausedSpeechParams = null;
     if (this._loopTimeout) {
       clearTimeout(this._loopTimeout);
       this._loopTimeout = null;

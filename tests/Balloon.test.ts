@@ -370,4 +370,33 @@ describe('Balloon', () => {
         expect(content.style.fontWeight).toBe('700');
         expect(content.style.fontStyle).toBe('italic');
     });
+
+    it('should support starting speech in a paused state and resuming it', () => {
+        vi.useFakeTimers();
+        const balloon = new Balloon(targetEl, container, mockDefinition);
+
+        const complete = vi.fn();
+        balloon.speak(complete, 'Hello', false, false, false, false, true);
+
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+
+        // Balloon is shown but text is empty even though paused=true clears it (or leaves it empty)
+        expect(balloon.isVisible).toBe(true);
+        expect(content.textContent).toBe('');
+
+        // Typing should NOT have started
+        vi.advanceTimersByTime(1000);
+        expect(content.textContent).toBe('');
+
+        // Resume speech
+        balloon.resumePausedSpeech();
+
+        // Typing should start (first char 'H' added synchronously in _addChar)
+        expect(content.textContent).toBe('H');
+
+        vi.advanceTimersByTime(balloon.CHAR_SPEAK_TIME);
+        expect(content.textContent).toBe('He');
+
+        vi.useRealTimers();
+    });
 });

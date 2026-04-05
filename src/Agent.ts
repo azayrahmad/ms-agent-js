@@ -407,9 +407,57 @@ export class Agent {
     } = options;
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
-      this.startTalkingAnimation(animation);
+      const animName = animation || "Explain";
+      this.startTalkingAnimation(animName);
+
+      const anim = this.core.definition.animations[this.talkingAnimationName || animName];
+      const hasMouths = anim?.frames.some((f) => f.mouths && f.mouths.length > 0);
+      const ttsEnabled = useTTS && this.renderer.balloon.isTTSEnabled();
+
       return new Promise((resolve) => {
-        this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
+        if (hasMouths && ttsEnabled) {
+          const onFrameChanged = () => {
+            const currentFrame = this.core.animationManager.currentFrame;
+            if (currentFrame?.mouths && currentFrame.mouths.length > 0) {
+              cleanup();
+              this.renderer.balloon.resumePausedSpeech();
+            }
+          };
+
+          const onAnimationStarted = (name: string) => {
+            // If a different animation starts, we might have missed the mouth frame of the talking one
+            // or transitioned. Fallback to resume.
+            if (name !== this.talkingAnimationName) {
+              cleanup();
+              this.renderer.balloon.resumePausedSpeech();
+            }
+          };
+
+          const cleanup = () => {
+            this.core.animationManager.off("frameChanged", onFrameChanged);
+            this.core.animationManager.off("animationStarted", onAnimationStarted);
+          };
+
+          const wrappedResolve = (val: any) => {
+            cleanup();
+            resolve(val);
+          };
+
+          this.core.animationManager.on("frameChanged", onFrameChanged);
+          this.core.animationManager.on("animationStarted", onAnimationStarted);
+
+          this.renderer.balloon.speak(
+            wrappedResolve,
+            text,
+            hold,
+            useTTS,
+            skipTyping,
+            false,
+            true,
+          );
+        } else {
+          this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
+        }
       });
     });
   }
