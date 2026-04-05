@@ -21,6 +21,7 @@ vi.mock('../src/core/resources/SpriteManager', () => {
         getSpriteWidth = vi.fn().mockReturnValue(100);
         getSpriteHeight = vi.fn().mockReturnValue(100);
         loadSprite = vi.fn().mockResolvedValue(undefined);
+        drawFrame = vi.fn();
     }
     return { SpriteManager };
 });
@@ -521,7 +522,16 @@ describe('Agent Additional Coverage', () => {
 
     it('should handle balloon onHide in startTalkingAnimation', async () => {
         vi.useFakeTimers();
-        (agent.definition.animations as any)['Explain'] = { frames: [] };
+        (agent.definition.animations as any)['Explain'] = { frames: [{ duration: 10, images: [] }] };
+
+        // We need the animation manager to actually be in Playing state for the onHide logic to work (it sets isExitingFlag)
+        // In the beforeEach, we mocked playAnimation and setState. We need to restore them or mock them to actually do something.
+        const playAnimSpy = vi.spyOn(agent.stateManager, 'playAnimation').mockImplementation(async (name, state) => {
+            agent.animationManager.setAnimation(name);
+            vi.spyOn(agent.stateManager, 'currentStateName', 'get').mockReturnValue(state as any);
+            return true;
+        });
+
         // Trigger startTalkingAnimation by calling speak
         agent.speak('Hello');
 
@@ -532,6 +542,7 @@ describe('Agent Additional Coverage', () => {
         }
 
         expect((agent as any).talkingAnimationName).toBe('Explain');
+        expect(agent.animationManager.playbackState).toBe('Playing');
 
         const onHide = agent.renderer.balloon.onHide;
         expect(onHide).toBeTypeOf('function');
