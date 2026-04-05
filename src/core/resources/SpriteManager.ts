@@ -212,6 +212,22 @@ export class SpriteManager {
   }
 
   /**
+   * Pre-loads all sprites for a frame, including mouth shapes.
+   *
+   * @param frame - The frame definition to load sprites for.
+   */
+  public async loadFrameSprites(frame: FrameDefinition): Promise<void> {
+    const promises: Promise<void>[] = [];
+    frame.images.forEach((img) => promises.push(this.loadSprite(img.filename)));
+    if (frame.mouths) {
+      frame.mouths.forEach((mouth) =>
+        promises.push(this.loadSprite(mouth.filename)),
+      );
+    }
+    await Promise.all(promises);
+  }
+
+  /**
    * Loads a sprite BMP file, processes transparency, and caches it as a canvas.
    * If a texture atlas is already loaded, this method does nothing.
    *
@@ -398,6 +414,7 @@ export class SpriteManager {
    * @param x - Horizontal position to draw at.
    * @param y - Vertical position to draw at.
    * @param scale - Scaling factor (default 1).
+   * @param viseme - Optional mouth shape to overlay.
    */
   public drawFrame(
     ctx: CanvasRenderingContext2D,
@@ -405,6 +422,7 @@ export class SpriteManager {
     x: number,
     y: number,
     scale: number = 1,
+    viseme: string | null = null,
   ): void {
     if (!frame.images) return;
 
@@ -442,6 +460,56 @@ export class SpriteManager {
           sprite.height * scale,
         );
       }
+    }
+
+    if (viseme && frame.mouths) {
+      this.drawMouth(ctx, frame, viseme, x, y, scale);
+    }
+  }
+
+  /**
+   * Draws a mouth overlay for a specific viseme.
+   */
+  private drawMouth(
+    ctx: CanvasRenderingContext2D,
+    frame: FrameDefinition,
+    viseme: string,
+    x: number,
+    y: number,
+    scale: number,
+  ): void {
+    const mouthDef = frame.mouths?.find((m) => m.type === viseme);
+    if (!mouthDef) return;
+
+    if (this.spriteSheet && this.definition.atlas) {
+      const atlasEntry = this.definition.atlas[mouthDef.filename];
+      if (atlasEntry) {
+        const trimX = atlasEntry.trimX || 0;
+        const trimY = atlasEntry.trimY || 0;
+        ctx.drawImage(
+          this.spriteSheet,
+          atlasEntry.x,
+          atlasEntry.y,
+          atlasEntry.w,
+          atlasEntry.h,
+          x + (mouthDef.offsetX + trimX) * scale,
+          y + (mouthDef.offsetY + trimY) * scale,
+          atlasEntry.w * scale,
+          atlasEntry.h * scale,
+        );
+        return;
+      }
+    }
+
+    const sprite = this.sprites.get(mouthDef.filename);
+    if (sprite) {
+      ctx.drawImage(
+        sprite,
+        x + mouthDef.offsetX * scale,
+        y + mouthDef.offsetY * scale,
+        sprite.width * scale,
+        sprite.height * scale,
+      );
     }
   }
 

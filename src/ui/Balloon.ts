@@ -83,7 +83,7 @@ export class Balloon {
     return !this._hidden && this._balloonEl.style.display !== "none";
   }
   /** Callback triggered when a word or character boundary is reached during speech. */
-  public onSpeak: ((text: string, charIndex: number) => void) | null = null;
+  public onSpeak: ((payload: { word: string; charIndex: number; rate: number }) => void) | null = null;
 
   /** Time in milliseconds to wait between typing each character. */
   public CHAR_SPEAK_TIME = 50;
@@ -144,6 +144,12 @@ export class Balloon {
     this._contentEl.style.color = formatColor(definition.balloon.foreColor);
     this._contentEl.style.fontFamily = definition.balloon.fontName || "Arial";
     this._contentEl.style.fontSize = `${definition.balloon.fontHeight}px`;
+    if (definition.balloon.fontWeight) {
+      this._contentEl.style.fontWeight = definition.balloon.fontWeight.toString();
+    }
+    if (definition.balloon.italic) {
+      this._contentEl.style.fontStyle = "italic";
+    }
     this._contentEl.style.boxSizing = "border-box";
     this._contentEl.style.display = "flex";
     this._contentEl.style.flexDirection = "column";
@@ -474,6 +480,13 @@ export class Balloon {
           this.hide();
         }
       } else {
+        const char = text[idx];
+        // If it's a word boundary or start, trigger speak event
+        if (idx === 0 || text[idx - 1] === " ") {
+          const word = this._getWordAt(text, idx);
+          this.onSpeak?.({ word, charIndex: idx, rate: 1.0 });
+        }
+
         idx++;
         if (!skipContentUpdate) {
           this._contentEl.textContent = text.slice(0, idx);
@@ -485,6 +498,21 @@ export class Balloon {
       }
     };
     this._addChar();
+  }
+
+  /**
+   * Extracts the full word starting at or containing the given character index.
+   */
+  private _getWordAt(text: string, charIndex: number): string {
+    let start = charIndex;
+    while (start > 0 && text[start - 1] !== " ") {
+      start--;
+    }
+    let end = charIndex;
+    while (end < text.length && text[end] !== " ") {
+      end++;
+    }
+    return text.substring(start, end).replace(/[.,!?;:]/g, "");
   }
 
   /**
@@ -554,7 +582,8 @@ export class Balloon {
       if (onBoundary) {
         onBoundary(event.charIndex, event.charLength);
       }
-      this.onSpeak?.(text, event.charIndex);
+      const word = this._getWordAt(text, event.charIndex);
+      this.onSpeak?.({ word, charIndex: event.charIndex, rate: this._ttsOptions.rate });
     };
 
     const cleanupAndEnd = () => {
@@ -608,7 +637,7 @@ export class Balloon {
 
       const { word, index } = words[wordIdx];
       onBoundary(index, word.length);
-      this.onSpeak?.(text, index);
+      this.onSpeak?.({ word, charIndex: index, rate: this._ttsOptions.rate });
 
       wordIdx++;
 

@@ -88,6 +88,8 @@ export class AgentLoader {
    * Internal normalization logic for character definitions.
    */
   private static normalizeDefinition(definition: AgentCharacterDefinition) {
+    if (!definition.character) return;
+
     if (
       definition.character.colorTable &&
       !definition.character.colorTable.startsWith("http")
@@ -102,6 +104,11 @@ export class AgentLoader {
         frame.images.forEach((image) => {
           image.filename = image.filename.replace(/\\/g, "/").toLowerCase();
         });
+        if (frame.mouths) {
+          frame.mouths.forEach((mouth) => {
+            mouth.filename = mouth.filename.replace(/\\/g, "/").toLowerCase();
+          });
+        }
         if (frame.soundEffect) {
           frame.soundEffect = frame.soundEffect.toLowerCase();
         }

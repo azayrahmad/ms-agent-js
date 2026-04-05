@@ -75,28 +75,35 @@ export class ActionManager {
 
       const duration = (distance / speed) * 1000;
       const startTime = performance.now();
-      const direction4 = this.getDirection(x, y, 4);
-      const moveAnim = `Moving${direction4}`;
+      const direction4 = this.toAgentPerspective(this.getDirection(x, y, 4));
+      const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
+
       let activeAnim = "";
 
-      if (this.core.definition.animations[moveAnim]) {
-        activeAnim = moveAnim;
-      } else {
-        const direction8 = this.toAgentPerspective(this.getDirection(x, y, 8));
-        const lookAnim = `Look${direction8}`;
-        if (this.core.definition.animations[lookAnim]) {
-          activeAnim = lookAnim;
-        }
+      const moveState = this.core.definition.states[`Moving${direction4}`];
+      if (moveState && moveState.animations.length > 0) {
+        activeAnim = moveState.animations[0];
+      } else if (this.core.definition.animations[`Moving${direction4}`]) {
+        activeAnim = `Moving${direction4}`;
+      } else if (this.core.definition.animations[`Move${direction4}`]) {
+        activeAnim = `Move${direction4}`;
+      } else if (this.core.definition.animations[`Look${direction8}`]) {
+        activeAnim = `Look${direction8}`;
       }
 
       if (activeAnim) {
-        this.core.stateManager.playAnimation(activeAnim, "Moving");
+        this.core.stateManager
+          .playAnimation(activeAnim, "Moving", false, undefined, true)
+          .catch(console.error);
       }
 
       return new Promise<void>((resolve) => {
         const moveStep = (currentTime: number) => {
           if (request.isCancelled) {
-            if (activeAnim) this.core.stateManager.handleAnimationCompleted();
+            if (activeAnim) {
+              this.core.animationManager.isExitingFlag = true;
+              this.core.stateManager.handleAnimationCompleted();
+            }
             resolve();
             return;
           }
@@ -108,7 +115,10 @@ export class ActionManager {
           if (progress < 1) {
             requestAnimationFrame(moveStep);
           } else {
-            if (activeAnim) this.core.stateManager.handleAnimationCompleted();
+            if (activeAnim) {
+              this.core.animationManager.isExitingFlag = true;
+              this.core.stateManager.handleAnimationCompleted();
+            }
             resolve();
           }
         };
