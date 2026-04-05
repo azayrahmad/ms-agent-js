@@ -13,8 +13,7 @@ describe('ActionManager', () => {
         balloon: { backColor: 'ffffff', foreColor: '000000', borderColor: '000000', fontName: 'Arial', fontHeight: 12 },
         animations: {
             'GestureLeft': { frames: [] },
-            'LookLeft': { frames: [] },
-            'MovingRight': { frames: [] }
+            'LookLeft': { frames: [] }
         },
         states: {
             'IdlingLevel1': { name: 'IdlingLevel1', animations: [] },
@@ -23,8 +22,9 @@ describe('ActionManager', () => {
     };
 
     beforeEach(async () => {
-        setupGlobals(mockDefinition);
-        core = new AgentCore(mockDefinition as any, {
+        const def = JSON.parse(JSON.stringify(mockDefinition));
+        setupGlobals(def);
+        core = new AgentCore(def, {
             baseUrl: '', scale: 1, speed: 1, idleIntervalMs: 5000,
             useAudio: false, fixed: true, keepInViewport: true,
             initialAnimation: '', onProgress: () => {}, signal: new AbortController().signal,
@@ -87,6 +87,44 @@ describe('ActionManager', () => {
 
         await actionManager.moveTo(100, 550);
 
+        expect(handleAnimCompSpy).toHaveBeenCalled();
+    });
+
+    it('moveTo should prioritize Moving state and use agent perspective', async () => {
+        // center 550,550. 100,550 -> screen-left -> agent-perspective Right
+        core.definition.states['MovingRight'] = { name: 'MovingRight', animations: ['MoveRightAnim'] };
+
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('MoveRightAnim', 'Moving', false, undefined, true);
+    });
+
+    it('moveTo should fallback to Move animation if Moving state missing', async () => {
+        // center 550,550. 100,550 -> screen-left -> agent-perspective Right
+        core.definition.animations['MoveRight'] = { frames: [] } as any;
+
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('MoveRight', 'Moving', false, undefined, true);
+    });
+
+    it('moveTo should fallback to Look animation if movement specific ones missing', async () => {
+        // center 550,550. 100,550 -> Left -> toAgentPerspective(Left) -> Right
+        core.definition.animations['LookRight'] = { frames: [] } as any;
+
+        await actionManager.moveTo(100, 550);
+        expect(core.stateManager.playAnimation).toHaveBeenCalledWith('LookRight', 'Moving', false, undefined, true);
+    });
+
+    it('moveTo should set exiting flag and handle completion after move', async () => {
+        core.definition.animations['MovingRight'] = { frames: [] } as any;
+        const handleAnimCompSpy = vi.spyOn(core.stateManager, 'handleAnimationCompleted');
+
+        // Mock animation manager to return 'Playing' so isExitingFlag setter works
+        vi.spyOn(core.animationManager, 'playbackState', 'get').mockReturnValue('Playing');
+        const exitSpy = vi.spyOn(core.animationManager, 'isExitingFlag', 'set');
+
+        await actionManager.moveTo(100, 550);
+
+        expect(exitSpy).toHaveBeenCalledWith(true);
         expect(handleAnimCompSpy).toHaveBeenCalled();
     });
 });
