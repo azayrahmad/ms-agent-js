@@ -480,7 +480,6 @@ export class Balloon {
           this.hide();
         }
       } else {
-        const char = text[idx];
         // If it's a word boundary or start, trigger speak event
         if (idx === 0 || text[idx - 1] === " ") {
           const word = this._getWordAt(text, idx);

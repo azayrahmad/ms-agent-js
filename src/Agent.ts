@@ -408,6 +408,14 @@ export class Agent {
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
       this.startTalkingAnimation(animation);
+
+      await this.core.waitForMouthFrames(
+        () => request.isCancelled,
+        animation || this.talkingAnimationName || undefined,
+      );
+
+      if (request.isCancelled) return;
+
       return new Promise((resolve) => {
         this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
       });

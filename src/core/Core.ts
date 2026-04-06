@@ -122,6 +122,62 @@ export class AgentCore extends EventEmitter<AgentEvents> {
    * @param currentTime - The current performance timestamp.
    * @param deltaTime - Time elapsed since the last update in milliseconds.
    */
+  /**
+   * Helper promise that waits until the character is in a state where it can start speaking.
+   * If the current animation supports speech, it waits until a frame with mouth overlays is reached.
+   * If it doesn't support speech, it resolves immediately.
+   *
+   * @param isCancelled - Function to check if the parent request has been cancelled.
+   * @param targetAnimation - Optional name of the animation we are waiting for.
+   * @internal
+   */
+  public async waitForMouthFrames(
+    isCancelled: () => boolean,
+    targetAnimation?: string,
+  ): Promise<void> {
+    const supports = targetAnimation
+      ? this.animationManager.supportsSpeech(targetAnimation)
+      : this.animationManager.supportsSpeech();
+
+    if (!supports) {
+      return;
+    }
+
+    return new Promise((resolve) => {
+      const check = () => {
+        if (isCancelled()) {
+          cleanup();
+          resolve();
+          return;
+        }
+
+        // If we are waiting for a specific animation to start, ignore others
+        if (
+          targetAnimation &&
+          this.animationManager.currentAnimationName !== targetAnimation
+        ) {
+          return;
+        }
+
+        if (this.animationManager.currentFrameHasMouths()) {
+          cleanup();
+          resolve();
+        }
+      };
+
+      const cleanup = () => {
+        this.animationManager.off("frameChanged", check);
+        this.animationManager.off("animationStarted", check);
+      };
+
+      this.animationManager.on("frameChanged", check);
+      this.animationManager.on("animationStarted", check);
+
+      // Initial check
+      check();
+    });
+  }
+
   public update(currentTime: number, deltaTime: number) {
     const viseme = this.visemeManager.getVisemeAt(currentTime);
     this.animationManager.setViseme(viseme);
