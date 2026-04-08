@@ -100,6 +100,9 @@ describe('Agent Custom Animation', () => {
 
     agent.ask({ content: [{ type: 'input' }], animation: 'CustomAnim' });
 
+    // Wait for microtasks (delay caused by waitForMouthFrames)
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     expect(agent.stateManager.playAnimation).toHaveBeenCalledWith(
       'CustomAnim',
       'Speaking',

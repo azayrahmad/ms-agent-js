@@ -50,6 +50,9 @@ describe('Agent Pagination', () => {
             ]
         });
 
+        // Wait for microtasks (delay caused by waitForMouthFrames)
+        await new Promise(resolve => setTimeout(resolve, 0));
+
         const balloonEl = agent.balloon.balloonEl;
 
         // Initial page (0): Choice 1, 2, 3 and "See next"
@@ -102,6 +105,9 @@ describe('Agent Pagination', () => {
                 }
             ]
         });
+
+        // Wait for microtasks (delay caused by waitForMouthFrames)
+        await new Promise(resolve => setTimeout(resolve, 0));
 
         const balloonEl = agent.balloon.balloonEl;
         const textarea = balloonEl.querySelector('textarea') as HTMLTextAreaElement;

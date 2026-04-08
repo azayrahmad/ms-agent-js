@@ -165,6 +165,7 @@ export class AnimationManager extends EventEmitter<any> {
           if (previousAnimation && previousAnimation !== event.animation.name) {
             this.emit('animationCompleted', previousAnimation);
           }
+          this.emit('animationStarted', event.animation.name);
 
           // Play sound for the first frame if it has one
           this.checkAndPlaySound(ctx.currentAnimation.frames[0]);
@@ -175,6 +176,26 @@ export class AnimationManager extends EventEmitter<any> {
         },
       },
     });
+  }
+
+  /**
+   * Returns whether a specific animation (or the current one) contains any frames with mouth overlays.
+   *
+   * @param animationName - The name of the animation to check. Defaults to the current animation.
+   */
+  public supportsSpeech(animationName?: string): boolean {
+    const name = animationName || this.currentAnimationName;
+    const animation = this.animations[name];
+    if (!animation) return false;
+    return animation.frames.some((f) => !!f.mouths && f.mouths.length > 0);
+  }
+
+  /**
+   * Returns whether the frame currently being processed has mouth overlays.
+   */
+  public currentFrameHasMouths(): boolean {
+    const frame = this.currentFrame;
+    return !!frame?.mouths && frame.mouths.length > 0;
   }
 
   /**
