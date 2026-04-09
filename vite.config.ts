@@ -45,8 +45,13 @@ export default defineConfig(({ mode }) => {
           {
             src: 'public/agents/**/*',
             dest: 'agents',
-            rename: {
-              stripBase: 2,
+            rename: (fileName, _fileExtension, fullPath) => {
+              // Extract the path after 'public/agents/'
+              // fullPath will be something like '.../public/agents/Genie/agent.json'
+              // We want 'Genie/agent.json'
+              const normalizedPath = fullPath.replace(/\\/g, '/');
+              const parts = normalizedPath.split('/public/agents/');
+              return parts.length > 1 ? parts[1] : fileName;
             },
           },
         ],
