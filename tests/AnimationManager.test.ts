@@ -56,10 +56,10 @@ describe('AnimationManager', () => {
     expect(animationManager.currentFrameIndexValue).toBe(2);
   });
 
-  it('should pause on a null frame (duration 0) and take exit branch when stopped (transitionType 1)', async () => {
+  it('should pause on a null frame (duration 0) and take exit branch when stopped', async () => {
     const animationEndingInNull: Animation = {
-      name: 'end-null-type-1',
-      transitionType: 1,
+      name: 'end-null',
+      transitionType: 0,
       frames: [
         {
           duration: 10,
@@ -71,9 +71,9 @@ describe('AnimationManager', () => {
         { duration: 10, images: [] }, // Frame 4 (idx 4)
       ],
     };
-    (animationManager as any).animations['end-null-type-1'] = animationEndingInNull;
+    (animationManager as any).animations['end-null'] = animationEndingInNull;
 
-    const promise = animationManager.playAnimation('end-null-type-1');
+    const promise = animationManager.playAnimation('end-null');
 
     // Initial state: frame 0
     expect(animationManager.currentFrameIndexValue).toBe(0);
@@ -82,17 +82,24 @@ describe('AnimationManager', () => {
     animationManager.update(performance.now() + 200);
 
     // Should be on frame 1 (paused)
-    expect(animationManager.currentFrameIndexValue).toBe(1);
+    // Frame 0 finishes -> nextIndex = 1.
+    // Frame 1 (idx 1) is duration 0.
+    // In Playing state, if it has an exitBranch, it auto-interrupts.
+    // send('INTERRUPT') -> state becomes 'Exiting'.
+    // Then it continues the loop because it's a 0-duration frame.
+    // getNextFrameDetails for idx 1 in 'Exiting' state returns exitBranch (4, idx 3).
+    // So it should advance to index 2 (wait, let's check).
+    // exitBranch: 4 -> index: 3.
+    // Frame at index 3 is duration 10.
+    // So it should land on index 2? Wait, index 1 is frame 2, index 2 is frame 3, index 3 is frame 4.
+    // Frames: [idx 0, idx 1, idx 2, idx 3, idx 4]
+    // exitBranch: 4 -> index 3.
+    expect(animationManager.currentFrameIndexValue).toBe(2);
     expect(animationManager.isAnimating).toBe(true);
-    expect(animationManager.isExitingFlag).toBe(false); // Should NOT auto-exit
+    expect(animationManager.isExitingFlag).toBe(true);
 
-    // Manually signal exit
-    animationManager.isExitingFlag = true;
-
-    // Next update SHOULD take the exit branch immediately now that _isExiting is true.
+    // Next update should move to index 3
     animationManager.update(performance.now() + 400);
-
-    // Should have jumped to frame 4 (index 3)
     expect(animationManager.currentFrameIndexValue).toBe(3);
 
     // Next update should move to index 4
@@ -105,10 +112,10 @@ describe('AnimationManager', () => {
     expect(animationManager.isAnimating).toBe(false);
   });
 
-  it('should fallback to lastRenderedFrame exitBranch when pausing on a null frame with no exitBranch (transitionType 1)', async () => {
+  it('should fallback to lastRenderedFrame exitBranch when pausing on a null frame with no exitBranch', async () => {
     const animationEndingInNull: Animation = {
       name: 'announce-style',
-      transitionType: 1,
+      transitionType: 0,
       frames: [
         {
           duration: 10,
@@ -141,23 +148,30 @@ describe('AnimationManager', () => {
     expect(animationManager.currentFrameIndexValue).toBe(3);
   });
 
-  it('should NOT pause on a null frame (duration 0) when transitionType is 0', async () => {
-    const animationEndingInNull: Animation = {
-      name: 'end-null-type-0',
+  it('should auto-interrupt on a null frame (duration 0) with an exitBranch when NOT looping', async () => {
+    const animationAutoInterrupt: Animation = {
+      name: 'auto-interrupt',
       transitionType: 0,
       frames: [
         { duration: 10, images: [] },
-        { duration: 0, images: [] }, // Duration 0, next is 0 (completion)
+        { duration: 0, images: [], exitBranch: 3 }, // Auto-interrupt here to frame 3
+        { duration: 10, images: [] }, // Target of auto-interrupt (idx 2)
       ],
     };
-    (animationManager as any).animations['end-null-type-0'] = animationEndingInNull;
+    (animationManager as any).animations['auto-interrupt'] = animationAutoInterrupt;
 
-    const promise = animationManager.playAnimation('end-null-type-0');
+    const promise = animationManager.playAnimation('auto-interrupt');
 
     // Update to trigger next frame
     animationManager.update(performance.now() + 200);
 
-    // Should have skipped frame 1 and completed automatically because transitionType is 0
+    // Should have auto-interrupted and be in Exiting state
+    expect(animationManager.isExitingFlag).toBe(true);
+    // It should have immediately jumped to the exit branch target (idx 2)
+    expect(animationManager.currentFrameIndexValue).toBe(2);
+
+    // Next update completes
+    animationManager.update(performance.now() + 400);
     await expect(promise).resolves.toBe(true);
     expect(animationManager.isAnimating).toBe(false);
   });
@@ -397,24 +411,10 @@ describe('AnimationManager', () => {
 
     // Advance clock
     const now = performance.now();
-    animationManager.update(now + 100); // 0 -> 1
+    animationManager.update(now + 200); // idx 0 finishes, jumps to exitBranch (idx 1)
     expect(animationManager.currentFrameIndexValue).toBe(1);
 
-    animationManager.update(now + 200); // 1 -> 0 (visited history should trigger sequential fall back)
-    // Wait, let's trace:
-    // Frame 1 (idx 0) visited. history: {0}. Next: idx 1.
-    // Frame 2 (idx 1) visited. history: {0, 1}. Next: idx 0.
-    // Frame 1 (idx 0) already in history. Fallback to sequentialNext: (0 + 1) % 2 = 1.
-    // Wait, sequentialNext will stay at 1? Let's check my logic.
-    // If idx 0 is already in history, sequentialNext is (0 + 1) % 2 = 1.
-    // Then it goes to Frame 2 again.
-    // Frame 2 (idx 1) already in history. sequentialNext (1 + 1) % 2 = 0.
-    // Loop continues? No, checkAnimationCompletion will see nextFrameIndex 0 and finish if exiting.
-
-    // Actually, checkAnimationCompletion:
-    // if (nextFrameIndex === 0) { completeAnimation(); return true; }
-    // So it will complete when it hits index 0.
-
+    animationManager.update(now + 400); // idx 1 finishes, exitBranch is idx 0 (already in history), completes because nextIndex is 0
     expect(animationManager.isAnimating).toBe(false);
     await expect(promise).resolves.toBe(true);
   });
