@@ -9,4 +9,5 @@ export const AGENTS = [
   { name: "OFFCAT" },
   { name: "ROCKY" },
   { name: "Genie" },
+  { name: "Peedy" },
 ];
