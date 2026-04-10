@@ -213,11 +213,11 @@ export class AnimationManager extends EventEmitter<any> {
       if (currentFrame.duration === 0) {
         const { index: nextIndex, isBranch } = this.getNextFrameDetails(ctx, currentFrame);
 
-        if (!isBranch && ctx.currentAnimation?.transitionType === 1 && this.machine.state !== 'Exiting') {
+        if (this.checkAnimationCompletion(ctx, currentFrame, nextIndex, isBranch)) return;
+
+        if (!isBranch && this.machine.state !== 'Exiting') {
           break;
         }
-
-        if (this.checkAnimationCompletion(ctx, currentFrame, nextIndex, isBranch)) return;
 
         ctx.currentFrameIndex = nextIndex;
         ctx.lastFrameTime = currentTime;
@@ -357,10 +357,9 @@ export class AnimationManager extends EventEmitter<any> {
       }
     } else {
       // If NOT yet exiting, check if we've reached a 0-duration frame with an exit branch.
-      // In Microsoft Agent transition type 1, these act as "terminal" pause frames.
+      // These act as "terminal" pause frames.
       // If we reach one during normal sequential playback, we force an exit.
       if (
-        ctx.currentAnimation?.transitionType === 1 &&
         currentFrame.duration === 0 &&
         currentFrame.exitBranch !== undefined &&
         !isBranch
