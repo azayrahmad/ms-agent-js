@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.5.1](https://github.com/azayrahmad/ms-agent-js/compare/v0.5.0...v0.5.1) (2026-04-13)
+
+
+### Features
+
+* **agent:** add genie ([131620a](https://github.com/azayrahmad/ms-agent-js/commit/131620afcee85afff308578f5bb771c66181bc2c))
+* **agents:** add Peedy ([583dbe5](https://github.com/azayrahmad/ms-agent-js/commit/583dbe5b30591f6d2314a6ec73f83359f0aa75ff))
+* **core:** delay speech until animation reaches mouth frame ([fd5e4d3](https://github.com/azayrahmad/ms-agent-js/commit/fd5e4d3318a5f77fed4c79fa43090ceb28094e33))
+* **core:** full MSAgent 2.1 support and robust parsing ([96cefac](https://github.com/azayrahmad/ms-agent-js/commit/96cefac919b36e6c65853f573e263e477d400757))
+* **core:** full MSAgent 2.1 support and robust parsing ([dbfd415](https://github.com/azayrahmad/ms-agent-js/commit/dbfd415336fad34f02d26a190d26f422529c64c4))
+* **core:** full support for Microsoft Agent 2.1 ACD features ([55de0c7](https://github.com/azayrahmad/ms-agent-js/commit/55de0c754d6e561bb8864c3ecb973cde1ffc93f6))
+* **core:** support Microsoft Agent 2.1 ACD features ([d55a88f](https://github.com/azayrahmad/ms-agent-js/commit/d55a88f46e89be55ee6faf46ad8b647795de0f58))
+* **demo:** add version info and Ko-fi link to about tab ([c81510b](https://github.com/azayrahmad/ms-agent-js/commit/c81510beedfdb7b2732692c8a847ac09f9edb601))
+* implement phoneme-based viseme (lip-sync) system ([f77a216](https://github.com/azayrahmad/ms-agent-js/commit/f77a216c35ad1411a67ccaed784bba0e86c37f87))
+* implement phoneme-based viseme (lip-sync) system ([682a6d6](https://github.com/azayrahmad/ms-agent-js/commit/682a6d66af53cde83e6787b828d0a1f581ba9120))
+* update readme and bump version ([eefd1f8](https://github.com/azayrahmad/ms-agent-js/commit/eefd1f808423caf764641e48dbc314f8a0b5359b))
+
+
+### Bug Fixes
+
+* **anim:** fallback to last valid frame's exit branch ([27152ec](https://github.com/azayrahmad/ms-agent-js/commit/27152ecf4c714c18676012b7b9de776a5e30ec36))
+* **demo:** Update tutorial buttons and fix focused button styling ([885cc95](https://github.com/azayrahmad/ms-agent-js/commit/885cc95d4b0f4531ccd611c4950b539b8fb0669f))
+* implement agent perspective and lifecycle for movement animations ([3fb0f09](https://github.com/azayrahmad/ms-agent-js/commit/3fb0f0929ea0976f7d31d711454458d80bef3874))
+* replace invalid rename object with function in vite.config.ts ([47ec3dc](https://github.com/azayrahmad/ms-agent-js/commit/47ec3dc3e649f0ce388ec231641f7d39c236b617))
+* resolve flakiness and timeout in 'handle balloon onHide' test ([2d6572d](https://github.com/azayrahmad/ms-agent-js/commit/2d6572d3e2e4d6e5f4d213b4479bc6f3117fa490))
+* resolve state mismatch in Agent unit tests ([3e7677c](https://github.com/azayrahmad/ms-agent-js/commit/3e7677c6ecb0f3f2bb6e081b2cf0de5be65aecac))
+* **tests:** exclude e2e tests from vitest coverage run ([eec9cb0](https://github.com/azayrahmad/ms-agent-js/commit/eec9cb0e19bcbace5722285507ffcc7867c0fe2b))
+* **tests:** resolve e2e interference and flaky visual snapshots ([786d155](https://github.com/azayrahmad/ms-agent-js/commit/786d155666a7be0ac12a6750d892545670d35ab6))
+
+
+### Miscellaneous Chores
+
+* release 0.5.0 ([5045d1d](https://github.com/azayrahmad/ms-agent-js/commit/5045d1dc313a3444cbf87c0d1ee6778dc09153ed))
+* release 0.5.1 ([c4c99b2](https://github.com/azayrahmad/ms-agent-js/commit/c4c99b25f8f41ba03c854e88c8bf54d27778c3d3))
+
 ## [0.5.0](https://github.com/azayrahmad/ms-agent-js/compare/v0.4.1...v0.5.0) (2026-03-23)
 
 
