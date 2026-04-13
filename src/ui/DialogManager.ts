@@ -344,41 +344,49 @@ export class DialogManager {
 
         self.startTalkingAnimation(options.animation);
 
-        self.renderer.balloon.showHtml(renderContent(), true);
+        self.core.waitForMouthFrames(
+          () => request.isCancelled,
+          options.animation,
+        ).then(() => {
+          if (request.isCancelled) return;
 
-        // Check visibility AFTER showing HTML to support cases where showHtml should open the balloon.
-        // If it's still hidden, it's likely due to a mock or an immediate closure.
-        if (!self.renderer.balloon.isVisible) {
-          finish(null);
-          return;
-        }
+          self.renderer.balloon.showHtml(renderContent(), true);
 
-        let ttsText = title ? ensureSentenceEnd(title) : "";
-        content.forEach((item) => {
-          if (typeof item === "string") {
-            ttsText += (ttsText ? " " : "") + ensureSentenceEnd(item);
+          // Check visibility AFTER showing HTML to support cases where showHtml should open the balloon.
+          // If it's still hidden, it's likely due to a mock or an immediate closure.
+          if (!self.renderer.balloon.isVisible) {
+            finish(null);
+            return;
           }
+
+          let ttsText = title ? ensureSentenceEnd(title) : "";
+          content.forEach((item) => {
+            if (typeof item === "string") {
+              ttsText += (ttsText ? " " : "") + ensureSentenceEnd(item);
+            }
+          });
+
+          if (ttsText) {
+            self.renderer.balloon.speak(
+              () => {
+                if (self.core.stateManager.currentStateName === "Speaking") {
+                  self.core.animationManager.isExitingFlag = true;
+                  self.core.stateManager.handleAnimationCompleted();
+                }
+              },
+              ttsText,
+              true,
+              true,
+              false,
+              true,
+            );
+          }
+
+          attachEvents();
+          resetBalloonTimeout();
+          setTimeout(() => self.renderer.balloon.reposition(), 0);
         });
 
-        if (ttsText) {
-          self.renderer.balloon.speak(
-            () => {
-              if (self.core.stateManager.currentStateName === "Speaking") {
-                self.core.animationManager.isExitingFlag = true;
-                self.core.stateManager.handleAnimationCompleted();
-              }
-            },
-            ttsText,
-            true,
-            true,
-            false,
-            true,
-          );
-        }
-
-        attachEvents();
-        resetBalloonTimeout();
-        setTimeout(() => self.renderer.balloon.reposition(), 0);
       });
     });
 

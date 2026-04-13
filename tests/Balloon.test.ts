@@ -354,4 +354,20 @@ describe('Balloon', () => {
 
         vi.useRealTimers();
     });
+
+    it('should apply fontWeight and italic from definition', () => {
+        const styledDefinition: any = {
+            character: { width: 100, height: 100, style: 0 },
+            balloon: {
+                ...mockDefinition.balloon,
+                fontWeight: 700,
+                italic: true
+            }
+        };
+        const balloon = new Balloon(targetEl, container, styledDefinition);
+        const content = balloon.balloonEl.querySelector('.clippy-content') as HTMLElement;
+
+        expect(content.style.fontWeight).toBe('700');
+        expect(content.style.fontStyle).toBe('italic');
+    });
 });

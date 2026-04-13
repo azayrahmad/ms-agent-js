@@ -154,8 +154,8 @@ export class Agent {
     await core.init();
 
     const renderer = new AgentRenderer(core, container);
-    renderer.balloon.onSpeak = (text: string, charIndex: number) => {
-      core.emit("speak", { text, charIndex });
+    renderer.balloon.onSpeak = (payload) => {
+      core.emit("speak", payload);
     };
 
     const agent = new Agent(core, renderer, container);
@@ -408,6 +408,14 @@ export class Agent {
     return this.enqueueRequest(async (request) => {
       if (request.isCancelled) return;
       this.startTalkingAnimation(animation);
+
+      await this.core.waitForMouthFrames(
+        () => request.isCancelled,
+        animation || this.talkingAnimationName || undefined,
+      );
+
+      if (request.isCancelled) return;
+
       return new Promise((resolve) => {
         this.renderer.balloon.speak(resolve, text, hold, useTTS, skipTyping);
       });
