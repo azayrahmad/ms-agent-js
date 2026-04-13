@@ -1,5 +1,6 @@
 import { AgentCore } from "../core/Core";
 import { AgentRenderer } from "./Renderer";
+import { ensureSentenceEnd } from "../utils";
 
 /**
  * Represents an item in the content array of an 'ask' dialog.
@@ -250,7 +251,11 @@ export class DialogManager {
             btn.addEventListener("click", handleCustomButtonClick),
           );
 
-          if (input) input.focus();
+          if (input) {
+            input.focus();
+          } else if (customButtons.length > 0) {
+            customButtons[0].focus();
+          }
         }
 
         function refreshContent() {
@@ -323,7 +328,7 @@ export class DialogManager {
               const bType = typeof btn === "string" ? null : btn.bullet;
               const btnClass = bType ? `style-${bType}` : "";
               const bulletSpan = bType ? '<span class="button-bullet"></span>' : "";
-              balloonContent += `<button class="custom-button ${btnClass}" data-index="${i}">${bulletSpan}${label}</button>`;
+              balloonContent += `<button class="custom-button ${btnClass}" data-index="${i}">${bulletSpan}<span class="button-label">${label}</span></button>`;
             });
             balloonContent += `</div>`;
           }
@@ -354,10 +359,10 @@ export class DialogManager {
             return;
           }
 
-          let ttsText = title;
+          let ttsText = title ? ensureSentenceEnd(title) : "";
           content.forEach((item) => {
             if (typeof item === "string") {
-              ttsText += (ttsText ? " " : "") + item;
+              ttsText += (ttsText ? " " : "") + ensureSentenceEnd(item);
             }
           });
 

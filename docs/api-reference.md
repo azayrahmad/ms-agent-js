@@ -54,7 +54,7 @@ Smoothly moves the agent to the specified coordinates.
 - **`speed`**: Pixels per second (default: 400).
 
 ### `agent.setScale(scale)`
-Dynamically changes the agent's size.
+Dynamically changes the agent's size while maintaining its center position.
 - **`scale`**: Numeric factor (1.0 = 100%).
 
 ---
@@ -139,6 +139,8 @@ Encapsulates the logic for interactive speech balloon dialogs.
 
 ---
 
+## Request Management
+
 ### `agent.stop(request?)`
 Stops the specified request or all requests in the queue. If the active request is stopped, the agent moves to the next one.
 
@@ -175,6 +177,8 @@ Unsubscribes from an agent event.
 - `show` / `hide`: Triggered for visibility transitions.
 - `dragstart` / `drag` / `dragend`: Triggered during movement interactions. Payload: `{ x, y }` for `drag`.
 - `reposition`: Triggered when automatically moved to stay in viewport during window resize. Payload: `{ x, y }`.
+- `speak`: Triggered during speech when a word or character boundary is reached. Payload: `{ text, charIndex }`.
+- `requestStart` / `requestComplete`: Triggered when a request starts or finishes in the queue. Payload: `AgentRequest`.
 
 ### `agent.destroy()`
 Performs full cleanup: cancels animations, stops speech, and removes the agent from the DOM.

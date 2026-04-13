@@ -52,11 +52,17 @@ export class TourManager {
         await moveToBottomRight(controlPanel);
         const result = await agent.ask({
           content: [tabInfo.text],
-          buttons: ["OK"],
+          buttons: [
+            { label: "Continue", value: "continue", bullet: "bullet" },
+            { label: "Stop", value: "stop", bullet: "bullet" },
+          ],
           timeout: 0,
           animation: "Explain",
         });
-        if (!result) return;
+        if (!result || result.value === "stop") {
+          agent.speak("That's the end of the tour! Have fun exploring!");
+          return;
+        }
       }
     }
 
@@ -67,12 +73,19 @@ export class TourManager {
     // On the right of the window, not obscuring it
     await agent.moveTo(dwRect.right + scrollX + 20, dwRect.top + scrollY + dwRect.height / 2 - agentH / 2);
 
-    await agent.ask({
+    const finalResult = await agent.ask({
       content: ["Finally, the Debug Info window shows real-time data about the agent's internal state, current animation, and position."],
-      buttons: ["OK"],
+      buttons: [
+        { label: "Finish", value: "finish", bullet: "bullet" },
+        { label: "Stop", value: "stop", bullet: "bullet" },
+      ],
       timeout: 0,
       animation: "Thinking",
     });
+
+    if (finalResult && finalResult.value === "stop") {
+      // Already at the end, but honor the stop button
+    }
 
     agent.speak("That's the end of the tour! Have fun exploring!");
   }

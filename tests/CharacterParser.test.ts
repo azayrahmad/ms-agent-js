@@ -95,6 +95,38 @@ EndAnimation
     expect(frame.branching![0].probability).toBe(50);
   });
 
+  it('should parse non-English LCIDs in DefineInfo', () => {
+    const content = `
+DefineCharacter
+  DefineInfo 0x040c
+    Name = "Clippit_FR"
+    Description = "French Clippit"
+  EndInfo
+EndCharacter
+`;
+    const parser = new CharacterParser();
+    const result = parser.parse(content);
+    const info = result.character.infos[0];
+    expect(info.languageCode).toBe('0x040c');
+    expect(info.locale.language).toBe('fr');
+    expect(info.name).toBe('Clippit_FR');
+  });
+
+  it('should handle edge cases in ExtraData parsing', () => {
+    const parser = new CharacterParser();
+    const info1 = { greetings: [], reminders: [] } as any;
+    // Missing ^^
+    (parser as any).parseExtraData("Greeting 1 ~~ Greeting 2", info1);
+    expect(info1.greetings).toHaveLength(2);
+    expect(info1.reminders).toHaveLength(0);
+
+    const info2 = { greetings: [], reminders: [] } as any;
+    // Empty parts
+    (parser as any).parseExtraData(" ~~ ^^ ~~ ", info2);
+    expect(info2.greetings).toHaveLength(0);
+    expect(info2.reminders).toHaveLength(0);
+  });
+
   it('should not throw error even if GUID is missing (defaults to empty)', () => {
     const content = ` DefineCharacter \n Width = 100 \n Height = 100 \n EndCharacter `;
     const parser = new CharacterParser();

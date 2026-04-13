@@ -24,27 +24,33 @@
 
 A web reimplementation of Microsoft Agent. Bring back Clippy and other classic Office assistants with authentic animations and speech support. Perfect for retro UIs and nostalgic web projects.
 
+<p align="center">
+  <img src="public/clippy-welcome-ss.png" alt="MS Agent JS in action as Clippy">
+</p>
+
 Inspired by [clippy.js](https://github.com/clippyjs/clippy.js), this is a fully rewritten project focuses on a more faithful and modern recreation of Microsoft Agent with improved animation handling, richer features, extensibility, and a design that works seamlessly on any web page.
 
 <p align="center">
   <a href="https://azayrahmad.github.io/ms-agent-js/"><strong>Live Demo</strong></a> |
   <a href="./docs/getting-started.md"><strong>Documentation</strong></a> |
-  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a>
+  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a> |
+  <a href="https://ko-fi.com/azayrahmad"><strong>Support on Ko-Fi</strong></a>
 </p>
 
 ## ✨ Features
 
+- **Interactive**: Agents are draggable and clickable (single, double, and right-click) with events. 
+- **Speech Support**: Support interactive speech balloon text input, selection list, checkbox, and buttons in authentic speech balloon.
+- **TTS Support**: TTS support with browser's native Web Speech API.
 - **Zero Dependencies**: No jQuery or any other external libraries required to run.
 - **Modern API**: Simple, promise-based API for animations, state transitions, and speech.
 - **Zero CSS leakage**: Shadow DOM isolates the Agent, making it safe to drop into any project.
 - **High Performance**: Uses HTML5 Canvas and optimized asset formats (WebP/WebM).
-- **Speech Support**: Support text input, selection list, and action buttons. TTS support with browser's native Web Speech API.
-- **Draggable**: Built-in support for repositioning agents via mouse/touch or programmatically. 
 - **Legacy Support**: Works with decompiled MS Agent's ACF files directly. Add your own Agents!
 
 ## 🎭 Available Agents
 
-Current iteration of MSAgentJS focuses on recreating early Microsoft Agent 2.0 featured in Office 2000. Support for later versions such as Genie and Merlin is in the works.
+Current iteration of MSAgentJS focuses on recreating early Microsoft Agent 2.0 featured in Office 2000. Support for 2.1 version such as Genie and Merlin is in the works.
 | Clippit | The Dot | F1 | The Genius | Office Logo | Mother Nature | Monkey King | Links | Rocky |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | ![Clippit](public/agent_thumbs/Clippit_thumb.png) | ![The Dot](public/agent_thumbs/DOT_thumb.png) | ![F1](public/agent_thumbs/F1_thumb.png) | ![The Genius](public/agent_thumbs/GENIUS_thumb.png) | ![Office Logo](public/agent_thumbs/LOGO_thumb.png) | ![Mother Nature](public/agent_thumbs/MNATURE_thumb.png) | ![Monkey King](public/agent_thumbs/Monkey_King_thumb.png) | ![Links](public/agent_thumbs/OFFCAT_thumb.png) | ![Rocky](public/agent_thumbs/ROCKY_thumb.png) |
@@ -73,16 +79,24 @@ init();
 
 ---
 
-## 📖 Documentation Map
+## 📖 Documentation
 
 - **[Getting Started](./docs/getting-started.md)**: Installation and basic usage.
 - **[API Reference](./docs/api-reference.md)**: Full list of methods, options, and events.
 - **[Request System](./docs/request-system.md)**: Understanding the asynchronous action queue.
 - **[Asset Management](./docs/assets.md)**: How to add and optimize new agents.
 - **[Demo Implementation](./docs/demo-guide.md)**: A guide to how the demo is built.
-- **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
 - **[Internal Architecture](./docs/internals.md)**: Deep dive into the engine's core logic.
 - **[AI Onboarding](./AGENTS.md)**: Specific recipes and tips for AI agents.
+- **[Contributing](./CONTRIBUTING.md)**: Guidelines for developers and repo setup.
+
+## 🛣️ Future Roadmap
+
+- Support for MS Agent 2.1 features:
+  - Advanced animation looping logic.
+  - Mouth movement (viseme).
+  - Tray icon.
+- Support for streaming text (for LLM streaming output)
 
 ## 🤝 Credits
 
